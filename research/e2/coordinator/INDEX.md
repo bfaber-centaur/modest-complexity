@@ -2,7 +2,7 @@
 
 Round e2 is open-question exploration under the [charter](charter/README.md); assignments and the run-ID procedure are in [DECISIONS.md](DECISIONS.md). e1 is complete and archived at [research/coordinator/INDEX.md](../../coordinator/INDEX.md).
 
-e2 base for workers: see "Base" below. Shared code identity: `fe284a5d90f741aab8c1273a55b11e5352ec38c5` (unchanged).
+e2 base for workers: `6aaa3a2b6898abd0b317aa775cd7939e7530abdd`. Shared code identity: `fe284a5d90f741aab8c1273a55b11e5352ec38c5` (unchanged).
 
 ## Shared check: both training shares on the pairs neither trained on
 
@@ -37,4 +37,4 @@ Run claims: [research/e2/plan.json](../plan.json) (none yet).
 
 ## Base
 
-The `swarm/exploration` commit that adds this file is the e2 base; the next coordinator commit records its hash here.
+e2 base: `6aaa3a2b6898abd0b317aa775cd7939e7530abdd` (2026-10-21), the commit that opened e2 on `swarm/exploration`. Later `swarm/exploration` commits are valid bases while they change no shared code (DECISIONS.md D4).
