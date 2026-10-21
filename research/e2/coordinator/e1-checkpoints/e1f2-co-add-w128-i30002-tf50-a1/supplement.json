@@ -1,0 +1,14 @@
+{
+ "run_id": "e1f2-co-add-w128-i30002-tf50-a1",
+ "e1_manifest": "research/coordinator/runs/e1f2-co-add-w128-i30002-tf50-a1/manifest.json",
+ "e1_manifest_sha256": "7d8b8c9300b3b853cee8e3afbdee09c32e83a7cbfc56fd5cf45cbd2de399d277",
+ "note": "Checkpoints of the e1 run not published in its e1 directory; each SHA-256 equals the e1 manifest entry.",
+ "files": {
+  "checkpoint_003000.npz": "ed7182de4e631405902a894f94b57fb712c08749388065a26a708a0069a95a2b",
+  "checkpoint_004000.npz": "93e57f3b1ac35d751860e08022905f27bc0190793789b18a871d24c14d79f6ef",
+  "checkpoint_006000.npz": "9a468bd7d4d485810d52edc2b461d8112fdf46e253f3572d91adbbf2f1cde611",
+  "checkpoint_007000.npz": "95c7082846f170b32ceb724f02ec53057d6b95ea06f5c49beda79e21c0211f32",
+  "checkpoint_008000.npz": "8be251ec65a1660dcbca011cb9d880be3cb54b8a6b2f14fea0622b4cc4779033",
+  "checkpoint_009000.npz": "45b7ba5754acce06573b03f6cd57436f7b6d08ea3c366af4aa01d5a393898c41"
+ }
+}

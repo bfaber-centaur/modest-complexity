@@ -29,11 +29,11 @@ Reproduce: `uv run --locked --group analysis python research/e2/coordinator/comm
 
 | lane | directory | status |
 |---|---|---|
-| dynamics | [research/e2/dynamics/](../dynamics/) | assigned 2026-10-21 |
+| dynamics | [research/e2/dynamics/](../dynamics/) | packet 1 integrated (`7f2b6e8`): correct-label margins on the common pairs, [share figure](../dynamics/figures/share/margins.png), [width figure](../dynamics/figures/width30/margins_width30.png); not audited. Cycle 2 runs claimed (D8) |
 | mechanisms | [research/e2/mechanisms/](../mechanisms/) | packet 1 integrated (PR #15, `cb03dcb`): unit groups by dominant frequency, [figure](../mechanisms/figures/groups/groups.png); not audited |
 | audit | [research/e2/audit/](../audit/) | assigned 2026-10-21 |
 
-Run claims: [research/e2/plan.json](../plan.json) (none yet).
+Run claims: [research/e2/plan.json](../plan.json): six dynamics runs at 40% and 45% share (D8). Extra e1/e1f2 checkpoints: [e1-checkpoints/](e1-checkpoints/) (D9).
 
 ## Base
 

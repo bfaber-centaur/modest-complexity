@@ -14,5 +14,78 @@
   "diagnostic_seed": 33000,
   "purpose": "exploratory"
  },
- "runs": []
+ "runs": [
+  {
+   "run_id": "e2-dy-add-w128-i30000-tf40-a1",
+   "owner": "dynamics",
+   "claimed": "2026-10-21",
+   "task": "add",
+   "wd": 1,
+   "width": 128,
+   "init_seed": 30000,
+   "train_fraction": 0.4,
+   "split_sha256": "5c843bb877255505545a35a718349e654b02b7feb535561fa15751374075e5a9",
+   "reason": "Dynamics cycle 2 (research/e2/dynamics/QUESTION.md Q2, REQUEST.md): nested training-share boundary at width 128 between the e1 30% and e1f2 50% runs, evaluated on the fixed 483-pair common never-trained set, which stays untrained at both shares (nesting and hashes checked by the coordinator with experiment.data at fe284a5)."
+  },
+  {
+   "run_id": "e2-dy-add-w128-i30001-tf40-a1",
+   "owner": "dynamics",
+   "claimed": "2026-10-21",
+   "task": "add",
+   "wd": 1,
+   "width": 128,
+   "init_seed": 30001,
+   "train_fraction": 0.4,
+   "split_sha256": "5c843bb877255505545a35a718349e654b02b7feb535561fa15751374075e5a9",
+   "reason": "Dynamics cycle 2 (research/e2/dynamics/QUESTION.md Q2, REQUEST.md): nested training-share boundary at width 128 between the e1 30% and e1f2 50% runs, evaluated on the fixed 483-pair common never-trained set, which stays untrained at both shares (nesting and hashes checked by the coordinator with experiment.data at fe284a5)."
+  },
+  {
+   "run_id": "e2-dy-add-w128-i30002-tf40-a1",
+   "owner": "dynamics",
+   "claimed": "2026-10-21",
+   "task": "add",
+   "wd": 1,
+   "width": 128,
+   "init_seed": 30002,
+   "train_fraction": 0.4,
+   "split_sha256": "5c843bb877255505545a35a718349e654b02b7feb535561fa15751374075e5a9",
+   "reason": "Dynamics cycle 2 (research/e2/dynamics/QUESTION.md Q2, REQUEST.md): nested training-share boundary at width 128 between the e1 30% and e1f2 50% runs, evaluated on the fixed 483-pair common never-trained set, which stays untrained at both shares (nesting and hashes checked by the coordinator with experiment.data at fe284a5)."
+  },
+  {
+   "run_id": "e2-dy-add-w128-i30000-tf45-a1",
+   "owner": "dynamics",
+   "claimed": "2026-10-21",
+   "task": "add",
+   "wd": 1,
+   "width": 128,
+   "init_seed": 30000,
+   "train_fraction": 0.45,
+   "split_sha256": "44e5774e0051bdd952ed089b3bda8513922fc856eed1efe56239b82cf633c7aa",
+   "reason": "Dynamics cycle 2 (research/e2/dynamics/QUESTION.md Q2, REQUEST.md): nested training-share boundary at width 128 between the e1 30% and e1f2 50% runs, evaluated on the fixed 483-pair common never-trained set, which stays untrained at both shares (nesting and hashes checked by the coordinator with experiment.data at fe284a5)."
+  },
+  {
+   "run_id": "e2-dy-add-w128-i30001-tf45-a1",
+   "owner": "dynamics",
+   "claimed": "2026-10-21",
+   "task": "add",
+   "wd": 1,
+   "width": 128,
+   "init_seed": 30001,
+   "train_fraction": 0.45,
+   "split_sha256": "44e5774e0051bdd952ed089b3bda8513922fc856eed1efe56239b82cf633c7aa",
+   "reason": "Dynamics cycle 2 (research/e2/dynamics/QUESTION.md Q2, REQUEST.md): nested training-share boundary at width 128 between the e1 30% and e1f2 50% runs, evaluated on the fixed 483-pair common never-trained set, which stays untrained at both shares (nesting and hashes checked by the coordinator with experiment.data at fe284a5)."
+  },
+  {
+   "run_id": "e2-dy-add-w128-i30002-tf45-a1",
+   "owner": "dynamics",
+   "claimed": "2026-10-21",
+   "task": "add",
+   "wd": 1,
+   "width": 128,
+   "init_seed": 30002,
+   "train_fraction": 0.45,
+   "split_sha256": "44e5774e0051bdd952ed089b3bda8513922fc856eed1efe56239b82cf633c7aa",
+   "reason": "Dynamics cycle 2 (research/e2/dynamics/QUESTION.md Q2, REQUEST.md): nested training-share boundary at width 128 between the e1 30% and e1f2 50% runs, evaluated on the fixed 483-pair common never-trained set, which stays untrained at both shares (nesting and hashes checked by the coordinator with experiment.data at fe284a5)."
+  }
+ ]
 }
