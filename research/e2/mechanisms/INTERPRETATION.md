@@ -1,8 +1,24 @@
 # e2 mechanisms: interpretation (read [README.md](README.md) first)
 
-Candidate explanations, not conclusions. The evidence covers nine runs at width 128 (six on a+b over one pair of nested splits, three with shuffled labels), and nothing here is audited.
+Candidate explanations, not conclusions. The evidence covers twelve runs at width 128: six on a+b with weight decay over one pair of nested splits, three on a+b without decay and three with shuffled labels, both on the 30% split. Packet 1 was audited in e2 audit cycle 2; packet 2 and its close-out are not audited.
 
-## Packet 2
+## Where the lane ends (close of cycle 2, revises packet 2)
+
+Revised reading: the per-unit filter does not show that the decayed 30% runs hold a computation of their own. The no-decay runs fit the same a+b labels with much weaker per-unit structure (concentration 0.22–0.23 against 0.40–0.44), and they give 0.33–0.47 under the same filter against 0.43–0.58. Their nulls stay as low. At every checkpoint, both groups keep the same fraction of their retained train accuracy on held-out pairs (0.57–0.78 against 0.62–0.76). The filter's held-out accuracy in the failed runs is therefore mostly what any network fit to a+b on these pairs gives under this projection. That is the fit-induced alternative from packet 2, and it now has direct support: the projection supplies the prior, and fitting a+b supplies the phases.
+
+What survives:
+- Weight decay changes the weights in measurable ways that this edit does not turn into extra held-out accuracy. It roughly doubles per-unit concentration and the energy the filter keeps. It halves the size of the edit. It makes each half of the filter work on its own (0.13–0.21 against 0.03–0.08).
+- From the audit (cycle 2): with decay, the aligned term is about five times larger, group-specific and aligned in 45/45 groups. Without decay it is aligned in 34/45, with no group-specific share and a null restricted rank. None of these is shown to be functional.
+- The 50% runs' filtered models stand nearer the diagonal of held-out against train accuracy (0.83–1.00). They also read 0.59–0.67 at step 1k while unedited they read 0.000. They have more training pairs, so this does not isolate a mechanism either.
+- Packet 1's H1 ("the 30% runs build the same kind of term as the 50% runs, only weaker") holds descriptively. But a weaker version of that term also appears without decay, where nothing else points towards generalization. Its presence and sign are not evidence of progress towards the 50% computation.
+
+What packet 2 still shows: the edit is label-free, and its result depends on learned phases. Scrambled phases, step 0 and shuffled labels give chance. Any a+b fit on these pairs leaves phase relations that a one-frequency-per-unit projection turns into partial held-out accuracy. That is a property of fitting this task with this architecture, not of the failed runs specifically.
+
+Best next question (recorded only, not run in e2; no claim drafted): does penalizing each unit's non-dominant components *during training* make held-out accuracy appear in the unedited 30% model, and does it do so differently with and without weight decay? This is the test that could separate structure training actually uses from structure a projection reads into any fit.
+
+
+
+## Packet 2 (as first written; revised above by the no-decay comparison)
 
 Candidate (H1, now with a functional test): the failed 30% runs hold a partial addition computation in their weights. In each unit, the component at the unit's own dominant frequency computes a+b well enough to answer about half of the never-trained pairs: 0.43–0.58, or 0.64–0.72 when the input DC is dropped as well. The rest of the same units' weights masks it completely, so unedited accuracy is 0.000–0.004. Packet 1 showed the aligned terms exist and point the right way. This shows they can carry correct answers once the competing part is removed, which was the coordinator's criterion: the edited 30% models answer correctly, and the nulls stay at or near chance (all null draws ≤ 0.106).
 
