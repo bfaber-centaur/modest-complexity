@@ -36,12 +36,23 @@ sys.path.insert(0, str(ROOT/'research/size-time'))
 from operand_labels import operand_label_sets  # noqa: E402
 from trajectories import SEED_STYLES, WIDTH_COLORS, save, write_csv  # noqa: E402
 
-SUPPLEMENT = ROOT/'research/e2/dynamics/e1-checkpoints'
+# Extra e1/e1f2 checkpoints published in e2, each checked against its e1 manifest (README; DECISIONS.md D9).
+SUPPLEMENTS = [ROOT/'research/e2/dynamics/e1-checkpoints', ROOT/'research/e2/coordinator/e1-checkpoints']
 COMMON = ROOT/'research/e2/data/common-never-trained-30-50.npz'
 COMMON_SHA256 = '1535a21ab192ae95d37a5abb5eb783e74f51bd18a0500fbe0218d910914434d3'
 SPLITS = {'30%': ROOT/'research/data/e1-split.npz', '50%': ROOT/'research/data/e1f2-split-tf50.npz'}
 COORDINATOR_SCORES = ROOT/'research/e2/coordinator/common_set_scores.csv'
 COLORS = ['#7a7a7a', '#2a5fb6', '#b03a8c', '#3a9a5b', '#d36b1f', '#c9a227', '#5a3f9e', '#9e3d22']
+SHARE_COLORS = {'30%': '#7a7a7a', '40%': '#d39a1f', '45%': '#b03a8c', '50%': '#2a5fb6'}
+
+
+def group_colors(labels):
+    """Width groups ("width 128") keep the e1 map's width colors, share groups ("40% train") fixed share colors."""
+    def pick(label, default):
+        if label.startswith('width '):
+            return WIDTH_COLORS[int(label.split()[1])]
+        return SHARE_COLORS.get(label.split()[0], default)
+    return [pick(label, c) for c, label in zip(COLORS, labels)]
 
 
 def sha256(path):
@@ -79,7 +90,8 @@ def partition():
 
 
 def checkpoints(run_dir):
-    paths = [*run_dir.glob('checkpoint_*.npz'), *(SUPPLEMENT/run_dir.name).glob('checkpoint_*.npz')]
+    paths = [*run_dir.glob('checkpoint_*.npz'), *(q for d in SUPPLEMENTS for q in (d/run_dir.name).glob('checkpoint_*.npz'))]
+    assert len({q.name for q in paths}) == len(paths), f'{run_dir.name}: a checkpoint is published twice'
     return sorted(paths, key=lambda q: int(q.stem.split('_')[1]))
 
 
@@ -112,7 +124,8 @@ def score(run_dir, label, part):
         lse = np.log(np.exp(zc - zc.max(1, keepdims=True)).sum(1)) + zc.max(1)
         med = lambda m: float(np.median(m[np.isfinite(m)])) if np.isfinite(m).any() else None
         rows.append(dict(group=label, run_id=run_dir.name, share=share, width=cfg['hidden'],
-                         init_seed=cfg['seeds']['init_seed'], step=step, common_acc=float(correct.mean()),
+                         init_seed=cfg['seeds']['init_seed'], step=step,
+                         train_ce=logged[step]['objective']['train']['cross_entropy'], common_acc=float(correct.mean()),
                          common_ce=float(np.mean(lse - true)), beats_S=float(np.mean(mS >= 0)),
                          beats_D=float(np.mean(mD >= 0)), beats_N=float(np.mean(mN >= 0)),
                          beats_own_out=float(np.mean(mout >= 0)),
@@ -151,9 +164,7 @@ def figure(rows, labels, refs, out, name, title, note):
               ('median_margin_S', 'median margin over strongest S label', 0, None),
               ('median_margin_D', 'median margin over strongest D label', 0, None),
               ('median_gap_D_over_N', 'median gap: strongest D label minus strongest N label', 0, None)]
-    # Width groups ("width 128") keep the e1 map's width colors.
-    colors = [WIDTH_COLORS[int(l.split()[1])] if l.startswith('width ') else c for c, l in zip(COLORS, labels)]
-    for color, label in zip(colors, labels):
+    for color, label in zip(group_colors(labels), labels):
         for run in dict.fromkeys(r['run_id'] for r in rows if r['group'] == label):
             rs = [r for r in rows if r['run_id'] == run and r['step'] > 0]
             style = dict(color=color, lw=1.1, ls=SEED_STYLES[seeds.index(rs[0]['init_seed']) % 4], marker='o', ms=3)
@@ -176,12 +187,63 @@ def figure(rows, labels, refs, out, name, title, note):
     save(fig, out, name, note)
 
 
+def fit_figure(rows, labels, out, name):
+    """The same medians against the run's own training cross-entropy instead of steps."""
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.4), layout='constrained')
+    seeds = sorted({r['init_seed'] for r in rows})
+    keys = [('median_gap_S_over_N', 'median gap: strongest S minus strongest N label'),
+            ('median_margin_N', 'median margin over strongest N label'),
+            ('median_margin_S', 'median margin over strongest S label')]
+    for color, label in zip(group_colors(labels), labels):
+        for run in dict.fromkeys(r['run_id'] for r in rows if r['group'] == label):
+            rs = [r for r in rows if r['run_id'] == run and r['step'] > 0]
+            style = dict(color=color, lw=1.1, ls=SEED_STYLES[seeds.index(rs[0]['init_seed']) % 4], marker='o', ms=3)
+            for ax, (key, _) in zip(axes, keys):
+                ax.plot([r['train_ce'] for r in rs], [r[key] for r in rs], label=f"{label}, init {rs[0]['init_seed']}", **style)
+    for ax, (_, title) in zip(axes, keys):
+        ax.set_xscale('log'); ax.invert_xaxis(); ax.grid(True, color='0.9', lw=.6); ax.axhline(0, color='0.4', lw=.8)
+        ax.set_title(title, fontsize=9); ax.set_ylabel('logit difference')
+        ax.set_xlabel("run's own training cross-entropy (nats, log scale, decreasing to the right)")
+    axes[0].legend(fontsize=7, frameon=False, loc='upper left')
+    fig.suptitle('Common-pair margins against training fit', fontsize=11)
+    save(fig, out, name, 'Published checkpoints only (markers), step 0 omitted. Training cross-entropy is the logged value at '
+         'the checkpoint step, on each run\'s own training set (sizes differ between shares). Same pairs and label sets as '
+         f'{name.replace("_fit", "")}.png.')
+
+
+def summary_figure(rows, labels, steps, out, name):
+    """One marker per run: median margin over N against the S - N gap at a few steps, and accuracy at the last step."""
+    fig, axes = plt.subplots(1, len(steps) + 1, figsize=(4.2*(len(steps) + 1), 4.2), layout='constrained')
+    for ax in axes[1:-1]:  # the step panels share both axes
+        ax.sharex(axes[0]); ax.sharey(axes[0])
+    last = max(r['step'] for r in rows)
+    for i, (color, label) in enumerate(zip(group_colors(labels), labels)):
+        group = [r for r in rows if r['group'] == label]
+        for ax, step in zip(axes, steps):
+            pts = [r for r in group if r['step'] == step]
+            ax.plot([r['median_margin_N'] for r in pts], [r['median_gap_S_over_N'] for r in pts], 'o', color=color,
+                    ms=7, mfc='none' if i % 2 else color, label=f'{label} ({len(pts)} runs)')
+        final = [r for r in group if r['step'] == last]
+        axes[-1].plot([i]*len(final), [r['common_acc'] for r in final], 'o', color=color, ms=7, mfc='none' if i % 2 else color)
+    for ax, step in zip(axes, steps):
+        ax.set_title(f'step {step:,}', fontsize=9); ax.grid(True, color='0.9', lw=.6); ax.axvline(0, color='0.4', lw=.8)
+        ax.set_xlabel('median margin over strongest N label'); ax.set_ylabel('median gap: strongest S minus strongest N')
+    axes[0].legend(fontsize=7, frameon=False)
+    axes[-1].set_xticks(range(len(labels)), labels, fontsize=8); axes[-1].set_ylim(-.02, 1.02)
+    axes[-1].axhline(1/31, color='0.4', lw=.8, ls=(0, (4, 3))); axes[-1].grid(True, axis='y', color='0.9', lw=.6)
+    axes[-1].set_title(f'common-pair accuracy at step {last:,}', fontsize=9); axes[-1].set_ylabel('accuracy')
+    fig.suptitle('One marker per run (one init seed each): where each run sits on the two medians', fontsize=11)
+    save(fig, out, name, 'Medians over the 483 common pairs, in logits; same label sets for every run. Dashed: chance 1/31. '
+         f'Runs without a checkpoint at a step are absent from that panel (counts in the legend). Source: {name.replace("_summary", "")}.csv.')
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--group', nargs='+', action='append', required=True, metavar='LABEL RUN_DIR')
     ap.add_argument('--out', type=Path, required=True)
     ap.add_argument('--name', default='margins')
     ap.add_argument('--title', default='Correct-label margins on the 483 pairs neither share trained on')
+    ap.add_argument('--summary-steps', help='Comma-separated steps for a per-run summary figure (NAME_summary)')
     args = ap.parse_args()
     part = partition()
     sizes = {k: part[k].sum(1) for k in 'SDN'}
@@ -203,13 +265,17 @@ def main():
                       for k, v in sizes.items()})
     (args.out/'sizes.json').write_text(json.dumps(summary, indent=1) + '\n')
     s = {k: summary[f'size_{k}'] for k in 'SDN'}
-    note = (f"Published checkpoints only (markers), step 0 omitted; e1 width-128 runs i30001 and i30002 include the extra "
-            f"checkpoints in research/e2/dynamics/e1-checkpoints/. Per common pair the 30 wrong labels are split into S "
+    note = (f"Published checkpoints only (markers), step 0 omitted, including the extra e1 and e1f2 checkpoints in "
+            f"research/e2/dynamics/e1-checkpoints/ and research/e2/coordinator/e1-checkpoints/. Per common pair the 30 wrong labels are split into S "
             f"(mean {s['S']['mean']:.1f} labels), D ({s['D']['mean']:.1f}; empty for {s['D']['empty']} pairs) and N "
             f"({s['N']['mean']:.1f}; empty for {s['N']['empty']}), the same sets for every run; a run's own set is S at 30% "
             f"and S+D at 50%. Margin = correct-label logit minus the highest logit in the set. Dashed: fraction expected "
             f"if the correct label were ranked at random within the set. Source: {args.name}.csv.")
     figure(rows, [g[0] for g in args.group], refs, args.out, args.name, args.title, note)
+    fit_figure(rows, [g[0] for g in args.group], args.out, f'{args.name}_fit')
+    if args.summary_steps:
+        summary_figure(rows, [g[0] for g in args.group], [int(x) for x in args.summary_steps.split(',')], args.out,
+                       f'{args.name}_summary')
     print(json.dumps(summary))
 
 

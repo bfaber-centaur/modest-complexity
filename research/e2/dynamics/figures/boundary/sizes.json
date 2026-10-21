@@ -1,0 +1,28 @@
+{
+ "common_pairs": 483,
+ "common_sha256": "1535a21ab192ae95d37a5abb5eb783e74f51bd18a0500fbe0218d910914434d3",
+ "no_preference": {
+  "S": 0.06074300740579191,
+  "D": 0.1457454094100057,
+  "N": 0.1354192291316111
+ },
+ "checked_against_coordinator_scores": 51,
+ "size_S": {
+  "mean": 16.049689440993788,
+  "min": 4,
+  "max": 25,
+  "empty": 0
+ },
+ "size_D": {
+  "mean": 6.7308488612836435,
+  "min": 1,
+  "max": 13,
+  "empty": 0
+ },
+ "size_N": {
+  "mean": 7.219461697722568,
+  "min": 1,
+  "max": 20,
+  "empty": 0
+ }
+}
