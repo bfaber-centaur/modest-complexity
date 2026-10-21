@@ -82,3 +82,103 @@ uv run --locked --group analysis python $E/plot_precedes.py $E/figures/precedes 
 - **Numerical time.** e2 used under one minute in total (2.6 s for a full regeneration), one process at a time, one BLAS thread, no paid compute. e1 usage (about 23 of 30 minutes) is reported separately in `research/audit/AUDIT.md`.
 - **Runs and registry.** No training runs were launched, so there are no `plan.json` claims and `registry.jsonl` is not created.
 - **Shared code.** No shared code was changed.
+
+---
+
+# Cycle 2: mechanisms packet 1 and the onset checkpoints
+
+Base `8b11c2c`. The question and the decision rule were written down before computing: [QUESTION-2.md](QUESTION-2.md), committed at `145b29e`. The target is mechanisms packet 1 (`research/e2/mechanisms/`, PR #15). Its claim: units grouped by dominant input frequency carry an own-frequency a+b−c term aligned with the correct label in both shares, and removing a group does no more damage than removing a matched random set. Its own strongest alternative is that the aligned terms come from fitting labels equal to a+b.
+
+## Figure 3: does the aligned term need a+b labels, weight decay, or neither?
+
+![groups check](figures/groups-check.png)
+
+Look before reading: in the top left, which conditions fill the shaded band (phase within ±π/2), and with what marker sizes? In the top right, how far does each colour sit above the open gray step-0 markers of the same runs?
+
+Independent reimplementation (`groups_check.py`) at step 50,000, three seeds per condition, width 128, on the 483 common pairs. Step 0 has only three distinct networks, because every condition with the same init seed starts from the same weights.
+
+| condition | input concentration | groups within ±π/2 (per seed) | within 0.5 rad | own-frequency amplitude, logits (median per seed) | amplitude / RMS of centred logits | share: groups / random sets | random sets within ±π/2 at the group's k | restricted rank |
+|---|---|---|---|---|---|---|---|---|
+| step 0 (3 networks) | 0.17 | 21/45 (7, 6, 8) | 11/45 | 0.0003–0.0005 | 0.0018–0.0027 | 0.0008 / 0.0008 | 0.50–0.57 | 0.50 |
+| shuffled labels, decay 1 | 0.17 | 21/45 (6, 7, 8) | 10/45 | 0.012–0.016 | 0.0027–0.0035 | 0.0008–0.0011 / 0.0008–0.0009 | 0.53–0.63 | 0.50 under the addition mask |
+| a+b labels, no decay | 0.22–0.23 | 34/45 (13, 12, 9) | 20/45 | 0.041–0.061 | 0.0047–0.0074 | 0.0023–0.0030 / 0.0023–0.0025 | 0.10–0.11 | 0.48–0.49 |
+| a+b labels, decay 1, 30% | 0.40–0.44 | 45/45 | 40/45 | 0.12–0.15 | 0.030–0.037 | 0.012–0.017 / 0.0044–0.0047 | 0.25–0.28 | 0.26–0.31 |
+| a+b labels, decay 1, 50% | 0.83–0.85 | 45/45 | 45/45 | 0.66–0.70 | 0.23–0.25 | 0.26–0.31 / 0.027–0.030 | 0.40–0.45 | 0.002–0.003 |
+
+- **Shuffled labels.** The groups sit at the step-0 level on alignment, relative amplitude and share, so the readout does not make any trained network look aligned.
+- **No decay.** The groups are aligned more often than at step 0 (34/45 against 21/45). Their amplitude relative to the logits is 2–3× the step-0 level and about one fifth of the decayed 30% runs'. Their share is no higher than that of random sets.
+- **The background.** Random sets in the no-decay runs are mostly *anti*-aligned at the same k (10–11% within ±π/2). That fits a dip at d = 0 from the operand-associated labels, which the packet also saw.
+
+## Figure 4 (post hoc): amplitude of the aligned term against the restricted rank
+
+![amplitude vs rank](figures/amplitude-vs-rank.png)
+
+Added after the diagnostic above was computed. It covers all 18 runs of the 30% width map at 50k (`groups-by-width.csv`), plus the width-128 controls and the 50% runs.
+
+- **30% width map.** The groups' relative amplitude orders the restricted rank across the map: Spearman −0.99 over 18 runs. Most of that ordering is between widths, so it is confounded with width.
+- **Fixed width 128.** At width 128 the three a+b conditions follow the same order: no decay 0.005–0.007 (rank 0.48–0.49), 30% 0.030–0.037 (0.26–0.31), 50% 0.23–0.25 (0.002).
+- **Width 16.** The decayed runs at width 16 have the same amplitude as the no-decay runs (0.005) and the same null rank.
+
+## Figure 5: the share separation with three seeds per share at 1k spacing
+
+![precedes dense](figures/precedes-dense.png)
+
+The figure adds the D9 checkpoints (3k, 4k, 6k–9k of all runs, and 1k–10k of 30% init 30002).
+
+| readout | first checkpoint where the 50% runs separate from the 30% runs (three seeds each) |
+|---|---|
+| restricted rank | 1k: 0.39–0.44 against 0.48–0.49 |
+| rank among all labels | 2k: 0.64–0.71 against 0.71–0.73. At 1k the 50% runs are worse (0.76–0.79 against 0.73) |
+| cross-entropy | 2k: 5.71–6.33 against 6.85–6.90. At 1k they overlap (6.67–6.98 against 6.56–6.72) |
+| accuracy | 2k: 1 of 483 pairs in each 50% run. Above chance (1/31) in two seeds at 5k and in all three at 6k |
+
+The 50% runs pass the 30% runs' final level (0.26–0.31) between 2k and 3k: 0.25–0.33 at 2k, 0.14–0.25 at 3k.
+
+## Software checks, cycle 2
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| G10 | Group readout reimplemented from the packet's written definitions | PASS | On all 255 group rows shared with `groups.csv` (six runs, 0 / 5k / 50k), group sizes are identical. Share, phase, amplitude, common-set accuracy after ablation and RMS logit change agree within 5e-7, the rounding of the audit CSV |
+| G11 | Grouping uses only the analysed checkpoint | PASS | `groups.py` takes dominant frequencies from `unit_shares(w)` of the checkpoint it loads. The audit recomputes groups from each checkpoint alone and gets the same group sizes at every shared step. The over-training panel reads groups at each checkpoint, so no future grouping is used |
+| G12 | Random sets matched as claimed | PASS, with a note | **Count and norm:** all 16 draws were found for every group at every checkpoint (240 per run and step). **Gates:** ablating hidden units cannot change another unit's gate in a one-layer network, and the audit's ablation, base logits minus the group's contribution, reproduces the packet's accuracies. **Logit change:** groups move the logits less than their random sets (RMS over all pairs 0.92–0.96 against 1.09–1.10; over the common pairs 0.86–0.92 against 1.07–1.08), so count-and-norm matching does not match functional size. Against the random-set trend at equal RMS change over all pairs, group residuals average −0.000 to +0.005 (random-set scatter 0.014–0.018), with 5–7 of 15 groups below the trend. Measured on the common pairs only, groups fall slightly below the trend: −0.002 to −0.007, with 8–11 of 15 below. "No worse than a matched random set" holds either way, within the scatter |
+| G13 | Step-0 reference | Statement correction | The packet's "34 of 75 groups at step 0" counts byte-identical networks twice: the 30% and 50% runs with init seeds 30000 and 30001 start from the same weights. The three distinct step-0 networks give 21/45 |
+| G14 | D9 extra checkpoints | PASS | All 50 files match the SHA-256 and byte count in their run's e1 manifest. The step stored inside each equals its name, and none duplicates a file in the run directory. `results/rank-checks/extra-checkpoints.json` |
+| — | 30% runs: group against random-set ablation on the restricted rank | NOT CHECKED | The packet's figures are cited, not recomputed |
+
+## Interpretations, cycle 2
+
+| Claim | Verdict | Evidence and scope |
+|---|---|---|
+| The aligned terms are produced by the readout, for any trained network | CONTRADICTED | The shuffled-label groups match step 0 on alignment (21/45), relative amplitude and share |
+| The aligned terms are a side effect of fitting labels equal to a+b (packet's strongest alternative) | AMBIGUOUS: partly | Fitting a+b labels without decay produces a weak aligned term: 34/45 groups aligned, about one fifth of the decayed 30% relative amplitude, with no group-specific share and a null restricted rank. With decay the term is about five times larger relative to the logits, group-specific (share 3× random sets) and aligned in 45/45 groups. So label fitting alone accounts for a small part of the term |
+| The failed 30% runs build the same kind of term as the successful 50% runs, about five times weaker (packet INTERPRETATION) | SUPPORTED LOCALLY, with a qualification | Reproduced exactly (G10). The qualification: a weaker version of the same term is present in no-decay runs that show no restricted preference. Its presence and sign do not by themselves mark progress towards the 50% computation; its amplitude orders the restricted rank (Figure 4), which is an association only |
+| Removing a group is no worse than removing a matched random set (50% runs) | SUPPORTED LOCALLY | G12, under either logit-change measure. Matching on count and norm alone would favour the groups, because they change the logits less |
+| The packet's proposed decisive test 1: project the logits onto the a+b−c-structured part and see whether accuracy appears | Not informative as stated | A function of d alone whose largest value is at d = 0 predicts a+b for every pair, so the test is decided by the phase signs already measured |
+| The restricted rank separates the shares before cross-entropy, the unrestricted rank and accuracy (cycle 1) | SUPPORTED LOCALLY, now three seeds per share | Figure 5. The first separation is at the first checkpoint after 300/400 updates, so the onset itself is not resolved |
+
+## Most consequential remaining uncertainty, cycle 2
+
+Whether the amplitude of the aligned term, relative to the rest of the logits, is what the restricted rank and eventual accuracy depend on, or only grows with them. All the evidence is observational: one split pair, and across widths a confound with width. The cheapest causal test is to scale only the groups' aligned own-frequency component in a 30% checkpoint. That means changing the output weights of each group along its own-frequency direction, not removing units, and asking whether the restricted rank, and then accuracy, follow. The sham would scale the same groups' non-aligned components by the same RMS logit change.
+
+## Reproduce, cycle 2
+
+```bash
+C=research/coordinator/runs; S=research/size-time/runs; E=research/e2/audit
+uv run --locked python $E/groups_check.py $E/results/groups-check.csv \
+  $C/e1f2-co-add-w128-i30000-tf50-a1:0,5000,50000 $C/e1f2-co-add-w128-i30001-tf50-a1:0,5000,50000 $C/e1f2-co-add-w128-i30002-tf50-a1:0,5000,50000 \
+  $C/e1-co-add-w128-i30000-a1:0,5000,50000 $S/e1-st-add-w128-i30001-a1:0,5000,50000 $S/e1-st-add-w128-i30002-a1:300,50000 \
+  $S/e1-st-add0-w128-i30000-a1:0,5000,50000 $S/e1-st-add0-w128-i30001-a1:0,5000,50000 $S/e1-st-add0-w128-i30002-a1:0,5000,50000 \
+  $S/e1-st-shuf-w128-i30000-a1:0,5000,50000 $S/e1-st-shuf-w128-i30001-a1:0,5000,50000 $S/e1-st-shuf-w128-i30002-a1:0,5000,50000
+uv run --locked python $E/groups_check.py $E/results/groups-by-width.csv $(for r in $C/e1-co-add-w* $S/e1-st-add-w*; do echo $r:50000; done)
+uv run --locked python $E/shares_dense.py $E/results/rank-checks
+uv run --locked --group analysis python $E/plot_groups_check.py $E/figures/groups-check $E/results/groups-check.csv
+uv run --locked --group analysis python $E/plot_amplitude_rank.py $E/figures/amplitude-vs-rank $E/results/rank-checks/definition.jsonl $E/results/groups-check.csv $E/results/groups-by-width.csv
+uv run --locked --group analysis python $E/plot_precedes.py $E/figures/precedes-dense $E/results/rank-checks/shares-dense.jsonl
+uv run --locked --group analysis python $E/plot_precedes.py $E/figures/precedes $E/results/rank-checks/shares.jsonl
+```
+
+The last command redraws the cycle-1 figure with the footnote now generated from the data. The numbers are unchanged.
+
+## Budget, cycle 2
+
+About 12 s of numerical execution, one process at a time, one BLAS thread. The e2 total is still under one minute. No runs were launched and no shared code was changed.

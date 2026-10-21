@@ -53,7 +53,9 @@ fig.text(.01, -.03, 'One line per run; the same init seed gives the same step-0 
          f"the labels absent from the 50% training set (median {chance['absent_min_median_max'][1]:.0f} per pair, "
          f"{chance['absent_min_median_max'][0]}-{chance['absent_min_median_max'][2]}), which are absent from the 30% "
          'set too; dotted: the 30% runs with their own mask. Normalized rank: 0 = above all, 0.5 = no preference. '
-         '30% init 30002 has only steps 300 and 50,000. Source: research/e2/audit/results/rank-checks/shares.jsonl.',
+         + ''.join(f"{r.split('-a1')[0]} has only steps {', '.join(str(x['step']) for x in rows if x['run'] == r)}. "
+                   for r in dict.fromkeys(x['run'] for x in rows) if sum(x['run'] == r for x in rows) <= 3)
+         + f'Source: {sys.argv[2]}.',
          fontsize=7, color='0.3', ha='left', va='top', wrap=True)
 out.parent.mkdir(parents=True, exist_ok=True)
 for ext in ('png', 'svg'):
