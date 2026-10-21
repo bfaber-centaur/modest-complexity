@@ -8,7 +8,7 @@ Candidate: under this fixed recipe and split (299 training pairs, 31% of the tab
 
 Alternative: generalization is delayed beyond the horizon. Delayed generalization in modular arithmetic is known to slow sharply as the training fraction falls, and 31% is low. For widths >= 128 the runs reach an apparently stationary state by about 20,000-25,000 updates (norm near 60, adaptive and decay displacements equal and opposite with cosine near -1, train loss flat; [updates_add.png](figures/trajectories/updates_add.png), [norm_add.png](figures/trajectories/norm_add.png)), which argues against an imminent change but does not exclude a slow one. Width 64 is still approaching that state at 50,000 and width 32 is further from it.
 
-Separating experiment: follow-up 1 (300,000 updates at widths 64 and 128). Follow-up 2 (larger training fraction) asks whether the same recipe generalizes when given more of the table.
+Separating experiment: the coordinator's 200,000-update width-512 extension, and README follow-up 1 (width 64, whose trajectory is still changing at 50,000). Follow-up 2 (larger training fraction) asks whether the same recipe generalizes when given more of the table.
 
 ## 2. Held-out loss at comparable training loss
 

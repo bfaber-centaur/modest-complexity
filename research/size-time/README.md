@@ -42,7 +42,7 @@ All 21 runs are under [runs/](runs/) with `config.json`, `runtime.json`, `metric
 | 512 | `e1-st-add-w512-i30002-a1` | i30001 (coordinator: i30000) |
 | controls, w128 | `add0` and `shuf`, i30000-30002 | none |
 
-The published tree needs `git add -f` on base `c7c1c2a` (its `.gitignore` line `runs/`); fixed on `swarm/exploration` at 67a10d8.
+The published tree needs `git add -f` on base `c7c1c2a` (its `.gitignore` line `runs/`); fixed on `swarm/exploration` at 67a10d8. In each manifest, `published_from_commit` is this branch's commit at copy time, not the commit containing the files (a known gap noted by the coordinator); `producing_tree_dirty` is `false` and meaningful here because the runs executed from a clean worktree. `target_sha256` of every published run equals the plan's target for its task (checked post hoc, including the three shuffled-label runs).
 
 ## Figures
 
@@ -105,11 +105,13 @@ Definitions: for a held-out pair (a, b), L(a, b) is the set of labels of trainin
 
 Observation. In all 21 addition runs (with and without decay) the correct label is in L for 0 of 544 audit pairs. At step 50,000, 96-100% of argmax audit predictions are in L (the expected fraction if wrong predictions were uniform over the 30 wrong labels is 0.536; L has 16.1 labels on average), and the mean softmax mass on L is 0.91-1.00. Width 16 and 32 runs are lowest (0.96-0.99) and widths >= 64 are 0.99-1.00. For the shuffled-label runs the correct label is in L for 44% of audit pairs, predictions are in L for 100%, and audit accuracy is 0.037-0.042. The same pattern holds at steps 1,000, 5,000 and 20,000 in the runs with full checkpoint sets (0.95-1.00 in L). Independent checks in this lane: labels equal (a+b) mod 31, train/cal/audit are disjoint and cover all 961 pairs, no audit pair's transpose is in train, train class counts are 9-10 per class.
 
-Missing check. This is an association between predictions and a label set, not an intervention, and L covers about half the labels, so it is a coarse test. Not yet recomputed by the auditor.
+Cross-check: the auditor's independent `research/audit/heldout_rank.py` (on `swarm/exploration` at b2983db) reports 96%, 99.8% and 100% for the three preview runs at 50,000 (cal and audit pairs, operand position ignored), matching this lane's 0.961, 0.998 and 1.000 on audit pairs. Because a pair and its transpose share a split, the training set is symmetric and the two set definitions coincide.
+
+Missing check. This is an association between predictions and a label set, not an intervention, and L covers about half the labels, so it is a coarse test. The 18 runs beyond the preview have not been recomputed by the auditor.
 
 ## Proposed follow-ups (not run; ownership to be agreed with the coordinator)
 
-1. Horizon: rerun `add` (decay 1) at widths 64 and 128, init seed 30000, for 300,000 updates as new run IDs (no resume), to address the censoring in packet 1. Estimated 7 and 12 minutes on this host, in parallel.
+1. Horizon: the coordinator's follow-up `e1f1-co-add-w512-i30000-s200k-a1` (`research/plan-followups.json` on `swarm/exploration`) already extends width 512. Its neighbor in this map that has not reached the stationary state is width 64 (norm and train loss still moving at 50,000; packet 1 and [norm_add.png](figures/trajectories/norm_add.png)), so if a second horizon run is wanted, width 64 seed 30000 for 200,000 updates is the case that addresses censoring where the trajectory is still changing. About 5 minutes on this host.
 2. Training fraction: a separately labeled comparison at width 128, three seeds, with a larger train fraction (for example 50%), to ask whether packet 1's absence of generalization belongs to this split's 299 training pairs rather than to width or horizon. Needs a shared-code change (`data()` fixes 30/10/60), so it is the coordinator's call.
 
 ## Reproduction
@@ -135,4 +137,4 @@ uv run --locked --group analysis python research/size-time/operand_labels.py res
     --out research/size-time/figures/operand_labels
 ```
 
-A replay of the same configuration and seed is a reproducibility check, not a new seed. Bitwise agreement across hosts is not promised.
+The `report_map.py` figures here were drawn with the shared code at `c7c1c2a`; on `swarm/exploration` from a096c82 the loss rows use per-row y scales, so regenerated loss figures will look different from the same data. A replay of the same configuration and seed is a reproducibility check, not a new seed. Bitwise agreement across hosts is not promised.
