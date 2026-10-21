@@ -11,6 +11,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from freq import (ROOT, curve, evaluate, filter_inputs, kendall_tau, prune_order, ranking, rescale,  # noqa: E402
                   spectrum, synthetic, targeted)
+from gauge import balance  # noqa: E402
 from experiment import forward, init, interventions  # noqa: E402
 
 
@@ -72,6 +73,39 @@ class RescalingTests(unittest.TestCase):
         r = np.arange(1, 16)
         self.assertEqual(kendall_tau(r, r), 1.0)
         self.assertEqual(kendall_tau(r, r[::-1]), -1.0)
+
+
+class GaugeTests(unittest.TestCase):
+    def setUp(self):
+        self.d = split()
+        self.w = init(31, 24, 5)
+        self.w[2][3] = 0  # a unit that computes nothing keeps gain 1
+        self.c = np.exp(np.random.default_rng(4).normal(0, 1, 24))
+
+    def test_balanced_units_preserve_logits(self):
+        wb, c = balance(self.w)
+        np.testing.assert_allclose(np.sum(wb[0]**2, 0) + np.sum(wb[1]**2, 0),
+                                   np.where(np.arange(24) == 3, np.sum(self.w[0][:, 3]**2 + self.w[1][:, 3]**2),
+                                            np.sum(wb[2]**2, 1)), rtol=1e-12)
+        self.assertEqual(c[3], 1.)
+        np.testing.assert_allclose(forward(wb, self.d['a'], self.d['b'])[0], forward(self.w, self.d['a'], self.d['b'])[0],
+                                   rtol=1e-12, atol=1e-12)
+
+    def test_rescaled_copies_normalize_to_the_same_weights(self):
+        # Units that compute nothing are left as they are, so this holds for live units only.
+        w = init(31, 24, 5)
+        wb = balance(w)[0]
+        for x, y in zip(balance(rescale(w, self.c))[0], wb):
+            np.testing.assert_allclose(x, y, rtol=1e-12, atol=1e-15)
+        for x, y in zip(balance(wb)[0], wb):  # idempotent
+            np.testing.assert_allclose(x, y, rtol=1e-12, atol=1e-15)
+
+    def test_balanced_copy_has_minimum_norm_on_the_orbit(self):
+        wb = balance(self.w)[0]
+        norm = lambda w: sum(np.sum(x*x) for x in w)
+        rng = np.random.default_rng(6)
+        for _ in range(20):
+            self.assertLessEqual(norm(wb), norm(rescale(wb, np.exp(rng.normal(0, .3, 24)))) + 1e-12)
 
 
 class SyntheticTests(unittest.TestCase):
