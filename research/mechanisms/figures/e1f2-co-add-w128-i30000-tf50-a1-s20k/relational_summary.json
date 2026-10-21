@@ -1,0 +1,53 @@
+{
+ "label": "50% training share, held-out audit accuracy 0.77",
+ "input": {
+  "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+  "step": 20000,
+  "purpose": "exploratory",
+  "checkpoint": "research/coordinator/runs/e1f2-co-add-w128-i30000-tf50-a1/checkpoint_020000.npz",
+  "checkpoint_sha256": "89069d7a40dfd01dc6cc98360c12997b40a39ded1e01d63cfd8b0802a14d1e78",
+  "data_sha256": "42edfca97893a79628ef4954cfa77257b2e64b574f7289455ed58095fa1cc523",
+  "manifest_hashes_verified": true,
+  "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+  "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+  "producing_code_commit": "fe284a5d90f741aab8c1273a55b11e5352ec38c5",
+  "max_abs_diff_vs_logged_metrics": 0.0,
+  "read_from_commit": "61050c43bff915c6169f05473dce60412cbfa34f"
+ },
+ "heldout_pairs": 483,
+ "chance_top_among_absent": 0.13541922913161109,
+ "checkpoint": {
+  "delta_energy_fraction": 0.0,
+  "train_accuracy": 1.0,
+  "true_rank_among_absent": 0.00649867322391023,
+  "true_top_among_absent": 0.9730848861283644,
+  "pred_is_present": 0.20910973084886128
+ },
+ "audit_lane_values": null,
+ "ranking": [
+  1,
+  9,
+  13,
+  3,
+  14,
+  11,
+  4,
+  2,
+  15,
+  7,
+  8,
+  10,
+  12,
+  5,
+  6
+ ],
+ "seeds": {
+  "random_subsets": 33100,
+  "null": 33300,
+  "subspace_null": 33400
+ },
+ "analysis_code_commit": "10c77fede3144be7f445b7f2846c5c2be3a9d808",
+ "analysis_tree_status": "?? research/mechanisms/figures/e1f2-co-add-w128-i30000-tf50-a1-s10k/\n?? research/mechanisms/figures/e1f2-co-add-w128-i30000-tf50-a1-s20k/\n?? research/mechanisms/figures/e1f2-co-add-w128-i30000-tf50-a1-s5k/",
+ "analysis_script_sha256": "9315c86fd6519d1d9bbad09ba06167ebe513a31cac8eccb427712821fd91cbe3",
+ "command": "python research/mechanisms/relational.py --run research/coordinator/runs/e1f2-co-add-w128-i30000-tf50-a1 --step 20000 --source-commit 61050c43bff915c6169f05473dce60412cbfa34f --label 50% training share, held-out audit accuracy 0.77 --out research/mechanisms/figures/e1f2-co-add-w128-i30000-tf50-a1-s20k"
+}
