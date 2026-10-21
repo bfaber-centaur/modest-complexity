@@ -115,6 +115,27 @@ Observations at w512 step 50,000 (w128 in [its directory](figures/e1-co-add-w128
 
 Files: `relational.csv` (one row per intervention: kind, mode, K, draw, frequencies, delta_energy_fraction, train accuracy, rank, top fraction, fraction predicting a present label), `relational_summary.json` (including the audit lane's values for comparison). `crosscheck.py` recomputes every top-K row by sorting and agrees exactly, recomputes their energy fractions to within 3.4e-16, and checks the subspace null: its mean removed energy is within 0.007 of 2K/30 at every K, and at K=15 it equals the DC-only model exactly.
 
+## Follow-up: the 200k-update continuation at width 512 (nothing changes after 50k)
+
+Input: the coordinator's `e1f1-co-add-w512-i30000-s200k-a1`, published at `e499dff`. Its step-50,000 checkpoint is byte-identical to the one analysed above (SHA-256 `83ad4132…`), so the 50k column is the same checkpoint. Held-out accuracy stays 0 throughout.
+
+| readout | 50k | 100k | 200k |
+|---|---|---|---|
+| top-4 frequencies (raw) | 1 4 10 11 | 1 10 4 8 | 1 4 8 10 |
+| top-4 energy share | 0.292 | 0.291 | 0.291 |
+| retain top-4: train accuracy (random 4-subsets) | 0.532 (0.355–0.488) | 0.518 (0.358–0.498) | 0.518 (0.355–0.495) |
+| first retained K with train accuracy ≥ .99 | 11 | 11 | 11 |
+| codec bits, checkpoint / balanced / random rescalings | 381,192 / 381,192 / up to 762,120 | same | same |
+| balanced-gauge top 4 changed | no | no | no |
+| held-out rank among absent labels / top fraction | 0.185 / 0.369 | 0.178 / 0.388 | 0.177 / 0.381 |
+| retain top-1: rank (random single frequencies) | 0.380 (0.364–0.410) | 0.379 (0.364–0.414) | 0.378 (0.362–0.414) |
+| remove top-8: rank, top-K / random frequencies / subspace null / rotated null | 0.323 / 0.288–0.324 / 0.415–0.430 / 0.348–0.372 | 0.318 / 0.284–0.324 / 0.413–0.430 / 0.341–0.370 | 0.314 / 0.285–0.324 / 0.412–0.429 / 0.340–0.368 |
+| remove top-8: train accuracy, top-K / subspace null / rotated null | 0.726 / 0.579–0.739 / 0.903–0.963 | 0.722 / 0.585–0.719 / 0.900–0.980 | 0.729 / 0.582–0.729 / 0.906–0.977 |
+
+The weights keep moving at constant norm (59.87 to 59.76). Measured as relative Frobenius change, U, V and W move 14–15% from 50k to 100k and about 5% in each later 50k interval, 17% in total. The top four frequencies take 0.31–0.38 of the energy of each change, against 0.27 for a uniform spread, and they are not the same four in any two intervals (`drift.py`, [drift.json](figures/e1f1-co-add-w512-i30000-s200k-a1-drift/drift.json)). The near-ties among frequencies 4, 8, 10 and 11 reorder, but no readout moves by more than its spread across random draws, except the base rank and top fraction, which follow the coordinator's plateau.
+
+Figures: [100k](figures/e1f1-co-add-w512-i30000-s200k-a1-s100k/) and [200k](figures/e1f1-co-add-w512-i30000-s200k-a1-s200k/) (retention, rescaling, gauge, relational). `crosscheck.py` passes at both steps (retention rows within 2.2e-14, relational rows exact).
+
 ## Method check (synthetic, not a trained model)
 
 This is a hand-built network with known ground truth (`freq.synthetic`). Frequencies 3, 7, 11 and 14 each get 32 ReLUs with random phases, at input gains 1, .9, .8 and .7. Each group's output weights are a ridge fit of its own unit-amplitude target cos(2πk(a+b−c)/31), so the four groups contribute equally to the logits but rank by input gain.
@@ -130,15 +151,15 @@ This is a hand-built network with known ground truth (`freq.synthetic`). Frequen
 ## Checks run
 
 - Shared tests: `uv run --locked python -m unittest test_exploration test_instrumentation`, 9 OK.
-- Lane tests: `uv run --locked --group analysis python -m unittest discover -s research/mechanisms -v`, 15 OK. They cover reconstruction, full removal, parity with `interventions()` at K=4, rescaling invariance of logits and pruning order, filter/rescaling commutation, balanced-gauge logit preservation, orbit invariance, idempotence and norm minimality, the absent-label premise, rank-statistic extremes, the norm-matched null's norm, rank and singular values, the subspace null's limits (top-K removal when R = I, DC only at K=15), rank 2K and idempotence, the synthetic ground truth, and targeted reordering.
+- Lane tests: `uv run --locked --group analysis python -m unittest discover -s research/mechanisms -v`, 16 OK. They cover reconstruction, full removal, parity with `interventions()` at K=4, rescaling invariance of logits and pruning order, filter/rescaling commutation, balanced-gauge logit preservation, orbit invariance, idempotence and norm minimality, the absent-label premise, rank-statistic extremes, the norm-matched null's norm, rank and singular values, the subspace null's limits (top-K removal when R = I, DC only at K=15), rank 2K and idempotence, the synthetic ground truth, targeted reordering, and drift attribution to a single frequency.
 - Handoff: every input file was verified against the coordinator's `manifest.json` SHA-256 hashes. The split hash equals the plan's `aa8f7504…` and the target hash equals the manifest's `6f1576d4…`. Metrics recomputed at each analysed step equal `metrics.jsonl` exactly at all four checkpoints.
 - `crosscheck.py` recomputes with separately written code (cosine/sine projection instead of rfft, its own forward pass and metrics, its own rescaling, and balanced energies computed without rescaling anything). At all four checkpoints, all 32 retention rows agree to within 2.9e-14, the targeted rescaling reproduces the same units and top 4, and balanced energy shares agree to within 8.3e-17 with the same ranking (`crosscheck.json` in each directory). The codec itself was not recomputed independently, because it is `experiment.compress()`, the object being measured.
 
 ## Provenance and reproduction
 
 - Input: `research/coordinator/runs/e1-co-add-w{32,128,512}-i30000-a1/` as published at `67a10d8d282fd1d57ae6b3aba5a992f8d040203d` (identical in `fff276c`), produced by code `ebd874e`. The step-0 checkpoints supply the reference spectra.
-- Analysis code: the commit recorded in each `summary.json` / `gauge_summary.json`; the tree was clean apart from output files. The environment is CPython 3.12.14, NumPy 2.3.5 and Matplotlib 3.11.2 from the uv lock, with one BLAS thread. Seeds: random subsets 33100, rescalings 33200, norm-matched null 33300, random-subspace null 33400, synthetic phases 34000.
-- Elapsed numerical execution in this lane so far was about 7 minutes. No training jobs were run.
+- Analysis code: the commit recorded in each `summary.json` / `gauge_summary.json`; the tree was clean apart from output files. The environment is CPython 3.12.14, NumPy 2.3.5 and Matplotlib 3.11.2 from the uv lock, with one BLAS thread. The 200k continuation was read from `e499dff`; its manifest records a tree dirty only in the coordinator's registry. Seeds: random subsets 33100, rescalings 33200, norm-matched null 33300, random-subspace null 33400, synthetic phases 34000.
+- Elapsed numerical execution in this lane so far was about 11 minutes. No training jobs were run.
 
 ```bash
 uv sync --locked --group analysis
@@ -151,6 +172,9 @@ uv run --locked --group analysis python research/mechanisms/gauge.py --run $R/e1
 uv run --locked --group analysis python research/mechanisms/relational.py --run $R/e1-co-add-w128-i30000-a1 --source-commit $S \
     --label "late checkpoint, fits train, argmax does not generalize" --out $F/e1-co-add-w128-i30000-a1-s50000
 uv run --locked python research/mechanisms/crosscheck.py $R/e1-co-add-w128-i30000-a1 50000 $F/e1-co-add-w128-i30000-a1-s50000
+# 200k continuation: the three scripts with --run $R/e1f1-co-add-w512-i30000-s200k-a1 --step 100000 (and 200000), --source-commit e499dff, then
+uv run --locked --group analysis python research/mechanisms/drift.py --run $R/e1f1-co-add-w512-i30000-s200k-a1 --steps 50000 100000 150000 200000 \
+    --source-commit e499dff1589b5383da89bef1aba750e98908e52b --out $F/e1f1-co-add-w512-i30000-s200k-a1-drift
 # synthetic method check
 uv run --locked --group analysis python research/mechanisms/freq.py --synthetic --top 1 --label "synthetic, hand-built, not trained" --out $F/synthetic
 uv run --locked --group analysis python research/mechanisms/gauge.py --synthetic --top 1 --label "synthetic, hand-built, not trained" --out $F/synthetic
@@ -158,6 +182,6 @@ uv run --locked --group analysis python research/mechanisms/gauge.py --synthetic
 
 ## Next (not yet run)
 
-1. Run the same figures, including the held-out preference readout, on a generalizing checkpoint or on the coordinator's 200k-update width-512 continuation as soon as either is published.
+1. Run the same figures, including the held-out preference readout, on the coordinator's generalizing width-128 runs (follow-up 2).
 2. Retrospective tracing (scoring final-checkpoint frequencies at earlier steps), kept separate from checkpoint-local selection. The coordinator deferred this until a generalizing checkpoint exists.
 3. A direct test of the translation reading in INTERPRETATION.md: the same readout under a perturbation that commutes with cyclic shifts but removes nothing, such as random per-frequency phase rotations applied identically to U and V.

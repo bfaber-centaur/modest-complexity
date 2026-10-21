@@ -1,0 +1,111 @@
+{
+ "label": "late checkpoint, fits train, argmax does not generalize",
+ "input": {
+  "run_id": "e1f1-co-add-w512-i30000-s200k-a1",
+  "step": 200000,
+  "purpose": "exploratory",
+  "checkpoint": "research/coordinator/runs/e1f1-co-add-w512-i30000-s200k-a1/checkpoint_200000.npz",
+  "checkpoint_sha256": "b19465004245cf3e37f0ebacf859a08269230c9c7452985876c3c4ffcf3ab660",
+  "data_sha256": "3fa3dbf0c04e1c6033f36d72a039d402aa244a685cd75791cd5ebb46f6571857",
+  "manifest_hashes_verified": true,
+  "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+  "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+  "producing_code_commit": "a096c82ea43e300cf1a79a29a93931dd70c96f19",
+  "max_abs_diff_vs_logged_metrics": 0.0,
+  "read_from_commit": "e499dff1589b5383da89bef1aba750e98908e52b"
+ },
+ "balance_gain_log2": {
+  "median_abs": 0.04678724851204576,
+  "min": -0.07769130091652207,
+  "max": -0.020292690350567924,
+  "dead_units": 0
+ },
+ "balanced_max_abs_logit_diff": 7.105427357601002e-15,
+ "param_norm": {
+  "checkpoint": 59.75591036090381,
+  "balanced": 59.68756550885684
+ },
+ "ranking": {
+  "checkpoint": [
+   1,
+   4,
+   8,
+   10,
+   11,
+   12,
+   9,
+   5,
+   7,
+   6,
+   15,
+   2,
+   3,
+   13,
+   14
+  ],
+  "balanced": [
+   1,
+   4,
+   10,
+   8,
+   11,
+   12,
+   9,
+   5,
+   7,
+   6,
+   15,
+   2,
+   3,
+   13,
+   14
+  ],
+  "kendall_tau": 0.9809523809523809,
+  "topK_changed": false
+ },
+ "balanced_energy_share": [
+  0.07626016473369164,
+  0.06350885739949508,
+  0.06252872934283807,
+  0.07163660583304331,
+  0.06701148012644376,
+  0.06488550731237755,
+  0.06573087990125855,
+  0.0714777370099689,
+  0.06817910983342097,
+  0.07158512076363045,
+  0.07052612379151095,
+  0.06888397435282632,
+  0.05840773604084532,
+  0.05545611927368098,
+  0.0639218542849683
+ ],
+ "codec": {
+  "checkpoint": {
+   "codec_bits": 381192,
+   "codec_k": 512,
+   "codec_q": 8
+  },
+  "balanced": {
+   "codec_bits": 381192,
+   "codec_k": 512,
+   "codec_q": 8
+  }
+ },
+ "invariance": {
+  "draws": 64,
+  "max_rel_weight_diff": 3.7333546837090204e-16,
+  "balanced_ranking_equal_all": true,
+  "balanced_codec_values": [
+   381192
+  ],
+  "raw_codec_values": [
+   381192,
+   762120
+  ]
+ },
+ "analysis_code_commit": "fe284a5d90f741aab8c1273a55b11e5352ec38c5",
+ "analysis_tree_status": "?? research/mechanisms/figures/e1f1-co-add-w512-i30000-s200k-a1-s100k/\n?? research/mechanisms/figures/e1f1-co-add-w512-i30000-s200k-a1-s200k/",
+ "analysis_script_sha256": "132b065c7925c4987faca55c6d75e7e2cced2750f732d0fdc22db0c4916a0d2b",
+ "command": "python research/mechanisms/gauge.py --run research/coordinator/runs/e1f1-co-add-w512-i30000-s200k-a1 --step 200000 --source-commit e499dff1589b5383da89bef1aba750e98908e52b --label late checkpoint, fits train, argmax does not generalize --out research/mechanisms/figures/e1f1-co-add-w512-i30000-s200k-a1-s200k"
+}

@@ -1,0 +1,53 @@
+{
+ "label": "late checkpoint, fits train, argmax does not generalize",
+ "input": {
+  "run_id": "e1f1-co-add-w512-i30000-s200k-a1",
+  "step": 100000,
+  "purpose": "exploratory",
+  "checkpoint": "research/coordinator/runs/e1f1-co-add-w512-i30000-s200k-a1/checkpoint_100000.npz",
+  "checkpoint_sha256": "6f648d031893beb8563703ae4475ab3305f0bf96af6706ca4c25fa3399a25685",
+  "data_sha256": "3fa3dbf0c04e1c6033f36d72a039d402aa244a685cd75791cd5ebb46f6571857",
+  "manifest_hashes_verified": true,
+  "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+  "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+  "producing_code_commit": "a096c82ea43e300cf1a79a29a93931dd70c96f19",
+  "max_abs_diff_vs_logged_metrics": 0.0,
+  "read_from_commit": "e499dff1589b5383da89bef1aba750e98908e52b"
+ },
+ "heldout_pairs": 662,
+ "chance_top_among_absent": 0.06977470084640014,
+ "checkpoint": {
+  "delta_energy_fraction": 0.0,
+  "train_accuracy": 1.0,
+  "true_rank_among_absent": 0.17782504159912202,
+  "true_top_among_absent": 0.38821752265861026,
+  "pred_is_present": 1.0
+ },
+ "audit_lane_values": null,
+ "ranking": [
+  1,
+  10,
+  4,
+  8,
+  11,
+  12,
+  9,
+  5,
+  7,
+  6,
+  2,
+  15,
+  3,
+  13,
+  14
+ ],
+ "seeds": {
+  "random_subsets": 33100,
+  "null": 33300,
+  "subspace_null": 33400
+ },
+ "analysis_code_commit": "84cd373246039b3e642622c07249ff8f6d790c52",
+ "analysis_tree_status": "?? research/mechanisms/figures/e1f1-co-add-w512-i30000-s200k-a1-drift/\n?? research/mechanisms/figures/e1f1-co-add-w512-i30000-s200k-a1-s100k/\n?? research/mechanisms/figures/e1f1-co-add-w512-i30000-s200k-a1-s200k/",
+ "analysis_script_sha256": "9315c86fd6519d1d9bbad09ba06167ebe513a31cac8eccb427712821fd91cbe3",
+ "command": "python research/mechanisms/relational.py --run research/coordinator/runs/e1f1-co-add-w512-i30000-s200k-a1 --step 100000 --source-commit e499dff1589b5383da89bef1aba750e98908e52b --label late checkpoint, fits train, argmax does not generalize --out research/mechanisms/figures/e1f1-co-add-w512-i30000-s200k-a1-s100k"
+}
