@@ -16,3 +16,9 @@ Upstream `bubskee/modest-complexity` main was not recorded: this session's GitHu
 ## Measured speed before launch (this session, 4 vCPU Xeon, OpenBLAS Haswell kernel, 1 thread)
 
 Training only, 1,000 full-batch updates: width 32 0.47 s, width 128 1.25 s, width 512 4.76 s. A 50k-update width-512 run should therefore take about 4-5 minutes including logging and checkpoints. These are pre-launch estimates; actual run times are in each run's `runtime.json`.
+
+## Provenance note
+
+`config.json` records `git_status` at launch. Because launchers append to a tracked lane registry, that status normally lists the registry (and any uncommitted notes). The code identity is `runtime.source_sha256` (every `*.py`) plus `git_commit`; compare those, not a clean `git_status`.
+
+Worker prompts and assignments: [WORKER_PROMPTS.md](WORKER_PROMPTS.md).
