@@ -1,0 +1,22 @@
+{
+ "run_id": "e1-st-add-w128-i30002-a1",
+ "e1_manifest": "research/size-time/runs/e1-st-add-w128-i30002-a1/manifest.json",
+ "e1_manifest_sha256": "31cf5c164848f392249f5fbc1a5ebe2080e0560b88d710c4794e7db7d79967c9",
+ "note": "Checkpoints of the e1 run not published in its e1 directory; each SHA-256 equals the e1 manifest entry.",
+ "files": {
+  "checkpoint_001000.npz": "3f2c389bf085906ccd394a771ef8a9d383ac4d118e4102c3753609a32c5ba0ae",
+  "checkpoint_002000.npz": "ca92230f67f38de28a3315d8e3497a3592645166991e528fbc4f4ffa50beef8f",
+  "checkpoint_003000.npz": "cf312787150ccee238f076d09f1519bf746bafdcbfcc6725d7313fb1f46fdf51",
+  "checkpoint_004000.npz": "8de44eebc5c0893975d2f92894bb3e34f9ea950b448f7bd207e5466b659f3bcb",
+  "checkpoint_005000.npz": "c50befa2a54458418f07b4ec94155245c36ce3a15bf65a4fcea65d4c606dfe4f",
+  "checkpoint_006000.npz": "a00617593d6285f62dccbcee585b8c0cc612b44e50c36aab970abe2558a6ac91",
+  "checkpoint_007000.npz": "bf2a3ab0ad2adb9d9272f4c8ed476ec14ce8e7b16a5f13deae2d6295186a30cd",
+  "checkpoint_008000.npz": "d3da9b26b9ad1b6615b273e7d2e6ee6430f8f7c7e791b3f0a06b407a4a51f5c1",
+  "checkpoint_009000.npz": "69e3c1ea550ad2a8606c20ae21c7cb808d1ad6cfb8025603a44908501495bee3",
+  "checkpoint_010000.npz": "521a944805684cbdae55b21a66356a03b53576f39787474a6ffa41a02a3d6948",
+  "checkpoint_015000.npz": "ffeb754182b4c69115d0e60b7238d24e73a362d52eb779c0c0bc27853798ae8a",
+  "checkpoint_020000.npz": "411b6e7c5b48ae3852817d0f9b9f2a5585c5d7c8c1faec5d67367999ec7dda23",
+  "checkpoint_030000.npz": "af2e5a6267ac8eaada77eda2946c754382a8ea5e64afaf7befc2e6f826b42c6e",
+  "checkpoint_040000.npz": "83ca07e7302c8d0bbd78505abbbf579f02ccacaf1c9527eb7036e1075380c2ba"
+ }
+}
