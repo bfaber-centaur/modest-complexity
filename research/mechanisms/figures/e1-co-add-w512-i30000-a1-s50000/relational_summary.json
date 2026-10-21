@@ -17,6 +17,7 @@
  "heldout_pairs": 662,
  "chance_top_among_absent": 0.06977470084640014,
  "checkpoint": {
+  "delta_energy_fraction": 0.0,
   "train_accuracy": 1.0,
   "true_rank_among_absent": 0.18481146670888207,
   "true_top_among_absent": 0.3685800604229607,
@@ -47,10 +48,11 @@
  ],
  "seeds": {
   "random_subsets": 33100,
-  "null": 33300
+  "null": 33300,
+  "subspace_null": 33400
  },
- "analysis_code_commit": "16e337d37d0884cb0f725d8c82cb39f901db26c3",
+ "analysis_code_commit": "2117d1847141a283d29535be333738d3d7228911",
  "analysis_tree_status": "",
- "analysis_script_sha256": "bd83980445ca605f8ecdf8be0d1b1bc663344b10c1bb82cd512d5e9758186610",
+ "analysis_script_sha256": "b3bdb581f9af12d22c1b6b1bee3c7173c8faedddf51a3646e229b2a6e9af7c50",
  "command": "python research/mechanisms/relational.py --run research/coordinator/runs/e1-co-add-w512-i30000-a1 --source-commit 67a10d8d282fd1d57ae6b3aba5a992f8d040203d --label late checkpoint, fits train, argmax does not generalize --out research/mechanisms/figures/e1-co-add-w512-i30000-a1-s50000"
 }

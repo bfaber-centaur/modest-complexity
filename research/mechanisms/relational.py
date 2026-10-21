@@ -10,11 +10,16 @@ them. Report the true label's mean normalized rank among the other absent labels
 tops them.
 
 Interventions on analysis copies of one checkpoint: top-K retention and removal
-(freq.py definitions), uniform random K-subsets, and for removal a norm-matched
-null. The null subtracts the removed perturbation Δ (U's and V's top-K components)
-after a random orthogonal map of token space that fixes the constant vector, the
-same map for U and V: same norm, rank and singular values as Δ, random directions.
-Unlike the projection, it adds energy on average instead of removing it.
+(freq.py definitions), uniform random K-subsets, and two nulls for removal, each
+built from a random orthogonal map R of token space that fixes the constant vector
+(the same R for U and V):
+- norm-matched null: subtract RΔ, where Δ is the removed top-K component. Same norm,
+  rank and singular values as Δ, random directions; adds energy on average.
+- random-subspace null: project out R·span(top-K frequencies), a uniformly random
+  zero-mean subspace of the same rank. A removal like top-K, but of whatever energy
+  lies in that subspace (on average 2K/30 of it).
+`delta_energy_fraction` is the size of each change to U and V relative to their
+non-DC energy.
 
 uv run --locked --group analysis python research/mechanisms/relational.py \
     --run research/coordinator/runs/e1-co-add-w512-i30000-a1 --out research/mechanisms/figures/NAME
@@ -30,6 +35,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from freq import RANDOM_SEED, ROOT, evaluate, filter_inputs, load_run, ranking, sha256, spectrum, write_csv  # noqa: E402
 
 NULL_SEED = 33300
+SUBSPACE_SEED = 33400
 
 
 def absent_labels(d):
@@ -66,9 +72,18 @@ def rotation(p, rng):
     return basis @ q @ basis.T + np.full((p, p), 1/p)
 
 
-def readout(w, d, held, absent):
-    metrics, logits = evaluate(w, d)
-    return dict(train_accuracy=metrics['train_accuracy'], **relational(logits, d, held, absent))
+def subspace_removal(w, freqs, r):
+    """Project U and V off R·span(DC-free frequencies `freqs`), i.e. apply I - R P Rᵀ."""
+    rotated = [r.T @ w[0], r.T @ w[1], w[2]]
+    kept = filter_inputs(rotated, freqs, False)
+    return [w[0] - r @ (rotated[0] - kept[0]), w[1] - r @ (rotated[1] - kept[1]), w[2]]
+
+
+def readout(wi, w, d, held, absent):
+    metrics, logits = evaluate(wi, d)
+    nondc = sum(np.sum((x - x.mean(0))**2) for x in w[:2])
+    return dict(delta_energy_fraction=float(sum(np.sum((x - y)**2) for x, y in zip(wi[:2], w[:2]))/nondc),
+                train_accuracy=metrics['train_accuracy'], **relational(logits, d, held, absent))
 
 
 def main():
@@ -92,14 +107,14 @@ def main():
     for mode in ('retain', 'remove'):
         for k in range(len(order) + 1):
             rows.append(dict(kind='top-K', mode=mode, K=k, draw=0, frequencies=' '.join(map(str, order[:k])),
-                             **readout(filter_inputs(w, order[:k], mode == 'retain'), d, held, absent)))
+                             **readout(filter_inputs(w, order[:k], mode == 'retain'), w, d, held, absent)))
     rng = np.random.default_rng(RANDOM_SEED)
     for mode in ('retain', 'remove'):
         for k in range(1, len(freqs)):
             for i in range(args.draws):
                 chosen = np.sort(rng.choice(freqs, k, replace=False))
                 rows.append(dict(kind='random subset', mode=mode, K=k, draw=i, frequencies=' '.join(map(str, chosen)),
-                                 **readout(filter_inputs(w, chosen, mode == 'retain'), d, held, absent)))
+                                 **readout(filter_inputs(w, chosen, mode == 'retain'), w, d, held, absent)))
     rng = np.random.default_rng(NULL_SEED)
     for k in range(1, len(freqs) + 1):
         removed = filter_inputs(w, order[:k], False)
@@ -107,8 +122,13 @@ def main():
         for i in range(args.draws):
             r = rotation(p, rng)
             rows.append(dict(kind='norm-matched null', mode='remove', K=k, draw=i, frequencies='',
-                             **readout([w[0] - r @ delta[0], w[1] - r @ delta[1], w[2]], d, held, absent)))
-    base = readout(w, d, held, absent)
+                             **readout([w[0] - r @ delta[0], w[1] - r @ delta[1], w[2]], w, d, held, absent)))
+    rng = np.random.default_rng(SUBSPACE_SEED)
+    for k in range(1, len(freqs) + 1):
+        for i in range(args.draws):
+            rows.append(dict(kind='random-subspace null', mode='remove', K=k, draw=i, frequencies='',
+                             **readout(subspace_removal(w, order[:k], rotation(p, rng)), w, d, held, absent)))
+    base = readout(w, w, d, held, absent)
     audit = None
     if args.audit_results.exists():
         for line in args.audit_results.read_text().splitlines():
@@ -119,7 +139,7 @@ def main():
     git = lambda *a: subprocess.run(['git', *a], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     summary = dict(label=args.label or meta['purpose'], input=meta, heldout_pairs=len(held),
                    chance_top_among_absent=chance_top, checkpoint=base, audit_lane_values=audit,
-                   ranking=order.tolist(), seeds=dict(random_subsets=RANDOM_SEED, null=NULL_SEED),
+                   ranking=order.tolist(), seeds=dict(random_subsets=RANDOM_SEED, null=NULL_SEED, subspace_null=SUBSPACE_SEED),
                    analysis_code_commit=git('rev-parse', 'HEAD'), analysis_tree_status=git('status', '--porcelain'),
                    analysis_script_sha256=sha256(__file__), command=' '.join(['python', *sys.argv]))
     args.out.mkdir(parents=True, exist_ok=True)
@@ -137,8 +157,9 @@ def plot(rows, base, chance_top, n_held, title, path):
     import matplotlib.pyplot as plt
     style = {'top-K': dict(color='#5a3f9e', marker='o', ms=3, ls='-', zorder=3),
              'random subset': dict(color='#c9a227', marker='.', ms=4, ls='none', alpha=.6, zorder=1),
-             'norm-matched null': dict(color='#3a9a5b', marker='x', ms=4, ls='none', alpha=.6, zorder=2)}
-    offset = {'top-K': 0, 'random subset': -.15, 'norm-matched null': .15}
+             'norm-matched null': dict(color='#3a9a5b', marker='x', ms=4, ls='none', alpha=.6, zorder=2),
+             'random-subspace null': dict(color='#d36b1f', marker='+', ms=5, ls='none', alpha=.6, zorder=2)}
+    offset = {'top-K': 0, 'random subset': -.22, 'norm-matched null': .12, 'random-subspace null': .3}
     metrics = [('true_rank_among_absent', 'true label: mean normalized rank\namong absent labels (0.5 = no preference)'),
                ('true_top_among_absent', 'fraction of held-out pairs where the true\nlabel tops all absent labels'),
                ('train_accuracy', 'train accuracy (context)')]
