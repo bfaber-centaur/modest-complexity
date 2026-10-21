@@ -1,0 +1,91 @@
+{
+ "label": "synthetic, hand-built, not trained",
+ "input": {
+  "run_id": "synthetic",
+  "purpose": "synthetic code check: hand-built, not trained",
+  "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24"
+ },
+ "checkpoint_metrics": {
+  "train_accuracy": 1.0,
+  "train_cross_entropy": 1.2273386584910646,
+  "train_margin_min": 0.3439874293626948,
+  "train_margin_median": 0.7311560221133191,
+  "train_margin_p05": 0.3482594403083845,
+  "cal_accuracy": 1.0,
+  "cal_cross_entropy": 1.1429247351380145,
+  "cal_margin_min": 0.34778520005850355,
+  "cal_margin_median": 0.7784682257145423,
+  "cal_margin_p05": 0.45185070992415044,
+  "audit_accuracy": 1.0,
+  "audit_cross_entropy": 1.1995581815469427,
+  "audit_margin_min": 0.3420612340361009,
+  "audit_margin_median": 0.7604644059988035,
+  "audit_margin_p05": 0.3489168952224712
+ },
+ "ranking": [
+  3,
+  7,
+  11,
+  14,
+  10,
+  12,
+  13,
+  15,
+  9,
+  6,
+  8,
+  4,
+  1,
+  5,
+  2
+ ],
+ "energy_share": [
+  2.6405424783142773e-31,
+  2.089066356721083e-31,
+  0.34013605442176875,
+  3.5504652883898657e-31,
+  2.3297911452450476e-31,
+  4.715217859716075e-31,
+  0.2755102040816326,
+  3.9246142840732045e-31,
+  4.8169123253163225e-31,
+  9.161543239703397e-31,
+  0.217687074829932,
+  9.134003352387082e-31,
+  6.380055514527996e-31,
+  0.16666666666666663,
+  6.305276862964674e-31
+ ],
+ "reference_energy_share": null,
+ "codec_checkpoint": {
+  "codec_bits": 190728,
+  "codec_k": 128,
+  "codec_q": 16
+ },
+ "param_norm": 131.52357797391753,
+ "targeted_rescaling": {
+  "target": 7,
+  "units": 32,
+  "gain": 1.1155441725519297,
+  "codec_bits_checkpoint": 190728,
+  "max_abs_logit_diff": 3.552713678800501e-15,
+  "max_rel_logit_diff": 6.8874546657147475e-16,
+  "ranking": "7 3 11 14 10 12 13 15 6 9 8 4 1 5 2",
+  "topK_changed": true,
+  "kendall_tau": 0.9619047619047619,
+  "prune_order_unchanged": true,
+  "param_norm": 132.05458921277932,
+  "codec_bits": 190728,
+  "codec_k": 128,
+  "codec_q": 16
+ },
+ "analysis_code_commit": "317e00a2af00b84d42e14068f0e463fe15e73e50",
+ "analysis_tree_status": "?? research/mechanisms/figures/",
+ "analysis_script_sha256": "08df2af99ef2879290fa536cda9733bbf3f79516fddc44f1d4ed492698d62025",
+ "numpy": "2.3.5",
+ "seeds": {
+  "random_subsets": 33100,
+  "rescalings": 33200
+ },
+ "command": "python research/mechanisms/freq.py --synthetic --top 1 --label synthetic, hand-built, not trained --out research/mechanisms/figures/synthetic"
+}
