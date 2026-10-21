@@ -28,6 +28,14 @@ Alternative: this is a property of any memorizer that interpolates between train
 
 Separating experiment (mechanism lane): on a published late checkpoint, replace operand a's embedding with that of another value and check whether the held-out prediction moves to a label seen with the remaining operand b, with whole-operand and no-op controls. A second split in which a pair and its transpose can fall in different splits would show whether the transposed training pair then supplies the correct label.
 
+## 4. Follow-up 2: more training pairs at width 128
+
+Candidate: at a 30% share the training data is the binding constraint for this recipe, not width or horizon. With 478 instead of 299 training pairs the same width, recipe and seeds move from below-chance to 0.87-0.92 held-out accuracy within 50,000 updates. The held-out errors that remain are still labels co-occurring with an operand in training, which fits the reading that generalization replaces the operand-label behavior pair by pair rather than through a different kind of error.
+
+Alternative: the change belongs to this particular partition rather than to the amount of data, since the two splits differ in membership as well as size, or to the larger L at 50% (every wrong label is more likely to be in L by chance). A second 50% split (another data seed) and an intermediate share (for example 40%) would separate amount from partition; the share of wrong predictions in L against its 0.755 baseline is suggestive but not decisive.
+
+This also bears on entry 1: it weakens "delayed beyond the horizon" as the explanation for the 30% map at width 128, because at 50% the same recipe leaves zero by about 6,000 updates, while the 30% runs stay at zero for 50,000 (and the coordinator's width-512 30% run for 200,000).
+
 ## Not interpreted
 
 Widths 16-64 show more audit-accuracy flicker above zero late in training than wider networks ([overview.png](figures/trajectories/overview.png), zoomed panel); with at most 5 of 544 pairs correct this is left as an observation. Width-16 train-accuracy dips after first fit (2-25 logged steps below .99; README packet 1 table) are one or two errors beyond the threshold, and errors of 1-2 pairs recur until 44,000-50,000 updates. Whether this is optimizer noise around a few low-margin pairs or competition between memorized pairs at limited width was not checked; listing which pairs are misclassified at each dip would help separate the two. That needs checkpoints inside dips, which are not published (for example steps 7,000 and 8,000 of `e1-st-add-w16-i30001-a1` are listed with hashes in its manifest, but the producing session's local copies are not durable), so a replay of that run is the route; it would be a reproducibility check, not a new seed.
