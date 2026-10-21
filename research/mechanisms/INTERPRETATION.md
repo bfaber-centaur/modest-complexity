@@ -44,3 +44,13 @@ What the convention does not do: it does not turn energy into a measure of funct
 Strongest alternative to "balanced proxies are the ones to report": the balanced gauge is one convention among several (for example, unit-norm inputs). Its codec numbers are as conventional as the raw ones, just reproducible. The choice should be stated with every codec or ranking number, not treated as removing the measurement question.
 
 Missing check: everything here on a generalizing checkpoint.
+
+## Follow-up. Held-out label preference under frequency interventions
+
+Candidate: the held-out preference for the true label among absent labels is spread across input frequencies, as the training fit is. Each frequency on its own already carries some of it: one retained frequency moves the rank from 0.50 to about 0.38. Removing frequencies wears it down gradually, and at width 512 the top-energy frequencies are not special. At width 128 they carry somewhat more than random frequencies, so "spread" holds more strictly at the larger width.
+
+The norm-matched null dissociates the two readouts. Random-direction perturbations of the same size hurt the preference more than removing whole frequency components, but hurt the training fit much less. One reading: the training fit lives in large logit margins, around 14 nats, which tolerate unstructured noise. The preference lives in small differences among labels that all sit far below the present labels, so it depends on the coherent, fine-grained structure that removing a frequency leaves intact in the remaining components.
+
+Strongest alternative: the two nulls are not matched in the right quantity. The rotated null adds energy on average while removal subtracts it, so "more damage to the preference" could reflect a larger change to hidden pre-activations rather than anything about frequency structure. That does not explain why the same null damages the training fit less, but a removal null that subtracts energy (a random subspace of the same rank) is the check that would separate them.
+
+Do not read this as evidence that the model "knows" addition. The preference is a ranking among labels that the argmax never selects. Whether it grows into held-out accuracy with longer training is exactly what the coordinator's 200k-update run tests.

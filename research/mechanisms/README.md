@@ -89,6 +89,25 @@ Observations (four checkpoints):
 
 Files per checkpoint: `gauge_summary.json`, `gauge_sweep.csv` (one row per draw, raw and balanced side by side; the raw codec column reproduces `rescaling_sweep.csv` exactly), `gauge_retention.csv` (retention under the balanced ranking).
 
+## Follow-up: is the held-out label preference carried by particular frequencies?
+
+The coordinator asked for this after the audit found the preference (`research/audit/AUDIT.md`). For each of the 662 held-out pairs (calibration + audit splits), labels that never co-occur with either operand in any training pair are "absent", and the true label is always one of them. The readout is the audit's statistic, reimplemented in `relational.py`: the true label's mean normalized rank among the other absent labels (0.5 means no preference, lower means preferred), and the fraction of pairs where it tops them all (0.070 expected with no preference). On the unmodified checkpoints my values equal the audit lane's independently computed ones: rank 0.1848 and top fraction 0.3686 at w512, 0.3098 and 0.1843 at w128.
+
+Interventions use the `freq.py` definitions, plus a **norm-matched removal null**. The null subtracts the removed perturbation Δ after a random orthogonal map of token space that fixes the constant vector, using the same map for U and V (16 draws per K, seed 33300). It has Δ's norm, rank and singular values but random directions. Unlike the projection, it adds energy on average rather than removing it.
+
+![relational w512](figures/e1-co-add-w512-i30000-a1-s50000/relational.png)
+
+Look before reading: how much preference survives with a single retained frequency, and do the top-K points stand out from the random subsets? In the removal column, compare the green null with the top-K line in the top two rows, then in the train-accuracy row.
+
+Observations at w512 step 50,000 (w128 in [its directory](figures/e1-co-add-w128-i30000-a1-s50000/relational.png)):
+
+- Retaining DC plus the single top frequency moves the true label's rank from 0.50 to 0.38 (random single frequencies: 0.36 to 0.41). The true label tops the absent labels for 17% of pairs, while train accuracy is only 0.10. The preference grows gradually with K and reaches 0.29 at K=8, inside the random-subset range at K = 1, 4 and 8.
+- Removing the top K weakens the preference gradually: rank 0.21 at K=1, 0.28 at K=4, 0.32 at K=8, and 0.50 at K=15 (DC only).
+- The norm-matched null weakens it more than removing the top K at every K ≥ 2, but damages the training fit less. At K=8, null rank is 0.35 to 0.37 against 0.32 for top-K, and null top fraction is 0.13 to 0.18 against 0.26. Train accuracy at K=8 is 0.90 to 0.96 under the null against 0.73 for top-K; at K=12 it is 0.78 to 0.91 against 0.27.
+- At w128 the pattern is the same, except that the top-K frequencies carry more of the preference than random subsets: across K = 1 to 10, only 6 of 160 random subsets retain a lower (stronger) rank than the top K (K=1: 0.370 against 0.370 to 0.439).
+
+Files: `relational.csv` (one row per intervention: kind, mode, K, draw, frequencies, train accuracy, rank, top fraction, fraction predicting a present label), `relational_summary.json` (including the audit lane's values for comparison). `crosscheck.py` recomputes every top-K row by sorting and agrees exactly.
+
 ## Method check (synthetic, not a trained model)
 
 This is a hand-built network with known ground truth (`freq.synthetic`). Frequencies 3, 7, 11 and 14 each get 32 ReLUs with random phases, at input gains 1, .9, .8 and .7. Each group's output weights are a ridge fit of its own unit-amplitude target cos(2πk(a+b−c)/31), so the four groups contribute equally to the logits but rank by input gain.
@@ -104,7 +123,7 @@ This is a hand-built network with known ground truth (`freq.synthetic`). Frequen
 ## Checks run
 
 - Shared tests: `uv run --locked python -m unittest test_exploration test_instrumentation`, 9 OK.
-- Lane tests: `uv run --locked --group analysis python -m unittest discover -s research/mechanisms -v`, 11 OK. They cover reconstruction, full removal, parity with `interventions()` at K=4, rescaling invariance of logits and pruning order, filter/rescaling commutation, balanced-gauge logit preservation, orbit invariance, idempotence and norm minimality, the synthetic ground truth, and targeted reordering.
+- Lane tests: `uv run --locked --group analysis python -m unittest discover -s research/mechanisms -v`, 14 OK. They cover reconstruction, full removal, parity with `interventions()` at K=4, rescaling invariance of logits and pruning order, filter/rescaling commutation, balanced-gauge logit preservation, orbit invariance, idempotence and norm minimality, the absent-label premise, rank-statistic extremes, the null's norm, rank and singular values, the synthetic ground truth, and targeted reordering.
 - Handoff: every input file was verified against the coordinator's `manifest.json` SHA-256 hashes. The split hash equals the plan's `aa8f7504…` and the target hash equals the manifest's `6f1576d4…`. Metrics recomputed at each analysed step equal `metrics.jsonl` exactly at all four checkpoints.
 - `crosscheck.py` recomputes with separately written code (cosine/sine projection instead of rfft, its own forward pass and metrics, its own rescaling, and balanced energies computed without rescaling anything). At all four checkpoints, all 32 retention rows agree to within 2.9e-14, the targeted rescaling reproduces the same units and top 4, and balanced energy shares agree to within 8.3e-17 with the same ranking (`crosscheck.json` in each directory). The codec itself was not recomputed independently, because it is `experiment.compress()`, the object being measured.
 
@@ -112,7 +131,7 @@ This is a hand-built network with known ground truth (`freq.synthetic`). Frequen
 
 - Input: `research/coordinator/runs/e1-co-add-w{32,128,512}-i30000-a1/` as published at `67a10d8d282fd1d57ae6b3aba5a992f8d040203d` (identical in `fff276c`), produced by code `ebd874e`. The step-0 checkpoints supply the reference spectra.
 - Analysis code: the commit recorded in each `summary.json` / `gauge_summary.json`; the tree was clean apart from output files. The environment is CPython 3.12.14, NumPy 2.3.5 and Matplotlib 3.11.2 from the uv lock, with one BLAS thread. Seeds: random subsets 33100, rescalings 33200, synthetic phases 34000.
-- Elapsed numerical execution in this lane so far was about 4 minutes. No training jobs were run.
+- Elapsed numerical execution in this lane so far was about 6 minutes. No training jobs were run.
 
 ```bash
 uv sync --locked --group analysis
@@ -122,6 +141,8 @@ uv run --locked --group analysis python research/mechanisms/freq.py --run $R/e1-
     --reference-step 0 --label "late checkpoint, fits train, does not generalize" --out $F/e1-co-add-w128-i30000-a1-s50000
 uv run --locked --group analysis python research/mechanisms/gauge.py --run $R/e1-co-add-w128-i30000-a1 --source-commit $S \
     --label "late checkpoint, fits train, does not generalize" --out $F/e1-co-add-w128-i30000-a1-s50000
+uv run --locked --group analysis python research/mechanisms/relational.py --run $R/e1-co-add-w128-i30000-a1 --source-commit $S \
+    --label "late checkpoint, fits train, argmax does not generalize" --out $F/e1-co-add-w128-i30000-a1-s50000
 uv run --locked python research/mechanisms/crosscheck.py $R/e1-co-add-w128-i30000-a1 50000 $F/e1-co-add-w128-i30000-a1-s50000
 # synthetic method check
 uv run --locked --group analysis python research/mechanisms/freq.py --synthetic --top 1 --label "synthetic, hand-built, not trained" --out $F/synthetic
@@ -130,6 +151,6 @@ uv run --locked --group analysis python research/mechanisms/gauge.py --synthetic
 
 ## Next (not yet run)
 
-1. Run the same figures on a generalizing checkpoint as soon as one exists. This is the contrast every observation above lacks.
+1. Run the same figures, including the held-out preference readout, on a generalizing checkpoint or on the coordinator's 200k-update width-512 continuation as soon as either is published.
 2. Retrospective tracing (scoring final-checkpoint frequencies at earlier steps), kept separate from checkpoint-local selection. The coordinator deferred this until a generalizing checkpoint exists.
-3. An energy-matched null for removal (a random perturbation with the same norm and rank) in place of random frequency subsets.
+3. A removal null that removes energy as the projection does (a random subspace of the same rank), alongside the rotated norm-matched null.
