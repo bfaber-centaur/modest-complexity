@@ -58,10 +58,10 @@ Use static Matplotlib figures first. Add it through the existing uv project as a
 
 ## Skills for the Claude sessions
 
-Recommended: `scientific-visualization` for the two explorers and auditor; `scientific-critical-thinking` for the auditor. The visualization skill was inspected for this review: it covers trace/replicate handling, honest axes, missingness, consistent normalization, accessible encodings and exported-file inspection. Apply its general figure guidance; defer its publisher-specific workflow.
+Updated after close skill review: use the short project-specific contract in AGENTS.md. No skill installation is required for launch.
 
-Optional later: `statistical-analysis` when a concrete comparison needs it. Do not turn its availability into a requirement to add p-values or significance claims to this exploratory map.
+The scientific-visualization skill is an optional reference for concrete plotting problems; its general figure guidance informed the minimum standard above. Defer publisher formatting, metadata tooling and interactive export infrastructure. Use a compact auditor checklist for provenance, numerical correctness, dependence, proxy validity and competing explanations rather than importing the full scientific-critical-thinking bundle.
 
-Import the portable skill packages into the environment where Claude actually runs; skills available in this ChatGPT session are not automatically available to those workers. Include referenced resources/helpers if used. No skills have been installed into Claude by this review. A skill is guidance, not a substitute for the project lockfile, readable plotting code or inspecting exported results.
+Do not enable the broad statistical-analysis skill for this map. Its hypothesis-test workflow and installation advice do not fit our exploratory scope and locked environment. Consult statistical methods later for a specific question. Skills available in ChatGPT are not automatically installed in Claude; none have been installed by this packet.
 
 Workflow attribution: the figure review used the Scientific Visualization skill from Kassis, Agarwal, He, Patel and Brueckner (2026), Scientific Agent Skills: A Library of Procedural Knowledge for Research Agents, https://doi.org/10.48550/arXiv.2609.00065 . This credits procedural guidance, not evidence that the swarm or scientific claims are validated.

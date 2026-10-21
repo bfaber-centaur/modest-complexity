@@ -1,6 +1,6 @@
 # Exploratory swarm: modest-complexity
 
-Design for review, 2026-10-21. No workers or research runs launched by this document.
+Launch charter, 2026-10-21. Giving the coordinator prompt to a worker authorizes the bounded exploration below; publishing this document launches no workers.
 
 ## Purpose and posture
 
@@ -19,7 +19,7 @@ This charter supersedes the historical protocol's pilot/main gating and composit
 | Mechanism and measurement explorer | `research/mechanisms/`, analyses of shared checkpoints | explanations tested by interventions; sensitivity of complexity proxies |
 | Independent correctness auditor | `research/audit/` | checked implementation and result provenance, with explicit unresolved defects |
 
-The coordinator works on centaur/main. Workers use separate branches/worktrees and their owned directories; only the coordinator integrates shared-code changes. The auditor may propose a patch but never silently replaces an explorer's output. Publish integrated work as a PR to bubskee/main; Bobby merges upstream. No fifth research lane until an existing lane has returned something reviewable.
+The coordinator integrates on `bfaber-centaur/modest-complexity:swarm/exploration`. Workers branch from its pinned shared-code commit, use their owned directories, and open same-repository PRs targeting `swarm/exploration`. Only the coordinator integrates checked worker changes. The auditor may propose a patch but never silently replaces an explorer's output. Keep both main branches untouched by swarm execution. Return the branch's review index and prepare only a curated upstream PR for Bobby if appropriate; do not merge upstream. No fifth research lane until an existing lane has returned something reviewable. Follow AGENTS.md for implementation size, scoped skills, and local/cloud provenance.
 
 Workers are separate Claude sessions where available. Subprocesses within a session share its resources. Do not equate more agent sessions with proven linear compute scaling.
 
@@ -34,7 +34,7 @@ The coordinator implements a small common foundation; the auditor checks it whil
 5. Make a compact status registry: planned, running, complete, failed, or capped, with completed steps and reason. Never overwrite outputs, reuse IDs, or silently omit failures. Write status and checkpoints incrementally. Do not claim resume support unless implemented and tested against an uninterrupted short trajectory.
 6. Disable broad composite conclusions in the exploratory reporting path; keep historical analysis explicitly labeled. Readout accessibility is the correct name for the permuted-output ridge probe. Weight norm, Fourier concentration and pruning/quantization code length remain distinct measurements.
 
-Essential checks: disjoint grouped splits; unchanged dataset across widths/initializations; finite-difference gradients; AdamW against an independent calculation over multiple steps; checkpoint round-trip and offline-vs-inline measurement agreement. A representative short job must include checkpoint I/O. These are code checks, not tests of the simplicity hypothesis.
+Essential checks: disjoint grouped splits; unchanged dataset across widths/initializations; finite-difference gradients; AdamW against an independent calculation over multiple steps; checkpoint round-trip. Check offline-vs-inline measurement agreement when the offline path is introduced; it does not block basic learning curves. A representative short job must include checkpoint I/O. These are code checks, not tests of the simplicity hypothesis.
 
 ## Stage 1: first map, intentionally modest
 
