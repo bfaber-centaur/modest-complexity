@@ -112,7 +112,8 @@ def score(run_dir, label, part):
         lse = np.log(np.exp(zc - zc.max(1, keepdims=True)).sum(1)) + zc.max(1)
         med = lambda m: float(np.median(m[np.isfinite(m)])) if np.isfinite(m).any() else None
         rows.append(dict(group=label, run_id=run_dir.name, share=share, width=cfg['hidden'],
-                         init_seed=cfg['seeds']['init_seed'], step=step, common_acc=float(correct.mean()),
+                         init_seed=cfg['seeds']['init_seed'], step=step,
+                         train_ce=logged[step]['objective']['train']['cross_entropy'], common_acc=float(correct.mean()),
                          common_ce=float(np.mean(lse - true)), beats_S=float(np.mean(mS >= 0)),
                          beats_D=float(np.mean(mD >= 0)), beats_N=float(np.mean(mN >= 0)),
                          beats_own_out=float(np.mean(mout >= 0)),
@@ -176,6 +177,31 @@ def figure(rows, labels, refs, out, name, title, note):
     save(fig, out, name, note)
 
 
+def fit_figure(rows, labels, out, name):
+    """The same medians against the run's own training cross-entropy instead of steps."""
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.4), layout='constrained')
+    seeds = sorted({r['init_seed'] for r in rows})
+    colors = [WIDTH_COLORS[int(l.split()[1])] if l.startswith('width ') else c for c, l in zip(COLORS, labels)]
+    keys = [('median_gap_S_over_N', 'median gap: strongest S minus strongest N label'),
+            ('median_margin_N', 'median margin over strongest N label'),
+            ('median_margin_S', 'median margin over strongest S label')]
+    for color, label in zip(colors, labels):
+        for run in dict.fromkeys(r['run_id'] for r in rows if r['group'] == label):
+            rs = [r for r in rows if r['run_id'] == run and r['step'] > 0]
+            style = dict(color=color, lw=1.1, ls=SEED_STYLES[seeds.index(rs[0]['init_seed']) % 4], marker='o', ms=3)
+            for ax, (key, _) in zip(axes, keys):
+                ax.plot([r['train_ce'] for r in rs], [r[key] for r in rs], label=f"{label}, init {rs[0]['init_seed']}", **style)
+    for ax, (_, title) in zip(axes, keys):
+        ax.set_xscale('log'); ax.invert_xaxis(); ax.grid(True, color='0.9', lw=.6); ax.axhline(0, color='0.4', lw=.8)
+        ax.set_title(title, fontsize=9); ax.set_ylabel('logit difference')
+        ax.set_xlabel("run's own training cross-entropy (nats, log scale, decreasing to the right)")
+    axes[0].legend(fontsize=7, frameon=False)
+    fig.suptitle('Common-pair margins against training fit', fontsize=11)
+    save(fig, out, name, 'Published checkpoints only (markers), step 0 omitted. Training cross-entropy is the logged value at '
+         'the checkpoint step, on each run\'s own training set (sizes differ between shares). Same pairs and label sets as '
+         f'{name.replace("_fit", "")}.png.')
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--group', nargs='+', action='append', required=True, metavar='LABEL RUN_DIR')
@@ -210,6 +236,7 @@ def main():
             f"and S+D at 50%. Margin = correct-label logit minus the highest logit in the set. Dashed: fraction expected "
             f"if the correct label were ranked at random within the set. Source: {args.name}.csv.")
     figure(rows, [g[0] for g in args.group], refs, args.out, args.name, args.title, note)
+    fit_figure(rows, [g[0] for g in args.group], args.out, f'{args.name}_fit')
     print(json.dumps(summary))
 
 
