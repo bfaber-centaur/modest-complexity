@@ -1,0 +1,7 @@
+{"run_id": "e1-co-add-w128-i30000-a1", "step": 0, "input_concentration": 0.172, "unedited_common": 0.024844720496894408, "filtered_common": 0.06418219461697723, "filtered_train_vs_a_plus_b": 0.07692307692307693}
+{"run_id": "e1-co-add-w128-i30000-a1", "step": 50000, "input_concentration": 0.401, "unedited_common": 0.0, "filtered_common": 0.4306418219461698, "filtered_train_vs_a_plus_b": 0.6889632107023411}
+{"run_id": "e1-st-add-w128-i30001-a1", "step": 50000, "input_concentration": 0.436, "unedited_common": 0.0, "filtered_common": 0.5403726708074534, "filtered_train_vs_a_plus_b": 0.7324414715719063}
+{"run_id": "e1f2-co-add-w128-i30000-tf50-a1", "step": 50000, "input_concentration": 0.853, "unedited_common": 0.9130434782608695, "filtered_common": 1.0, "filtered_train_vs_a_plus_b": 1.0}
+{"run_id": "e1-st-add0-w128-i30000-a1", "step": 50000, "input_concentration": 0.22, "unedited_common": 0.0, "filtered_common": 0.4658385093167702, "filtered_train_vs_a_plus_b": 0.6321070234113713}
+{"run_id": "e1-st-add0-w128-i30001-a1", "step": 50000, "input_concentration": 0.235, "unedited_common": 0.002070393374741201, "filtered_common": 0.3250517598343685, "filtered_train_vs_a_plus_b": 0.48494983277591974}
+{"run_id": "e1-st-add0-w128-i30002-a1", "step": 50000, "input_concentration": 0.226, "unedited_common": 0.0, "filtered_common": 0.4161490683229814, "filtered_train_vs_a_plus_b": 0.6086956521739131}
