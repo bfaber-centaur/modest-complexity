@@ -1,0 +1,14 @@
+[project]
+name = "modest-complexity"
+version = "0.1.0"
+description = "CPU experiments on modular-addition implementations"
+requires-python = "==3.12.14"
+dependencies = ["numpy==2.3.5"]
+
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
