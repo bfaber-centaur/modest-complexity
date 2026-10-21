@@ -57,10 +57,19 @@ def main(run_dir, step, out_dir):
     energy = (per_unit*c**2).sum(1)
     top = sorted(np.argsort(-energy, kind='stable')[:4] + 1)
     units = c != 1
-    print(json.dumps(dict(retention_rows=len(rows), max_abs_diff_vs_csv=worst,
-                          targeted_units=int(units.sum()), targeted_max_abs_logit_change=float(np.abs(z1 - z0).max()),
-                          targeted_top4=[int(k) for k in top],
-                          freq_py_targeted_top4=sorted(int(k) for k in t['ranking'].split()[:4]))))
+    out = dict(retention_rows=len(rows), max_abs_diff_vs_csv=worst,
+               targeted_units=int(units.sum()), targeted_max_abs_logit_change=float(np.abs(z1 - z0).max()),
+               targeted_top4=[int(k) for k in top],
+               freq_py_targeted_top4=sorted(int(k) for k in t['ranking'].split()[:4]))
+    if (out_dir/'gauge_summary.json').exists():
+        # Balanced gauge without rescaling anything: each unit's input energy becomes
+        # sqrt(input norm² x output norm²), split across frequencies in its own proportions.
+        g = json.loads((out_dir/'gauge_summary.json').read_text())
+        a_in, b_out = np.sum(U**2, 0) + np.sum(V**2, 0), np.sum(W**2, 1)
+        balanced = (per_unit*np.sqrt(b_out/a_in)).sum(1)
+        out['gauge_max_abs_share_diff'] = float(np.abs(balanced/balanced.sum() - g['balanced_energy_share']).max())
+        out['gauge_ranking_equal'] = (np.argsort(-balanced, kind='stable') + 1).tolist() == g['ranking']['balanced']
+    print(json.dumps(out))
 
 
 if __name__ == '__main__':
