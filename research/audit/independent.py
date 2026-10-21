@@ -25,10 +25,10 @@ def hash_arrays(*arrays):
     return h.hexdigest()
 
 
-def regenerate_split(p, data_seed, control_seed):
+def regenerate_split(p, data_seed, control_seed, train_fraction=.3):
     """Rebuild the grouped split from the written rule: for each residue c,
     list unordered pairs i<=j with i+j = c (mod p) in lexicographic order,
-    permute them with the data generator, assign the first round(.3n) to train,
+    permute them with the data generator, assign the first round(train_fraction*n) to train,
     the next round(.1n) to cal and the rest to audit; both orders of a pair go
     together. The shuffled-label table permutes the addition labels within each
     split (train, cal, audit in that order) with a generator seeded by
@@ -38,7 +38,7 @@ def regenerate_split(p, data_seed, control_seed):
     for c in range(p):
         pairs = [(i, j) for i in range(p) for j in range(i, p) if (i + j) % p == c]
         n = len(pairs)
-        n_train, n_cal = max(1, int(np.floor(.3*n + .5))), max(1, int(np.floor(.1*n + .5)))
+        n_train, n_cal = max(1, int(np.floor(train_fraction*n + .5))), max(1, int(np.floor(.1*n + .5)))
         for rank, k in enumerate(rng.permutation(n)):
             i, j = pairs[k]
             member[i, j] = member[j, i] = 0 if rank < n_train else 1 if rank < n_train + n_cal else 2

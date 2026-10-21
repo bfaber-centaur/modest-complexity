@@ -1,0 +1,6 @@
+{"run": "e1-co-add-w128-i30000-a1", "step": 50000, "pairs": 364, "acc": 0.0, "ties": 0.0, "cross_entropy": 10.3858, "margin_min": -20.7769, "margin_median": -9.5294, "margin_p05": -15.1278}
+{"run": "e1-st-add-w128-i30001-a1", "step": 50000, "pairs": 364, "acc": 0.0, "ties": 0.0, "cross_entropy": 10.042, "margin_min": -18.5269, "margin_median": -9.4633, "margin_p05": -15.112}
+{"run": "e1-st-add-w128-i30002-a1", "step": 50000, "pairs": 364, "acc": 0.0055, "ties": 0.0, "cross_entropy": 9.7623, "margin_min": -20.1986, "margin_median": -9.2639, "margin_p05": -14.8705}
+{"run": "e1f2-co-add-w128-i30000-tf50-a1", "step": 50000, "pairs": 364, "acc": 0.9231, "ties": 0.0, "cross_entropy": 0.3653, "margin_min": -8.1694, "margin_median": 3.5134, "margin_p05": -0.7213}
+{"run": "e1f2-co-add-w128-i30001-tf50-a1", "step": 50000, "pairs": 364, "acc": 0.8681, "ties": 0.0, "cross_entropy": 0.5177, "margin_min": -9.7158, "margin_median": 2.8784, "margin_p05": -1.4405}
+{"run": "e1f2-co-add-w128-i30002-tf50-a1", "step": 50000, "pairs": 364, "acc": 0.9038, "ties": 0.0, "cross_entropy": 0.3724, "margin_min": -6.0709, "margin_median": 3.4778, "margin_p05": -1.07}

@@ -46,8 +46,8 @@ axes[1].legend(fontsize=7, frameon=False, loc='upper left')
 fig.suptitle('Held-out pairs, final checkpoint (step 50,000): rank of the addition label among labels absent from '
              'training co-occurrence', fontsize=9.5)
 fig.text(.01, -.02, 'One marker per run. Absent: never paired with either operand of the pair among the run\'s training '
-         'targets. Dotted: no preference (0.5 left; mean 1/#absent for addition runs, right; the shuffled run\'s own '
-         'reference is in the table). Shuffled run uses only pairs whose a+b is absent.', fontsize=6.5, color='0.3',
+         'targets. Dotted: no preference (0.5 left; mean 1/#absent for addition runs, right; the shuffled runs\' reference, '
+         '0.101, is in the table). Shuffled runs use only pairs whose a+b is absent.', fontsize=6.5, color='0.3',
          ha='left', va='top', wrap=True)
 out.parent.mkdir(parents=True, exist_ok=True)
 for ext in ('png', 'svg'):

@@ -1,0 +1,762 @@
+{
+ "code_commit": "c7c1c2ad8ac0bb23c9d0f84f9f1c9438764d03c6",
+ "published": "research/size-time",
+ "train_fraction": 0.3,
+ "split": {
+  "frozen_keys": [
+   "a",
+   "audit",
+   "b",
+   "cal",
+   "train",
+   "yadd",
+   "yshuffled"
+  ],
+  "regenerated_equals_frozen": true,
+  "split_hash": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+  "add_target_hash": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+  "split_hash_matches_plan": true,
+  "target_hashes_match_plan": true,
+  "shuffled_target_hash": "80a9a845356ca7a3264a3dbb8187908f2e8545ffc0b0035208539640bdf3d35f",
+  "sizes": [
+   299,
+   118,
+   544
+  ],
+  "partition": true,
+  "inputs_row_major": true,
+  "labels_are_sum_mod_p": true,
+  "transpose_closed": true,
+  "groups_per_class_by_split": [
+   [
+    5
+   ],
+   [
+    2
+   ],
+   [
+    9
+   ]
+  ],
+  "shuffled_counts_preserved": true,
+  "shuffled_fraction_changed": 0.959417273673257
+ },
+ "label_absence": {
+  "heldout_pairs": 662,
+  "true_label_cooccurs_with_an_operand_in_train": 0,
+  "absent_labels_per_heldout_pair": {
+   "min": 6,
+   "median": 15.0,
+   "max": 27
+  },
+  "distinct_train_labels_per_operand": [
+   4,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   17
+  ]
+ },
+ "positive_control_lookup_acc": {
+  "train": 1.0,
+  "cal": 1.0,
+  "audit": 1.0
+ },
+ "runs": {
+  "e1-st-add-w128-i30002-a1": {
+   "manifest": {
+    "published_hashes_match": true,
+    "published_flags_match": true,
+    "n_listed": 56,
+    "n_published": 6
+   },
+   "checkpoint_schedule_complete": true,
+   "config": {
+    "seeds_match_plan": true,
+    "recipe_matches_plan": true,
+    "split_hash_matches_plan": true,
+    "target_hash_matches_plan": true,
+    "git_commit": "c7c1c2ad8ac0bb23c9d0f84f9f1c9438764d03c6",
+    "source_hashes_match_commit": true,
+    "environment_hashes_match_commit": true,
+    "single_thread": true,
+    "python_numpy": [
+     "3.12.14",
+     "2.3.5"
+    ]
+   },
+   "data_npz_equals_frozen": true,
+   "logging": {
+    "steps_complete": true,
+    "no_update_at_step0": true,
+    "seconds_monotone": true,
+    "runtime_complete": true,
+    "first_interpolation_consistent": true,
+    "first_fit_step": 300,
+    "cosine_in_range": true
+   },
+   "index_values": {
+    "fit_sustained_after_first": true,
+    "max_audit_acc_from_1000": 0.0055147058823529415,
+    "max_cal_acc_from_1000": 0.0,
+    "final_train_ce": 3.5388592212277226e-06,
+    "final_audit_ce": 9.859083300426786,
+    "final_train_margin_min_median": [
+     13.022606917704776,
+     13.850435162710404
+    ],
+    "final_audit_margin_median": -9.32851832077766,
+    "norm_first_last": [
+     18.605881899364032,
+     59.94585381440872
+    ],
+    "wall_seconds": 117.79614284799993,
+    "audit_acc_step0": 0.03308823529411765,
+    "first_step_audit_below_chance": 100
+   },
+   "registry": {
+    "events": [
+     "running",
+     "complete"
+    ],
+    "terminal_matches_runtime": true,
+    "command_matches_plan": true
+   },
+   "init": "not published",
+   "recompute": {
+    "steps": [
+     300,
+     50000
+    ],
+    "max_acc_diff": 0.0,
+    "max_rel_ce_or_margin_diff": 1.9405270711711844e-16,
+    "max_norm_rel_diff": 0.0,
+    "ties": 0,
+    "checkpoints_ok": true
+   },
+   "heldout_final": {
+    "acc": 0.0030211480362537764,
+    "pred_cooccurs_with_operand_in_train": 0.9969788519637462,
+    "true_label_rank_median": 17.0,
+    "true_label_rank_min": 0,
+    "true_label_rank_pctile_median": 0.5666666666666667
+   },
+   "replay": [
+    {
+     "start": 0,
+     "stop": 300,
+     "from_independent_init": true,
+     "seconds": 0.4,
+     "state_rel_diff": {
+      "U": 1.2094786615889082e-14,
+      "V": 8.655639234613649e-15,
+      "W": 1.3987122557797055e-14,
+      "mU": 3.748983649957859e-15,
+      "mV": 5.6545870600020794e-15,
+      "mW": 5.288868841286811e-15,
+      "vU": 2.436765911383256e-15,
+      "vV": 1.8381756110030653e-15,
+      "vW": 1.5388375399140355e-15
+     },
+     "logged_rows": {
+      "acc_examples": 0,
+      "cross_entropy": 1.2212453270876722e-15,
+      "margins": 4.884981308350689e-15,
+      "norm": 4.3180440867576674e-16,
+      "update_norms": 8.064445935738669e-16,
+      "cosine": 3.3306690738754696e-16
+     },
+     "train_ce_rel_trace": [
+      {
+       "step": 100,
+       "train_ce_rel": 3.4281368625863326e-16
+      },
+      {
+       "step": 200,
+       "train_ce_rel": 9.299193300548448e-16
+      },
+      {
+       "step": 300,
+       "train_ce_rel": 1.2212453270876722e-15
+      }
+     ]
+    },
+    {
+     "start": 300,
+     "stop": 50000,
+     "skipped": "replay budget"
+    }
+   ]
+  },
+  "e1-st-add-w16-i30000-a1": {
+   "manifest": {
+    "published_hashes_match": true,
+    "published_flags_match": true,
+    "n_listed": 56,
+    "n_published": 6
+   },
+   "checkpoint_schedule_complete": true,
+   "config": {
+    "seeds_match_plan": true,
+    "recipe_matches_plan": true,
+    "split_hash_matches_plan": true,
+    "target_hash_matches_plan": true,
+    "git_commit": "c7c1c2ad8ac0bb23c9d0f84f9f1c9438764d03c6",
+    "source_hashes_match_commit": true,
+    "environment_hashes_match_commit": true,
+    "single_thread": true,
+    "python_numpy": [
+     "3.12.14",
+     "2.3.5"
+    ]
+   },
+   "data_npz_equals_frozen": true,
+   "logging": {
+    "steps_complete": true,
+    "no_update_at_step0": true,
+    "seconds_monotone": true,
+    "runtime_complete": true,
+    "first_interpolation_consistent": true,
+    "first_fit_step": 4300,
+    "cosine_in_range": true
+   },
+   "index_values": {
+    "fit_sustained_after_first": false,
+    "max_audit_acc_from_1000": 0.022058823529411766,
+    "max_cal_acc_from_1000": 0.01694915254237288,
+    "final_train_ce": 0.48643141222452313,
+    "final_audit_ce": 7.629617837820413,
+    "final_train_margin_min_median": [
+     0.1814380936352995,
+     1.8366570766674886
+    ],
+    "final_audit_margin_median": -6.6517136058489665,
+    "norm_first_last": [
+     8.596242709866134,
+     32.768038742190335
+    ],
+    "wall_seconds": 29.288679713999954,
+    "audit_acc_step0": 0.027573529411764705,
+    "first_step_audit_below_chance": 0
+   },
+   "registry": {
+    "events": [
+     "running",
+     "complete"
+    ],
+    "terminal_matches_runtime": true,
+    "command_matches_plan": true
+   },
+   "init": "not published",
+   "recompute": {
+    "steps": [
+     4300,
+     50000
+    ],
+    "max_acc_diff": 0.0,
+    "max_rel_ce_or_margin_diff": 1.3155505894415619e-16,
+    "max_norm_rel_diff": 2.1684017812309414e-16,
+    "ties": 0,
+    "checkpoints_ok": true
+   },
+   "heldout_final": {
+    "acc": 0.0030211480362537764,
+    "pred_cooccurs_with_operand_in_train": 0.9818731117824774,
+    "true_label_rank_median": 21.0,
+    "true_label_rank_min": 0,
+    "true_label_rank_pctile_median": 0.7
+   },
+   "replay": [
+    {
+     "start": 0,
+     "stop": 4300,
+     "from_independent_init": true,
+     "seconds": 2.6,
+     "state_rel_diff": {
+      "U": 5.864659549546269e-12,
+      "V": 6.808340635094251e-12,
+      "W": 9.238772830693249e-12,
+      "mU": 1.9033476024433047e-12,
+      "mV": 2.307650918740266e-12,
+      "mW": 2.61466490142391e-12,
+      "vU": 6.075003699236659e-13,
+      "vV": 7.981416702391128e-13,
+      "vW": 8.785328744240056e-13
+     },
+     "logged_rows": {
+      "acc_examples": 0,
+      "cross_entropy": 5.718749783309963e-14,
+      "margins": 2.2455882312612654e-12,
+      "norm": 1.4947350578487844e-14,
+      "update_norms": 2.004569902692065e-13,
+      "cosine": 1.468825061579082e-13
+     },
+     "train_ce_rel_trace": [
+      {
+       "step": 100,
+       "train_ce_rel": 0.0
+      },
+      {
+       "step": 500,
+       "train_ce_rel": 5.809000509889217e-16
+      },
+      {
+       "step": 900,
+       "train_ce_rel": 9.642413876881212e-16
+      },
+      {
+       "step": 1300,
+       "train_ce_rel": 8.825471512275324e-16
+      },
+      {
+       "step": 1700,
+       "train_ce_rel": 8.358010970810161e-16
+      },
+      {
+       "step": 2100,
+       "train_ce_rel": 1.3322676295501878e-15
+      },
+      {
+       "step": 2500,
+       "train_ce_rel": 4.440892098500626e-16
+      },
+      {
+       "step": 2900,
+       "train_ce_rel": 1.8984813721090177e-14
+      },
+      {
+       "step": 3300,
+       "train_ce_rel": 6.994405055138486e-15
+      },
+      {
+       "step": 3700,
+       "train_ce_rel": 2.0650148258027912e-14
+      },
+      {
+       "step": 4100,
+       "train_ce_rel": 4.2743586448068527e-14
+      }
+     ]
+    },
+    {
+     "start": 4300,
+     "stop": 50000,
+     "skipped": "replay budget"
+    }
+   ]
+  },
+  "e1-st-add-w16-i30002-a1": {
+   "manifest": {
+    "published_hashes_match": true,
+    "published_flags_match": true,
+    "n_listed": 56,
+    "n_published": 6
+   },
+   "checkpoint_schedule_complete": true,
+   "config": {
+    "seeds_match_plan": true,
+    "recipe_matches_plan": true,
+    "split_hash_matches_plan": true,
+    "target_hash_matches_plan": true,
+    "git_commit": "c7c1c2ad8ac0bb23c9d0f84f9f1c9438764d03c6",
+    "source_hashes_match_commit": true,
+    "environment_hashes_match_commit": true,
+    "single_thread": true,
+    "python_numpy": [
+     "3.12.14",
+     "2.3.5"
+    ]
+   },
+   "data_npz_equals_frozen": true,
+   "logging": {
+    "steps_complete": true,
+    "no_update_at_step0": true,
+    "seconds_monotone": true,
+    "runtime_complete": true,
+    "first_interpolation_consistent": true,
+    "first_fit_step": 3300,
+    "cosine_in_range": true
+   },
+   "index_values": {
+    "fit_sustained_after_first": false,
+    "max_audit_acc_from_1000": 0.016544117647058824,
+    "max_cal_acc_from_1000": 0.025423728813559324,
+    "final_train_ce": 0.4685124748612335,
+    "final_audit_ce": 7.492819210420575,
+    "final_train_margin_min_median": [
+     0.1892119819980742,
+     1.8608868424823282
+    ],
+    "final_audit_margin_median": -6.638107757375677,
+    "norm_first_last": [
+     8.34908085091927,
+     32.752872255171525
+    ],
+    "wall_seconds": 27.730184302999987,
+    "audit_acc_step0": 0.04411764705882353,
+    "first_step_audit_below_chance": 100
+   },
+   "registry": {
+    "events": [
+     "running",
+     "complete"
+    ],
+    "terminal_matches_runtime": true,
+    "command_matches_plan": true
+   },
+   "init": "not published",
+   "recompute": {
+    "steps": [
+     3300,
+     50000
+    ],
+    "max_acc_diff": 0.0,
+    "max_rel_ce_or_margin_diff": 1.1102230246251565e-16,
+    "max_norm_rel_diff": 0.0,
+    "ties": 0,
+    "checkpoints_ok": true
+   },
+   "heldout_final": {
+    "acc": 0.0,
+    "pred_cooccurs_with_operand_in_train": 0.9637462235649547,
+    "true_label_rank_median": 20.0,
+    "true_label_rank_min": 1,
+    "true_label_rank_pctile_median": 0.6666666666666666
+   },
+   "replay": [
+    {
+     "start": 0,
+     "stop": 3300,
+     "from_independent_init": true,
+     "seconds": 1.8,
+     "state_rel_diff": {
+      "U": 9.610780278826566e-14,
+      "V": 1.0675624013589486e-13,
+      "W": 1.4875424383427046e-13,
+      "mU": 2.900385014516908e-14,
+      "mV": 3.727743069310357e-14,
+      "mW": 4.401013703703922e-14,
+      "vU": 2.050316224136654e-14,
+      "vV": 2.560603054261135e-14,
+      "vW": 2.4136215351206796e-14
+     },
+     "logged_rows": {
+      "acc_examples": 0,
+      "cross_entropy": 2.4791000450566686e-15,
+      "margins": 6.444844657949034e-14,
+      "norm": 6.232884527959676e-16,
+      "update_norms": 3.72125849730045e-15,
+      "cosine": 1.9984014443252818e-15
+     },
+     "train_ce_rel_trace": [
+      {
+       "step": 100,
+       "train_ce_rel": 0.0
+      },
+      {
+       "step": 400,
+       "train_ce_rel": 3.4555508795163804e-16
+      },
+      {
+       "step": 700,
+       "train_ce_rel": 5.80094597053796e-16
+      },
+      {
+       "step": 1000,
+       "train_ce_rel": 8.778563577174011e-16
+      },
+      {
+       "step": 1300,
+       "train_ce_rel": 7.062589094107144e-16
+      },
+      {
+       "step": 1600,
+       "train_ce_rel": 1.035489315566681e-15
+      },
+      {
+       "step": 1900,
+       "train_ce_rel": 1.3322676295501878e-15
+      },
+      {
+       "step": 2200,
+       "train_ce_rel": 1.3322676295501878e-15
+      },
+      {
+       "step": 2500,
+       "train_ce_rel": 9.992007221626409e-16
+      },
+      {
+       "step": 2800,
+       "train_ce_rel": 2.220446049250313e-16
+      },
+      {
+       "step": 3100,
+       "train_ce_rel": 5.551115123125783e-16
+      }
+     ]
+    },
+    {
+     "start": 3300,
+     "stop": 50000,
+     "skipped": "replay budget"
+    }
+   ]
+  },
+  "e1-st-add-w256-i30001-a1": {
+   "manifest": {
+    "published_hashes_match": true,
+    "published_flags_match": true,
+    "n_listed": 56,
+    "n_published": 6
+   },
+   "checkpoint_schedule_complete": true,
+   "config": {
+    "seeds_match_plan": true,
+    "recipe_matches_plan": true,
+    "split_hash_matches_plan": true,
+    "target_hash_matches_plan": true,
+    "git_commit": "c7c1c2ad8ac0bb23c9d0f84f9f1c9438764d03c6",
+    "source_hashes_match_commit": true,
+    "environment_hashes_match_commit": true,
+    "single_thread": true,
+    "python_numpy": [
+     "3.12.14",
+     "2.3.5"
+    ]
+   },
+   "data_npz_equals_frozen": true,
+   "logging": {
+    "steps_complete": true,
+    "no_update_at_step0": true,
+    "seconds_monotone": true,
+    "runtime_complete": true,
+    "first_interpolation_consistent": true,
+    "first_fit_step": 200,
+    "cosine_in_range": true
+   },
+   "index_values": {
+    "fit_sustained_after_first": true,
+    "max_audit_acc_from_1000": 0.003676470588235294,
+    "max_cal_acc_from_1000": 0.0,
+    "final_train_ce": 2.290794397199476e-06,
+    "final_audit_ce": 9.570785184070921,
+    "final_train_margin_min_median": [
+     13.582297886297585,
+     14.310225341227266
+    ],
+    "final_audit_margin_median": -8.939799945902653,
+    "norm_first_last": [
+     25.998307991615974,
+     60.08551853494964
+    ],
+    "wall_seconds": 201.23536458699994,
+    "audit_acc_step0": 0.034926470588235295,
+    "first_step_audit_below_chance": 100
+   },
+   "registry": {
+    "events": [
+     "running",
+     "complete"
+    ],
+    "terminal_matches_runtime": true,
+    "command_matches_plan": true
+   },
+   "init": "not published",
+   "recompute": {
+    "steps": [
+     200,
+     50000
+    ],
+    "max_acc_diff": 0.0,
+    "max_rel_ce_or_margin_diff": 3.019630105314218e-16,
+    "max_norm_rel_diff": 1.9221584696580549e-16,
+    "ties": 0,
+    "checkpoints_ok": true
+   },
+   "heldout_final": {
+    "acc": 0.0,
+    "pred_cooccurs_with_operand_in_train": 1.0,
+    "true_label_rank_median": 18.0,
+    "true_label_rank_min": 1,
+    "true_label_rank_pctile_median": 0.6
+   },
+   "replay": [
+    {
+     "start": 0,
+     "stop": 200,
+     "from_independent_init": true,
+     "seconds": 0.5,
+     "state_rel_diff": {
+      "U": 3.383817391651087e-15,
+      "V": 4.776008796873515e-15,
+      "W": 9.169041883046957e-15,
+      "mU": 2.161581667986668e-15,
+      "mV": 2.517275311703338e-15,
+      "mW": 2.2048336617337823e-15,
+      "vU": 1.9889941460173723e-15,
+      "vV": 1.5804534731872101e-15,
+      "vW": 1.6271658520642503e-15
+     },
+     "logged_rows": {
+      "acc_examples": 0,
+      "cross_entropy": 9.992007221626409e-16,
+      "margins": 3.1086244689504383e-15,
+      "norm": 3.8443169393161097e-16,
+      "update_norms": 6.580421721905243e-16,
+      "cosine": 0.0
+     },
+     "train_ce_rel_trace": [
+      {
+       "step": 100,
+       "train_ce_rel": 7.837506919164767e-16
+      },
+      {
+       "step": 200,
+       "train_ce_rel": 9.992007221626409e-16
+      }
+     ]
+    },
+    {
+     "start": 200,
+     "stop": 50000,
+     "skipped": "replay budget"
+    }
+   ]
+  },
+  "e1-st-add-w64-i30000-a1": {
+   "manifest": {
+    "published_hashes_match": true,
+    "published_flags_match": true,
+    "n_listed": 56,
+    "n_published": 6
+   },
+   "checkpoint_schedule_complete": true,
+   "config": {
+    "seeds_match_plan": true,
+    "recipe_matches_plan": true,
+    "split_hash_matches_plan": true,
+    "target_hash_matches_plan": true,
+    "git_commit": "c7c1c2ad8ac0bb23c9d0f84f9f1c9438764d03c6",
+    "source_hashes_match_commit": true,
+    "environment_hashes_match_commit": true,
+    "single_thread": true,
+    "python_numpy": [
+     "3.12.14",
+     "2.3.5"
+    ]
+   },
+   "data_npz_equals_frozen": true,
+   "logging": {
+    "steps_complete": true,
+    "no_update_at_step0": true,
+    "seconds_monotone": true,
+    "runtime_complete": true,
+    "first_interpolation_consistent": true,
+    "first_fit_step": 400,
+    "cosine_in_range": true
+   },
+   "index_values": {
+    "fit_sustained_after_first": true,
+    "max_audit_acc_from_1000": 0.011029411764705883,
+    "max_cal_acc_from_1000": 0.00847457627118644,
+    "final_train_ce": 1.7990892810868786e-05,
+    "final_audit_ce": 11.169061110790524,
+    "final_train_margin_min_median": [
+     11.054646816929505,
+     12.147542850723049
+    ],
+    "final_audit_margin_median": -10.497317246151196,
+    "norm_first_last": [
+     13.766527740764715,
+     59.528875781065686
+    ],
+    "wall_seconds": 67.5104442600001,
+    "audit_acc_step0": 0.025735294117647058,
+    "first_step_audit_below_chance": 0
+   },
+   "registry": {
+    "events": [
+     "running",
+     "complete"
+    ],
+    "terminal_matches_runtime": true,
+    "command_matches_plan": true
+   },
+   "init": "not published",
+   "recompute": {
+    "steps": [
+     400,
+     50000
+    ],
+    "max_acc_diff": 0.0,
+    "max_rel_ce_or_margin_diff": 2.220446049250313e-16,
+    "max_norm_rel_diff": 1.2270825113036783e-16,
+    "ties": 0,
+    "checkpoints_ok": true
+   },
+   "heldout_final": {
+    "acc": 0.0075528700906344415,
+    "pred_cooccurs_with_operand_in_train": 0.9894259818731118,
+    "true_label_rank_median": 18.0,
+    "true_label_rank_min": 0,
+    "true_label_rank_pctile_median": 0.6
+   },
+   "replay": [
+    {
+     "start": 0,
+     "stop": 400,
+     "from_independent_init": true,
+     "seconds": 0.4,
+     "state_rel_diff": {
+      "U": 1.5924392471037027e-14,
+      "V": 1.8049511632175468e-14,
+      "W": 3.922752496346293e-14,
+      "mU": 8.788487327771358e-15,
+      "mV": 1.252772518528475e-14,
+      "mW": 9.19210322903878e-15,
+      "vU": 4.318408782338393e-15,
+      "vV": 3.353152391346479e-15,
+      "vW": 2.8934266333510117e-15
+     },
+     "logged_rows": {
+      "acc_examples": 0,
+      "cross_entropy": 1.3322676295501878e-15,
+      "margins": 1.1546319456101628e-14,
+      "norm": 5.734811366130322e-16,
+      "update_norms": 8.288565656271869e-16,
+      "cosine": 3.3306690738754696e-16
+     },
+     "train_ce_rel_trace": [
+      {
+       "step": 100,
+       "train_ce_rel": 2.973588314655275e-16
+      },
+      {
+       "step": 200,
+       "train_ce_rel": 3.9064781965894624e-16
+      },
+      {
+       "step": 300,
+       "train_ce_rel": 1.0248528461602126e-15
+      },
+      {
+       "step": 400,
+       "train_ce_rel": 1.3322676295501878e-15
+      }
+     ]
+    },
+    {
+     "start": 400,
+     "stop": 50000,
+     "skipped": "replay budget"
+    }
+   ]
+  }
+ }
+}

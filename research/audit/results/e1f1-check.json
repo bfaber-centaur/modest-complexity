@@ -1,0 +1,159 @@
+{
+ "manifest": {
+  "hashes_match": true,
+  "flags_match": true,
+  "n_listed": 206,
+  "n_published": 15
+ },
+ "config": {
+  "keys_differing_from_base": [
+   "out",
+   "run_id",
+   "steps"
+  ],
+  "steps_width_wd_task": true,
+  "seeds_match_plan": true,
+  "split_and_target_hash_match_plan": true,
+  "git_commit": "a096c82ea43e300cf1a79a29a93931dd70c96f19",
+  "source_hashes_match_commit": true,
+  "experiment_py_same_as_base": true,
+  "environment_same_as_base": true,
+  "host_python_numpy": [
+   [
+    null,
+    "3.12.14",
+    "2.3.5"
+   ],
+   [
+    null,
+    "3.12.14",
+    "2.3.5"
+   ]
+  ]
+ },
+ "bitwise_to_50k": {
+  "shared_published_checkpoints": {
+   "checkpoint_000000.npz": true,
+   "checkpoint_000100.npz": true,
+   "checkpoint_001000.npz": true,
+   "checkpoint_002000.npz": true,
+   "checkpoint_005000.npz": true,
+   "checkpoint_010000.npz": true,
+   "checkpoint_020000.npz": true,
+   "checkpoint_050000.npz": true
+  },
+  "logged_rows_compared": 501,
+  "logged_rows_identical_except_wall_clock": true,
+  "data_npz_identical": true
+ },
+ "recompute": {
+  "steps": [
+   0,
+   100,
+   1000,
+   2000,
+   5000,
+   10000,
+   20000,
+   50000,
+   100000,
+   150000,
+   200000
+  ],
+  "max_acc_diff": 0.0,
+  "max_rel_ce_or_margin_diff": 3.8769528698790126e-16,
+  "max_norm_rel_diff": 1.3573605460319595e-16,
+  "checkpoints_ok": true
+ },
+ "replays": [
+  {
+   "start": 50000,
+   "stop": 52000,
+   "logged_rows": {
+    "acc_examples": 0,
+    "cross_entropy": 2.00899230208765e-05,
+    "margins": 0.0001717353934932722,
+    "norm": 2.070875060727901e-07,
+    "update_norms": 2.2650725302865444e-05,
+    "cosine": 2.283571743755264e-05
+   }
+  },
+  {
+   "start": 100000,
+   "stop": 102000,
+   "logged_rows": {
+    "acc_examples": 0,
+    "cross_entropy": 8.791403238365156e-06,
+    "margins": 0.00011536261730444195,
+    "norm": 3.370995273649706e-07,
+    "update_norms": 4.06453227803139e-05,
+    "cosine": 3.1255141933028696e-05
+   }
+  },
+  {
+   "start": 150000,
+   "stop": 152000,
+   "logged_rows": {
+    "acc_examples": 0,
+    "cross_entropy": 1.4378979938634985e-05,
+    "margins": 0.0001841199919231966,
+    "norm": 5.866019987128136e-07,
+    "update_norms": 2.7658072901277715e-05,
+    "cosine": 2.517455801120949e-05
+   }
+  }
+ ],
+ "index_observations": {
+  "max_heldout_acc_from_1000": 0.0,
+  "audit_ce_peak": [
+   25600,
+   9.020470126453034
+  ],
+  "audit_ce_final": 8.703259436378467,
+  "audit_ce_at": [
+   [
+    50000,
+    8.83
+   ],
+   [
+    100000,
+    8.744
+   ],
+   [
+    150000,
+    8.719
+   ],
+   [
+    200000,
+    8.703
+   ]
+  ],
+  "train_ce_range_from_50k": [
+   1.7702418911236713e-06,
+   1.781780450714742e-06
+  ],
+  "norm_range_from_50k": [
+   59.755895633398126,
+   59.86980727591964
+  ],
+  "train_margin_min_at": [
+   [
+    50000,
+    13.842
+   ],
+   [
+    100000,
+    13.779
+   ],
+   [
+    150000,
+    13.762
+   ],
+   [
+    200000,
+    13.748
+   ]
+  ],
+  "max_cosine_from_50k": -0.9990088842123059
+ }
+}

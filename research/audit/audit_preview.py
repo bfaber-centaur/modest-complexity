@@ -39,19 +39,25 @@ def load_ck(path):
         return {k: z[k] for k in z.files}
 
 
-def check_split(plan, frozen_path):
-    c = plan['common']; p = c['p']
-    a, b, y, ysh, splits = ind.regenerate_split(p, c['data_seed'], c['control_seed'])
+def check_split(c, frozen_path):
+    """`c` holds p, seeds, split_sha256 and, for a follow-up split, train_fraction."""
+    p = c['p']
+    a, b, y, ysh, splits = ind.regenerate_split(p, c['data_seed'], c['control_seed'], c.get('train_fraction', .3))
     with np.load(frozen_path) as z:
         fr = {k: z[k] for k in z.files}
-    out = dict(
-        regenerated_equals_frozen=all(np.array_equal(u, fr[k]) for u, k in
-                                      zip((a, b, y, ysh, *splits), ('a', 'b', 'yadd', 'yshuffled', 'train', 'cal', 'audit'))),
-        split_hash=ind.hash_arrays(fr['a'], fr['b'], fr['yadd'], fr['train'], fr['cal'], fr['audit']),
-        add_target_hash=ind.hash_arrays(fr['yadd']), shuffled_target_hash=ind.hash_arrays(fr['yshuffled']))
+    regen = dict(zip(('a', 'b', 'yadd', 'yshuffled', 'train', 'cal', 'audit'), (a, b, y, ysh, *splits)))
+    out = dict(frozen_keys=sorted(fr),
+               regenerated_equals_frozen=all(np.array_equal(regen[k], fr[k]) for k in fr) and
+                                         {'a', 'b', 'yadd', 'train', 'cal', 'audit'} <= set(fr),
+               split_hash=ind.hash_arrays(fr['a'], fr['b'], fr['yadd'], fr['train'], fr['cal'], fr['audit']),
+               add_target_hash=ind.hash_arrays(fr['yadd']))
     out['split_hash_matches_plan'] = out['split_hash'] == c['split_sha256']
-    out['target_hashes_match_plan'] = (out['add_target_hash'] == plan['targets']['add'] and
-                                       out['shuffled_target_hash'] == plan['targets']['random'])
+    out['target_hashes_match_plan'] = out['add_target_hash'] == c['targets']['add']
+    if 'yshuffled' in fr:  # follow-up splits freeze no shuffled table
+        out['shuffled_target_hash'] = ind.hash_arrays(fr['yshuffled'])
+        out['target_hashes_match_plan'] &= out['shuffled_target_hash'] == c['targets']['random']
+    else:
+        fr['yshuffled'] = ysh
     sets = [set(fr[k].tolist()) for k in ('train', 'cal', 'audit')]
     out['sizes'] = [len(s) for s in sets]
     out['partition'] = (sum(out['sizes']) == p*p and set().union(*sets) == set(range(p*p))
@@ -173,8 +179,14 @@ def main():
     ap.add_argument('--out', type=Path, required=True)
     args = ap.parse_args()
     plan = json.loads(args.plan.read_text()); c = plan['common']; p = c['p']
-    report = dict(code_commit=args.code_commit, published=str(args.published))
-    report['split'], fr = check_split(plan, args.frozen)
+    planned = {r['run_id']: {**c, **r} for r in plan['runs']}
+    # The audited runs must share one split; a follow-up plan entry may override it.
+    split_keys = {(planned[i].get('train_fraction', .3), planned[i]['split_sha256']) for i in args.ids or planned}
+    assert len(split_keys) == 1, split_keys
+    (train_fraction, split_sha256), = split_keys
+    report = dict(code_commit=args.code_commit, published=str(args.published), train_fraction=train_fraction)
+    report['split'], fr = check_split({**c, 'train_fraction': train_fraction, 'split_sha256': split_sha256,
+                                       'targets': plan['targets']}, args.frozen)
     absence = label_absence(fr, p); present = absence.pop('present')
     report['label_absence'] = absence
 
@@ -195,7 +207,6 @@ def main():
 
     registry = [json.loads(s) for s in (args.published/'registry.jsonl').read_text().splitlines() if s.strip()]
     ids = args.ids or sorted({e['run_id'] for e in registry})
-    planned = {r['run_id']: {**c, **r} for r in plan['runs']}
     report['runs'] = {}
     for run_id in ids:
         rd = args.published/'runs'/run_id; r = {}
@@ -224,8 +235,9 @@ def main():
             recipe_matches_plan=(cfg['hidden'], cfg['steps'], cfg['lr'], cfg['wd'], cfg['p'], cfg['log_every'],
                                  cfg['checkpoint_every'], cfg['diagnostics'], cfg['task']) ==
                                 (pl['width'], c['steps'], c['lr'], float(pl['wd']), p, c['log_every'],
-                                 c['checkpoint_every'], c['diagnostics'], pl['task']),
-            split_hash_matches_plan=cfg['data_hashes']['split_sha256'] == c['split_sha256'],
+                                 c['checkpoint_every'], c['diagnostics'], pl['task']) and
+                                cfg.get('train_fraction', .3) == train_fraction,
+            split_hash_matches_plan=cfg['data_hashes']['split_sha256'] == pl['split_sha256'],
             target_hash_matches_plan=cfg['data_hashes']['target_sha256'] == plan['targets'][pl['task']],
             git_commit=cfg['runtime']['git_commit'],
             source_hashes_match_commit=all(cfg['runtime']['source_sha256'][n] == h for n, h in src.items()),
@@ -258,7 +270,7 @@ def main():
             final_audit_margin_median=last['objective']['audit']['margin_median'],
             norm_first_last=(rows_list[0]['norm'], last['norm']), wall_seconds=rt['wall_seconds'],
             audit_acc_step0=rows_list[0]['audit'],
-            first_step_audit_below_chance=next(z['step'] for z in rows_list if z['audit'] < 1/p))
+            first_step_audit_below_chance=next((z['step'] for z in rows_list if z['audit'] < 1/p), None))
         ev = [e for e in registry if e['run_id'] == run_id]
         r['registry'] = dict(events=[e['status'] for e in ev],
                              terminal_matches_runtime=ev[-1]['status'] == rt['status'] and ev[-1]['completed_steps'] == rt['completed_steps'],
@@ -298,6 +310,11 @@ def main():
                 true_label_rank_pctile_median=float(np.median(rank)/(p - 1)))
         if args.replay:
             ck_steps = sorted(rc)
+            starts = {}
+            if 0 not in rc:  # step 0 unpublished: start from an independent draw, which also checks init
+                U, V, W = ind.initial_weights(p, pl['width'], pl['init_seed'])
+                starts[0] = dict(zip(KEYS, (U, V, W, *(np.zeros_like(x) for x in (U, V, W, U, V, W)))))
+                ck_steps = [0] + ck_steps
             r['replay'] = []
             budget = args.replay_max_steps
             for s0, s1 in zip(ck_steps, ck_steps[1:]):
@@ -305,10 +322,12 @@ def main():
                     r['replay'].append(dict(start=s0, stop=s1, skipped='replay budget')); continue
                 budget -= s1 - s0
                 t0 = time.perf_counter()
-                state, worst, trace = replay(load_ck(rd/f'checkpoint_{s0:06d}.npz'), s0, s1, fr, rows, p, c['lr'], float(pl['wd']), labels)
+                start = starts[s0] if s0 in starts else load_ck(rd/f'checkpoint_{s0:06d}.npz')
+                state, worst, trace = replay(start, s0, s1, fr, rows, p, c['lr'], float(pl['wd']), labels)
                 target = load_ck(rd/f'checkpoint_{s1:06d}.npz')
                 got = state['params'] + state['m'] + state['v']
-                r['replay'].append(dict(start=s0, stop=s1, seconds=round(time.perf_counter() - t0, 1),
+                r['replay'].append(dict(start=s0, stop=s1, from_independent_init=s0 in starts,
+                                        seconds=round(time.perf_counter() - t0, 1),
                                         state_rel_diff={k: rel(x, target[k]) for x, k in zip(got, KEYS)},
                                         logged_rows=worst, train_ce_rel_trace=trace[::max(1, len(trace)//10)]))
                 print(run_id, s0, s1, r['replay'][-1]['seconds'], 's', max(r['replay'][-1]['state_rel_diff'].values()), flush=True)
