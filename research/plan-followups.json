@@ -1,0 +1,35 @@
+{
+ "expedition": "e1-followups",
+ "created": "2026-10-21",
+ "note": "Bounded follow-ups to the e1 map (research/SWARM.md: up to two, each with a recorded reason). Same split, recipe and cadences as research/plan.json except where a run overrides them. A follow-up is a new run, never pooled with or substituted for a map run.",
+ "targets": {
+  "add": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+  "random": "80a9a845356ca7a3264a3dbb8187908f2e8545ffc0b0035208539640bdf3d35f"
+ },
+ "common": {
+  "p": 31,
+  "steps": 50000,
+  "lr": 0.001,
+  "log_every": 100,
+  "checkpoint_every": 1000,
+  "diagnostics": "none",
+  "data_seed": 31000,
+  "control_seed": 32000,
+  "diagnostic_seed": 33000,
+  "purpose": "exploratory",
+  "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24"
+ },
+ "runs": [
+  {
+   "run_id": "e1f1-co-add-w512-i30000-s200k-a1",
+   "owner": "coordinator",
+   "task": "add",
+   "wd": 1,
+   "width": 512,
+   "init_seed": 30000,
+   "steps": 200000,
+   "queue_position": 1,
+   "reason": "Audit of preview 1 (research/audit/AUDIT.md): at width 512 the held-out true label rises among labels never co-occurring with either operand (tops them for 37% of held-out pairs at 50k vs 7% without preference) and held-out CE turns down after about 30k, while held-out accuracy is 0. Extending the same configuration to 200k updates asks whether this becomes held-out accuracy (delayed generalization) or stays sub-threshold. Its first 50k updates should repeat e1-co-add-w512-i30000-a1 bitwise on the same host; that is a reproducibility check, not a second seed."
+  }
+ ]
+}

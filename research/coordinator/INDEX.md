@@ -1,6 +1,6 @@
 # e1 review index (figures first)
 
-Interpretations are kept separately in [INTERPRETATION.md](INTERPRETATION.md). Audit status: see the auditor lane (`research/audit/`, branch `swarm/audit`); nothing below is audited yet unless marked.
+Interpretations are kept separately in [INTERPRETATION.md](INTERPRETATION.md). Audit status: preview 1 is audited in [research/audit/AUDIT.md](../audit/AUDIT.md) (17 software checks PASS; interpretation statuses there).
 
 ## Preview 1: one seed at widths 32, 128 and 512
 
@@ -9,6 +9,8 @@ Question: under the fixed recipe (p=31, one hidden ReLU layer, full-batch AdamW 
 ![accuracy](figures/preview-1/accuracy.png)
 
 ![cross-entropy](figures/preview-1/loss.png)
+
+(The loss figure was redrawn after the audit with a separate y scale per row; the data are unchanged.)
 
 Look before reading: compare the train and held-out rows at each width. When does the training split fit, what does held-out accuracy do relative to the dotted chance line, and does held-out loss move with training loss?
 
@@ -36,7 +38,7 @@ Held-out = the audit split (544 pairs); the calibration split (118 pairs) behave
 
 ### Provenance
 
-- Code: `ebd874e17028f2c2f04de5ecea9fe4b51b77e425` (each `config.json` records `git_commit` and SHA-256 of every `*.py`; `git_status` lists only the untracked registry).
+- Code: `ebd874e17028f2c2f04de5ecea9fe4b51b77e425` (each `config.json` records `git_commit` and SHA-256 of every `*.py`; `git_status` lists only untracked non-code files: the registry, and for width 32 also `research/coordinator/WORKER_PROMPTS.md`).
 - Data: data seed 31000, `split_sha256` `aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24`, addition target `6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046`; checked before training by `--expect-split-sha256`.
 - Environment: CPython 3.12.14, NumPy 2.3.5 (uv lock), OpenBLAS 0.3.30 Haswell kernel, one BLAS thread, Linux cloud container with 4 vCPUs (Intel Xeon 2.10 GHz), session label `co-cloud-1`, two concurrent processes.
 - Published files: `research/coordinator/runs/<run_id>/` holds config, runtime, metrics, data and checkpoints at steps 0, 1k, 2k, 5k, 10k, 20k, 50k and the first-fit step; `manifest.json` lists SHA-256 for all 51-52 local checkpoints.

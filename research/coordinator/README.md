@@ -22,3 +22,16 @@ Training only, 1,000 full-batch updates: width 32 0.47 s, width 128 1.25 s, widt
 `config.json` records `git_status` at launch. Because launchers append to a tracked lane registry, that status normally lists the registry (and any uncommitted notes). The code identity is `runtime.source_sha256` (every `*.py`) plus `git_commit`; compare those, not a clean `git_status`.
 
 Worker prompts and assignments: [WORKER_PROMPTS.md](WORKER_PROMPTS.md).
+
+## Adaptive decisions
+
+1. 2026-10-21, after the preview 1 audit: follow-up `e1f1-co-add-w512-i30000-s200k-a1` (width 512, seed 30000, 200,000 updates) in `research/plan-followups.json`, run in the coordinator session. Reason recorded in that file. This is follow-up 1 of at most 2.
+
+## Known gaps (from the audit, not blocking)
+
+- Only the split hash is checked before training; `target_sha256` is recorded and must be checked post hoc for shuffled-label runs.
+- `launch_runs.py` checks run-ID reuse against its own lane registry and output root only.
+- `publish_run.py`: `producing_tree_dirty` is uninformative while the registry is modified, and `published_from_commit` is the checkout during copying, not the commit containing the files.
+- Beyond about 15k updates trajectories are sensitive at the 1-ulp level: another host reproduces logged metrics closely but not late weights.
+
+These are left for the consolidation pass so that shared `*.py` hashes stay fixed while the map runs.

@@ -70,7 +70,7 @@ def main():
         state = event.get('status', 'planned')
         last = rows[-1] if rows else {}
         table.append(dict(run_id=r['run_id'], width=r['width'], init_seed=r['init_seed'], status=state,
-                          last_logged_step=last.get('step'), planned_steps=plan['common']['steps'],
+                          last_logged_step=last.get('step'), planned_steps={**plan['common'], **r}['steps'],
                           reason=event.get('reason') or '', session_label=event.get('session_label', ''),
                           train_acc=last.get('train'), audit_acc=last.get('audit'),
                           train_ce=last.get('objective', {}).get('train', {}).get('cross_entropy'),
@@ -94,9 +94,11 @@ def main():
     widths = sorted({r['width'] for r in runs})
     seeds = sorted({r['init_seed'] for r in runs})
     states = {t['run_id']: t for t in table}
+    horizon = max(t['planned_steps'] for t in table)
     for metric, ylabel in (('accuracy', 'accuracy'), ('loss', 'cross-entropy (nats, log scale)')):
-        fig, axes = plt.subplots(2, len(widths), figsize=(3.2*len(widths)+.6, 5.6), sharex=True, sharey=True,
-                                 squeeze=False, layout='constrained')
+        # Loss rows get their own scales: train CE spans decades, held-out CE about one.
+        fig, axes = plt.subplots(2, len(widths), figsize=(3.2*len(widths)+.6, 5.6), sharex=True,
+                                 sharey=True if metric == 'accuracy' else 'row', squeeze=False, layout='constrained')
         for col, width in enumerate(widths):
             for row_i, (split, split_label) in enumerate(SPLITS):
                 ax = axes[row_i, col]
@@ -118,7 +120,7 @@ def main():
                     ax.set_ylim(-.02, 1.02)
                 else:
                     ax.set_yscale('log')
-                ax.set_xscale('log'); ax.set_xlim(100, plan['common']['steps']*1.05)
+                ax.set_xscale('log'); ax.set_xlim(100, horizon*1.05)
                 ax.grid(True, which='major', color='0.9', lw=.6)
                 if row_i == 0:
                     ax.set_title(f'width {width}')
