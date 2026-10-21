@@ -78,3 +78,13 @@ Known mismatches and failure modes:
 - The Fourier basis of Z_31 is a prior about cyclic structure, the same one every frequency analysis here uses. It carries no information about which phases add up at a + b; only the learned phases decide that.
 - The shuffled-label runs may be less frequency-concentrated than the 30% runs. Their concentration is reported, since a null with weaker structure is a weaker match.
 - Amount and identity of training data stay confounded (DECISIONS D6).
+
+## Cycle 2 close-out, written 2026-10-21 at about 20:03 UTC, before running `unitfilter.py` on the no-decay runs
+
+Not prospective for the headline. The coordinator's spot check (DECISIONS D10, `research/e2/coordinator/spot_unitfilter.jsonl`) already found filtered common-set accuracy 0.466 / 0.325 / 0.416 at 50k for the e1 no-decay width-128 runs (`e1-st-add0-w128-i3000{0,1,2}-a1`). These runs have the same split and a+b training labels as the 30% runs, weight decay 0, input concentration 0.22–0.23 (0.17 at step 0) and a null restricted rank. What is new here: the full null set, the variants, the over-training points and the scaling edit on these runs, from the lane's own code.
+
+What each outcome would mean:
+- If the no-decay runs' filtered accuracy stands clearly above their own nulls, as the 30% runs' does, then the filter's held-out accuracy is mostly available from any network that fits a+b on these pairs. The packet 2 result then does not show that the decayed 30% runs hold a computation of their own; it supports the fit-induced alternative ("the projection supplies the prior").
+- What would still favour structure specific to weight decay: filtered accuracy in the 30% runs clearly above the no-decay runs at comparable kept energy or train accuracy, at every checkpoint. A gap of the size seen at 50k (0.43–0.58 against 0.33–0.47, one split, three seeds each) would not be enough on its own.
+
+Correction to packet 1 (e2 audit cycle 2, G13): the step-0 reference "34/75 groups aligned" counted byte-identical networks more than once, because runs with the same init seed start from the same weights. The three distinct step-0 networks give 21/45.
