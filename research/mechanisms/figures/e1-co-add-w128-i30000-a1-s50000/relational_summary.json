@@ -1,0 +1,56 @@
+{
+ "label": "late checkpoint, fits train, argmax does not generalize",
+ "input": {
+  "run_id": "e1-co-add-w128-i30000-a1",
+  "step": 50000,
+  "purpose": "exploratory",
+  "checkpoint": "research/coordinator/runs/e1-co-add-w128-i30000-a1/checkpoint_050000.npz",
+  "checkpoint_sha256": "326cfc1ec1583d94993b2b3b289cd3bb9081f64a0ece5060a817375aadd111b4",
+  "data_sha256": "3fa3dbf0c04e1c6033f36d72a039d402aa244a685cd75791cd5ebb46f6571857",
+  "manifest_hashes_verified": true,
+  "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+  "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+  "producing_code_commit": "ebd874e17028f2c2f04de5ecea9fe4b51b77e425",
+  "max_abs_diff_vs_logged_metrics": 0.0,
+  "read_from_commit": "67a10d8d282fd1d57ae6b3aba5a992f8d040203d"
+ },
+ "heldout_pairs": 662,
+ "chance_top_among_absent": 0.06977470084640014,
+ "checkpoint": {
+  "train_accuracy": 1.0,
+  "true_rank_among_absent": 0.3097821359231236,
+  "true_top_among_absent": 0.18429003021148035,
+  "pred_is_present": 0.9984894259818731
+ },
+ "audit_lane_values": {
+  "step": 50000,
+  "pred_is_present_label": 0.9985,
+  "true_rank_among_absent_mean": 0.3098,
+  "true_top_among_absent": 0.1843
+ },
+ "ranking": [
+  8,
+  1,
+  11,
+  4,
+  5,
+  15,
+  2,
+  10,
+  9,
+  6,
+  14,
+  12,
+  13,
+  7,
+  3
+ ],
+ "seeds": {
+  "random_subsets": 33100,
+  "null": 33300
+ },
+ "analysis_code_commit": "16e337d37d0884cb0f725d8c82cb39f901db26c3",
+ "analysis_tree_status": "M research/mechanisms/figures/e1-co-add-w512-i30000-a1-s50000/crosscheck.json\n?? research/mechanisms/figures/e1-co-add-w512-i30000-a1-s50000/relational.csv\n?? research/mechanisms/figures/e1-co-add-w512-i30000-a1-s50000/relational.png\n?? research/mechanisms/figures/e1-co-add-w512-i30000-a1-s50000/relational.svg\n?? research/mechanisms/figures/e1-co-add-w512-i30000-a1-s50000/relational_summary.json",
+ "analysis_script_sha256": "bd83980445ca605f8ecdf8be0d1b1bc663344b10c1bb82cd512d5e9758186610",
+ "command": "python research/mechanisms/relational.py --run research/coordinator/runs/e1-co-add-w128-i30000-a1 --source-commit 67a10d8d282fd1d57ae6b3aba5a992f8d040203d --label late checkpoint, fits train, argmax does not generalize --out research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000"
+}
