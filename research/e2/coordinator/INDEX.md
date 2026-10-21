@@ -38,8 +38,8 @@ Source: [margins_boundary.csv](../dynamics/figures/boundary/margins_boundary.csv
 | 50% (478) | 0.88–0.91 | 7.8 to 8.3 | 4.5–4.7 |
 
 - New runs: `e2-dy-add-w128-i3000{0,1,2}-tf40-a1` and `-tf45-a1`, all complete, none failed or capped ([registry](../dynamics/registry.jsonl), claims D8, launched at `dbfcf21`). The 40% and 45% sets add e1 calibration pairs only.
-- At 10k and 50k every column is ordered by share with no seed overlap between neighbouring shares; no share splits by seed. The ordering holds at matched training cross-entropy.
-- Coordinator check: 50k common-pair accuracy of all six new runs recomputed from the published checkpoints matches the lane. Otherwise unaudited.
+- At 10k and 50k every column is ordered by share with no seed overlap between neighbouring shares (in logits; the margin over N from 4k on); no share splits by seed. The ordering holds at matched training cross-entropy.
+- Audit cycle 4 ([AUDIT.md](../audit/AUDIT.md), [margins-check.png](../audit/figures/margins-check.png)): runs, replays and every packet-2 number PASS (G20–G22). Per pair, margin over S = margin over N − gap, so the accuracy threshold is arithmetic (G23). Relative to each pair's wrong-label logit spread the S − N gap stays near 2σ at every share and does not grow in training; the margin over N carries 72–94% of the 30%→50% change.
 
 ## 3. A label-free edit lifts failed runs, and also runs without weight decay (mechanisms lane, packet 2 and close)
 
@@ -74,9 +74,11 @@ Observation = measured, with the stated scope. Candidate explanation = an accoun
 | claim | class | evidence | audit |
 |---|---|---|---|
 | On the 483 common pairs the 50% runs answer 0.88–0.91 and the 30% runs 0–0.004 (width 128, 3 seeds each, one data seed) | observation | §1 | PASS (G7; Part 4 F10–F15) |
-| Between 30% and 50% the margins change gradually with share while accuracy changes steeply (0.00 / 0.02 / 0.34–0.54 / 0.88–0.91) | observation | §2 | not audited; 50k accuracy recomputed by the coordinator |
+| Between 30% and 50% the margin of a+b over unrelated labels changes gradually with share while accuracy changes steeply (0.00 / 0.02 / 0.34–0.54 / 0.88–0.91) | observation | §2 | SUPPORTED LOCALLY (cycle 4, G22; no seed overlap from 4k on) |
 | The difference is caused by the amount of training data | not checked | one seeded order of added pairs; 40%/45% add only e1 calibration pairs; amount and identity move together (D6, D8) | AMBIGUOUS (Part 4) |
-| Accuracy needs the a+b margin over unrelated labels to outgrow the operand-label gap ("a race between two graded quantities") | candidate explanation | [dynamics INTERPRETATIONS.md](../dynamics/INTERPRETATIONS.md) 1–2; alternative: the slower gap growth is dilution over more labels per operand | not audited |
+| Accuracy needs the a+b margin over unrelated labels to outgrow the operand-label gap ("a race between two graded quantities") | candidate explanation, narrowed | [dynamics INTERPRETATIONS.md](../dynamics/INTERPRETATIONS.md) 1–2. The threshold is arithmetic; the race is mostly one-sided (72–94% from the margin over N); the gap's growth is logit spread | threshold: arithmetic (G23); two-sided race AMBIGUOUS (cycle 4) |
+| The operand-label preference grows during training (the gap doubles at 30%) | counterexample | relative to the logit spread the gap is flat or falls slightly from 1k to 50k at every share | CONTRADICTED as a preference change (cycle 4) |
+| The gap grows more slowly at higher share because a memorizer spreads over more labels per operand (dilution) | not checked with shuffled runs | a closed-form memorizer reproduces the raw-logit slowing but not the scale-free one; the scale-free share effect (14–30% at matched fit) is unexplained | AMBIGUOUS (cycle 4) |
 | The restricted-rank signal is learned and specific to a+b, not produced by the mask | observation | audit G6 nulls 0.48–0.50 vs 0.27–0.31; offset profile flat away from k = 0 | SUPPORTED LOCALLY |
 | The restricted rank separates the shares before cross-entropy and accuracy | observation (partly by construction) | §4 | SUPPORTED LOCALLY |
 | A given restricted-rank level is an early signature of eventual success | counterexample | 30% runs reach the 50% runs' 2k level by 50k without answers; e1f1 width 512 plateaus at 0.177 to 200k | CONTRADICTED as a level; AMBIGUOUS as a rate |
@@ -95,6 +97,7 @@ Observation = measured, with the stated scope. Candidate explanation = an accoun
 | the restricted rank as an early marker of success (e1 follow-up 2, size/time) | a level does not predict success; only the rate differs, on one split pair | §4, audit cycle 1 |
 | "the packet-1 alternative is confirmed in its first half" (e1 mechanisms) | per-unit structure is an observation; its role is a candidate explanation | D7 |
 | the filter shows hidden computation in failed runs (mechanisms packet 2, first reading) | revised by the lane to the fit-induced reading after the no-decay comparison | §3, D10 |
+| the operand-label preference doubles at 30% and grows more slowly at higher share (dynamics packets 1–2) | the doubling is logit spread; relative to it the lead stays near 2σ; share mainly sets how fast a+b climbs | §2, audit cycle 4 |
 
 ## Budget and accounting
 
