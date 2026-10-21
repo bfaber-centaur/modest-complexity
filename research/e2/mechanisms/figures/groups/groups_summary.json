@@ -308,8 +308,8 @@
  "draws": 16,
  "read_from_commit": "9e56faf7",
  "session_label": "e2-me-cloud-1",
- "analysis_code_commit": "9460b62a1db86e35d7fabd26ac984fee698edf69",
- "analysis_tree_status": "?? research/e2/mechanisms/figures/",
- "analysis_script_sha256": "99cf72b6c972eedc342053d58de118cec49fb4562ee3c932a201fd7abbfe89cb",
+ "analysis_code_commit": "e605a7aa4fabae3ff0938cd074b14fd3a6051a67",
+ "analysis_tree_status": "M research/e2/mechanisms/figures/groups/groups.csv\n M research/e2/mechanisms/figures/groups/groups_summary.json\n?? research/e2/mechanisms/figures/groups/groups.png\n?? research/e2/mechanisms/figures/groups/groups.svg",
+ "analysis_script_sha256": "58da8da5e933f72120cd9af4babce5843a77c93c7e5e2ae1931068493e2c36f4",
  "command": "python research/e2/mechanisms/groups.py --source-commit 9e56faf7 --out research/e2/mechanisms/figures/groups --runs research/coordinator/runs/e1f2-co-add-w128-i30000-tf50-a1:0,1000,5000,10000,20000,50000 research/coordinator/runs/e1f2-co-add-w128-i30001-tf50-a1:0,5000,50000 research/coordinator/runs/e1f2-co-add-w128-i30002-tf50-a1:0,5000,50000 research/coordinator/runs/e1-co-add-w128-i30000-a1:0,5000,50000 research/size-time/runs/e1-st-add-w128-i30001-a1:0,5000,50000 research/size-time/runs/e1-st-add-w128-i30002-a1:300,50000"
 }
