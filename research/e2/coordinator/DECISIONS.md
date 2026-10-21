@@ -52,3 +52,11 @@ Any 30%-vs-50% contrast in e2 reports this set next to each run's own whole-spli
 | "The packet-1 alternative is confirmed in its first half" (mechanisms INTERPRETATION, follow-up 2) | Per-unit concentration is an observation on unaudited outputs; its link to the computation is a candidate explanation | this log |
 
 Unresolved: the restricted-rank statistic comes from the auditor's `research/audit/heldout_rank.py` (the coordinator's follow-up figures call it), reimplemented in the mechanisms lane's `relational.py` and as a loop in its `crosscheck.py`, which agree on the checkpoints they share. All of them follow the same written definition, so the definition itself (mask from training pairs only, operand positions, ties, set sizes, chance reference, like-for-like across shares) and a null that keeps the mask are the auditor's e2 target.
+
+## D8 (2026-10-21) First run claim: dynamics cycle 2, nested share boundary
+
+Accepted six runs from `research/e2/dynamics/REQUEST.md`: `e2-dy-add-w128-i3000{0,1,2}-tf40-a1` and `-tf45-a1`, at width 128 with the e1/e1f2 seeds, 50,000 updates, about 6 minutes elapsed with two workers. Checked by the coordinator with `experiment.data` at `fe284a5`: the 30% ⊂ 40% ⊂ 45% ⊂ 50% training sets nest (299 / 359 / 417 / 478 pairs), the 483 common pairs are untrained at every share (at 40% they are exactly the audit split), and the split hashes match the request (`5c843bb8…5e5a9`, `44e5774e…c7aa`). The 40% and 45% shares add e1 calibration pairs only (60 and 118), so this ladder still varies amount and identity together, but along one nested sequence on fixed evaluation pairs.
+
+## D9 (2026-10-21) Extra e1 checkpoints around the 50% onset
+
+Published from the coordinator's local run directories, each checked against its e1 manifest SHA-256 (the dynamics lane's `publish_e1_checkpoints.py`): steps 3k, 4k and 6k-9k of the three `e1f2-…-tf50-a1` runs, and 3k, 4k, 6k-9k, 15k, 30k and 40k of `e1-co-add-w128-i30000-a1`, in [e1-checkpoints/](e1-checkpoints/). The e1 run directories are unchanged.
