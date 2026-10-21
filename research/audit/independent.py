@@ -121,3 +121,74 @@ def adamw_step(params, grads, m, v, t, lr, wd):
         cross += float(np.vdot(adapt, decay))
     cos = cross / np.sqrt(sq_adapt*sq_decay) if sq_adapt*sq_decay > 0 else None
     return dict(adaptive_norm=np.sqrt(sq_adapt), decay_norm=np.sqrt(sq_decay), cosine=cos)
+
+
+# --- Mechanism-lane quantities, rewritten from their written definitions ---
+
+def token_fourier(X):
+    """Coefficients c_k = sum_x X[x] exp(-2 pi i k x / p) for k = 0..(p-1)/2, one
+    column per hidden unit, from an explicit DFT matrix (no FFT routine)."""
+    p = X.shape[0]
+    k = np.arange((p + 1)//2)[:, None]
+    return np.exp(-2j*np.pi*k*np.arange(p)[None, :]/p) @ X
+
+
+def input_energy(params):
+    """Energy |c_k|^2 of U plus V per frequency k = 1..(p-1)/2, summed over units."""
+    return sum(np.sum(np.abs(token_fourier(X)[1:])**2, axis=1) for X in params[:2])
+
+
+def frequency_part(X, freqs):
+    """The component of X (along the token axis) at the listed nonzero frequencies:
+    (2/p) Re(c_k exp(2 pi i k x / p)) summed over k, each real cosine/sine pair."""
+    p = X.shape[0]
+    c = token_fourier(X); x = np.arange(p)[:, None]
+    part = np.zeros_like(X)
+    for k in freqs:
+        part += (2/p) * np.real(c[k][None, :] * np.exp(2j*np.pi*k*x/p))
+    return part
+
+
+def keep_frequencies(params, freqs):
+    """Token-mean (DC) plus the listed frequencies of U and V; W untouched."""
+    return [X.mean(axis=0, keepdims=True) + frequency_part(X, freqs) for X in params[:2]] + [params[2]]
+
+
+def drop_frequencies(params, freqs):
+    return [X - frequency_part(X, freqs) for X in params[:2]] + [params[2]]
+
+
+def codec_bits(params, Xa, Xb, splits):
+    """Pruning + scalar-quantization code length, rewritten from the codec's rule:
+    keep the k highest-scoring units, score (|u_j|+|v_j|)|w_j| (stable order),
+    for k in {8,16,32,64,h}; quantize each matrix to 2^(q-1)-1 levels of its own
+    max |x| for q in {4,8,16} (q=64 means raw floats); accept if, on the train and
+    calibration splits, argmax agreement with the original is >= .99 and the
+    row-centred logit error is <= .01 of the row-centred logit energy; length
+    32+32+8+3*64 + 3*p*k*q bits; shortest wins (ties: smaller k, then q)."""
+    U, V, W = params
+    p, h = U.shape
+    ref = forward(params, Xa, Xb)[0]
+    score = (np.sqrt((U**2).sum(0)) + np.sqrt((V**2).sum(0))) * np.sqrt((W**2).sum(1))
+    order = np.argsort(-score, kind='stable')
+    best = None
+    for k in sorted({min(x, h) for x in (8, 16, 32, 64, h)}):
+        keep = order[:k]
+        for q in (4, 8, 16, 64):
+            mats = []
+            for M in (U[:, keep], V[:, keep], W[keep]):
+                if q == 64:
+                    mats.append(M)
+                else:
+                    top = max(float(np.abs(M).max()), 1e-30); levels = 2**(q - 1) - 1
+                    mats.append(np.rint(M / top * levels) * (top / levels))
+            out = forward(mats, Xa, Xb)[0]
+            ok = True
+            for ix in splits:
+                o = out[ix] - out[ix].mean(1, keepdims=True); r = ref[ix] - ref[ix].mean(1, keepdims=True)
+                agree = np.mean(out[ix].argmax(1) == ref[ix].argmax(1))
+                ok &= agree >= .99 and np.sum((o - r)**2) <= .01 * max(np.sum(r**2), 1e-30)
+            if ok:
+                cand = (264 + 3*p*k*q, k, q)
+                best = cand if best is None or cand < best else best
+    return dict(bits=best[0], k=best[1], q=best[2])
