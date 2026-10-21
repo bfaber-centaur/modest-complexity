@@ -119,8 +119,9 @@ def overview(runs, curves, status, steps_total, p, out):
                 if row['step'] > 0:
                     z[i, row['step']//100-1] = row[split]
         cm = plt.get_cmap(cmap).with_extremes(over='#1a9850', bad='0.85')
+        # Rasterize the 36,000 cells so the SVG stays small; axes and text remain vector.
         mesh = ax.pcolormesh(edges, np.arange(len(runs)+1), np.ma.masked_invalid(z), cmap=cm, vmin=lo, vmax=hi,
-                             shading='flat')
+                             shading='flat', rasterized=True)
         ax.set_xscale('log'); ax.set_xlim(70, steps_total*1.05); ax.set_title(title, fontsize=10)
         ax.set_xlabel('update step (log scale)')
         fig.colorbar(mesh, ax=ax, shrink=.8, location='bottom', extend='max' if hi < 1 else 'neither')
