@@ -29,6 +29,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import textwrap
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -185,7 +186,7 @@ def plot(rows, base, chance_top, n_held, title, path):
         for h, lab in zip(*a.get_legend_handles_labels()):
             handles.setdefault(lab, h)
     fig.legend(handles.values(), handles.keys(), loc='outside lower center', ncol=3, fontsize=8)
-    fig.suptitle(title, fontsize=10)
+    fig.suptitle(textwrap.fill(title, 110), fontsize=10)  # narrow figure: wrap long run ids
     for ext in ('png', 'svg'):
         fig.savefig(path.with_suffix(f'.{ext}'), dpi=130)
     plt.close(fig)

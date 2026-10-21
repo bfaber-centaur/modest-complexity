@@ -60,4 +60,8 @@ Candidate reading: frequency projections commute with cyclic shifts of the token
 
 Strongest alternative: the Fourier basis is special here for a reason other than translation. Frequency projections also commute with reflection of the tokens, and they keep cos and sin of a frequency together. The removals also differ in which hidden units they switch off. A perturbation that commutes with shifts but removes nothing, such as random per-frequency phase rotations applied identically to U and V, would test translation directly. A translation reading predicts that it spares the preference relative to a non-commuting perturbation of the same size.
 
-Do not read this as evidence that the model "knows" addition. The preference is a ranking among labels that the argmax never selects. Whether it grows into held-out accuracy with longer training is exactly what the coordinator's 200k-update run tests.
+Do not read this as evidence that the model "knows" addition. The preference is a ranking among labels that the argmax never selects.
+
+## Follow-up. The 200k-update continuation
+
+Observation summary: from 50k to 200k updates every readout in this lane stays where it was, even though the weights move about 17% at constant norm. A reading consistent with this: after the fit, weight decay and the loss move the model along a set of near-equivalent memorizing solutions. The movement is not concentrated in any frequency, so it neither builds Fourier structure nor erodes the partial preference. Longer training alone does not turn this run's preference into held-out accuracy, as the coordinator's accuracy curves already show. The contrast these packets have been missing is a checkpoint that does generalize.
