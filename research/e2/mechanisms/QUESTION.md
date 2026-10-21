@@ -51,3 +51,30 @@ Expected under H1: in the 30% runs the groups' held-out equivariant share is cle
 - The equivariant share on training pairs is contaminated by memorization, because training labels equal a + b. Only held-out shares bear on H1 versus H2.
 - In the 30% runs the groups are weakly defined (concentration about 0.4), so a group's contribution mixes frequencies. The d-share does not require frequency k; the cos/sin(kd) share does.
 - Amount and identity of training data are confounded (DECISIONS D6), so any 30%-vs-50% contrast is about these two splits, not about data amount alone.
+
+## Cycle 2, written 2026-10-21 at about 19:50 UTC, before any edit below was computed
+
+Already seen: packet 1 (README.md). In the 30% runs every frequency group adds a cosine of a + b − c at its own frequency that peaks at the correct label on the common set, with about one fifth of the 50% runs' amplitude, under a held-out contribution that is about 99% not a function of a + b − c.
+
+Question: can the frequency structure in the failed 30% runs' weights carry correct answers on pairs no split trains on, once it is isolated by an edit that uses the weights alone? An edit built from a + b − c would be correct on held-out pairs by construction (a masked readout), so neither edit below looks at labels, pairs or d.
+
+Edits (`unitfilter.py`), applied at a checkpoint to every live unit j, with k_j the unit's dominant input frequency (largest share of U[:, j] and V[:, j] energy in rfft bins 1..15, the same definition as `units.py`):
+1. **Per-unit filter.** Replace U[:, j] and V[:, j] (token axis) and W[j, :] (label axis) by their projections onto frequency k_j. The DC component of U and V is kept, because it sets the unit's gate; W's DC does not change any argmax.
+2. **Scale aligned units.** Multiply W[j, :] by s ∈ {2, 4, 8} for the units whose dominant input and output frequencies agree, and also report keeping only those units (s → ∞). In the 50% runs nearly every unit agrees (0.99–1.00), so this edit is close to a no-op there; it is meant for the 30% runs (0.66–0.75).
+
+Score: plain argmax over all 31 labels on the common set (483 pairs) and on the run's own cal + audit split, against a + b. Next to every result: train accuracy against the run's own training labels and the RMS size of the pair-centred logit change.
+
+Nulls, each with the same edit:
+- step 0 of the same run (step 300 where step 0 is not published), where k_j is arbitrary;
+- for the filter, each unit filtered to a random non-dominant frequency k′_j ≠ k_j, 8 draws (seed 36000);
+- for the scaling, random live-unit sets with the same count and total ‖u_j‖‖w_j‖ within 10% of the aligned set, 8 draws;
+- the e1 shuffled-label width-128 runs (`e1-st-shuf-w128-i3000{0,1,2}-a1`, same split as the 30% runs, training labels a fixed random table that agrees with a + b on 2.7% of training pairs), at step 0 and 50k. Their fit cannot have put a + b structure in the weights.
+
+Expected if the 30% runs' weights carry a partial addition computation (H1): the filtered 30% models answer common-set pairs correctly well above chance (1/31 ≈ 0.03) and above all nulls, and the filtered 50% models keep most of their accuracy. Expected if the aligned terms are too weak or mixed to carry answers (or are not a computation): the filtered 30% models stay near chance like the nulls. The coordinator's criterion is the first case; anything else is reported as a null result.
+
+Known mismatches and failure modes:
+- Filtering changes every unit's gate, as the e1 input filters do and the packet 1 ablations do not. The random-frequency null is matched on that but keeps much less of each unit's energy in the 50% runs (dominant share 0.83–0.86 against about 0.01), less so in the 30% runs (0.40–0.44 against about 0.04). The kept-energy fraction is reported.
+- If filtering destroys the 50% runs' accuracy, the edit is too disruptive to test anything, and a negative 30% result says nothing.
+- The Fourier basis of Z_31 is a prior about cyclic structure, the same one every frequency analysis here uses. It carries no information about which phases add up at a + b; only the learned phases decide that.
+- The shuffled-label runs may be less frequency-concentrated than the 30% runs. Their concentration is reported, since a null with weaker structure is a weaker match.
+- Amount and identity of training data stay confounded (DECISIONS D6).
