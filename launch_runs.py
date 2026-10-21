@@ -36,7 +36,8 @@ def command(plan, run, out, session_label):
             '--lr', str(c['lr']), '--data-seed', str(c['data_seed']), '--init-seed', str(c['init_seed']),
             '--control-seed', str(c['control_seed']), '--diagnostic-seed', str(c['diagnostic_seed']),
             '--log-every', str(c['log_every']), '--checkpoint-every', str(c['checkpoint_every']),
-            '--diagnostics', c['diagnostics'], '--expect-split-sha256', c['split_sha256']]
+            '--diagnostics', c['diagnostics'], '--expect-split-sha256', c['split_sha256']] + (
+            ['--train-fraction', str(c['train_fraction'])] if 'train_fraction' in c else [])
 
 
 def main():

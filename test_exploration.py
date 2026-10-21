@@ -35,6 +35,18 @@ class SplitTests(unittest.TestCase):
         self.assertFalse(np.array_equal(base[3], other[3]))
         self.assertFalse(np.array_equal(base[4][0], data(31, 31001, 32000)[4][0]))
 
+    def test_train_fraction_split(self):
+        a, b, y, yr, masks = data(31, 31000, 32000, train_fraction=.5)
+        self.assertEqual(sorted(np.concatenate(masks).tolist()), list(range(31**2)))
+        for ix, groups in zip(masks, (8, 2, 6)):
+            self.assertEqual(set((a[ix]*31+b[ix]).tolist()), set((b[ix]*31+a[ix]).tolist()))
+            unordered = {(min(i, j), max(i, j)) for i, j in zip(a[ix], b[ix])}
+            self.assertEqual(len(unordered), 31*groups)
+        plan = json.loads((ROOT/'research/plan-followups.json').read_text())
+        for run in (r for r in plan['runs'] if 'train_fraction' in r):
+            self.assertEqual(array_sha256(*data(31, 31000, 32000, run['train_fraction'])[:3],
+                                          *data(31, 31000, 32000, run['train_fraction'])[4]), run['split_sha256'])
+
     def test_first_map_split(self):
         plan = json.loads((ROOT/'research/plan.json').read_text())
         c = plan['common']

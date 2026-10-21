@@ -30,6 +30,42 @@
    "steps": 200000,
    "queue_position": 1,
    "reason": "Audit of preview 1 (research/audit/AUDIT.md): at width 512 the held-out true label rises among labels never co-occurring with either operand (tops them for 37% of held-out pairs at 50k vs 7% without preference) and held-out CE turns down after about 30k, while held-out accuracy is 0. Extending the same configuration to 200k updates asks whether this becomes held-out accuracy (delayed generalization) or stays sub-threshold. Its first 50k updates should repeat e1-co-add-w512-i30000-a1 bitwise on the same host; that is a reproducibility check, not a second seed."
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "owner": "coordinator",
+   "task": "add",
+   "wd": 1,
+   "width": 128,
+   "init_seed": 30000,
+   "train_fraction": 0.5,
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "queue_position": 2,
+   "reason": "Follow-up 2, a separately labeled data comparison (not part of the e1 map): every map run fits 299 training pairs (30%, about 10 per class) without held-out accuracy, and follow-up 1 shows the width-512 state saturating by about 50k updates. Raising the training share to 50% (8 of 16 grouped pairs per class; calibration stays 2, audit 6) at width 128 with the three map init seeds asks whether data, rather than width or horizon, is the binding constraint. Same data seed, so the new split is a different partition of the same pairs; e1 results are unchanged and remain the reference."
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30001-tf50-a1",
+   "owner": "coordinator",
+   "task": "add",
+   "wd": 1,
+   "width": 128,
+   "init_seed": 30001,
+   "train_fraction": 0.5,
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "queue_position": 3,
+   "reason": "Follow-up 2, a separately labeled data comparison (not part of the e1 map): every map run fits 299 training pairs (30%, about 10 per class) without held-out accuracy, and follow-up 1 shows the width-512 state saturating by about 50k updates. Raising the training share to 50% (8 of 16 grouped pairs per class; calibration stays 2, audit 6) at width 128 with the three map init seeds asks whether data, rather than width or horizon, is the binding constraint. Same data seed, so the new split is a different partition of the same pairs; e1 results are unchanged and remain the reference."
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30002-tf50-a1",
+   "owner": "coordinator",
+   "task": "add",
+   "wd": 1,
+   "width": 128,
+   "init_seed": 30002,
+   "train_fraction": 0.5,
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "queue_position": 4,
+   "reason": "Follow-up 2, a separately labeled data comparison (not part of the e1 map): every map run fits 299 training pairs (30%, about 10 per class) without held-out accuracy, and follow-up 1 shows the width-512 state saturating by about 50k updates. Raising the training share to 50% (8 of 16 grouped pairs per class; calibration stays 2, audit 6) at width 128 with the three map init seeds asks whether data, rather than width or horizon, is the binding constraint. Same data seed, so the new split is a different partition of the same pairs; e1 results are unchanged and remain the reference."
   }
  ]
 }

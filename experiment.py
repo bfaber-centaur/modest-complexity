@@ -6,16 +6,17 @@ import numpy as np
 from instrumentation import Timings, inventory
 
 
-def data(p, seed, control_seed=None):
+def data(p, seed, control_seed=None, train_fraction=.3):
     """Grouped split from `seed`. The shuffled-label table uses `control_seed`
-    when given; None keeps the historical single-stream draw."""
+    when given; None keeps the historical single-stream draw. The calibration
+    share stays .1; the audit split takes the rest."""
     rng = np.random.default_rng(seed)
     a, b = np.indices((p, p)).reshape(2, -1)
     split_masks = [np.zeros((p,p),bool) for _ in range(3)]
     for c in range(p):
         groups = np.array([(i,j) for i in range(p) for j in range(i,p) if (i+j)%p==c])
         rng.shuffle(groups); n=len(groups)
-        nt=max(1,round(.3*n)); nc=max(1,round(.1*n))
+        nt=max(1,round(train_fraction*n)); nc=max(1,round(.1*n))
         for mask,part in zip(split_masks,np.split(groups,[nt,nt+nc])):
             for i,j in part: mask[i,j]=mask[j,i]=True
     masks = [np.flatnonzero(mask.ravel()) for mask in split_masks]
@@ -198,7 +199,7 @@ def run(args):
     try:
         with timing.measure('setup'):
             seeds=resolve_seeds(args)
-            a,b,y,yr,masks=data(args.p,seeds['data_seed'],seeds['control_seed'])
+            a,b,y,yr,masks=data(args.p,seeds['data_seed'],seeds['control_seed'],args.train_fraction)
             target=y if args.task=='add' else yr
             # The split hash covers inputs, addition labels and split membership,
             # so it is identical for both tasks; the target hash identifies labels.
@@ -308,6 +309,7 @@ if __name__=='__main__':
     ap.add_argument('--expect-split-sha256',help='Fail before training unless the split hash matches')
     ap.add_argument('--run-id'); ap.add_argument('--purpose'); ap.add_argument('--session-label')
     ap.add_argument('--p',type=int,default=31)
+    ap.add_argument('--train-fraction',type=float,default=.3,help='Share of grouped pairs per class in train')
     ap.add_argument('--hidden',type=int,default=128); ap.add_argument('--steps',type=int,default=50000)
     ap.add_argument('--lr',type=float,default=.001); ap.add_argument('--wd',type=float,default=1.)
     ap.add_argument('--log-every',type=int,default=100); ap.add_argument('--audit-every',type=int,default=1000)
@@ -320,6 +322,8 @@ if __name__=='__main__':
     else:
         if args.p<7 or args.p%2==0 or args.hidden<1 or args.steps<0 or min(args.log_every,args.audit_every,args.checkpoint_every,args.shams)<1:
             ap.error('Require odd p >= 7, positive hidden/cadences/shams, and nonnegative steps')
+        if not 0<args.train_fraction<=.8:
+            ap.error('Require 0 < --train-fraction <= .8 (calibration keeps .1)')
         if args.checkpoint_every%args.log_every or args.audit_every%args.log_every:
             ap.error('Checkpoint and audit cadences must be multiples of --log-every')
         run(args)

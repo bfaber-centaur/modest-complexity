@@ -26,6 +26,7 @@ Worker prompts and assignments: [WORKER_PROMPTS.md](WORKER_PROMPTS.md).
 ## Adaptive decisions
 
 1. 2026-10-21, after the preview 1 audit: follow-up `e1f1-co-add-w512-i30000-s200k-a1` (width 512, seed 30000, 200,000 updates) in `research/plan-followups.json`, run in the coordinator session. Reason recorded in that file. This is follow-up 1 of at most 2.
+2. 2026-10-21, after follow-up 1 saturated (held-out rank statistic flat from about 60k, held-out accuracy 0 to 200k): follow-up 2, a separately labeled data comparison, `e1f2-co-add-w128-i3000{0,1,2}-tf50-a1` (width 128, 50% training share, same data seed, three map init seeds, 50k updates), run in the coordinator session. Chosen over the size/time lane's other proposal (width 64 to 200k) because follow-up 1 suggests a longer horizon alone is unlikely to change the picture, while the training share is the untested constraint. Shared-code change: `--train-fraction` (default .3 leaves every e1 split byte-identical; tested). This is the second and last follow-up allowed by the charter.
 
 ## Known gaps (from the audit, not blocking)
 
