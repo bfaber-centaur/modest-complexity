@@ -193,9 +193,13 @@ def load_run(run_dir, step):
         verified(run_dir, name)
     raw = np.load(data_path)
     d = {k: raw[k] for k in ('a', 'b', 'y', 'yadd', 'train', 'cal', 'audit')}
-    plan = json.loads((ROOT/'research/plan.json').read_text())
+    # The e1 plan's split, unless research/plan-followups.json gives this run its own.
+    expected = json.loads((ROOT/'research/plan.json').read_text())['common']['split_sha256']
+    followups = json.loads((ROOT/'research/plan-followups.json').read_text())['runs']
+    expected = next((r['split_sha256'] for r in followups if r['run_id'] == manifest['run_id'] and 'split_sha256' in r),
+                    expected)
     split = array_sha256(d['a'], d['b'], d['yadd'], d['train'], d['cal'], d['audit'])
-    if split != plan['common']['split_sha256'] or array_sha256(d['y']) != manifest['data_hashes']['target_sha256']:
+    if split != expected or array_sha256(d['y']) != manifest['data_hashes']['target_sha256']:
         raise ValueError('split or target hash differs from the plan/manifest')
     w = load_weights(run_dir, step)
     logged = next(json.loads(line) for line in (run_dir/'metrics.jsonl').read_text().splitlines()
