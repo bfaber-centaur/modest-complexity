@@ -106,7 +106,7 @@ def compare_row(mine, logged, split):
                    for k in ('cross_entropy', 'margin_min', 'margin_median', 'margin_p05')})
 
 
-def recompute_checkpoints(run_dir, fr, rows, p):
+def recompute_checkpoints(run_dir, fr, rows, p, labels):
     Xa, Xb = ind.one_hot_inputs(fr['a'], fr['b'], p)
     out = {}
     for path in sorted(run_dir.glob('checkpoint_*.npz')):
@@ -114,7 +114,7 @@ def recompute_checkpoints(run_dir, fr, rows, p):
         logits = ind.forward((ck['U'], ck['V'], ck['W']), Xa, Xb)[0]
         res = {}
         for split in ('train', 'cal', 'audit'):
-            ix = fr[split]; ev = ind.evaluate(logits[ix], fr['yadd'][ix])
+            ix = fr[split]; ev = ind.evaluate(logits[ix], labels[ix])
             res[split] = dict(mine=ev, diff=compare_row(ev, rows[step], split))
         norm = float(np.sqrt(sum(np.vdot(ck[k], ck[k]) for k in ('U', 'V', 'W'))))
         res['norm_rel_diff'] = abs(norm - rows[step]['norm']) / rows[step]['norm']
@@ -126,11 +126,11 @@ def recompute_checkpoints(run_dir, fr, rows, p):
     return out
 
 
-def replay(ck, start, stop, fr, rows, p, lr, wd):
+def replay(ck, start, stop, fr, rows, p, lr, wd, labels):
     """Independent AdamW training from checkpoint `start` to `stop`; compares every
     logged row in between and returns the state at `stop`."""
     Xa, Xb = ind.one_hot_inputs(fr['a'], fr['b'], p); tr = fr['train']
-    Xat, Xbt, yt = Xa[tr], Xb[tr], fr['yadd'][tr]
+    Xat, Xbt, yt = Xa[tr], Xb[tr], labels[tr]
     params = [ck['U'].copy(), ck['V'].copy(), ck['W'].copy()]
     m = [ck['mU'].copy(), ck['mV'].copy(), ck['mW'].copy()]
     v = [ck['vU'].copy(), ck['vV'].copy(), ck['vW'].copy()]
@@ -142,7 +142,7 @@ def replay(ck, start, stop, fr, rows, p, lr, wd):
         if t % 100 == 0 or t == stop:
             row = rows[t]; logits = ind.forward(params, Xa, Xb)[0]
             for split in ('train', 'cal', 'audit'):
-                ix = fr[split]; ev = ind.evaluate(logits[ix], fr['yadd'][ix]); d = compare_row(ev, row, split)
+                ix = fr[split]; ev = ind.evaluate(logits[ix], labels[ix]); d = compare_row(ev, row, split)
                 worst['acc_examples'] = max(worst['acc_examples'], round(d['acc']*len(ix)))
                 worst['cross_entropy'] = max(worst['cross_entropy'], d['cross_entropy'])
                 worst['margins'] = max(worst['margins'], d['margin_min'], d['margin_median'], d['margin_p05'])
@@ -151,8 +151,11 @@ def replay(ck, start, stop, fr, rows, p, lr, wd):
             lu = row['optimizer_update']
             worst['update_norms'] = max(worst['update_norms'],
                                         abs(upd['adaptive_norm'] - lu['adaptive_norm'])/lu['adaptive_norm'],
-                                        abs(upd['decay_norm'] - lu['decay_norm'])/lu['decay_norm'])
-            worst['cosine'] = max(worst['cosine'], abs(upd['cosine'] - lu['cosine']))
+                                        abs(upd['decay_norm'] - lu['decay_norm'])/max(lu['decay_norm'], 1e-300))
+            if (upd['cosine'] is None) != (lu['cosine'] is None):
+                worst['cosine'] = float('inf')
+            elif upd['cosine'] is not None:
+                worst['cosine'] = max(worst['cosine'], abs(upd['cosine'] - lu['cosine']))
             trace.append(dict(step=t, train_ce_rel=compare_row(ind.evaluate(logits[tr], yt), row, 'train')['cross_entropy']))
     return dict(params=params, m=m, v=v), worst, trace
 
@@ -201,6 +204,8 @@ def main():
         rows_list = [json.loads(s) for s in (rd/'metrics.jsonl').read_text().splitlines()]
         rows = {z['step']: z for z in rows_list}
         pl = planned[run_id]
+        target_key = 'yadd' if pl['task'] == 'add' else 'yshuffled'  # shuffled-label control
+        labels = fr[target_key]
         # Handoff: every published file matches the manifest; flags match presence.
         local = {f.name for f in rd.iterdir() if f.is_file() and f.name != 'manifest.json'}
         r['manifest'] = dict(
@@ -229,7 +234,7 @@ def main():
             python_numpy=(cfg['runtime']['python'], cfg['runtime']['numpy']))
         with np.load(rd/'data.npz') as d:
             r['data_npz_equals_frozen'] = all(np.array_equal(d[k], fr[k2]) for k, k2 in
-                                              (('a', 'a'), ('b', 'b'), ('y', 'yadd'), ('yadd', 'yadd'),
+                                              (('a', 'a'), ('b', 'b'), ('y', target_key), ('yadd', 'yadd'),
                                                ('train', 'train'), ('cal', 'cal'), ('audit', 'audit')))
         # Logging semantics.
         steps = [z['step'] for z in rows_list]
@@ -240,7 +245,9 @@ def main():
             seconds_monotone=all(x['seconds'] <= y['seconds'] for x, y in zip(rows_list, rows_list[1:])),
             runtime_complete=(rt['status'], rt['completed_steps']) == ('complete', c['steps']),
             first_interpolation_consistent=rt['first_interpolation'] == first_fit, first_fit_step=first_fit,
-            cosine_in_range=all(-1 <= z['optimizer_update']['cosine'] <= 1 for z in rows_list[1:]))
+            # Without decay the decay displacement is zero and the logged cosine is null by design.
+            cosine_in_range=all((z['optimizer_update']['cosine'] is None) if pl['wd'] == 0 else
+                                -1 <= z['optimizer_update']['cosine'] <= 1 for z in rows_list[1:]))
         # Values quoted in the coordinator's INDEX.md table, recomputed from metrics.jsonl.
         late = [z for z in rows_list if z['step'] >= 1000]; last = rows_list[-1]
         r['index_values'] = dict(
@@ -258,12 +265,15 @@ def main():
                              command_matches_plan=ev[0]['command'][ev[0]['command'].index('--hidden') + 1] == str(pl['width'])
                              and ev[0]['command'][ev[0]['command'].index('--init-seed') + 1] == str(pl['init_seed']))
         # Initialization from the recorded seed, written independently.
-        ck0 = load_ck(rd/'checkpoint_000000.npz')
-        init = ind.initial_weights(p, pl['width'], pl['init_seed'])
-        r['init'] = dict(weights_equal_independent_draw=all(np.array_equal(x, ck0[k]) for x, k in zip(init, 'UVW')),
-                         moments_zero=all(not ck0[k].any() for k in KEYS[3:]))
+        if (rd/'checkpoint_000000.npz').exists():  # lanes may publish only some checkpoints
+            ck0 = load_ck(rd/'checkpoint_000000.npz')
+            init = ind.initial_weights(p, pl['width'], pl['init_seed'])
+            r['init'] = dict(weights_equal_independent_draw=all(np.array_equal(x, ck0[k]) for x, k in zip(init, 'UVW')),
+                             moments_zero=all(not ck0[k].any() for k in KEYS[3:]))
+        else:
+            r['init'] = 'not published'
         # Recompute metrics at every published checkpoint.
-        rc = recompute_checkpoints(rd, fr, rows, p)
+        rc = recompute_checkpoints(rd, fr, rows, p, labels)
         r['recompute'] = dict(
             steps=sorted(rc),
             max_acc_diff=max(rc[s][sp]['diff']['acc'] for s in rc for sp in ('train', 'cal', 'audit')),
@@ -274,17 +284,18 @@ def main():
             checkpoints_ok=all(rc[s]['file_step_matches'] and rc[s]['finite'] and rc[s]['v_nonnegative']
                                and rc[s]['dtypes'] == ['float64'] for s in rc))
         # The surprising result: where do held-out predictions and true labels sit?
-        final = load_ck(rd/f'checkpoint_{c["steps"]:06d}.npz')
-        logits = ind.forward((final['U'], final['V'], final['W']), Xa, Xb)[0]
-        held = np.concatenate([fr['cal'], fr['audit']])
-        pred = logits[held].argmax(1); true = fr['yadd'][held]
-        rank = (logits[held] > logits[held, true][:, None]).sum(1)  # 0 = top
-        r['heldout_final'] = dict(
-            acc=float(np.mean(pred == true)),
-            pred_cooccurs_with_operand_in_train=float(np.mean([int(pr) in (present[fr['a'][i]] | present[fr['b'][i]])
-                                                               for pr, i in zip(pred, held)])),
-            true_label_rank_median=float(np.median(rank)), true_label_rank_min=int(rank.min()),
-            true_label_rank_pctile_median=float(np.median(rank)/(p - 1)))
+        if pl['task'] == 'add':  # label absence is a property of the addition table
+            final = load_ck(rd/f'checkpoint_{c["steps"]:06d}.npz')
+            logits = ind.forward((final['U'], final['V'], final['W']), Xa, Xb)[0]
+            held = np.concatenate([fr['cal'], fr['audit']])
+            pred = logits[held].argmax(1); true = fr['yadd'][held]
+            rank = (logits[held] > logits[held, true][:, None]).sum(1)  # 0 = top
+            r['heldout_final'] = dict(
+                acc=float(np.mean(pred == true)),
+                pred_cooccurs_with_operand_in_train=float(np.mean([int(pr) in (present[fr['a'][i]] | present[fr['b'][i]])
+                                                                   for pr, i in zip(pred, held)])),
+                true_label_rank_median=float(np.median(rank)), true_label_rank_min=int(rank.min()),
+                true_label_rank_pctile_median=float(np.median(rank)/(p - 1)))
         if args.replay:
             ck_steps = sorted(rc)
             r['replay'] = []
@@ -294,7 +305,7 @@ def main():
                     r['replay'].append(dict(start=s0, stop=s1, skipped='replay budget')); continue
                 budget -= s1 - s0
                 t0 = time.perf_counter()
-                state, worst, trace = replay(load_ck(rd/f'checkpoint_{s0:06d}.npz'), s0, s1, fr, rows, p, c['lr'], float(pl['wd']))
+                state, worst, trace = replay(load_ck(rd/f'checkpoint_{s0:06d}.npz'), s0, s1, fr, rows, p, c['lr'], float(pl['wd']), labels)
                 target = load_ck(rd/f'checkpoint_{s1:06d}.npz')
                 got = state['params'] + state['m'] + state['v']
                 r['replay'].append(dict(start=s0, stop=s1, seconds=round(time.perf_counter() - t0, 1),

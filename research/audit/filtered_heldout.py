@@ -17,7 +17,8 @@ import independent as ind  # noqa: E402
 
 run_dir = Path(sys.argv[1])
 with np.load(run_dir/'data.npz') as z:
-    a, b, y = z['a'], z['b'], z['y']; held = np.concatenate([z['cal'], z['audit']])
+    # Scored against the addition label a+b, whatever the run was trained on.
+    a, b, y = z['a'], z['b'], z['yadd']; held = np.concatenate([z['cal'], z['audit']])
 Xa, Xb = ind.one_hot_inputs(a, b, 31)
 for step in map(int, sys.argv[2:]):
     with np.load(run_dir/f'checkpoint_{step:06d}.npz') as z:
