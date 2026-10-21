@@ -182,3 +182,72 @@ The last command redraws the cycle-1 figure with the footnote now generated from
 ## Budget, cycle 2
 
 About 12 s of numerical execution, one process at a time, one BLAS thread. The e2 total is still under one minute. No runs were launched and no shared code was changed.
+
+---
+
+# Cycle 3: the per-unit frequency filter (mechanisms packet 2) and the no-decay counterexample
+
+Base `3b94f0f`. The question, the suspected mechanism and the decision rule were written down before computing: [QUESTION-3.md](QUESTION-3.md), committed at `5da4216`. The target is mechanisms packet 2 (`research/e2/mechanisms/unitfilter.py`, PR #17). Its claim: projecting every unit's U and V columns and W row onto the unit's own dominant input frequency, a weights-only edit, takes the failed 30% runs from 0.000–0.004 to 0.43–0.58 common-set accuracy. The coordinator's spot check (D10) found 0.47 / 0.33 / 0.42 for the no-decay runs.
+
+## Figure 6: what does the filter need?
+
+![unit filter check](figures/unitfilter-check.png)
+
+Look before reading: in the left panel, how high do the black diamonds sit compared with the gray nulls and with the gold and purple points? These are networks whose inputs are untrained random features. In the right panel, which points lie on the diagonal?
+
+Independent reimplementation (`unitfilter_check.py`) with cos/sin projections and its own null seeds. The constructed control keeps the step-0 U and V of each init seed and fits W in closed form (ridge) to one-hot a+b on the training pairs. It has no optimizer and no learned input structure. Common-set accuracy on the 483 pairs at the final step:
+
+| network | unedited | filtered (per seed) | filtered train | nulls: random other frequency, median (max) / phases scrambled, median (max) |
+|---|---|---|---|---|
+| step 0, three inits | 0.025–0.029 | 0.064 / 0.029 / 0.054 | 0.02–0.08 | 0.024–0.038 (0.060) / 0.022–0.036 (0.060) |
+| step-0 features, readout fitted to the 299 training pairs (30%), λ 1e-6 / 1e-2 | 0.000–0.014 (train 0.98–0.99) | 0.195 / 0.143 / 0.277 and 0.234 / 0.145 / 0.300 | 0.16–0.29 | 0.058–0.073 (0.114) / 0.027–0.035 (0.062) |
+| same, 478 training pairs (50%), post hoc | 0.000–0.006 (train 0.80–0.85) | 0.298 / 0.255 / 0.356 and 0.325 / 0.261 / 0.362 | 0.28–0.38 | up to 0.135 / up to 0.068 |
+| shuffled labels, decay 1 | 0.029–0.035 | 0.041 / 0.035 / 0.035 | 0.04–0.09 | 0.028–0.034 (0.050) / 0.032–0.036 (0.054) |
+| a+b labels, no decay (D10) | 0.000–0.002 | **0.466 / 0.325 / 0.416** | 0.49–0.63 | 0.085–0.090 (0.133) / 0.026–0.039 (0.056) |
+| a+b labels, decay 1, 30% | 0.000–0.004 | 0.431 / 0.540 / 0.580 | 0.69–0.79 | 0.056–0.087 (0.108) / 0.026–0.033 (0.052) |
+| a+b labels, decay 1, 50% | 0.878–0.913 | 1.000 / 1.000 / 1.000 | 1.00 | 0.020–0.034 (0.058) / 0.026–0.034 (0.052) |
+
+**Over training.** Filtered common accuracy for the no-decay runs is 0.25–0.35 at 1k, 0.33–0.39 at 5k, 0.32–0.48 at 20k and 0.33–0.47 at 50k. For the decayed 30% runs it is 0.28–0.34, 0.29–0.46, 0.50–0.59 and 0.43–0.58. The two are indistinguishable at 1k and 5k. The decayed runs lead by about 0.1 from 20k on, with overlapping ranges.
+
+**Held-out against train (right panel).** Every filtered model scores about as well on held-out pairs as it does on training pairs, or a little worse. The random-feature controls lie on the diagonal. The no-decay and decayed 30% runs fall on one shared band below it.
+
+## Software checks, cycle 3
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| G15 | Filter reimplemented from the packet's definitions | PASS | 126 rows ("none", the filter, and the input-DC-removed variant at every run and step of the packet) agree with `unitfilter.csv` within 5e-7, the rounding of the audit CSV. The audit's own null draws match the packet's in distribution (medians within 0.01, maxima within 0.02) |
+| G16 | D10 no-decay numbers | PASS | Reproduced exactly: 0.466 / 0.325 / 0.416, train 0.632 / 0.485 / 0.609. With the packet's two weight-level nulls added, the filter is above every null draw in every no-decay run (null maxima 0.056 scrambled, 0.133 other frequency) |
+| G17 | The edit is label-free | PASS in code; see the interpretation for what it measures | k_j comes from U and V alone, and no label, pair set or a+b−c enters the edit (read, and reimplemented from weights only). W's projection acts after the ReLU, so it cannot change a gate. The input projection does: it flips 28–35% of (pair, unit) gates in the 30%, no-decay, shuffled and step-0 networks, and 16% in the 50% runs, even with the input DC kept. The filtered network is a different network, not a part of the original one switched off |
+
+## Interpretations, cycle 3
+
+| Claim | Verdict | Evidence and scope |
+|---|---|---|
+| Fit-induced interpolation: a readout fitted to a+b on the training pairs, plus the projection's prior, accounts for the filtered accuracy (QUESTION-3 F) | SUPPORTED LOCALLY, by the pre-stated rule in two of three seeds | Random step-0 features with a readout fitted in closed form reach 0.23 and 0.30 filtered (seeds 30000 and 30002, threshold 0.2), above every null draw. Seed 30001 gives 0.145: above its nulls but below the threshold. H's prediction, at most 0.064, fails in all three seeds. Fitting the 50% training pairs instead gives 0.26–0.36 |
+| The filtered 0.43–0.58 shows that the failed 30% runs hold a generalizing computation, built by weight decay and hidden by the rest of the network (packet 2's headline reading) | CONTRADICTED for most of the effect; AMBIGUOUS for the remainder | The no-decay runs, with a null restricted rank and concentration 0.22, filter to 0.33–0.47, and a network with untrained inputs to 0.14–0.30. The decayed runs exceed the no-decay runs by about 0.1 from 20k on, inside overlapping ranges, and not at 1k–5k. Filtered accuracy does not follow cycle 2's aligned-term amplitude, which is 5× larger with decay; the restricted rank does follow it |
+| The packet's nulls show that the filtered accuracy needs the learned frequency structure | AMBIGUOUS | The random-other-frequency, phase-scrambled, step-0 and shuffled-label nulls all destroy or lack the per-unit phase relation between input and output. Any readout fitted to a+b creates that relation, so these nulls do not separate "learned by decay" from "set by fitting the labels". The informative nulls are fitted networks without decay, or with untrained inputs |
+| Packet 2's own alternative, "fit-induced interpolation, the projection supplies the prior" (D10) | SUPPORTED LOCALLY | As in the first row. The held-out against train panel shows every filtered model generalizes about as well as it fits, as a function of a+b−c would |
+
+## Most consequential remaining uncertainty, cycle 3
+
+The closed-form readout shows that label fitting is sufficient for most of the filtered accuracy. It does not show how much of the gradient-trained runs' filtered accuracy arose that way. The roughly 0.1 by which the decayed runs exceed the no-decay runs after 20k is the only part that could reflect decay-built structure. It rests on three seeds per condition at one width and one split, and the ranges overlap. Scoring filtered accuracy against the restricted rank across the published 30% width map (16–512) would show whether the increment tracks the decay-dependent quantities (aligned amplitude, restricted rank) or only the training fit. It needs no new runs.
+
+## Reproduce, cycle 3
+
+```bash
+C=research/coordinator/runs; S=research/size-time/runs; E=research/e2/audit; T=0,1000,5000,20000,50000
+uv run --locked python $E/unitfilter_check.py $E/results/unitfilter-check.csv \
+  $C/e1f2-co-add-w128-i30000-tf50-a1:$T $C/e1f2-co-add-w128-i30001-tf50-a1:$T $C/e1f2-co-add-w128-i30002-tf50-a1:$T \
+  $C/e1-co-add-w128-i30000-a1:$T $S/e1-st-add-w128-i30001-a1:$T $S/e1-st-add-w128-i30002-a1:300,50000 \
+  $S/e1-st-shuf-w128-i30000-a1:$T $S/e1-st-shuf-w128-i30001-a1:$T $S/e1-st-shuf-w128-i30002-a1:$T \
+  $S/e1-st-add0-w128-i30000-a1:$T $S/e1-st-add0-w128-i30001-a1:$T $S/e1-st-add0-w128-i30002-a1:$T \
+  ridge:$S/e1-st-add0-w128-i30000-a1 ridge:$S/e1-st-add0-w128-i30001-a1 ridge:$S/e1-st-add0-w128-i30002-a1 \
+  ridge50:$S/e1-st-add0-w128-i30000-a1 ridge50:$S/e1-st-add0-w128-i30001-a1 ridge50:$S/e1-st-add0-w128-i30002-a1
+uv run --locked --group analysis python $E/plot_unitfilter_check.py $E/figures/unitfilter-check $E/results/unitfilter-check.csv
+```
+
+The step-0 weights of the no-decay runs are byte-identical to those of the addition runs with the same init seed (checked for 30000 and 30001), so they serve as the step-0 features for all three seeds.
+
+## Budget, cycle 3
+
+About 3 s of numerical execution, one process, one BLAS thread. The e2 total is still under one minute. No training runs were launched. The constructed control is a closed-form least-squares readout on frozen step-0 features: no optimizer, no checkpoints, no run ID.
