@@ -74,13 +74,18 @@ def main(run_dir, step, out_dir):
         # via a sort instead of pairwise comparisons.
         tr, held = d['train'], np.concatenate([d['cal'], d['audit']])
         seen = set(zip(a[tr], y[tr])) | set(zip(b[tr], y[tr]))  # (operand, label) pairs in training
-        worst_rel = 0.
-        for row in csv.DictReader(open(out_dir/'relational.csv')):
+        worst_rel = worst_energy = 0.
+        rel = list(csv.DictReader(open(out_dir/'relational.csv')))
+        nondc = sum(np.sum((x - x.mean(0))**2) for x in (U, V))
+        for row in rel:
             if row['kind'] != 'top-K':
                 continue
             freqs = [int(f) for f in row['frequencies'].split()]
             P = projector(p, freqs) if row['mode'] == 'retain' else np.eye(p) - projector(p, freqs) + projector(p, [])
             z = logits(P @ U, P @ V, W, a, b)
+            if 'delta_energy_fraction' in row:
+                changed = sum(np.sum((P @ x - x)**2) for x in (U, V))/nondc
+                worst_energy = max(worst_energy, abs(changed - float(row['delta_energy_fraction'])))
             ranks, tops = [], []
             for i in held:
                 absent = [c for c in range(p) if (a[i], c) not in seen and (b[i], c) not in seen and c != y[i]]
@@ -91,6 +96,18 @@ def main(run_dir, step, out_dir):
             worst_rel = max(worst_rel, abs(np.mean(ranks) - float(row['true_rank_among_absent'])),
                             abs(np.mean(tops) - float(row['true_top_among_absent'])))
         out['relational_topK_rows_max_abs_diff'] = worst_rel
+        out['relational_topK_energy_fraction_max_abs_diff'] = worst_energy
+        sub = [r for r in rel if r['kind'] == 'random-subspace null']
+        if sub:
+            # A uniformly random 2K-dim subspace of the 30-dim zero-mean space holds 2K/30 of
+            # any fixed energy on average; at K = 15 it is the whole space, leaving DC only.
+            ks = sorted({int(r['K']) for r in sub})
+            mean = {k: np.mean([float(r['delta_energy_fraction']) for r in sub if int(r['K']) == k]) for k in ks}
+            out['subspace_null_mean_energy_fraction_minus_2K_over_30'] = {k: round(float(mean[k] - 2*k/(p - 1)), 4) for k in ks}
+            dc = next(r for r in rel if r['kind'] == 'top-K' and r['mode'] == 'remove' and int(r['K']) == (p - 1)//2)
+            keys = ('train_accuracy', 'true_rank_among_absent', 'true_top_among_absent')
+            out['subspace_null_full_rank_max_abs_diff_vs_dc_only'] = max(
+                abs(float(r[k]) - float(dc[k])) for r in sub if int(r['K']) == (p - 1)//2 for k in keys)
     print(json.dumps(out))
 
 
