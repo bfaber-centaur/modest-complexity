@@ -9,7 +9,8 @@ data and record the largest weight difference every 100 steps:
                one unit in the last place (a pure sensitivity control)
 If shared reproduces the next checkpoint exactly, and independent-vs-shared grows
 like shared-vs-(shared+ulp), the gap is amplification of rounding differences,
-not a formula difference.
+not a formula difference. Every 100 steps it also counts training-pair ReLU gates
+that differ between shared and independent, and the smallest |pre-activation|.
 
 uv run --locked python research/audit/divergence.py RUN_DIR START STOP OUT.json
 """
@@ -48,9 +49,12 @@ for t in range(start + 1, stop + 1):
     ind.adamw_step(I[0], ind.loss_and_grad(I[0], Xa, Xb, y)[1], I[1], I[2], t, lr, wd)
     if t % 100 == 0:
         loss = lossgrad(S[0], a, b, y)[0]
+        zS, zI = S[0][0][a] + S[0][1][b], I[0][0][a] + I[0][1][b]  # hidden pre-activations, training pairs
         rows.append(dict(step=t, shared_train_loss=loss,
                          independent_vs_shared=max(float(np.max(np.abs(i - s))) for i, s in zip(I[0], S[0])),
-                         ulp_vs_shared=max(float(np.max(np.abs(e - s))) for e, s in zip(E[0], S[0]))))
+                         ulp_vs_shared=max(float(np.max(np.abs(e - s))) for e, s in zip(E[0], S[0])),
+                         relu_gates_differing=int(np.sum((zS > 0) != (zI > 0))),
+                         shared_min_abs_preactivation=float(np.min(np.abs(zS)))))
 result = dict(run=run_dir.name, start=start, stop=stop, rows=rows)
 if target.exists():
     with np.load(target) as z:

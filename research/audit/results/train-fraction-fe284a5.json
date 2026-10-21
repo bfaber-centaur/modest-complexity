@@ -1,0 +1,34 @@
+{
+ "default_equals_previous_code": true,
+ "single_stream_equals_previous_code": true,
+ "default_equals_frozen_e1": true,
+ "tf50_independent_equals_frozen": true,
+ "tf50_independent_equals_shared": true,
+ "tf50_hash": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+ "tf50_hash_matches_plan": true,
+ "tf50_sizes": [
+  478,
+  119,
+  364
+ ],
+ "nesting": {
+  "tf50_train_contains_e1_train_and_cal": true,
+  "tf50_train_extra_from_e1_audit": 61,
+  "tf50_cal_within_e1_audit": true,
+  "tf50_audit_within_e1_audit": true
+ },
+ "tf50_label_absence": {
+  "heldout_pairs": 483,
+  "true_label_present": 0,
+  "absent_labels_per_pair": [
+   2,
+   8.0,
+   21
+  ]
+ },
+ "tf80_sizes": [
+  777,
+  123,
+  61
+ ]
+}
