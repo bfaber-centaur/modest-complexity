@@ -39,3 +39,7 @@ The offset profile: for each run's final checkpoint, the mean normalized rank of
 - **Subset selection.** For k ≠ 0 only pairs whose a+b+k is absent enter the average, and whether it is absent depends on which neighbouring pairs were trained. So different k use different, structured subsets of pairs. The matched k = 0 value on each subset controls for this, but not perfectly.
 - **Thin subsets.** For the 50% split few labels are absent per pair (median 8), so some offsets have few usable pairs. Counts are reported with the profile.
 - **Not a mechanism.** A smooth profile would show structure in the ranking among absent labels, not which algorithm the network implements, and not a deployable predictor.
+
+## Added after the profile was computed (2026-10-21, ~20:00 UTC)
+
+A failure mode not listed above: a readout spread evenly over many frequencies, Σ_ω cos(ω(a+b−c)) with similar α_ω, is itself a sharp single peak at c = a+b (a Dirichlet kernel). So a single dip at k = 0 with a flat profile elsewhere does not exclude B. The profile can only show B when a few frequencies dominate. The result is therefore read as "no offset other than k = 0 is preferred", not as "the readout is not periodic".
