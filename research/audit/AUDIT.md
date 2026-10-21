@@ -1,6 +1,6 @@
 # Independent audit, expedition e1
 
-Contents: [Part 1, first preview runs](#part-1-first-preview-runs) · [Part 2, mechanism lane first deliverable](#part-2-mechanism-lane-first-deliverable)
+Contents: [Part 1, first preview runs](#part-1-first-preview-runs) · [Part 2, mechanism lane first deliverable](#part-2-mechanism-lane-first-deliverable) · [Part 3, size/time lane runs and controls](#part-3-sizetime-lane-runs-and-controls)
 
 ## Part 1: first preview runs
 
@@ -135,7 +135,7 @@ Audited 2026-10-21 on `swarm/exploration` at `a096c82` (mechanism lane integrate
 |---|---|---|
 | The training fit is spread across all 15 input frequencies roughly in proportion to energy, not held in a small subset (Packet 1 candidate) | SUPPORTED LOCALLY as a description in input-Fourier coordinates | M3 to M5. The lane's own alternative, that input-Fourier energy is the wrong coordinate system, is not distinguished |
 | Held-out CE rising as frequencies are kept "fits" the account that input weights push held-out pairs away from their labels | AMBIGUOUS | CE rises, but Part 1 shows the true label also rising among the never-co-occurring labels. The model holds both effects |
-| "Do not read" the above-chance held-out accuracy at K=1–3, because random subsets reach 0.105 and so this is arbitrary filtering of a memorizing model | AMBIGUOUS (the reference is not a no-structure null) | At the trained checkpoint, 93–98% of all small subsets (width 128) give above-chance held-out accuracy, while the same filtering at step 0 stays at chance. The effect grows with width (w32 < w128 < w512), the same order as the Part 1 rank statistic. A filtering artifact specific to trained weights is not excluded without a trained no-structure control |
+| "Do not read" the above-chance held-out accuracy at K=1–3, because random subsets reach 0.105 and so this is arbitrary filtering of a memorizing model | AMBIGUOUS (the reference is not a no-structure null) | At the trained checkpoint, 93–98% of all small subsets (width 128) give above-chance held-out accuracy, while the same filtering at step 0 stays at chance. The effect grows with width (w32 < w128 < w512), the same order as the Part 1 rank statistic. A filtering artifact specific to trained weights is not excluded without a trained no-structure control | **Update (Part 3): the shuffled-label control filters to chance, so this row is now CONTRADICTED.**
 | The input-energy frequency ranking is not a property of the computed function (Packet 2) | SUPPORTED LOCALLY | M6 and M8 |
 | The codec is less fragile than the ranking but is not a function property; the pruning order is invariant and only quantization responds | SUPPORTED LOCALLY | M7, with an independent codec |
 | Alternative: "every random draw increased the parameter norm, consistent with weight decay settling near a norm-minimizing balance" | AMBIGUOUS | Random log-normal gains would raise the norm from almost any starting point, so they do not test balance. Measured directly, the checkpoint is within 0.5% of its minimum-norm gauge in norm, but systematically unbalanced (input/output energy 1.15–1.46 for every unit). At the balanced gauge the top 4 and the codec equal the checkpoint's |
@@ -151,3 +151,80 @@ for w in 32 128 512; do uv run --locked python research/audit/filtered_heldout.p
 ```
 
 Numerical execution for Part 2 took under 2 minutes, with one process.
+
+## Part 3: size/time lane runs and controls
+
+Audited 2026-10-21 from the size/time lane branch `claude/project-thread-j8mgkm` at `d15f787`, before that lane's handoff. That commit publishes 15 of its 21 runs. The runs were launched from `c7c1c2a` (shared code `ebd874e`), with session label `st-cloud-1`. The lane had not yet published figures or observations at that commit, so this part covers run integrity and the controls for the Part 1 and Part 2 findings. The checking scripts are the same independent code as Parts 1 and 2. `audit_preview.py` now scores each run against its own trained target (addition or shuffled), and `heldout_rank.py` and `filtered_heldout.py` always probe the addition label.
+
+### Figure: held-out rank of a+b at step 50,000, every published run
+
+![rank by width](figures/rank-by-width.png)
+
+Look before reading: how does the addition runs' position change with width, and how far apart are the seeds? Where do the no-decay runs and the shuffled-label run sit relative to the dotted no-preference lines?
+
+Source: [rank-by-width.csv](figures/rank-by-width.csv), built from `results/preview-1-heldout-rank.jsonl` and `results/size-time-d15f787-heldout-rank.jsonl`. Vector version: `figures/rank-by-width.svg`.
+
+### Software checks (15 published runs)
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| S1 | Handoff | PASS | Every published file matches its manifest in SHA-256 and size, and the `published` flags match the files present |
+| S2 | Same data | PASS | Each run's `data.npz` equals the frozen split |
+| S3 | Target identity, checked after training | PASS | All add and add0 runs: `target_sha256` = addition `6f15…2046`. `e1-st-shuf-w128-i30000-a1`: `80a9…d35f` = the plan's shuffled table, and its `data.npz` targets equal the frozen `yshuffled` |
+| S4 | Seeds, recipe, code and environment | PASS | All match the plan, including wd 0 for add0. `git_commit` is `c7c1c2a` with a clean recorded tree; `experiment.py` hash `cc426641…` (= `ebd874e`); lock hashes match; one BLAS thread |
+| S5 | Initialization | PASS for 10 runs; NOT CHECKED for 5 | Step-0 weights equal an independent draw exactly wherever step 0 is published. Five runs publish only the first-fit and final checkpoints: `add-w128-i30002`, `add-w16-i30000`, `add-w16-i30002`, `add-w256-i30001`, `add-w64-i30000` |
+| S6 | Metrics at every published checkpoint | PASS | Accuracies identical; CE and margins agree to 8e-16 relative, with no ties |
+| S7 | Short independent replays (0 → first fit → 1000 → 2000) | PASS (10 runs) | Weights and moments agree to 4.5e-13 relative, and logged rows to 1.1e-13, including the no-decay runs (cosine null on both sides) |
+| S8 | Logging and checkpoint schedule | PASS | 501 rows each, `optimizer_update` null at step 0, runtime complete at 50,000, and manifests list every 1,000 steps plus the first-fit step |
+| S9 | Run accounting at `d15f787` | PASS for what exists | 32 registry events: 15 runs went `running` → `complete`, 2 are `running` (`add-w512-i30001`, `add-w64-i30001`) and 4 have not started (`shuf-w128-i30001`, `shuf-w128-i30002`, `add-w256-i30000`, `add-w32-i30001`). None failed or was capped, and all 15 completed runs are published |
+| – | Lane figures and observations; the 6 runs not yet complete | NOT CHECKED | Not yet published |
+
+Note for the lane: all three width-16 runs first reach train accuracy ≥ .99 at steps 4,300, 6,500 and 3,300 (seeds 30000/30001/30002). They then fall back below it at 2, 25 and 21 logged steps, down to 295 or 296 of 299, with the last dips at steps 14,300, 36,600 and 31,300. All three end at 1.0. For width 16 the first crossing and the sustained crossing differ.
+
+### Controls for the held-out findings (step 50,000)
+
+Rank of a+b among absent labels (figure; the full table is the CSV):
+
+| condition | runs | mean normalized rank (no preference 0.5) | a+b tops the absent labels (no preference) |
+|---|---|---|---|
+| addition, decay 1, width 16 | 3 seeds | 0.47 – 0.51 | 0.05 – 0.08 (0.070) |
+| addition, decay 1, width 32 / 64 | 2 seeds each | 0.41 – 0.43 / 0.35 – 0.36 | 0.12 – 0.14 / 0.16 – 0.19 (0.070) |
+| addition, decay 1, width 128 / 256 / 512 | 3 / 2 / 2 seeds | 0.27 – 0.31 / 0.25 – 0.27 / 0.18 – 0.19 | 0.18 – 0.24 / 0.27 – 0.29 / 0.37 – 0.38 (0.070) |
+| addition, **no decay**, width 128 | 3 seeds | 0.48 – 0.49 | 0.07 – 0.09 (0.070) |
+| **shuffled labels**, decay 1, width 128 | 1 seed (197 of 662 held-out pairs have a+b absent) | 0.47 | 0.086 (0.101) |
+
+Held-out accuracy against a+b with only 1–3 input frequencies kept (all 15/105/455 subsets; as in Part 2):
+
+| run | step | mean held-out acc, K=1 / 2 / 3 | subsets above chance |
+|---|---|---|---|
+| shuf-w128-i30000 | 50,000 | 0.031 / 0.032 / 0.032 | 47% / 40% / 45% |
+| add0-w128-i30000 | 50,000 | 0.057 / 0.055 / 0.046 | 100% / 100% / 93% |
+| add-w128-i30001 | 50,000 | 0.057 / 0.060 / 0.056 | 100% / 99% / 98% |
+| (all three) | 0 | 0.030 – 0.035 | 32% – 61% |
+
+### Interpretations
+
+| Statement | Status | Basis |
+|---|---|---|
+| Held-out accuracy stays below chance through 50,000 updates (INDEX, extended to the size/time runs) | SUPPORTED LOCALLY | 11 addition runs here (plus 3 in Part 1) and 3 no-decay runs: the largest held-out audit accuracy after step 1,000 is 0.022 (width 16), below 1/31. One split |
+| The Part 1 rank statistic reflects addition-specific learned structure, not an artifact of the split or of training on it | SUPPORTED LOCALLY | It replicates across seeds at every width with two or more seeds and grows with width. It is at no-preference in the shuffled-label control (1 of 3 seeds published) |
+| The structure behind the rank statistic needs weight decay | AMBIGUOUS | The rank statistic is at no-preference in all three no-decay runs. But heavy frequency filtering of a no-decay run still gives above-chance held-out accuracy (0.046–0.057), so something addition-specific is learned without decay that the rank statistic does not show in the full model |
+| Mechanism lane: above-chance held-out accuracy at small K is arbitrary filtering of a memorizing model (Part 2) | CONTRADICTED | A memorizing model trained on shuffled labels filters to chance against a+b; the addition-trained models do not. One shuffled seed so far |
+
+### Reproduce
+
+```bash
+git fetch origin claude/project-thread-j8mgkm
+git worktree add --detach ST d15f787
+uv run --locked python research/audit/audit_preview.py --published ST/research/size-time \
+    --code-commit c7c1c2ad8ac0bb23c9d0f84f9f1c9438764d03c6 --ids $(ls ST/research/size-time/runs) \
+    --replay --replay-max-steps 2000 --out research/audit/results/size-time-d15f787.json
+uv run --locked python research/audit/heldout_rank.py ST/research/size-time/runs/* > research/audit/results/size-time-d15f787-heldout-rank.jsonl
+for r in e1-st-shuf-w128-i30000-a1 e1-st-add0-w128-i30000-a1 e1-st-add-w128-i30001-a1; do
+  uv run --locked python research/audit/filtered_heldout.py ST/research/size-time/runs/$r 0 50000; done \
+  > research/audit/results/size-time-d15f787-filtered-heldout.jsonl
+uv run --locked --group analysis python research/audit/plot_rank_by_width.py research/audit/figures/rank-by-width \
+    research/audit/results/preview-1-heldout-rank.jsonl research/audit/results/size-time-d15f787-heldout-rank.jsonl
+```
+
+Part 3 used about 2 minutes of numerical execution. The session total is about 18 minutes, within the 30-minute budget.
