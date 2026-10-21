@@ -187,7 +187,7 @@ About 12 s of numerical execution, one process at a time, one BLAS thread. The e
 
 # Cycle 3: the per-unit frequency filter (mechanisms packet 2) and the no-decay counterexample
 
-Base `3b94f0f`. The question, the suspected mechanism and the decision rule were written down before computing: [QUESTION-3.md](QUESTION-3.md), committed at `5da4216`. The target is mechanisms packet 2 (`research/e2/mechanisms/unitfilter.py`, PR #17). Its claim: projecting every unit's U and V columns and W row onto the unit's own dominant input frequency, a weights-only edit, takes the failed 30% runs from 0.000–0.004 to 0.43–0.58 common-set accuracy. The coordinator's spot check (D10) found 0.47 / 0.33 / 0.42 for the no-decay runs.
+Base `3b94f0f`. The question, the suspected mechanism and the decision rule were written down before computing: [QUESTION-3.md](QUESTION-3.md), committed at `84fa5be` (`5da4216` before the rebase onto `7ea2f72`). The target is mechanisms packet 2 (`research/e2/mechanisms/unitfilter.py`, PR #17). Its claim: projecting every unit's U and V columns and W row onto the unit's own dominant input frequency, a weights-only edit, takes the failed 30% runs from 0.000–0.004 to 0.43–0.58 common-set accuracy. The coordinator's spot check (D10) found 0.47 / 0.33 / 0.42 for the no-decay runs.
 
 ## Figure 6: what does the filter need?
 
@@ -252,3 +252,98 @@ The step-0 weights of the no-decay runs are byte-identical to those of the addit
 ## Budget, cycle 3
 
 About 3 s of numerical execution, one process, one BLAS thread. The e2 total is still under one minute. No training runs were launched. The constructed control is a closed-form least-squares readout on frozen step-0 features: no optimizer, no checkpoints, no run ID.
+
+---
+
+# Cycle 4: the nested-share runs at 40% and 45% (dynamics packet 2) and the "race"
+
+Base `dfc9577` (swarm/exploration after the e2 index and synthesis). The questions and decision rules were written down before computing: [QUESTION-4.md](QUESTION-4.md), committed at `235416f`. The target is dynamics packet 2 (`research/e2/dynamics/`, merged at `7f4490b`): six width-128 runs at 40% and 45% training share, nested between the e1 30% and e1f2 50% runs, scored on the 483 common pairs, and INTERPRETATIONS.md 2. That entry reads the steep accuracy change between 40% and 50% as a race between two graded quantities, the margin of a+b over unrelated labels (N) and the lead of operand-associated labels (S) over N, with a dilution alternative.
+
+## Figure 7: is the operand-label gap a competitor, or the logit spread?
+
+![margins check](figures/margins-check.png)
+
+Look before reading: compare the two top panels. The left one is the S − N gap in logits, the right one the same gap divided by the spread of each pair's wrong-label logits. Then in the bottom right, compare the filled and open orange markers (a memorizer with no held-out answers) with the black ones (the trained runs).
+
+Every number here comes from `margins_check.py`, written from the README's definitions. σ is the standard deviation of a pair's 30 wrong-label logits (pre-stated). σ_w, added post hoc, is the pooled spread of the wrong-label logits around their own set's mean (S, D and N each centred). It was added because σ itself contains the S − N offset. Ranges over three init seeds, medians over the 483 pairs; each cell is "at training cross-entropy 1e-4 / at 50k", interpolated in log cross-entropy between checkpoints as the lane did:
+
+| share (pairs) | accuracy at 50k | σ, logits | S − N gap, logits | gap / σ | gap / σ_w (post hoc) | margin over N / σ | margin over S / σ |
+|---|---|---|---|---|---|---|---|
+| 30% (299) | 0.000–0.004 | 3.27–3.32 / 3.89–3.98 | 6.82–7.07 / 8.16–8.25 | 2.03–2.14 / 2.09–2.13 | 2.90–3.12 / 3.03–3.15 | −0.56 to −0.40 / −0.46 to −0.30 | −2.58 to −2.52 / −2.46 to −2.35 |
+| 40% (359) | 0.023–0.025 | 3.09–3.21 / 3.49–3.57 | 5.95–6.30 / 6.75–7.07 | 1.91–1.97 / 1.90–1.98 | 2.43–2.47 / 2.42–2.51 | −0.10 to 0.09 / 0.40 to 0.42 | −2.12 to −1.87 / −1.56 to −1.44 |
+| 45% (417) | 0.34–0.54 | 2.65–2.84 / 2.87–3.03 | 5.00–5.34 / 5.43–5.96 | 1.84–1.90 / 1.92–1.98 | 2.20–2.30 / 2.35–2.40 | 0.88 to 1.30 / 1.66 to 2.08 | −0.97 to −0.58 / −0.33 to 0.13 |
+| 50% (478) | 0.88–0.91 | 2.28–2.39 / 2.41–2.50 | 3.95–4.39 / 4.54–4.70 | 1.77–1.80 / 1.89–1.90 | 2.06–2.20 / 2.26–2.38 | 2.12 to 2.61 / 3.15 to 3.37 | 0.32 to 0.93 / 1.25 to 1.53 |
+
+**Over training.** At 30% the gap goes from 4.06–4.38 logits at 1k to 8.16–8.25 at 50k, while σ goes from 1.86–1.93 to 3.89–3.98. In units of σ the gap goes from 2.17–2.25 to 2.09–2.13; in σ_w from 3.26–3.47 to 3.03–3.15. Every share behaves the same way: in either unit the gap is flat or falls by up to 16% from 1k to 50k (50%: 2.10–2.13σ to 1.89–1.90σ). The gap expected from set sizes alone, with the pair's wrong-label logits assigned to S, D and N at random, is 0.32–0.46σ at every share and step, so most of the 2σ is a real preference for operand-associated labels.
+
+**Where the share effect sits.** From 30% to 50%, the change in the median margin over S splits into a rise of the margin over N and a fall of the gap. The margin over N carries 72% of it in logits, 80% in σ_w and 91% in σ at cross-entropy 1e-4 (73%, 85% and 94% at 50k).
+
+**A memorizer at the same shares.** The step-0 U and V of each init seed, with W fitted in closed form (ridge) to one-hot a+b on each share's training pairs. Means over three seeds, λ = 1e-6 / 1e-2:
+
+| share | train accuracy | common accuracy | σ, logits | gap, logits | gap / σ | gap / σ_w (post hoc) |
+|---|---|---|---|---|---|---|
+| 30% | 0.99 / 0.99 | 0.006 / 0.005 | 0.149 / 0.128 | 0.199 / 0.187 | 1.33 / 1.47 | 1.43 / 1.62 |
+| 40% | 0.96 / 0.95 | 0.003 / 0.002 | 0.126 / 0.110 | 0.173 / 0.165 | 1.37 / 1.49 | 1.45 / 1.60 |
+| 45% | 0.90 / 0.91 | 0.003 / 0.002 | 0.111 / 0.098 | 0.156 / 0.149 | 1.39 / 1.49 | 1.46 / 1.61 |
+| 50% | 0.82 / 0.82 | 0.003 / 0.001 | 0.099 / 0.089 | 0.140 / 0.137 | 1.43 / 1.54 | 1.50 / 1.65 |
+
+From 30% to 50% the memorizer's gap falls to 0.70 / 0.73 of its 30% value in logits, and rises to 1.07 / 1.05 in σ units (1.05 / 1.02 in σ_w). The trained runs at cross-entropy 1e-4 fall to 0.60 in logits, 0.86 in σ and 0.70 in σ_w. The memorizer answers no held-out pairs at any share (at most 0.014).
+
+## Software checks, cycle 4
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| G18 | Claims and launch | PASS | All six IDs are in `research/e2/plan.json` at the launch commit `dbfcf21`. Each registry has `running` then `complete`, matching `runtime.json`. Seeds, recipe, train fraction and split hash in every config match the claim. Every run records commit `dbfcf21`, and its shared-code and environment hashes equal that commit's files, which are identical to `fe284a5`. The manifests' `producing_tree_dirty: true` is an untracked `launch.log` (`git_status: ?? launch.log`); no tracked file was modified. One BLAS thread, Python 3.12.14, NumPy 2.3.5. `results/runs-check/tf40-early.json`, `tf45-early.json` |
+| G19 | Splits, nesting, common set | PASS | Splits at 30, 40, 45 and 50% were regenerated from the written rule with the e1 audit's `independent.py`. 30% and 50% equal the frozen files, and the 40% and 45% hashes equal the claims. The training sets nest, 299 ⊂ 359 ⊂ 417 ⊂ 478, with 5 / 6 / 7 / 8 groups per class. The 40% and 45% sets add 60 and 118 e1 calibration pairs and no e1 audit pairs. The 483 common pairs are untrained at every share. At 40% the audit split equals the common set; at 45% the common set is the audit split plus 58 pairs (31 groups) of its calibration split. Each run's `data.npz` equals the regenerated split, and a+b never co-occurs with an operand in training. `results/runs-check/splits.json` |
+| G20 | Handoff and recomputation | PASS | All 20 published files per run match their manifest hashes, the flags match, and the checkpoint schedule is complete. At all 16 published checkpoints of all six runs, logged accuracies are identical, cross-entropy and margins agree within 4.0e-16 relative and norms within 2.1e-16. No ties; all arrays finite float64 |
+| G21 | Replays, early and late | PASS (late: rounding) | Step 0 is not published, so each early replay starts from an independent draw and runs through first fit (300) to 5,000: state within 2.6e-13 relative, logged accuracies identical, cross-entropy within 1.6e-15, margins within 8.9e-15. From the published 40k checkpoint to 50k: every logged accuracy within 1 example, cross-entropy within 1.1e-3 relative, margins within 1.1e-2. The weights at 50k differ by 0.3–5.4% relative, the rounding divergence of e1 AUDIT F11. `results/runs-check/tf40-late.json`, `tf45-late.json` |
+| G22 | Packet 2 numbers | PASS | All 197 rows of `margins_boundary.csv` agree within 5e-10 (the audit CSV's rounding), and all 185 rows of `margins_boundary_transitions.csv` agree exactly. Set sizes match `sizes.json` (S 4–25, mean 16.0; D 1–13; N 1–20). Every value in the packet-2 table and bullets matches. That includes the absence of seed overlap at 10k and 50k, the first crossings, the 58–61% partial state at 40%, the values at matched cross-entropy, and the 83–100% / 94–98% of new correct pairs that had beaten every label outside the run's own set. `results/margins-check.csv`, `margins-transitions.csv` |
+| G23 | "Correct needs the margin over N to exceed the gap" | Arithmetic, not evidence | For each pair, margin over S = margin over N − gap S − N. This holds to 3.6e-15 at every row. A pair is correct only if it beats every S label, so the threshold holds by definition |
+
+## Interpretations, cycle 4
+
+| Claim | Verdict | Evidence and scope |
+|---|---|---|
+| Along the nested ladder the margins change gradually with share, with no seed overlap and no split (packet 2, E3 over E4) | SUPPORTED LOCALLY | G22. In logits there is no seed overlap from 4k updates on for the margin over N (from 3k for the gap). At 2k only "beats every N" separates the shares, as the README says. In units of σ the margin over N is ordered without overlap from 4k on; the gap overlaps at every checkpoint except 20k and 30k (next rows). One data seed, one order of added pairs |
+| At higher share the correct label rises faster above the unrelated labels | SUPPORTED LOCALLY | Pre-stated rule met at 50k and at cross-entropy 1e-4, in σ units (ordered, no overlap). The same holds in logits and in σ_w |
+| The operand-label preference grows during training; at 30% the gap doubles (packet 1; INTERPRETATIONS 1–2) | CONTRADICTED as growth of a preference | The doubling is the logit spread doubling. Relative to σ or σ_w the gap is flat or falls slightly from 1k to 50k at every share. The README's own limitation, compare margins within a step, applies; across shares at one step the spread also differs (σ 3.9 at 30% against 2.5 at 50%) |
+| The gap grows more slowly at higher share (INTERPRETATIONS 2; QUESTION-4 rule C) | AMBIGUOUS by the pre-stated rule | At cross-entropy 1e-4 the σ-unit gap is ordered without overlap (2.03–2.14, 1.91–1.97, 1.84–1.90, 1.77–1.80). At 50k the 40%, 45% and 50% ranges overlap (1.89–1.98). From 30% to 50% the gap falls 14% in σ, 30% in σ_w (post hoc) and 40% in logits |
+| "A race between two graded quantities, with a threshold on top" (INTERPRETATIONS 2) | The threshold: arithmetic (G23). The race as two-sided: AMBIGUOUS, mostly one-sided | Of the 30%→50% change in the margin over S, the margin over N carries 72% in logits and 80–94% in units of the logit spread. The data read more simply as INTERPRETATIONS 1's "outgrow, not remove". Operand-associated labels keep a lead of about 2σ that changes little with share or training. Share mainly sets how fast the correct label climbs past it. Accuracy is steep because one graded margin has to cross zero pair by pair |
+| Dilution: the slower gap growth is what a memorizer does with more pairs per operand (INTERPRETATIONS 2, alternative 2; QUESTION-4 rule D) | CONTRADICTED for this memorizer as a change of preference; the same memorizer reproduces the slowing in logits (post hoc reading) | In σ units the memorizer's gap rises 5–7% from 30% to 50%, while the trained runs' falls 14% at matched fit. In σ_w the memorizer rises 1–5% against the trained runs' 30% fall. In logits the memorizer's gap falls 27–30%, near the trained runs' 40%, because all its logits shrink (σ 0.149 to 0.099). More pairs per operand give smaller logits, not a weaker preference. Scope: a closed-form readout on random features, which fits only 82% of its training pairs at 50%; not a trained network with decay |
+
+## Does the synthesis overstate the audit?
+
+Read against `research/e2/coordinator/SYNTHESIS.md` and the claim table in `INDEX.md` at `dfc9577`:
+
+| Synthesis text | Audit verdict | Suggested wording |
+|---|---|---|
+| §2 "At 40% and 45% the runs sit between 30% and 50% on every margin, with no seed overlap" | Holds in logits from 4k updates on. Not at 1k–3k (margin over N overlaps), and not for the gap at most checkpoints once logit scale is removed | "…on the margin over unrelated labels, without seed overlap from 4k updates on" |
+| Open question 2 (is the slower gap growth part of finding the answer, or dilution? test with shuffled-label runs) | The slower growth in logits is mostly logit spread. A memorizer with no answers reproduces it, and relative to the spread the gap does not grow at all | Ask instead whether the residual share effect on the gap after removing scale (14–30% at matched fit) belongs to answer-finding. Score any shuffled-label test in units of logit spread |
+| INDEX row "a race between two graded quantities": not audited | G23 and the race row above | "threshold: arithmetic; mostly one-sided (72–94% from the margin over N); the gap's growth is logit spread" |
+| §4 "The filter mostly measures what fitting a+b leaves behind, not a computation the failed runs built" | Cycle 3: CONTRADICTED for most of the effect, AMBIGUOUS for about 0.1 after 20k | "…; whether decay adds a small part (about 0.1 after 20k, ranges overlapping) is open" |
+| "Strongest contrary evidence": "any network that fits a+b on these pairs leaves phase relations…" | Tested on three kinds of network; the constructed control met the pre-stated threshold in two of three seeds | "networks fitted to a+b on these pairs, with or without decay, and a readout fitted on untrained inputs, leave…" |
+| §1, §3, and the restricted-rank and filter rows of the INDEX table | Consistent with cycles 1–3 | — |
+
+## Most consequential remaining uncertainty, cycle 4
+
+The choice of scale. σ contains the S − N offset, which shrinks the apparent share effect. σ_w excludes the set means, but at 40% and 45% the D set mixes labels the run has and has not seen with an operand. The two scales agree that the gap does not grow during training and that the margin over N carries most of the share effect. They disagree on how much share dependence of the gap remains: 14% or 30% at matched fit. A rank-based measure is free of both scale and set size. The fraction of (S label, N label) pairs in which the S label has the higher logit, per pair, would settle this from the published checkpoints with no new runs. Such a measure is the operand-label analogue of the restricted rank of cycle 1.
+
+## Reproduce, cycle 4
+
+From the repository root:
+
+```bash
+E=research/e2/audit; R=$E/results
+uv run --locked python $E/runs_check.py $R/runs-check splits
+uv run --locked python $E/runs_check.py $R/runs-check early 0.4 & uv run --locked python $E/runs_check.py $R/runs-check early 0.45 & wait
+uv run --locked python $E/runs_check.py $R/runs-check late 0.4 & uv run --locked python $E/runs_check.py $R/runs-check late 0.45 & wait
+uv run --locked python $E/margins_check.py $R/margins-check.csv $R/margins-transitions.csv
+uv run --locked python $E/margins_check.py --ridge $R/margins-ridge.csv
+uv run --locked --group analysis python $E/plot_margins_check.py $E/figures/margins-check $R/margins-check.csv $R/margins-ridge.csv $R/margins-matched-ce.csv
+```
+
+The last four commands and `splits` regenerate their outputs byte-identically, including the PNG. The replay reports record wall time, so they are not byte-identical.
+
+## Budget, cycle 4
+
+About 3 minutes elapsed and 7 minutes of process time, at most two processes. Contents: replays (5,000 updates from an independent initialization and 10,000 from 40k for each of six runs, plus one rerun of the early checks), margins at 197 checkpoints, and closed-form memorizers. One process ran without the single-thread setting: the first 45% early check, 47 s with 2 min 42 s of CPU across threads. Its output was discarded and rerun with one BLAS thread. No training runs were launched. The e2 audit total is about 4 minutes of the 30.
