@@ -197,6 +197,7 @@ def plot(rows, path):
                 v = [r[key] for r in sel(run, step, kind)]
                 panel.plot(i + x0 + (rng.uniform(-.06, .06, len(v)) if len(v) > 1 else 0), v, ls='none', **style)
         panel.axhline(1/31, color='k', ls=':', lw=1)
+        panel.tick_params(axis='x', labelsize=8)
         panel.set(xticks=range(len(runs)), xticklabels=[label[r] for r in runs], ylim=(-.03, 1.03),
                   ylabel='argmax accuracy' + (' (a+b)' if key != 'train_acc' else ''), title=title)
     for run in runs:
@@ -207,15 +208,16 @@ def plot(rows, path):
     ax[1, 0].axhline(1/31, color='k', ls=':', lw=1)
     ax[1, 0].set(xscale='log', ylim=(-.03, 1.03), xlabel='update step (step 0 drawn at 100)', ylabel='common-set accuracy (a+b)',
                  title='over training: filtered (solid) vs unedited (dashed)\n(dominant frequencies read at each checkpoint)')
-    for run in runs:
+    for run in [r for r in runs if cls(r) != 'shuffled']:
         for kind, style in (('filter random non-dominant', dict(color='#999999', marker='.', s=10)),
                             ('filter dominant, phases scrambled', dict(color='#999999', marker='d', s=6)),
                             ('filter dominant', dict(color=col[run], marker='o', s=22))):
             v = [r for r in rows if r['run_id'] == run and r['kind'] == kind]
-            ax[1, 1].scatter([r['logit_change_rms'] for r in v], [r['common_acc'] for r in v], **style)
+            ax[1, 1].scatter([r['train_acc'] for r in v], [r['common_acc'] for r in v], **style)
+    ax[1, 1].plot([0, 1], [0, 1], color='k', lw=.8)
     ax[1, 1].axhline(1/31, color='k', ls=':', lw=1)
-    ax[1, 1].set(xlabel='RMS logit change from the edit (pair-centred)', ylabel='common-set accuracy (a+b)', ylim=(-.03, 1.03),
-                 title='filter edits at every analysed checkpoint')
+    ax[1, 1].set(xlabel='train accuracy after the edit', ylabel='common-set accuracy (a+b)', xlim=(-.03, 1.03), ylim=(-.03, 1.03),
+                 title='filter edits at every analysed checkpoint, a+b runs\n(held-out against retained training fit; line: equal)')
     xs = {2: 1, 4: 2, 8: 3, np.inf: 4}
     for run in [r for r in runs if cls(r) != '50%']:
         base = sel(run, final[run], 'none')[0]['common_acc']
