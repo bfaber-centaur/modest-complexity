@@ -1,0 +1,276 @@
+{
+  "serial": {
+    "steps": 1000,
+    "workers": 1,
+    "jobs": 2,
+    "blas_threads": 1,
+    "timeout_per_job": 120,
+    "purpose": "calibration only; never pool with pilot or confirmatory seeds",
+    "status": "complete",
+    "wall_seconds": 3.544623657999182,
+    "aggregate_updates_per_second": 564.2347941470692,
+    "caveat": "Short calibration, not a full-run forecast. Includes step-zero/final diagnostics; repeat on target host.",
+    "phases": [
+      {
+        "setup": {
+          "calls": 1,
+          "wall_seconds": 0.03384232999997039,
+          "cpu_seconds": 0.02765613600000001
+        },
+        "data_write": {
+          "calls": 1,
+          "wall_seconds": 0.0035841909993905574,
+          "cpu_seconds": 0.003585640000000001
+        },
+        "evaluation": {
+          "calls": 11,
+          "wall_seconds": 0.02779164600360673,
+          "cpu_seconds": 0.02781092700000011
+        },
+        "compression": {
+          "calls": 3,
+          "wall_seconds": 0.029415258000881295,
+          "cpu_seconds": 0.02939687899999993
+        },
+        "intervention": {
+          "calls": 3,
+          "wall_seconds": 0.07070116400063853,
+          "cpu_seconds": 0.070708523
+        },
+        "readout": {
+          "calls": 3,
+          "wall_seconds": 0.017926642000020365,
+          "cpu_seconds": 0.017933832999999844
+        },
+        "checkpoint_write": {
+          "calls": 3,
+          "wall_seconds": 0.020910749000904616,
+          "cpu_seconds": 0.02091563600000007
+        },
+        "metrics_write": {
+          "calls": 11,
+          "wall_seconds": 0.001163907994850888,
+          "cpu_seconds": 0.0011665820000003602
+        },
+        "training": {
+          "calls": 1000,
+          "wall_seconds": 1.3656950389868143,
+          "cpu_seconds": 1.3667781159999994
+        }
+      },
+      {
+        "setup": {
+          "calls": 1,
+          "wall_seconds": 0.04556017300092208,
+          "cpu_seconds": 0.038104129
+        },
+        "data_write": {
+          "calls": 1,
+          "wall_seconds": 0.008687784998983261,
+          "cpu_seconds": 0.008690412000000008
+        },
+        "evaluation": {
+          "calls": 11,
+          "wall_seconds": 0.05073556000206736,
+          "cpu_seconds": 0.050754180999999954
+        },
+        "compression": {
+          "calls": 3,
+          "wall_seconds": 0.04945005899935495,
+          "cpu_seconds": 0.0494562370000001
+        },
+        "intervention": {
+          "calls": 3,
+          "wall_seconds": 0.07004752600005304,
+          "cpu_seconds": 0.07004462900000005
+        },
+        "readout": {
+          "calls": 3,
+          "wall_seconds": 0.04415364899978158,
+          "cpu_seconds": 0.043838367000000045
+        },
+        "checkpoint_write": {
+          "calls": 3,
+          "wall_seconds": 0.019879080000464455,
+          "cpu_seconds": 0.019645313999999914
+        },
+        "metrics_write": {
+          "calls": 11,
+          "wall_seconds": 0.0011657709983410314,
+          "cpu_seconds": 0.0011681930000004281
+        },
+        "training": {
+          "calls": 1000,
+          "wall_seconds": 1.3897862870198878,
+          "cpu_seconds": 1.3906178950000043
+        }
+      }
+    ],
+    "peak_rss_bytes": [
+      39206912,
+      39211008
+    ]
+  },
+  "two": {
+    "steps": 1000,
+    "workers": 2,
+    "jobs": 2,
+    "blas_threads": 1,
+    "timeout_per_job": 120,
+    "purpose": "calibration only; never pool with pilot or confirmatory seeds",
+    "status": "complete",
+    "wall_seconds": 1.821757190999051,
+    "aggregate_updates_per_second": 1097.8411447374062,
+    "caveat": "Short calibration, not a full-run forecast. Includes step-zero/final diagnostics; repeat on target host.",
+    "phases": [
+      {
+        "setup": {
+          "calls": 1,
+          "wall_seconds": 0.03186432199981937,
+          "cpu_seconds": 0.028943267999999994
+        },
+        "data_write": {
+          "calls": 1,
+          "wall_seconds": 0.004055731998960255,
+          "cpu_seconds": 0.004052131000000014
+        },
+        "evaluation": {
+          "calls": 11,
+          "wall_seconds": 0.027679742997861467,
+          "cpu_seconds": 0.027684589000000148
+        },
+        "compression": {
+          "calls": 3,
+          "wall_seconds": 0.026107453000804526,
+          "cpu_seconds": 0.026101310999999988
+        },
+        "intervention": {
+          "calls": 3,
+          "wall_seconds": 0.06590688300093461,
+          "cpu_seconds": 0.065894391
+        },
+        "readout": {
+          "calls": 3,
+          "wall_seconds": 0.016316220002408954,
+          "cpu_seconds": 0.016322503000000044
+        },
+        "checkpoint_write": {
+          "calls": 3,
+          "wall_seconds": 0.01991775800161122,
+          "cpu_seconds": 0.019902053999999947
+        },
+        "metrics_write": {
+          "calls": 11,
+          "wall_seconds": 0.000757365003664745,
+          "cpu_seconds": 0.0007592490000002117
+        },
+        "training": {
+          "calls": 1000,
+          "wall_seconds": 1.452791927014914,
+          "cpu_seconds": 1.4534498100000026
+        }
+      },
+      {
+        "setup": {
+          "calls": 1,
+          "wall_seconds": 0.03270751499985636,
+          "cpu_seconds": 0.025571153
+        },
+        "data_write": {
+          "calls": 1,
+          "wall_seconds": 0.0031491539994021878,
+          "cpu_seconds": 0.003150082999999998
+        },
+        "evaluation": {
+          "calls": 11,
+          "wall_seconds": 0.024729019998630974,
+          "cpu_seconds": 0.024742772999999663
+        },
+        "compression": {
+          "calls": 3,
+          "wall_seconds": 0.026397098998131696,
+          "cpu_seconds": 0.02640143600000011
+        },
+        "intervention": {
+          "calls": 3,
+          "wall_seconds": 0.06764587900033803,
+          "cpu_seconds": 0.06762960499999993
+        },
+        "readout": {
+          "calls": 3,
+          "wall_seconds": 0.01577545400141389,
+          "cpu_seconds": 0.01578012900000003
+        },
+        "checkpoint_write": {
+          "calls": 3,
+          "wall_seconds": 0.019232463999287575,
+          "cpu_seconds": 0.019235986000000066
+        },
+        "metrics_write": {
+          "calls": 11,
+          "wall_seconds": 0.0008785569989413489,
+          "cpu_seconds": 0.0008810470000003012
+        },
+        "training": {
+          "calls": 1000,
+          "wall_seconds": 1.2912414739603264,
+          "cpu_seconds": 1.2918436320000035
+        }
+      }
+    ],
+    "peak_rss_bytes": [
+      39202816,
+      39227392
+    ]
+  },
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "visible_cpus": 9,
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1",
+      "BLIS_NUM_THREADS": "1"
+    },
+    "numpy_config": "Build Dependencies:\n  blas:\n    detection method: pkgconfig\n    found: true\n    include directory: /opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/include\n    lib directory: /opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/lib\n    name: scipy-openblas\n    openblas configuration: OpenBLAS 0.3.30  USE64BITINT DYNAMIC_ARCH NO_AFFINITY\n      Haswell MAX_THREADS=64\n    pc file directory: /project/.openblas\n    version: 0.3.30\n  lapack:\n    detection method: pkgconfig\n    found: true\n    include directory: /opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/include\n    lib directory: /opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/lib\n    name: scipy-openblas\n    openblas configuration: OpenBLAS 0.3.30  USE64BITINT DYNAMIC_ARCH NO_AFFINITY\n      Haswell MAX_THREADS=64\n    pc file directory: /project/.openblas\n    version: 0.3.30\nCompilers:\n  c:\n    commands: cc\n    linker: ld.bfd\n    name: gcc\n    version: 14.2.1\n  c++:\n    commands: c++\n    linker: ld.bfd\n    name: gcc\n    version: 14.2.1\n  cython:\n    commands: cython\n    linker: cython\n    name: cython\n    version: 3.2.1\nMachine Information:\n  build:\n    cpu: x86_64\n    endian: little\n    family: x86_64\n    system: linux\n  host:\n    cpu: x86_64\n    endian: little\n    family: x86_64\n    system: linux\nPython Information:\n  path: /tmp/build-env-aw1mwcap/bin/python\n  version: '3.12'\nSIMD Extensions:\n  baseline:\n  - SSE\n  - SSE2\n  - SSE3\n  found:\n  - SSSE3\n  - SSE41\n  - POPCNT\n  - SSE42\n  - AVX\n  - F16C\n  - FMA3\n  - AVX2\n  - AVX512F\n  - AVX512CD\n  - AVX512_SKX\n  - AVX512_CLX\n  - AVX512_CNL\n  - AVX512_ICL\n  not found:\n  - AVX512_KNL\n  - AVX512_KNM\n  - AVX512_SPR\n\n",
+    "cgroup": {
+      "/proc/self/cgroup": "0::/\n",
+      "/proc/self/mountinfo": "106 105 0:24 / /sys/fs/cgroup ro,nosuid,nodev,noexec,relatime - cgroup2 cgroup2 rw,nsdelegate",
+      "/sys/fs/cgroup/cpu.max": "800000 100000",
+      "/sys/fs/cgroup/cpu.stat": "usage_usec 180358813\nuser_usec 135457635\nsystem_usec 44901178\nnice_usec 0\nnr_periods 38674\nnr_throttled 2\nthrottled_usec 49089\nnr_bursts 0\nburst_usec 0",
+      "/sys/fs/cgroup/cpuset.cpus.effective": "0-8",
+      "/sys/fs/cgroup/memory.max": "8589934592",
+      "/sys/fs/cgroup/memory.current": "537542656",
+      "/sys/fs/cgroup/memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+    },
+    "disk_free_bytes": 31650922496,
+    "git_commit": "e448ccd5c8f69cd5c481c79b446a0559f46ce536",
+    "git_status": "M README.md\n?? .gitignore\n?? PRELAUNCH_REVIEW.txt\n?? PRE_RUN.md\n?? PROTOCOL.md\n?? VALIDATION.md\n?? analysis.py\n?? benchmark.py\n?? experiment.py\n?? instrumentation.py\n?? requirements.txt\n?? run_study.py\n?? test_instrumentation.py",
+    "source_sha256": {
+      "analysis.py": "399ec8016e72d605730f2d12dc95ad1d88033cb9c11b6c4f40a1129dac1d94e5",
+      "benchmark.py": "2a9e0b80b1edb4522444962646c495b685e36feae6ab29f35af9581e3c763482",
+      "experiment.py": "bb4bff9db2e6fb7463f80dde0d550e9d7c11e4d8af2ea5f693131b669cffdcb2",
+      "instrumentation.py": "7ce83a5b35d74cf390911249e4f4b8b92d5a6a9a38344c0630f2317bd6a66333",
+      "run_study.py": "60ef2af6ba561d7bfb7a8dad074b183dbe9892c88a54bc07163e09d12c4a0319",
+      "test_instrumentation.py": "bc2a71db16b16aabc92159dab3d70093c1d99f859d78bfc23318a7735e7bb985"
+    },
+    "peak_rss_scope": "current process lifetime; excludes children",
+    "cgroup_note": "Raw process membership and visible ancestor limits; unavailable on macOS."
+  },
+  "validation": "Serial and parallel checkpoint arrays, including Adam state, match exactly for both calibration seeds."
+}

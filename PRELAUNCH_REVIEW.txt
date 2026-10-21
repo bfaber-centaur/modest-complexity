@@ -1,0 +1,38 @@
+Prelaunch scientific review — 21 October 2026
+
+Status: review findings, not an amended preregistration. Protocol v1 and the original runnable package remain unchanged. No full pilot or confirmatory runs were launched by this review. The current pilot can assess feasibility, but revise the confirmatory analysis before interpreting the 32-run study.
+
+Relevant overlap
+
+He, Wang, Chen and Yang (2026), On the Mechanism and Dynamics of Modular Addition: Fourier Features, Lottery Ticket, and Grokking. https://arxiv.org/abs/2602.16849
+Their empirical section includes one-hidden-layer ReLU models, p=23, width 512 and AdamW; the initial mechanistic analysis uses the complete dataset, with grokking studied separately. They report neurons specializing in individual frequencies while the population covers all 11 positive frequencies. This is closer to our architecture than the earlier comparison emphasized. Their result is not proof that our model requires every frequency, but defeats assuming four-frequency sufficiency is a general criterion for algorithm discovery.
+
+Manir and Rupa (2026), A Systematic Empirical Study of Grokking: Depth, Architecture, Activation, and Regularization. https://arxiv.org/abs/2603.25009
+This preprint explicitly studies the proposed covariate directions at p=97. Its claims require care: depth changes also change width, residual connections and normalization; several reported timing means exclude non-grokking seeds. It is evidence of overlapping experimental work, not a clean universal ranking of architectures. We must not claim a first architecture/activation/regularization sweep.
+
+Yip, Agrawal, Chan and Gross (2024), Modular addition without black-boxes: Compressing explanations of MLPs that compute numerical integration. https://arxiv.org/abs/2412.03773
+Analyzes ReLU MLPs in pizza-algorithm transformers using quadrature. Neurons can collectively implement one approximate computation. Failure to prune neurons is not evidence that the function lacks a compact algorithmic explanation.
+
+Necessary interpretation and measurement fixes before confirmation
+
+1. Demote the fixed top-four-frequency threshold from the joint success/failure endpoint. Record a prespecified retention/removal curve over K=1,...,15. Full retention is only an implementation control; evidence concerns the curve and perturbation contrasts. The current Fourier ranking is based on input-weight energy and changes under function-preserving positive hidden-unit rescaling. Define a gauge convention or a function-sensitive ranking before treating mode selection as robust.
+
+2. Call the relabeled-output probe a sparse readout/accessibility diagnostic. If logits are hW, an output permutation can be implemented exactly by permuting columns of W. Fitting a fresh head on 62 examples tests learnability of that readout, not acquisition of a new computation. It cannot serve as an independent decisive criterion for compositional reuse.
+
+3. Separate reported endpoints instead of turning the arbitrary conjunction H1/H2/H3 into a verdict on the broad account. In particular, top-four failure or ridge-head failure must not classify a demonstrably generalizing model as evidence against algorithm discovery. Retain the current thresholds only as explicitly narrow diagnostics if desired.
+
+4. Add logged train/calibration/audit cross-entropy and margin or logit-scale summaries. The current code computes training loss for gradients but writes accuracy and parameter norm, not loss, in its metric rows. Equal 99% training accuracy does not imply equal fit under the objective. Any code-length contrast needs objective-fit context. For a future sweep, distinguish equal-update, equal-compute and comparable-loss comparisons.
+
+5. Feasibility must cover the memorization control too. Current pilot gates only addition with decay=1. A random-label arm that cannot fit within the same budget makes the intended matched-fit complexity comparison unavailable. Do not tune confirmatory seeds to repair that. Also, the random target is noncommutative while addition is commutative; this is already disclosed in v1. A symmetric table control is an option for a separately specified revision.
+
+6. Keep the interpretation of compression narrow. The codec measures pruning/quantization compressibility in the network's parameter coordinates, not minimum program length or SLT complexity. Across widths, larger circuits can approximate the same integral more accurately, so more retained neurons need not mean a conceptually more elaborate algorithm. Positive per-neuron ReLU rescalings also change quantization behavior despite preserving the represented function.
+
+Preserve what is already sound
+
+Swapped-pair grouping avoids simple transpose leakage. Independent seed blocks are the replication unit. Main seeds are separated from pilot seeds. Neither full-study stopping time nor settings are to be changed after observing confirmatory outcomes. Non-grokking runs remain in denominators and timing is censored. A p=31 pilot is reasonable: published mechanistic work also uses smaller primes, including p=23. The main issue is interpretation and validation, not being embarrassingly small.
+
+Recommendation
+
+Continue with the small feasibility stage after adding objective-loss logging and covering the required control. Before launching confirmation, version an amended protocol and code together, remove the broad composite verdict, and retain the existing model size and architecture unless feasibility reveals a concrete problem. Do not expand immediately into a large architecture sweep.
+
+Review used the Scientific Critical Thinking skill from Kassis, Agarwal, He, Patel and Brueckner (2026), Scientific Agent Skills: A Library of Procedural Knowledge for Research Agents, https://doi.org/10.48550/arXiv.2609.00065 . This is workflow attribution, not evidence for the scientific findings.
