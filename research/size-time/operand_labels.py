@@ -14,7 +14,8 @@ checkpoints with its own forward pass (no imports from experiment.py):
   the other p-1 labels;
 - mass_L / mass_correct: mean softmax probability on L(a, b) and on the correct label.
 
-uv run --locked python research/size-time/operand_labels.py RUN_DIR ... [--steps 1000,50000]
+uv run --locked --group analysis python research/size-time/operand_labels.py RUN_DIR ... \
+    --steps 1000,5000,20000,50000 --out research/size-time/figures/operand_labels
 """
 import argparse
 import json
@@ -47,11 +48,37 @@ def check(run_dir, step):
                 mass_L=float(np.mean((pr*L).sum(1))), mass_correct=float(np.mean(pr[rows, ya])))
 
 
+def figure(results, step, out):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    # Run IDs are e1-<session>-<condition>-w<width>-i<seed>-a<attempt>; sort by condition, width, seed.
+    key = lambda r: (r['run'].split('-')[2], int(r['run'].split('-')[3][1:]), r['run'].split('-')[4])
+    rows = sorted((r for r in results if r['step'] == step), key=key)
+    fig, ax = plt.subplots(figsize=(7.5, .24*len(rows)+1.6), layout='constrained')
+    y = range(len(rows))
+    for key, marker, label in (('pred_in_L', 'o', 'argmax prediction in L(a,b)'),
+                               ('base_rate', '|', 'expected if wrong predictions were uniform'),
+                               ('premise', 'D', 'correct label in L(a,b)'),
+                               ('audit_accuracy', 'x', 'audit accuracy')):
+        ax.plot([r[key] for r in rows], y, marker, ls='none', ms=6, mfc='none' if marker == 'D' else None, label=label)
+    ax.set_yticks(list(y), [r['run'] for r in rows], fontsize=7); ax.invert_yaxis()
+    ax.set_xlim(-.02, 1.02); ax.set_xlabel('fraction of held-out audit pairs'); ax.grid(True, axis='x', color='0.9')
+    ax.legend(fontsize=7, loc='upper center', bbox_to_anchor=(.5, -.12), ncol=2, frameon=False)
+    ax.set_title(f'Held-out predictions vs labels seen with either operand (checkpoint step {step})', fontsize=10)
+    fig.text(.01, -.02, 'L(a,b) = labels of training pairs (a,b\') or (a\',b). Own forward pass on stored checkpoints. '
+             'Shuffled-label runs (shuf) are scored against their own shuffled labels.', fontsize=7, color='0.3',
+             va='top', wrap=True)
+    for ext in ('png', 'svg'):
+        fig.savefig(out/f'operand_labels_step{step}.{ext}', dpi=150, bbox_inches='tight')
+    plt.close(fig)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('runs', type=Path, nargs='+')
     ap.add_argument('--steps', default='1000,5000,20000,50000')
-    ap.add_argument('--out', type=Path, help='Optional JSON lines output')
+    ap.add_argument('--out', type=Path, help='Optional output directory: results.jsonl and a figure at the last step')
     args = ap.parse_args()
     results = []
     for run in args.runs:
@@ -60,7 +87,9 @@ def main():
                 results.append(check(run, step))
                 print(json.dumps({k: round(v, 4) if isinstance(v, float) else v for k, v in results[-1].items()}))
     if args.out:
-        args.out.write_text(''.join(json.dumps(r)+'\n' for r in results))
+        args.out.mkdir(parents=True, exist_ok=True)
+        (args.out/'results.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in results))
+        figure(results, max(map(int, args.steps.split(','))), args.out)
 
 
 if __name__ == '__main__':
