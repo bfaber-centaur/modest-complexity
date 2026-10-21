@@ -15,3 +15,11 @@ Missing checks: two more initialization seeds at each width and the other three 
 Candidate: under this recipe and split, width 512 reaches a stationary state by about 50,000 updates (flat train loss, flat norm) in which a partial relational preference for the true label coexists with argmax predictions that always go to labels seen with an operand in training. Within 200,000 updates nothing suggests a delayed transition: the preference plateaus, and held-out loss only drifts down by 0.3 nats.
 
 Strongest alternative: a transition could still occur on a much longer time scale, driven by slow drift that these summaries do not resolve; the held-out loss is still decreasing slowly at 200,000. A second alternative is that the binding constraint is the data (299 training pairs, about 10 per class) rather than width or time, which a horizon extension cannot test.
+
+## Follow-up 2: the training share, not width or horizon, separates the two regimes here
+
+Candidate: in this recipe the 30% split leaves too few training pairs per class for the structured solution to overtake memorization within the horizons tried, while at 50% the same width and seeds memorize first and then generalize gradually over tens of thousands of updates. The e1 rank preference would then be the same structure seen below the threshold: in the 50% runs it appears before held-out accuracy moves, and accuracy follows as predictions leave the labels seen with an operand.
+
+Strongest alternative: the 50% split differs from the 30% split in more than size (a different partition, a smaller audit split of 364 pairs, about 16 rather than 10 training pairs per class), so the contrast is one comparison of two partitions, not a dose-response curve. A second alternative is that the same transition happens at 30% on a time scale much longer than 200,000 updates; follow-up 1 makes that look unlikely at width 512 but does not rule it out.
+
+Missing checks: an independent audit of e1f2; intermediate training shares (for example 35-45%) to locate the threshold; widths other than 128 at 50%; a second partition at 50% (different data seed).

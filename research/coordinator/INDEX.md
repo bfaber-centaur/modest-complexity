@@ -79,3 +79,28 @@ Observations:
 - The rank statistic (true label among never-co-occurring labels; 0.5 = no preference) goes 0.50 (step 0), 0.35 (10k), 0.24 (20k), 0.185 (50k), 0.178 (100k), 0.177 (200k). The fraction of held-out pairs where the true label tops those labels goes 0.065, 0.18, 0.30, 0.37, 0.39, 0.38 (no-preference level 0.070).
 
 Published: `research/coordinator/runs/e1f1-co-add-w512-i30000-s200k-a1/` (checkpoints 0, 1k, 2k, 5k, 10k, 20k, 50k, 100k, 150k, 200k and first fit; hashes for all 202 in `manifest.json`).
+
+## Follow-up 2 (separately labeled comparison): width 128 with a 50% training share
+
+Question: with the same recipe, width and initialization seeds, does a larger training share (8 of 16 grouped pairs per class, 478 training pairs instead of 299) change held-out behavior within 50,000 updates? This is a different partition of the same 961 pairs (split hash `6dc868be…3b49`, frozen in `research/data/e1f2-split-tf50.npz`); its held-out audit split has 364 pairs, not 544. It is not part of the e1 map. Reason and plan entries: `research/plan-followups.json`.
+
+![accuracy](figures/followup-2/accuracy.png)
+
+![cross-entropy](figures/followup-2/loss.png)
+
+Look before reading: compare the held-out row with the width-128 panel of the e1 map (`research/size-time/figures/add/accuracy.png`). When does held-out accuracy leave zero, and how long after the training split fits?
+
+Observations (descriptive thresholds as in e1):
+
+| run ID | first train acc >= .99 | held-out audit acc at 2k / 5k / 10k / 20k / 50k | best audit acc (step) | final cal acc | final audit CE | wall time |
+|---|---|---|---|---|---|---|
+| e1f2-co-add-w128-i30000-tf50-a1 | 300 | 0.000 / 0.060 / 0.376 / 0.766 / 0.923 | 0.929 (46,900) | 0.882 | 0.37 | 106 s |
+| e1f2-co-add-w128-i30001-tf50-a1 | 400 | 0.003 / 0.025 / 0.201 / 0.585 / 0.868 | 0.871 (41,600) | 0.908 | 0.52 | 105 s |
+| e1f2-co-add-w128-i30002-tf50-a1 | 400 | 0.003 / 0.041 / 0.234 / 0.701 / 0.904 | 0.915 (38,900) | 0.924 | 0.37 | 100 s |
+
+- All three complete at 50,000 updates; none failed or was capped. No run reaches the .95 held-out threshold within the horizon; all three are still at 0.87-0.93 at 50,000.
+- Held-out accuracy is at or below chance until about 3,000-4,000 updates, roughly ten times the step at which the training split fits.
+- The audit's rank statistic (`heldout-rank-all-checkpoints.jsonl`, every checkpoint) moves first: at step 5,000 the true label's mean normalized rank among never-co-occurring labels is already 0.06-0.12 (0.5 = no preference) while held-out accuracy is 0.03-0.06 and 92-98% of held-out argmax predictions are still labels seen with an operand in training. By 50,000 that fraction is 9-12%.
+- Comparison anchor, from the map: the three e1 width-128 runs (30% share) have held-out accuracy 0-0.004 at 50,000 and a rank statistic of 0.27-0.31.
+
+Provenance: code `fe284a5` (adds `--train-fraction`; default leaves every e1 split byte-identical, tested), session `co-cloud-1`, two processes. Published under `research/coordinator/runs/e1f2-co-add-w128-i3000{0,1,2}-tf50-a1/` with checkpoints 0, 1k, 2k, 5k, 10k, 15k, 20k, 30k, 40k, 50k and first fit. Not yet audited.
