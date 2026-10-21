@@ -1,6 +1,6 @@
 # e2 decision log
 
-Charter: [charter/](charter/README.md). Newest entries last; earlier entries are not edited, only superseded by later ones.
+Charter: [charter/](charter/README.md). Launch messages: [DISPATCH.md](DISPATCH.md). Newest entries last; earlier entries are not edited, only superseded by later ones.
 
 ## D1 (2026-10-21) Close e1
 
