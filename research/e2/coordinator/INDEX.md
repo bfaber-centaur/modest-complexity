@@ -29,11 +29,11 @@ Reproduce: `uv run --locked --group analysis python research/e2/coordinator/comm
 
 | lane | directory | status |
 |---|---|---|
-| dynamics | [research/e2/dynamics/](../dynamics/) | packet 1 integrated (`7f2b6e8`): correct-label margins on the common pairs, [share figure](../dynamics/figures/share/margins.png), [width figure](../dynamics/figures/width30/margins_width30.png); not audited. Cycle 2 runs claimed (D8) |
-| mechanisms | [research/e2/mechanisms/](../mechanisms/) | packet 1 integrated (PR #15, `cb03dcb`): unit groups by dominant frequency, [figure](../mechanisms/figures/groups/groups.png); not audited |
-| audit | [research/e2/audit/](../audit/) | packet 1 integrated (PR #16): [AUDIT.md](../audit/AUDIT.md), restricted-rank definition and nulls, `common_set.py` recomputed independently (G7 PASS), "rank precedes accuracy" SUPPORTED LOCALLY (partly by construction), "early signature of success" CONTRADICTED as a level, AMBIGUOUS as a rate |
+| dynamics | [research/e2/dynamics/](../dynamics/) | both cycles integrated. Packet 1: correct-label margins on the common pairs ([share](../dynamics/figures/share/margins.png), [width](../dynamics/figures/width30/margins_width30.png)). Packet 2: nested share boundary 30/40/45/50% at width 128, six new runs ([boundary](../dynamics/figures/boundary/margins_boundary_summary.png)). Not audited |
+| mechanisms | [research/e2/mechanisms/](../mechanisms/) | packet 1 (PR #15): unit groups by dominant frequency, [figure](../mechanisms/figures/groups/groups.png), audited in audit cycle 2. Packet 2 (PR #17): weights-only per-unit filter, [figure](../mechanisms/figures/unitfilter/unitfilter.png); coordinator spot check and no-decay counterexample in D10; closing cycle 2 |
+| audit | [research/e2/audit/](../audit/) | cycle 1 (PR #16): restricted-rank definition and nulls, `common_set.py` recomputed (G7 PASS), "rank precedes accuracy" SUPPORTED LOCALLY (partly by construction), "early signature of success" CONTRADICTED as a level. Cycle 2 (PR #18): mechanisms packet 1 reproduced (G10-G12 PASS, G13 correction), no-decay and shuffled controls, dense onset with three seeds per share. Now auditing mechanisms packet 2 |
 
-Run claims: [research/e2/plan.json](../plan.json): six dynamics runs at 40% and 45% share (D8). Extra e1/e1f2 checkpoints: [e1-checkpoints/](e1-checkpoints/) (D9).
+Run claims: [research/e2/plan.json](../plan.json): six dynamics runs at 40% and 45% share (D8), all complete, registry `research/e2/dynamics/registry.jsonl`. Extra e1/e1f2 checkpoints: [e1-checkpoints/](e1-checkpoints/) (D9).
 
 ## Base
 

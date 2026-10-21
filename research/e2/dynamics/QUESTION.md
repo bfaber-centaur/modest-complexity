@@ -77,3 +77,7 @@ A run whose margin over N rises while its gap still grows would fit neither and 
 - Three seeds per share cannot tell a narrow graded transition from a switch; a split by seed is informative, an absence of one is weak.
 - A 40% run whose correct-answer onset is later than 50,000 updates would look like the 30% pattern on accuracy; the margin and gap trajectories are what distinguish it, and runs still changing at 50,000 are reported as such.
 - Amount and identity of training data still change together: the added groups are fixed by the seeded order (at 40% each class adds the group that was first in the e1 calibration split, at 45% both e1 calibration groups). A second data seed would be needed to separate them and is not part of this cycle.
+
+### Outcome (2026-10-21, after packet 2 in README.md)
+
+E3 (graded) fits; E4 (two patterns) does not. At 10,000 and 50,000 updates the 40% and 45% runs sit between the 30% and 50% runs on the margin over N and the S − N gap, ordered by share, and no share splits by seed. The case Q2 said would fit neither occurred at 40%: the margin over N rises (to 1.4-1.6 by 50,000) while the gap keeps growing (to 6.8-7.1), and accuracy stays at 0.023-0.025. Accuracy is much less graded than the margins (0.02, 0.4, 0.9 at 40%, 45%, 50%), and the 45% runs are still improving at 50,000, so "intermediate accuracy for every seed" holds only in the weak sense that 40% sits just above the 30% runs. This closes the second and last inquiry cycle of this round.
