@@ -18,6 +18,8 @@ Strongest alternative: a transition could still occur on a much longer time scal
 
 ## Follow-up 2: the training share, not width or horizon, separates the two regimes here
 
+(e2 note, 2026-10-21: the two splits are not unrelated partitions. The 30% training set is contained in the 50% one, and on the 483 pairs neither trained on the gap persists; amount versus identity of the added pairs remains ambiguous. See `research/e2/coordinator/DECISIONS.md` D6 and D7.)
+
 Candidate: in this recipe the 30% split leaves too few training pairs per class for the structured solution to overtake memorization within the horizons tried, while at 50% the same width and seeds memorize first and then generalize gradually over tens of thousands of updates. The e1 rank preference would then be the same structure seen below the threshold: in the 50% runs it appears before held-out accuracy moves, and accuracy follows as predictions leave the labels seen with an operand.
 
 Strongest alternative: the 50% split differs from the 30% split in more than size (a different partition, a smaller audit split of 364 pairs, about 16 rather than 10 training pairs per class), so the contrast is one comparison of two partitions, not a dose-response curve. A second alternative is that the same transition happens at 30% on a time scale much longer than 200,000 updates; follow-up 1 makes that look unlikely at width 512 but does not rule it out.

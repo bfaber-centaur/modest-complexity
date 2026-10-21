@@ -1,5 +1,7 @@
 # Launch prompts
 
+**Round e1 is complete (2026-10-21).** The prompts below launched e1 and are kept as its record; do not take run assignments from them. The active round is e2: charter and role prompts in `research/e2/coordinator/charter/`, assignments in `research/e2/coordinator/DECISIONS.md`.
+
 Ready to launch on `bfaber-centaur/modest-complexity:swarm/exploration`. Giving the coordinator prompt to a Claude session starts the bounded exploration described in SWARM.md; merely committing this file does not launch anything.
 
 ## Launch corrections from red-team review

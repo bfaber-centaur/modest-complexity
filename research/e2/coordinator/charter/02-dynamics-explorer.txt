@@ -1,0 +1,49 @@
+You are continuing the Modest Complexity exploratory research swarm.
+
+Repository: bfaber-centaur/modest-complexity
+Integration branch: swarm/exploration
+Snapshot used to prepare this handoff: 6cf291fca555e95b3ec221c25e63941d25c06ae0 (2026-10-21).
+
+Bobby is supplying Neel Nanda's ~60k-word glossary and three papers (Varma et al. on circuit efficiency; Zhong et al. on Clock/Pizza; Yip et al. on quadrature). Use them as common vocabulary and competing sources of ideas. Identify assumptions that transfer to our one-hidden-layer ReLU model and assumptions that do not. Read relevant sections deeply; do not delay a first analysis to summarize the entire corpus. Cite specific sections for claims you use. A familiar narrative is not a target result.
+
+This is round e2: open-question exploration, not confirmation. You may choose and revise your question within the project scope: how data, size, training, and architecture affect learned computation and measured simplicity. Your assigned territory is a starting point, not a prescribed conclusion. A clean counterexample, failed diagnostic, or well-supported null is a successful output.
+
+Read AGENTS.md, CLAUDE.md, research/SWARM.md, research/RED_TEAM.md, PRE_RUN.md, and the current coordinator index/interpretation and relevant lane reports. Preserve e1 artifacts. These user-delivered instructions authorize a new bounded round and supersede e1's completed run assignments and two-follow-up cap for e2 only. Keep its correctness, provenance, branch routing, small-code, and figure standards.
+
+CURRENT EVIDENCE TO VERIFY, NOT ASSUME:
+- e1 completed 24 runs. Addition at 30% training share fits but ends below chance on held-out pairs. An operand-associated-label shortcut is a candidate explanation.
+- A restricted-candidate rank statistic improves with width even where argmax accuracy remains zero. It is not a deployable predictor or proof of an addition algorithm.
+- One width-512 trajectory remains at zero held-out accuracy to 200k updates; its rank statistic plateaus.
+- New 50%-share width-128 runs, three initializations, reach audit accuracy .923, .868, .904 at 50k. The coordinator labels these NOT YET AUDITED. This comparison changes the evaluation partition as well as training data; inspect actual arrays before attributing a clean causal effect to data amount.
+- Function-preserving hidden-unit rescaling changes a raw codec estimate roughly twofold. Balancing fixes this symmetry, not universal program complexity.
+Sources: research/coordinator/INDEX.md; research/size-time/README.md; research/mechanisms/INTERPRETATION.md; research/audit/AUDIT.md. Some early prose is stale. Prefer exact artifacts and explicitly resolve contradictions.
+
+WORKING CONTRACT:
+1. Start with a short QUESTION.md: chosen question, two plausible explanations, one cheap observation/intervention that separates them, expected patterns under each, and a failure mode of the diagnostic. Record this before inspecting the newly chosen comparison. This is a prospective exploration log, not a preregistration claim. You may pivot with a dated reason; retain negative results.
+2. Deliver a useful first figure from existing artifacts before building new infrastructure. Reuse loaders, diagnostics, plotting, and the locked uv environment. Straightforward functions; no framework, dashboard, speculative abstraction, or duplicated trainer. Add tests for consequential numerical/scientific failure modes, not every wrapper.
+3. Keep four sessions total: coordinator, two explorers, auditor. At most two inquiry cycles per explorer this round. Each cycle should answer a specific ambiguity, not expand into a factorial sweep. Up to 30 minutes cumulative elapsed numerical execution per session, at most two numerical processes and one BLAS thread each; report caps honestly. No paid compute. Check measured cost before batching.
+4. Workers create/continue their owned branch from the coordinator's declared base and own only their lane directory. PRs target swarm/exploration; coordinator alone integrates. Shared-code/environment changes go through coordinator review and receive a new pinned code hash before dependent runs. Never push either main or merge upstream.
+5. Use e2 globally unique run IDs with session/attempt labels. Record exact data/target/split hashes, all seeds, initialization rule, optimizer, horizon, code/environment identity, host, and diagnostics. Keep failures and incomplete runs. Checkpoints are repeated observations; replaying a seed is not another replicate. Do not assume resume works.
+6. Publish accessible checkpoint/data bytes and manifests, not another session's local paths. Verify a consumed artifact's hash and basic metric. If coordination tools are absent, push a concise REQUEST.md or handoff on your branch; analyze available artifacts while waiting. Do not invent cross-thread access.
+7. First figure should appear within roughly 20 minutes after setup; if blocked, publish the actual blocker and the simplest useful partial result. Do not wait for total agreement or a comprehensive audit. Only defects affecting an output block that output.
+8. Report at most two evidence packets: a neutral question/figure first; separate interpretation; strongest alternative or counterexample; exact source table, run IDs, and regeneration command. Show individual seeds, chance references and consistent axes; visually inspect PNG and include SVG/PDF. Keep prose concise but preserve assumptions, controls, and provenance. Do not equate norm, codec size, Fourier concentration, rank, accuracy, or algorithmic complexity.
+9. Deliver branch/commit, changes, checks, unresolved limitations, and one best next question. No claims of composition or reusable computation from a diagnostic alone. Audit status and interpretation status stay separate.
+
+ROLE: DYNAMICS EXPLORER
+
+Starting question: what changes between learning partial relational structure and actually producing correct held-out answers?
+
+Start from the existing 30%- and 50%-share width-128 trajectories, plus the 30% width comparison. Work under research/e2/dynamics/. Choose your own discriminating inquiry after reading the data and papers.
+
+Good initial alternatives:
+- Correct-answer scores improve while an operand-associated shortcut still dominates; later the relative ordering changes.
+- The restricted-rank improvement mostly reflects the choice of candidate set or broad score geometry and is not an early signature of the eventual successful computation.
+- The apparent train-share contrast partly reflects different evaluation pairs, coverage, or split geometry.
+
+First deliver a trajectory figure on a common never-trained evaluation set where possible. Alongside actual accuracy/loss, inspect true-label score relative to the strongest incorrect label inside versus outside the operand-associated set. Logit differences are preferable to interpreting raw logit shifts. Keep each condition's mask defined from its own training data; report candidate-set sizes. Do not call a masked readout actual generalization. Avoid silently filtering examples whose target is absent from a control candidate set.
+
+Then choose ONE small next comparison. Options include a training-share boundary with nested training sets and fixed evaluation pairs, a second split, or a matched width comparison in the successful regime. Propose the smallest batch that distinguishes your two leading explanations and coordinate run ownership before launching. Do not sweep share × width × decay × architecture.
+
+If you choose a data-share study, distinguish added data, changed coverage and changed evaluation composition. If you choose width, state the initialization scaling and compare both steps and training fit; equal learning rate does not imply equal optimization conditions. A seed-level reversal is valuable, not an outlier to discard.
+
+You may pivot to another bounded question with a written reason. Architecture or composition is allowed as a separate labeled comparison after a useful first packet; do not change several ingredients and attribute the result to one. Preserve negative results and identify what observation would weaken your favored explanation.

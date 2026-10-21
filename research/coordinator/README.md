@@ -1,5 +1,7 @@
 # Coordinator notes: expedition e1
 
+(e1 is complete as of 2026-10-21; round e2 notes are in `research/e2/coordinator/`.)
+
 Started 2026-10-21 from `swarm/exploration` at `e0a6e0f17baa47a96ebdf9aa73fbf1ce3b7f145a`.
 
 Upstream `bubskee/modest-complexity` main was not recorded: this session's GitHub access is scoped to `bfaber-centaur/modest-complexity`. Record it before preparing any upstream PR.

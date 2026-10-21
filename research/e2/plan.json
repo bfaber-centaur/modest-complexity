@@ -1,0 +1,18 @@
+{
+ "expedition": "e2",
+ "created": "2026-10-21",
+ "note": "Round e2 run claims (research/e2/coordinator/DECISIONS.md D5). The coordinator adds entries on request; a lane launches only IDs present here at a pushed commit, with launch_runs.py --plan research/e2/plan.json and its own registry research/e2/<lane>/registry.jsonl. Each run sets split_sha256, and train_fraction when not .3. IDs: e2-<co|dy|me|au>-<condition>-w<width>-i<init seed>[-tf<share>][-d<data seed>][-s<steps>]-a<attempt>. With data seed 31000 the .3 and .5 training sets nest (research/e2/coordinator/common_set.json).",
+ "common": {
+  "p": 31,
+  "steps": 50000,
+  "lr": 0.001,
+  "log_every": 100,
+  "checkpoint_every": 1000,
+  "diagnostics": "none",
+  "data_seed": 31000,
+  "control_seed": 32000,
+  "diagnostic_seed": 33000,
+  "purpose": "exploratory"
+ },
+ "runs": []
+}

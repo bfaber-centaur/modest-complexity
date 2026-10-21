@@ -1,0 +1,58 @@
+[
+  {
+    "file": "READ-ME.md",
+    "source": null,
+    "retrieved": "2026-10-21",
+    "bytes": 2598,
+    "sha256": "0a0ecb8101d606e2af315a555733bcc9dc2f9a2fbf07d9fff72e95b685ffce5c"
+  },
+  {
+    "file": "neel_glossary_60k.md",
+    "source": "https://drive.google.com/file/d/1l2M6RTqMlocePMjH79VBJBgOPs-p-KuX/view",
+    "retrieved": "2026-10-21",
+    "bytes": 249072,
+    "sha256": "4112a6c4739a1c87f540679b92e5a4cb78f8731f6520eeb9ba50ff89117651f8"
+  },
+  {
+    "file": "varma-2023-circuit-efficiency.pdf",
+    "source": "https://arxiv.org/abs/2309.02390",
+    "retrieved": "2026-10-21",
+    "bytes": 1737454,
+    "sha256": "7472d0dc38f9fef0039e984f32c952600dd71fbb2299cc79ce0e7a5af6b89eb0"
+  },
+  {
+    "file": "varma-2023-circuit-efficiency.txt",
+    "source": "https://arxiv.org/abs/2309.02390",
+    "retrieved": "2026-10-21",
+    "bytes": 126072,
+    "sha256": "21ae347b06d4e2f341e1274ad1893f6d108b4b458b722b7b9ea153d620022bf7"
+  },
+  {
+    "file": "yip-2024-modular-addition-quadrature.pdf",
+    "source": "https://arxiv.org/abs/2412.03773",
+    "retrieved": "2026-10-21",
+    "bytes": 2197309,
+    "sha256": "be2b1bf24a5968f2f54bb6692c15479d426eac5d8674d1a993970234ed98b763"
+  },
+  {
+    "file": "yip-2024-modular-addition-quadrature.txt",
+    "source": "https://arxiv.org/abs/2412.03773",
+    "retrieved": "2026-10-21",
+    "bytes": 124962,
+    "sha256": "75f0d1ce1160e65edb746efe1b94b8e38ca2b5cc8db87a380d2d7e5518ce951f"
+  },
+  {
+    "file": "zhong-2023-clock-and-pizza.pdf",
+    "source": "https://arxiv.org/abs/2306.17844",
+    "retrieved": "2026-10-21",
+    "bytes": 10491957,
+    "sha256": "29c3534b19fede179d518c2dcd3fa5aa2c477dea870d1b5df8b602092047b9f5"
+  },
+  {
+    "file": "zhong-2023-clock-and-pizza.txt",
+    "source": "https://arxiv.org/abs/2306.17844",
+    "retrieved": "2026-10-21",
+    "bytes": 76773,
+    "sha256": "931d2487585a953f48b022f9096abcd50c284e22bf8a184f2dc1d21a58fab99b"
+  }
+]

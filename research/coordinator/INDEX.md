@@ -1,5 +1,7 @@
 # e1 review index (figures first)
 
+**e1 is complete (2026-10-21).** All 24 map runs and 4 follow-up runs finished; none failed or was capped. This index is kept as written; dated corrections from the audit and the e2 shared check are listed in `research/e2/coordinator/DECISIONS.md` (D6, D7). Round e2: `research/e2/coordinator/INDEX.md`.
+
 Interpretations are kept separately in [INTERPRETATION.md](INTERPRETATION.md). Audit status: preview 1 is audited in [research/audit/AUDIT.md](../audit/AUDIT.md) (17 software checks PASS; interpretation statuses there).
 
 ## Preview 1: one seed at widths 32, 128 and 512

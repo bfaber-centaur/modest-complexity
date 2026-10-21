@@ -1,0 +1,17 @@
+MODEST COMPLEXITY — ROUND E2 PROMPTS
+Prepared 2026-10-21 against swarm/exploration at 6cf291fca555e95b3ec221c25e63941d25c06ae0.
+
+Give 01-coordinator.txt to the coordinator first. It contains the common contract plus the coordinator role.
+After the coordinator pins the e2 base, give 02, 03, and 04 to the corresponding existing or new threads, adding that exact base commit. Each file is self-contained; no separate common block is needed.
+Attach the existing modest-complexity-context.zip or its glossary and three papers to each thread. This packet contains prompts only.
+
+Four threads:
+1. Coordinator: reconcile results, pin shared state, integrate and synthesize.
+2. Dynamics: choose a question about the transition from partial structure to correct answers.
+3. Mechanisms: choose a causal or measurement question using failed and successful trajectories.
+4. Auditor: independently check the new success and attack a consequential interpretation.
+
+New evidence incorporated: the 50% training-share follow-up now reports 86.8–92.3% final held-out accuracy at width 128. It was marked unaudited in the source index. Different training shares also have different evaluation partitions: the prompts explicitly address this.
+Source: https://github.com/bfaber-centaur/modest-complexity/blob/6cf291fca555e95b3ec221c25e63941d25c06ae0/research/coordinator/INDEX.md
+
+The round keeps branch ownership and numerical controls but loosens inquiry selection. Each explorer chooses a question, states alternatives, publishes a first figure using existing artifacts, and can make one documented pivot. No demand for a positive simplicity story, no new giant grid, no mandatory skill bundle.
