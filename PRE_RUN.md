@@ -37,3 +37,7 @@ Separate project sessions may add capacity. Processes within a session share its
 
 Pinned ALM report:
 https://github.com/bfaber-centaur/artificial-life-museum/blob/ca260c1944bd531b0f882a517cad284c9547c3b1/research/reports/reef-environment-measurements-2026-10-20.md
+
+## Locked runtime
+
+Use `uv sync --locked` and `uv run --locked python ...`. CPython 3.12.14 and NumPy 2.3.5 are pinned; runtime inventory records hashes of the environment manifests. The lock includes platform-specific distributions, so backend/hardware differences remain part of provenance.

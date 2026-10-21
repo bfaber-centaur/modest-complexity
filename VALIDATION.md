@@ -31,3 +31,7 @@ Verified using Python and NumPy 2.3.5 on the supplied CPU environment:
 An initial unstratified split left fewer than two training examples for one output class in the reuse assay. Before any full pilot or confirmatory data, the split was corrected to stratify unordered pairs by their sum. The original package’s retained smoke_verified run uses the final split. Its final training accuracy was approximately 0.702 and audit accuracy 0.0; at this duration these are pipeline checks, not hypothesis evidence. The earlier superseded smoke run is not included in the deliverable.
 
 Remaining validation boundary: neither 50,000-step feasibility pilot has run. Whether this exact ReLU/AdamW configuration groks is unknown. The prototype does not prove the validity of the chosen complexity proxy, demonstrate subroutine reuse on a different operation, or implement a packed binary codec. Those limits are explicit in the protocol.
+
+## uv environment validation
+
+Created a fresh `.venv` using `uv sync --locked` with CPython 3.12.14 and NumPy 2.3.5 from PyPI. Re-ran the original self-test and both instrumentation unit tests successfully. Two concurrent 100-update calibration jobs completed via `uv run --locked`; their inventories record the pinned versions and all three environment-manifest hashes. The lock includes CPython 3.12 macOS ARM64 wheels. Native macOS execution has not been tested here.

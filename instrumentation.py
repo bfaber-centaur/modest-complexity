@@ -80,6 +80,9 @@ def inventory(out):
                 git_status=git('status', '--porcelain'),
                 source_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                for p in sorted(root.glob('*.py'))},
+                environment_sha256={name: hashlib.sha256((root/name).read_bytes()).hexdigest()
+                                    for name in ('pyproject.toml', 'uv.lock', '.python-version')
+                                    if (root/name).exists()},
                 peak_rss_scope='current process lifetime; excludes children',
                 cgroup_note='Raw process membership and visible ancestor limits; unavailable on macOS.')
 
