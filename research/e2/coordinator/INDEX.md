@@ -30,7 +30,7 @@ Reproduce: `uv run --locked --group analysis python research/e2/coordinator/comm
 | lane | directory | status |
 |---|---|---|
 | dynamics | [research/e2/dynamics/](../dynamics/) | assigned 2026-10-21 |
-| mechanisms | [research/e2/mechanisms/](../mechanisms/) | assigned 2026-10-21 |
+| mechanisms | [research/e2/mechanisms/](../mechanisms/) | packet 1 integrated (PR #15, `cb03dcb`): unit groups by dominant frequency, [figure](../mechanisms/figures/groups/groups.png); not audited |
 | audit | [research/e2/audit/](../audit/) | assigned 2026-10-21 |
 
 Run claims: [research/e2/plan.json](../plan.json) (none yet).
