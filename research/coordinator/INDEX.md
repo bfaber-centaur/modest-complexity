@@ -57,3 +57,25 @@ uv run --locked --group analysis python report_map.py --runs runs/e1 --registrie
 ```
 
 (A rerun must use new run IDs or a fresh registry/output root; the launcher refuses to reuse IDs. A rerun is a reproducibility check, not a new seed. The figures can be redrawn from the published runs with `--runs research/coordinator/runs`.)
+
+## Follow-up 1: width 512, seed 30000, 200,000 updates
+
+Question: at width 512, does the held-out preference found by the audit (the true label rising among labels never co-occurring with either operand in training) turn into held-out accuracy with four times the horizon? Reason and plan entry: `research/plan-followups.json`.
+
+![held-out rank, all checkpoints](figures/followup-1/heldout-rank.png)
+
+![cross-entropy](figures/followup-1/loss.png)
+
+Look before reading: does either panel of the rank figure keep moving after 50,000 updates? Does held-out loss?
+
+The rank figure is drawn with the audit's `heldout_rank.py` and `plot_heldout_rank.py` from all 201 local checkpoints (its footer says "published checkpoints only"; 11 are published). Source: [heldout-rank-all-checkpoints.jsonl](figures/followup-1/heldout-rank-all-checkpoints.jsonl), [curves.csv](figures/followup-1/curves.csv); accuracy figure [accuracy.png](figures/followup-1/accuracy.png).
+
+Observations:
+
+- Status: complete, 200,000 / 200,000 updates, 1,005 s wall including startup, session `co-cloud-1`, code `a096c82` (clean tree apart from the registry).
+- Reproducibility check: all 52 checkpoints up to step 50,000 (and every logged metric) are bitwise identical to `e1-co-add-w512-i30000-a1`, run earlier on the same host. This is the same trajectory, not a new seed.
+- Held-out (cal and audit) accuracy is 0 at every logged step from 1,000 to 200,000.
+- Held-out audit cross-entropy peaks at 8.99 near step 27,000 and drifts down to 8.70 at 200,000. Train cross-entropy stays at 1.77-1.78e-6 and the parameter norm at 59.8-59.9 from about 50,000 on.
+- The rank statistic (true label among never-co-occurring labels; 0.5 = no preference) goes 0.50 (step 0), 0.35 (10k), 0.24 (20k), 0.185 (50k), 0.178 (100k), 0.177 (200k). The fraction of held-out pairs where the true label tops those labels goes 0.065, 0.18, 0.30, 0.37, 0.39, 0.38 (no-preference level 0.070).
+
+Published: `research/coordinator/runs/e1f1-co-add-w512-i30000-s200k-a1/` (checkpoints 0, 1k, 2k, 5k, 10k, 20k, 50k, 100k, 150k, 200k and first fit; hashes for all 202 in `manifest.json`).

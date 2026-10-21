@@ -1,0 +1,2 @@
+run_id,width,init_seed,status,last_logged_step,planned_steps,reason,session_label,train_acc,audit_acc,train_ce,audit_ce,audit_margin_median,seconds_at_last_log
+e1f1-co-add-w512-i30000-s200k-a1,512,30000,complete,200000,200000,,co-cloud-1,1.0,0.0,1.7702489199420303e-06,8.703259436378467,-8.188928044827534,1004.962583039
