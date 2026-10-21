@@ -1,4 +1,5 @@
-"""Sequential launcher. Main stage requires the preregistered pilot gate."""
+"""HISTORICAL protocol-v1 launcher. Main stage requires the preregistered pilot gate.
+The exploratory swarm uses launch_runs.py; do not run `main` (research/SWARM.md)."""
 import argparse,json,subprocess,sys
 from pathlib import Path
 import numpy as np

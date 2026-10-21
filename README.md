@@ -2,7 +2,7 @@
 
 Small CPU experiments on the costs and robustness of learned modular-addition implementations.
 
-Current exploratory plan: [swarm design](research/SWARM.md) and [coordinator/worker prompts](research/LAUNCH_PROMPTS.md). These are prepared for review; no swarm has been launched. The exploratory charter permits adaptive runs and supersedes historical confirmatory gating for this exploration.
+Current exploratory plan: [swarm design](research/SWARM.md) and [coordinator/worker prompts](research/LAUNCH_PROMPTS.md). The swarm was launched on `swarm/exploration` on 2026-10-21; its working notes are in [research/coordinator/](research/coordinator/README.md). The exploratory charter permits adaptive runs and supersedes historical confirmatory gating for this exploration.
 
 **Status: instrumented pre-run prototype, not a frozen confirmatory study.** No full pilot or confirmatory run has been performed here. `PROTOCOL.md`, `analysis.py`, and `run_study.py` preserve the original proposal; its composite verdict and top-four-frequency criterion need revision before confirmation. See `PRELAUNCH_REVIEW.txt` and `PRE_RUN.md`.
 
@@ -34,3 +34,20 @@ Timing separates setup, data writes, training, evaluation, compression, Fourier 
 Logged objective summaries are cross-entropy and signed correct-vs-best-incorrect margins for each split. At logging steps, optimizer diagnostics measure the **actual final step's** adaptive Adam displacement and decoupled decay displacement, including their cosine. These are not interval averages or measurements of algorithmic simplicity. Zero-vector cosine is null.
 
 Checkpoints already contain weights, Adam moments and step; **automatic resume is not implemented**. Keep the configuration and data beside them. Interrupted runs must not be silently treated as complete.
+
+## Exploratory map (swarm)
+
+The first map is fixed in `research/plan.json`: one split (data seed 31000, frozen in `research/data/e1-split.npz`), initialization seeds 30000-30002, shuffled-label seed 32000, 50,000 updates, metrics every 100 steps, checkpoints every 1,000 steps plus the last, and no inline heavy diagnostics (`--diagnostics none`; analyses run offline from checkpoints).
+
+```bash
+uv sync --locked --group analysis
+uv run --locked python -m unittest -v test_exploration test_instrumentation
+uv run --locked python launch_runs.py --root runs/e1 --registry research/LANE/registry.jsonl \
+    --session-label LABEL --timeout 1500 --workers 2 --ids RUN_ID ...
+uv run --locked --group analysis python report_map.py --runs runs/e1 --out research/LANE/figures/NAME
+uv run --locked python publish_run.py runs/e1/RUN_ID research/LANE/runs
+```
+
+`launch_runs.py` sets BLAS threads to one, refuses reused run IDs, and appends `running` then `complete`/`failed`/`capped` events to the lane registry. A capped run hit a resource timeout; it is not a scientific failure and there is no resume. `report_map.py` draws whatever has been logged, marking unfinished runs. Matplotlib is in the `analysis` dependency group only.
+
+If uv cannot find CPython 3.12.14, the installed uv is too old for that download; uv 0.12.23 works (the version the lock was made with).

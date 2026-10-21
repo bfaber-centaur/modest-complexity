@@ -1,7 +1,13 @@
-"""Frozen descriptive analysis; run only after all 32 main jobs complete."""
+"""HISTORICAL protocol-v1 analysis (composite H1/H2/H3 verdict). Not part of the
+exploratory reporting path; see research/SWARM.md. Run only after all 32 main jobs complete."""
 import argparse,json
 from pathlib import Path
 import numpy as np
+
+
+def readout(row):
+    # Renamed from 'transfer' (readout accessibility, not compositional reuse).
+    return row['readout_accessibility'] if 'readout_accessibility' in row else row['transfer']
 
 
 def read_run(path):
@@ -52,10 +58,10 @@ def summarize(root):
         eligible=ad['train']>=.99 and ra['train']>=.99
         codec_valid=valid(ad['compression']) and valid(ra['compression'])
         ratio=ad['compression']['bits']/ra['compression']['bits']
-        d=ad['intervention']['selective_damage']; r=ad['transfer'].get('gain')
+        d=ad['intervention']['selective_damage']; r=readout(ad).get('gain')
         h1=eligible and codec_valid and ratio<=.8
         h2=d>=.1 and ad['intervention']['retained']>=.95
-        h3=r is not None and r>=.2 and ad['transfer']['trained']>=.8
+        h3=r is not None and r>=.2 and readout(ad)['trained']>=.8
         row=dict(seed=seed,interpolated_pair=eligible,codec_audit_valid=codec_valid,
                  complexity_ratio=ratio,log2_coding_advantage=float(-np.log2(ratio)) if eligible and codec_valid else None,
                  selective_damage=d,reuse_gain=r,final_accuracy=ad['audit'],H1=bool(h1),H2=bool(h2),H3=bool(h3),
@@ -68,7 +74,7 @@ def summarize(root):
                 rr=runs[seed,task,wd]; final=rr[-1]
                 interp=next((z for z in rr if z['train']>=.99 and 'compression' in z),None)
                 row['arms'][f'{task}_wd{wd}']=dict(final_accuracy=final['audit'],train=final['train'],
-                    complexity=final['compression'],reuse=final['transfer'],intervention=final['intervention'],
+                    complexity=final['compression'],reuse=readout(final),intervention=final['intervention'],
                     complexity_change=final['compression']['bits']/interp['compression']['bits'] if interp else None,
                     times=times(rr),seconds=final['seconds'])
         records.append(row)

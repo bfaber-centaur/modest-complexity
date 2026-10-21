@@ -12,3 +12,8 @@ package = false
 name = "pypi"
 url = "https://pypi.org/simple"
 default = true
+
+[dependency-groups]
+analysis = [
+    "matplotlib==3.11.2",
+]

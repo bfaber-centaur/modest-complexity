@@ -6,7 +6,9 @@ import numpy as np
 from instrumentation import Timings, inventory
 
 
-def data(p, seed):
+def data(p, seed, control_seed=None):
+    """Grouped split from `seed`. The shuffled-label table uses `control_seed`
+    when given; None keeps the historical single-stream draw."""
     rng = np.random.default_rng(seed)
     a, b = np.indices((p, p)).reshape(2, -1)
     split_masks = [np.zeros((p,p),bool) for _ in range(3)]
@@ -21,8 +23,18 @@ def data(p, seed):
     # Preserve exact class counts separately in every split. Random control is
     # deliberately noncommutative; no transpose pair ever crosses a split.
     yr = y.copy()
+    if control_seed is not None: rng = np.random.default_rng(control_seed)
     for ix in masks: yr[ix] = rng.permutation(y[ix])
     return a, b, y, yr, masks
+
+
+def array_sha256(*arrays):
+    """Order-sensitive hash of dtype, shape and bytes."""
+    digest = hashlib.sha256()
+    for x in arrays:
+        x = np.ascontiguousarray(x)
+        digest.update(f'{x.dtype.str}{x.shape}'.encode()); digest.update(x.tobytes())
+    return digest.hexdigest()
 
 
 def init(p, h, seed):
@@ -170,18 +182,37 @@ def objective_metrics(logits, y, ix):
                 margin_p05=float(np.quantile(margins,.05)))
 
 
+def resolve_seeds(args):
+    """Explicit seeds override the historical derivation from --seed, where one
+    seed set both the split and (offset) the initialization."""
+    s=args.seed
+    return dict(data_seed=s if args.data_seed is None else args.data_seed,
+                init_seed=s+10000 if args.init_seed is None else args.init_seed,
+                control_seed=args.control_seed,
+                diagnostic_seed=s+30000 if args.diagnostic_seed is None else args.diagnostic_seed)
+
+
 def run(args):
     out=Path(args.out); out.mkdir(parents=True,exist_ok=False)
     timing=Timings(); status='failed'; completed=0; first_interp=None
     try:
         with timing.measure('setup'):
-            cfg=vars(args).copy()
-            cfg.update(runtime=inventory(out),
-                       purpose='calibration' if args.seed>=900000 else 'research-prototype')
-            (out/'config.json').write_text(json.dumps(cfg,indent=2))
-            a,b,y,yr,masks=data(args.p,args.seed)
+            seeds=resolve_seeds(args)
+            a,b,y,yr,masks=data(args.p,seeds['data_seed'],seeds['control_seed'])
             target=y if args.task=='add' else yr
-            w=init(args.p,args.hidden,args.seed+10000); initial=[x.copy() for x in w]
+            # The split hash covers inputs, addition labels and split membership,
+            # so it is identical for both tasks; the target hash identifies labels.
+            hashes=dict(split_sha256=array_sha256(a,b,y,*masks),target_sha256=array_sha256(target))
+            cfg=vars(args).copy()
+            cfg.update(seeds=seeds,data_hashes=hashes,host=platform.node(),runtime=inventory(out),
+                       purpose=args.purpose or ('calibration' if args.seed>=900000 else 'research-prototype'),
+                       diagnostic_schedule=dict(metrics_every=args.log_every,checkpoint_every=args.checkpoint_every,
+                           checkpoint_extra='last step and first train accuracy >= .99',
+                           inline=args.diagnostics, inline_every=args.audit_every if args.diagnostics=='inline' else None))
+            (out/'config.json').write_text(json.dumps(cfg,indent=2))
+            if args.expect_split_sha256 and hashes['split_sha256']!=args.expect_split_sha256:
+                raise ValueError(f"split hash {hashes['split_sha256']} != expected {args.expect_split_sha256}")
+            w=init(args.p,args.hidden,seeds['init_seed']); initial=[x.copy() for x in w]
             m=[np.zeros_like(x) for x in w]; v=[x.copy() for x in m]
         with timing.measure('data_write'):
             np.savez_compressed(out/'data.npz',a=a,b=b,y=target,yadd=y,train=masks[0],cal=masks[1],audit=masks[2])
@@ -208,13 +239,14 @@ def run(args):
                                  optimizer_update=update)
                     first=first_interp is None and acc[0]>=.99
                     if first: first_interp=step
-                    if step%args.audit_every==0 or first or step==args.steps:
+                    if args.diagnostics=='inline' and (step%args.audit_every==0 or first or step==args.steps):
                         with timing.measure('compression'):
                             row['compression']=compress(w,a,b,masks)
                         with timing.measure('intervention'):
-                            row['intervention']=interventions(w,a,b,target,masks[2],args.seed+30000,args.shams)
+                            row['intervention']=interventions(w,a,b,target,masks[2],seeds['diagnostic_seed'],args.shams)
                         with timing.measure('readout'):
-                            row['transfer']=transfer(w,initial,a,b,y,masks,args.seed+40000)
+                            row['readout_accessibility']=transfer(w,initial,a,b,y,masks,seeds['diagnostic_seed']+10000)
+                    if step%args.checkpoint_every==0 or first or step==args.steps:
                         with timing.measure('checkpoint_write'):
                             np.savez_compressed(out/f'checkpoint_{step:06d}.npz',U=w[0],V=w[1],W=w[2],
                                                 mU=m[0],mV=m[1],mW=m[2],vU=v[0],vV=v[1],vW=v[2],step=step)
@@ -269,14 +301,25 @@ if __name__=='__main__':
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--selftest',action='store_true')
     ap.add_argument('--out',default='run'); ap.add_argument('--task',choices=['add','random'],default='add')
-    ap.add_argument('--seed',type=int,default=1000); ap.add_argument('--p',type=int,default=31)
+    ap.add_argument('--seed',type=int,default=1000,help='Historical: derives any seed not given explicitly')
+    ap.add_argument('--data-seed',type=int); ap.add_argument('--init-seed',type=int)
+    ap.add_argument('--control-seed',type=int,help='Shuffled-label table; omitted = historical shared stream')
+    ap.add_argument('--diagnostic-seed',type=int)
+    ap.add_argument('--expect-split-sha256',help='Fail before training unless the split hash matches')
+    ap.add_argument('--run-id'); ap.add_argument('--purpose'); ap.add_argument('--session-label')
+    ap.add_argument('--p',type=int,default=31)
     ap.add_argument('--hidden',type=int,default=128); ap.add_argument('--steps',type=int,default=50000)
     ap.add_argument('--lr',type=float,default=.001); ap.add_argument('--wd',type=float,default=1.)
     ap.add_argument('--log-every',type=int,default=100); ap.add_argument('--audit-every',type=int,default=1000)
+    ap.add_argument('--checkpoint-every',type=int,default=1000)
+    ap.add_argument('--diagnostics',choices=['inline','none'],default='inline',
+                    help='inline: historical compression/top-4 intervention/readout at --audit-every')
     ap.add_argument('--shams',type=int,default=32)
     args=ap.parse_args()
     if args.selftest: selftest()
     else:
-        if args.p<7 or args.p%2==0 or args.hidden<1 or args.steps<0 or min(args.log_every,args.audit_every,args.shams)<1:
+        if args.p<7 or args.p%2==0 or args.hidden<1 or args.steps<0 or min(args.log_every,args.audit_every,args.checkpoint_every,args.shams)<1:
             ap.error('Require odd p >= 7, positive hidden/cadences/shams, and nonnegative steps')
+        if args.checkpoint_every%args.log_every or args.audit_every%args.log_every:
+            ap.error('Checkpoint and audit cadences must be multiples of --log-every')
         run(args)
