@@ -161,7 +161,7 @@ def plot(rows, references, path):
     final = {run: max(r['step'] for r in rows if r['run_id'] == run) for run in runs}
     first = {run: min(r['step'] for r in rows if r['run_id'] == run) for run in runs}
     color = {run: '#1f6fb4' if 'tf50' in run else '#c0392b' for run in runs}
-    label = {run: ('50% ' if 'tf50' in run else '30% ') + 'i' + run.split('-i')[1][:5] for run in runs}
+    label = {run: ('50%' if 'tf50' in run else '30%') + '\ni' + run.split('-i')[1][:5] for run in runs}
     sel = lambda run, step, kind: [r for r in rows if r['run_id'] == run and r['step'] == step and r['kind'] == kind]
     rng = np.random.default_rng(0)
     jitter = lambda n: rng.uniform(-.12, .12, n)
@@ -178,7 +178,7 @@ def plot(rows, references, path):
         panel.text(len(runs) - .5, ref*1.1, f'ideal pizza term {ref:.2f}', ha='right', fontsize=8)
         panel.set(yscale='log', ylim=(3e-4, 1.5), xticks=range(len(runs)), xticklabels=[label[r] for r in runs],
                   ylabel=f'share of group contribution explained\nby a function of a+b-c ({split} pairs)',
-                  title=f'{split} pairs: grey = first published step, light grey = random sets, colour = groups (final step)')
+                  title=f'{split} pairs' + (' (memorization leaks in)' if split == 'train' else ' (never trained by either split)'))
     for i, run in enumerate(runs):
         g = sel(run, final[run], 'group')
         ax[0, 1].scatter(i + jitter(len(g)), [r['k_phase_common'] for r in g], s=[600*r['k_amplitude_common'] for r in g],
@@ -186,7 +186,7 @@ def plot(rows, references, path):
     ax[0, 1].axhline(0, color='k', lw=.8)
     ax[0, 1].set(xticks=range(len(runs)), xticklabels=[label[r] for r in runs], ylim=(-np.pi, np.pi),
                  ylabel='phase of own-frequency term on common set\n(0 = peaks at the correct label)',
-                 title='final step: each group (marker area = amplitude, logit units)')
+                 title='final step, each group\n(marker area = amplitude of its own-frequency term)')
     for run in runs:
         steps = sorted({r['step'] for r in rows if r['run_id'] == run})
         for kind, ls in (('group', '-'), ('random set', ':')):
@@ -196,9 +196,9 @@ def plot(rows, references, path):
     ax[0, 2].plot([], [], color='k', ls=':', label='random sets (median)')
     ax[0, 2].legend(fontsize=8)
     ax[0, 2].set(xscale='log', yscale='log', xlabel='update step (step 0 drawn at 100)', ylabel='median share (common pairs)',
-                 title='per checkpoint, groups read from that checkpoint')
-    for panel, share, key, ylabel in ((ax[1, 1], '50% ', 'common_acc', 'change in common-set accuracy'),
-                                      (ax[1, 2], '30% ', 'common_rank', 'change in restricted rank (common set)')):
+                 title='share over training\n(groups read from each checkpoint)')
+    for panel, share, key, ylabel in ((ax[1, 1], '50%', 'common_acc', 'change in common-set accuracy'),
+                                      (ax[1, 2], '30%', 'common_rank', 'change in restricted rank (common set; up = weaker)')):
         for run in [r for r in runs if label[r].startswith(share)]:
             base = sel(run, final[run], 'none')[0][key]
             for kind, style in (('random set', dict(color='#bbbbbb', marker='.', s=8)),
@@ -207,9 +207,15 @@ def plot(rows, references, path):
                 panel.scatter([r['logit_change_rms'] for r in v], [r[key] - base for r in v], **style)
         panel.axhline(0, color='k', lw=.8)
         panel.set(xlabel='RMS logit change from the ablation', ylabel=ylabel,
-                  title=f'{share}runs, final step: ablate one group (colour) or a matched random set (grey)')
-    fig.suptitle('Width 128, units grouped by dominant input frequency: 50% training share (blue) vs 30% (red). '
-                 'Common set = 483 pairs neither split trains on', fontsize=10)
+                  title=f'{share} runs, final step: ablate one group (colour)\nor a random set matched in count and norm (grey)')
+    from matplotlib.lines import Line2D
+    keys = [Line2D([], [], color='#999999', marker='o', ls='none', ms=4, label='groups at the first published step (0, or 300)'),
+            Line2D([], [], color='#bbbbbb', marker='.', ls='none', ms=6, label='random unit sets (final step)'),
+            Line2D([], [], color='#1f6fb4', marker='o', ls='none', ms=5, label='groups, 50% share (final step)'),
+            Line2D([], [], color='#c0392b', marker='o', ls='none', ms=5, label='groups, 30% share (final step)')]
+    fig.legend(handles=keys, loc='outside lower center', ncol=4, fontsize=9)
+    fig.suptitle('Width 128, units grouped by dominant input frequency: 50% training share (blue) vs 30% (red); '
+                 'common set = 483 pairs neither split trains on', fontsize=10)
     for ext in ('png', 'svg'):
         fig.savefig(path.with_suffix(f'.{ext}'), dpi=120)
     plt.close(fig)
