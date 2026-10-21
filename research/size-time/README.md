@@ -60,7 +60,7 @@ All figures are PNG plus SVG, unsmoothed, one line or row per run, with source t
 | [trajectories/norm_add.png](figures/trajectories/norm_add.png) | raw and width-normalized parameter norm (descriptive) | run `metrics.jsonl` |
 | [operand_labels/operand_labels_step50000.png](figures/operand_labels/operand_labels_step50000.png) | where held-out predictions go (packet 3) | [results.jsonl](figures/operand_labels/results.jsonl) |
 
-Per-run descriptors (first and sustained fit, drops, maximum audit accuracy, final losses and margins): [trajectories/summary.csv](figures/trajectories/summary.csv). Thresholds, chosen for description and revisable: fit = train accuracy >= .99, generalize = audit accuracy >= .95, sustained = holds at every later logged step.
+Per-run descriptors (first and sustained fit, drops, maximum audit accuracy, final losses and margins): [trajectories/summary.csv](figures/trajectories/summary.csv); every post-fit logged step below the fit threshold: [trajectories/fit_dips.csv](figures/trajectories/fit_dips.csv). Thresholds, chosen for description and revisable: fit = train accuracy >= .99, generalize = audit accuracy >= .95, sustained = holds at every later logged step.
 
 ## Evidence packets
 
@@ -70,7 +70,17 @@ Figure: [overview.png](figures/trajectories/overview.png); per-step curves [add/
 
 Look before reading: compare the left and middle panels row by row. Where does each row turn yellow? Does any row turn yellow in the middle panel? In the zoomed right panel, which side of white (chance) are the addition rows on, and the shuffled rows?
 
-Observation. All 18 addition runs reach train accuracy >= .99: first at step 100 (width 512), 200 (256), 300 (128), 400-500 (64), 1,000 (32) and 3,300-6,500 (16). Width 16 does not hold it: 2, 25 and 21 later logged steps fall below .99, train cross-entropy ends at 0.44-0.49, and the final minimum train margin is 0.18-0.31 logits. No run reaches audit accuracy >= .95. For every addition run the highest audit accuracy over all logged steps is at step 0 (0.024-0.044; chance 1/31 = 0.032); final audit accuracy is 0-0.009 (0-5 of 544 pairs). The three seeds at each width are close throughout. At width 128 the shuffled-label runs fit at step 300, like addition, with nearly the same train loss curve (train cross-entropy 0.0125 at step 5,000 and 1.8e-3 at step 10,000 in both conditions).
+Observation. All 18 addition runs reach train accuracy >= .99: first at step 100 (width 512), 200 (256), 300 (128), 400-500 (64), 1,000 (32) and 3,300-6,500 (16). Width 16 does not hold it: 2, 25 and 21 later logged steps fall below .99 (table below), train cross-entropy ends at 0.44-0.49, and the final minimum train margin is 0.18-0.31 logits. No run reaches audit accuracy >= .95. For every addition run the highest audit accuracy over all logged steps is at step 0 (0.024-0.044; chance 1/31 = 0.032); final audit accuracy is 0-0.009 (0-5 of 544 pairs). The three seeds at each width are close throughout. At width 128 the shuffled-label runs fit at step 300, like addition, with nearly the same train loss curve (train cross-entropy 0.0125 at step 5,000 and 1.8e-3 at step 10,000 in both conditions).
+
+Width-16 dips after first fit. With 299 training pairs, train accuracy >= .99 means at most 2 errors, so every dip is to 3 or 4 errors (296 or 295 of 299 correct). No run at width >= 32 has a logged step below .99 after its first fit. Each row is a run of consecutive logged steps (every 100 updates) below .99; per-step values are in [fit_dips.csv](figures/trajectories/fit_dips.csv).
+
+| run | first fit | dip steps (logged steps below .99) | train errors | lowest train min margin in dip |
+|---|---|---|---|---|
+| `e1-st-add-w16-i30000-a1` | 4,300 | 11,400 (1); 14,300 (1) | 3; 3 | -0.05; -0.14 |
+| `e1-st-add-w16-i30001-a1` | 6,500 | 6,600 (1); 6,900-7,500 (7); 8,000-8,900 (10); 9,400 (1); 36,100-36,600 (6) | 3; 3-4; 3-4; 3; 3-4 | -2.03; -2.94; -1.35; -1.00; -0.15 |
+| `e1-st-add-w16-i30002-a1` | 3,300 | 3,600-3,700 (2); 4,300-5,000 (8); 9,600 (1); 11,200 (1); 11,600-12,000 (5); 30,800-30,900 (2); 31,200-31,300 (2) | 3; 3-4; 3; 3; 3; 3; 3 | -0.44; -0.68; -0.09; -0.36; -0.46; -0.18; -0.10 |
+
+Between dips the width-16 runs are not error-free either: they first classify all 299 pairs at steps 5,000, 12,700 and 7,300, still have 1-2 errors at 128-186 later logged steps, and the last logged step with any training error is 49,800, 44,300 and 49,200. All three end with 0 errors at step 50,000. For width 16 the first and sustained crossings of any accuracy threshold near 1 differ, and the sustained one depends on the threshold. These counts agree with the auditor's note (`research/audit/AUDIT.md`: 2, 25 and 21 steps, down to 295 or 296 of 299, last dips at 14,300, 36,600 and 31,300).
 
 Missing check. Timing is censored at 50,000 updates; absence of generalization here is not evidence that it cannot occur later. One split (31% train, 299 pairs) only.
 
