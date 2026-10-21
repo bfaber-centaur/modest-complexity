@@ -223,8 +223,8 @@ def plot(rows, path):
     ax[1, 2].axhline(1/31, color='k', ls=':', lw=1)
     ax[1, 2].set(xticks=range(5), xticklabels=['1', '2', '4', '8', 'aligned\nonly'], ylim=(-.03, 1.03),
                  xlabel='output-row scale s', ylabel='common-set accuracy (a+b)',
-                 title='final step, 30% and shuffled-label runs: upweight units whose\n'
-                       'input and output frequencies agree (solid)\nor matched random sets (dotted, median)')
+                 title='30% and shuffled-label runs, final step:\nupweight frequency-aligned units (solid)\n'
+                       'or matched random sets (dotted, median)')
     keys = [Line2D([], [], color='k', marker='x', ls='none', label='unedited, final step'),
             Line2D([], [], color='#555555', marker='o', ls='none', label='each unit filtered to its dominant frequency, final step'),
             Line2D([], [], mfc='none', mec='#555555', marker='o', ls='none', label='the same filter at the first step (0, or 300)'),
