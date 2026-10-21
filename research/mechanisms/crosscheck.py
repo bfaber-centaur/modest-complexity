@@ -69,6 +69,28 @@ def main(run_dir, step, out_dir):
         balanced = (per_unit*np.sqrt(b_out/a_in)).sum(1)
         out['gauge_max_abs_share_diff'] = float(np.abs(balanced/balanced.sum() - g['balanced_energy_share']).max())
         out['gauge_ranking_equal'] = (np.argsort(-balanced, kind='stable') + 1).tolist() == g['ranking']['balanced']
+    if (out_dir/'relational.csv').exists():
+        # Held-out true-label rank among labels absent from both operands' training pairs,
+        # via a sort instead of pairwise comparisons.
+        tr, held = d['train'], np.concatenate([d['cal'], d['audit']])
+        seen = set(zip(a[tr], y[tr])) | set(zip(b[tr], y[tr]))  # (operand, label) pairs in training
+        worst_rel = 0.
+        for row in csv.DictReader(open(out_dir/'relational.csv')):
+            if row['kind'] != 'top-K':
+                continue
+            freqs = [int(f) for f in row['frequencies'].split()]
+            P = projector(p, freqs) if row['mode'] == 'retain' else np.eye(p) - projector(p, freqs) + projector(p, [])
+            z = logits(P @ U, P @ V, W, a, b)
+            ranks, tops = [], []
+            for i in held:
+                absent = [c for c in range(p) if (a[i], c) not in seen and (b[i], c) not in seen and c != y[i]]
+                # Ties go below the true label, matching a strict 'greater than' count.
+                order = sorted(absent + [y[i]], key=lambda c: (-z[i, c], c != y[i]))
+                above = order.index(y[i])
+                ranks.append(above/len(absent)); tops.append(above == 0)
+            worst_rel = max(worst_rel, abs(np.mean(ranks) - float(row['true_rank_among_absent'])),
+                            abs(np.mean(tops) - float(row['true_top_among_absent'])))
+        out['relational_topK_rows_max_abs_diff'] = worst_rel
     print(json.dumps(out))
 
 

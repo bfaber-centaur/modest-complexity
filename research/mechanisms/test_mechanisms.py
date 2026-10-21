@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from freq import (ROOT, curve, evaluate, filter_inputs, kendall_tau, prune_order, ranking, rescale,  # noqa: E402
                   spectrum, synthetic, targeted)
 from gauge import balance  # noqa: E402
+from relational import absent_labels, relational, rotation  # noqa: E402
 from experiment import forward, init, interventions  # noqa: E402
 
 
@@ -106,6 +107,37 @@ class GaugeTests(unittest.TestCase):
         rng = np.random.default_rng(6)
         for _ in range(20):
             self.assertLessEqual(norm(wb), norm(rescale(wb, np.exp(rng.normal(0, .3, 24)))) + 1e-12)
+
+
+class RelationalTests(unittest.TestCase):
+    def setUp(self):
+        self.d = split()
+        self.held, self.absent = absent_labels(self.d)
+
+    def test_true_label_is_always_absent(self):
+        rows = np.arange(len(self.held))
+        self.assertTrue(self.absent[rows, self.d['yadd'][self.held]].all())
+        self.assertEqual(len(self.held), 662)
+
+    def test_rank_statistic_extremes(self):
+        y = self.d['yadd']
+        logits = np.zeros((961, 31))
+        logits[np.arange(961), y] = 1.  # true label strictly above everything
+        r = relational(logits, self.d, self.held, self.absent)
+        self.assertEqual((r['true_rank_among_absent'], r['true_top_among_absent'], r['pred_is_present']), (0., 1., 0.))
+        logits = -logits  # strictly below everything
+        r = relational(logits, self.d, self.held, self.absent)
+        self.assertEqual((r['true_rank_among_absent'], r['true_top_among_absent']), (1., 0.))
+
+    def test_null_rotation_matches_norm_rank_and_spectrum(self):
+        r = rotation(31, np.random.default_rng(1))
+        np.testing.assert_allclose(r @ r.T, np.eye(31), atol=1e-12)
+        np.testing.assert_allclose(r @ np.ones(31), np.ones(31), atol=1e-12)
+        w = init(31, 24, 5)
+        delta = w[0] - filter_inputs(w, [2, 5, 9], False)[0]
+        np.testing.assert_allclose(np.linalg.svd(r @ delta, compute_uv=False), np.linalg.svd(delta, compute_uv=False),
+                                   atol=1e-12)
+        np.testing.assert_allclose((r @ delta).mean(0), 0, atol=1e-12)
 
 
 class SyntheticTests(unittest.TestCase):
