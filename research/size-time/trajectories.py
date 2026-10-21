@@ -68,6 +68,16 @@ def descriptors(run, rows, status):
                 final_audit_margin_median=o['audit']['margin_median'], final_norm=last['norm'])
 
 
+def fit_dips(run, rows, n_train):
+    """Every logged step after first fit at which train accuracy is below FIT, with its size."""
+    first = next((z['step'] for z in rows if z['train'] >= FIT), None)
+    return [dict(run_id=run['run_id'], condition=condition_of(run), width=run['width'], init_seed=run['init_seed'],
+                 first_fit=first, step=z['step'], train_acc=z['train'], train_errors=round((1-z['train'])*n_train),
+                 n_train=n_train, train_ce=z['objective']['train']['cross_entropy'],
+                 train_margin_min=z['objective']['train']['margin_min'])
+            for z in rows if first is not None and z['step'] > first and z['train'] < FIT]
+
+
 def matched(run, rows):
     by_step = {z['step']: z for z in rows}
     out = []
@@ -218,16 +228,22 @@ def main():
     status = {k: v['status'] for k, v in latest_status(registries).items()}
     order = list(CONDITIONS)
     runs = sorted(plan['runs'], key=lambda r: (order.index(condition_of(r)), r['width'], r['init_seed']))
-    curves = {}
+    curves, n_train = {}, {}
     for r in runs:
         run_dir = next((root/r['run_id'] for root in args.runs if (root/r['run_id']).exists()), None)
         curves[r['run_id']] = load_rows(run_dir) if run_dir else []
+        if run_dir and (run_dir/'data.npz').exists():
+            with np.load(run_dir/'data.npz') as d:
+                n_train[r['run_id']] = len(d['train'])
     args.out.mkdir(parents=True, exist_ok=True)
     summary = [descriptors(r, curves[r['run_id']], status.get(r['run_id'], 'planned')) if curves[r['run_id']] else
                dict(run_id=r['run_id'], condition=condition_of(r), width=r['width'], init_seed=r['init_seed'],
                     status=status.get(r['run_id'], 'planned')) for r in runs]
     write_csv(args.out/'summary.csv', summary)
     write_csv(args.out/'matched.csv', [m for r in runs if curves[r['run_id']] for m in matched(r, curves[r['run_id']])])
+    dips = [d for r in runs if r['run_id'] in n_train for d in fit_dips(r, curves[r['run_id']], n_train[r['run_id']])]
+    if dips:
+        write_csv(args.out/'fit_dips.csv', dips)
 
     overview(runs, curves, status, plan['common']['steps'], plan['common']['p'], args.out)
     add = [r for r in runs if condition_of(r) == 'add']
