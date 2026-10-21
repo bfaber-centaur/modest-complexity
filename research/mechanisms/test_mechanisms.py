@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from freq import (ROOT, curve, evaluate, filter_inputs, kendall_tau, prune_order, ranking, rescale,  # noqa: E402
                   spectrum, synthetic, targeted)
 from gauge import balance  # noqa: E402
-from relational import absent_labels, relational, rotation  # noqa: E402
+from relational import absent_labels, relational, rotation, subspace_removal  # noqa: E402
 from experiment import forward, init, interventions  # noqa: E402
 
 
@@ -138,6 +138,20 @@ class RelationalTests(unittest.TestCase):
         np.testing.assert_allclose(np.linalg.svd(r @ delta, compute_uv=False), np.linalg.svd(delta, compute_uv=False),
                                    atol=1e-12)
         np.testing.assert_allclose((r @ delta).mean(0), 0, atol=1e-12)
+
+    def test_random_subspace_null(self):
+        w, r = init(31, 24, 5), rotation(31, np.random.default_rng(2))
+        # With R = I it is top-K removal; with every frequency it leaves DC only, for any R.
+        for x, y in zip(subspace_removal(w, [2, 5], np.eye(31)), filter_inputs(w, [2, 5], False)):
+            np.testing.assert_allclose(x, y, atol=1e-12)
+        for x, y in zip(subspace_removal(w, np.arange(1, 16), r), filter_inputs(w, np.arange(1, 16), False)):
+            np.testing.assert_allclose(x, y, atol=1e-12)
+        # It is a projection: it removes energy, and its change has rank 2K in token space.
+        wn = subspace_removal(w, [2, 5, 9], r)
+        self.assertLess(np.sum(wn[0]**2), np.sum(w[0]**2))
+        self.assertEqual(np.linalg.matrix_rank(w[0] - wn[0], tol=1e-10), 6)
+        for x, y in zip(subspace_removal(wn, [2, 5, 9], r), wn):  # idempotent
+            np.testing.assert_allclose(x, y, atol=1e-12)
 
 
 class SyntheticTests(unittest.TestCase):
