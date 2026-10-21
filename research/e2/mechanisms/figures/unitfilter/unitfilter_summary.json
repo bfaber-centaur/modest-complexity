@@ -377,6 +377,141 @@
    "target_sha256": "80a9a845356ca7a3264a3dbb8187908f2e8545ffc0b0035208539640bdf3d35f",
    "max_abs_diff_vs_logged_metrics": 0.0,
    "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30000-a1",
+   "step": 0,
+   "checkpoint_sha256": "c711ab962b37999c38bec82115661011eb1d258f2c96fdb24136e608e38e7ae3",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30000-a1",
+   "step": 1000,
+   "checkpoint_sha256": "232bc2b8f700696e878e577fb6cfd8ef59985ba915cf671897d774f68dacfa42",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30000-a1",
+   "step": 5000,
+   "checkpoint_sha256": "022f3a7a70a1ecba47c8f745a51eb5259d1dd165b8eafcb8b1826491aa51df25",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30000-a1",
+   "step": 20000,
+   "checkpoint_sha256": "b605f15d2915d1072c8615c74622d4e519c9f64ec2384e9347f174c6b4be87aa",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30000-a1",
+   "step": 50000,
+   "checkpoint_sha256": "b059bb62768a87b6c5e11ed7f62fb19e19b913d3c01cc3472e427dc1e0ed8f85",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30001-a1",
+   "step": 0,
+   "checkpoint_sha256": "381b71796848a2cff70c7e70fefa23a93feff8b8b9526df2babfea0fea134a26",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30001-a1",
+   "step": 1000,
+   "checkpoint_sha256": "1dfebae0881daa136bc2f4aadff0838a77ec7d8ff2b59d39e3cb38668e063b55",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30001-a1",
+   "step": 5000,
+   "checkpoint_sha256": "4e9050d1e565b296d7017f396bcafd16911610871829fd3c15e6af19c422bc84",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30001-a1",
+   "step": 20000,
+   "checkpoint_sha256": "53abcbd64ffac1230f3893fd60b8881fa142fdd04f77bc35a8f3f25f21c99edc",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30001-a1",
+   "step": 50000,
+   "checkpoint_sha256": "a3a3d8c641bd18bcab917be3accf04d6cb6a813967029c88d69a2896a4a12ce3",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30002-a1",
+   "step": 0,
+   "checkpoint_sha256": "836a121acfe30a8afa5990dcb570e9daf0077c906fe5e5c7ddfdf003c2024cdc",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30002-a1",
+   "step": 1000,
+   "checkpoint_sha256": "b7c1c254bc9736a51ff852fd55d53b3cc7040cd24be18d7be2c16e3c970bd9ec",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30002-a1",
+   "step": 5000,
+   "checkpoint_sha256": "50eab6eaa99a20aad9a991188325376900ef21e3e9fe59039aeec7cd2804ab6f",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30002-a1",
+   "step": 20000,
+   "checkpoint_sha256": "524b29cc5d4b07a89944a97b1c8a8da7f41b9c7d20c4fbb7e72a222841fdc411",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add0-w128-i30002-a1",
+   "step": 50000,
+   "checkpoint_sha256": "6c685001009c810728bcce9be84c382fc6ac7c086761a19f109860c25a1f9cbe",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
   }
  ],
  "common_set_sha256": "7c3eb3b2e73a09fe0bdedaddf82a71bc5e24ea2d581de03102678e17d1838137",
@@ -388,10 +523,10 @@
   "8",
   "inf"
  ],
- "read_from_commit": "129e3df",
+ "read_from_commit": "3b94f0f",
  "session_label": "e2-me-cloud-1",
- "analysis_code_commit": "dd0c17e3dd75e0dc5d3cd6f434f34247acb5821b",
- "analysis_tree_status": "?? research/e2/mechanisms/figures/unitfilter/",
- "analysis_script_sha256": "26d8883a82fab06d40e96739b116eb394d2e690992f5dcd708ad8b88157a5884",
- "command": "python research/e2/mechanisms/unitfilter.py --source-commit 129e3df --out research/e2/mechanisms/figures/unitfilter --runs research/coordinator/runs/e1f2-co-add-w128-i30000-tf50-a1:0,1000,5000,20000,50000 research/coordinator/runs/e1f2-co-add-w128-i30001-tf50-a1:0,1000,5000,20000,50000 research/coordinator/runs/e1f2-co-add-w128-i30002-tf50-a1:0,1000,5000,20000,50000 research/coordinator/runs/e1-co-add-w128-i30000-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-add-w128-i30001-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-add-w128-i30002-a1:300,50000 research/size-time/runs/e1-st-shuf-w128-i30000-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-shuf-w128-i30001-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-shuf-w128-i30002-a1:0,1000,5000,20000,50000"
+ "analysis_code_commit": "fa0a7706cdadeb893f4c0fa1358466c3296eb651",
+ "analysis_tree_status": "M research/e2/mechanisms/figures/unitfilter/unitfilter.csv",
+ "analysis_script_sha256": "559b2c1e0b1785899d656dfae4d93698d780bb35e8100dac39d2b169268b9b3a",
+ "command": "python research/e2/mechanisms/unitfilter.py --source-commit 3b94f0f --out research/e2/mechanisms/figures/unitfilter --runs research/coordinator/runs/e1f2-co-add-w128-i30000-tf50-a1:0,1000,5000,20000,50000 research/coordinator/runs/e1f2-co-add-w128-i30001-tf50-a1:0,1000,5000,20000,50000 research/coordinator/runs/e1f2-co-add-w128-i30002-tf50-a1:0,1000,5000,20000,50000 research/coordinator/runs/e1-co-add-w128-i30000-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-add-w128-i30001-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-add-w128-i30002-a1:300,50000 research/size-time/runs/e1-st-shuf-w128-i30000-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-shuf-w128-i30001-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-shuf-w128-i30002-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-add0-w128-i30000-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-add0-w128-i30001-a1:0,1000,5000,20000,50000 research/size-time/runs/e1-st-add0-w128-i30002-a1:0,1000,5000,20000,50000"
 }

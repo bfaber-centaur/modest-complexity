@@ -1,14 +1,15 @@
 # e2 mechanisms: figures first
 
-Question and predictions, written before each cycle's measurements: [QUESTION.md](QUESTION.md). Interpretation is kept separately in [INTERPRETATION.md](INTERPRETATION.md). Session `e2-me-cloud-1`, branch `claude/project-thread-psralm`. Packet 1 read runs at `9e56faf` (e2 base `6aaa3a2`), packet 2 at `129e3df`; shared code `fe284a5`. No runs were launched, so there are no registry entries. Nothing here is audited.
+Question and predictions, written before each cycle's measurements: [QUESTION.md](QUESTION.md). Interpretation is kept separately in [INTERPRETATION.md](INTERPRETATION.md). Session `e2-me-cloud-1`, branch `claude/project-thread-psralm`. Packet 1 read runs at `9e56faf` (e2 base `6aaa3a2`), packet 2 at `129e3df`, the packet 2 close-out at `3b94f0f`; shared code `fe284a5`. No runs were launched, so there are no registry entries. Nothing here is audited.
 
 ## Packet 2. Weights-only edits: does the 30% runs' frequency structure carry correct answers?
 
 ![unitfilter](figures/unitfilter/unitfilter.png)
 
-Vector version: [unitfilter.svg](figures/unitfilter/unitfilter.svg). Look before reading:
-- Top row: where do the filled red points sit relative to the black crosses (unedited), the grey nulls and chance?
-- Bottom left: when do the solid lines (filtered) rise compared with the dashed ones (unedited)?
+Vector version: [unitfilter.svg](figures/unitfilter/unitfilter.svg). The figure now includes the no-decay comparison added at the close of cycle 2 (orange; section below). Look before reading:
+- Top row: where do the filled red points sit relative to the black crosses (unedited), the grey nulls, chance, and the orange points?
+- Bottom left: when do the solid lines (filtered) rise compared with the dashed ones (unedited)? Do red and orange separate?
+- Bottom middle: at the same train accuracy after the edit, do red and orange points sit at different held-out accuracy?
 - Purple (shuffled-label runs): does the edit produce anything there?
 
 Definitions (`unitfilter.py`; written before measuring in QUESTION.md, cycle 2). No edit looks at labels, pairs or a+b−c.
@@ -89,18 +90,53 @@ Checks:
 - Every checkpoint read passes the manifest hash, split and target hashes (each run against its planned split and its manifest target) and logged-metric replay (maximum difference 0.0; `unitfilter_summary.json`). The common-set file is verified by SHA-256.
 - Outputs were generated from clean commit `dd0c17e`. The tree status recorded in the summary lists only the output directory. The CSV is byte-identical to the run before the last figure-only code change.
 
-Reproduce packet 2:
+### Close-out of cycle 2: the same edits on no-decay runs (DECISIONS D10)
+
+The coordinator's spot check (D10, separate code) found filtered common-set accuracy 0.466 / 0.325 / 0.416 for the e1 **no-decay** width-128 runs `e1-st-add0-w128-i3000{0,1,2}-a1`: same 30% split, same a+b training labels, weight decay 0. These runs are now a named comparison in `unitfilter.py` (orange in the figure, "wd 0"), with every edit, null and checkpoint above. QUESTION.md records what each outcome would mean, written before this run but after the spot check, so the headline was already known.
+
+Final step (50k). Random-other and phases-scrambled give the median (max) of 8 draws.
+
+| run | unit concentration / in-out agreement | unedited acc: common / own held-out / train | **filtered** acc: common / own held-out / train | RMS logit change | kept energy, input / output | random other freq., common | phases scrambled, common |
+|---|---|---|---|---|---|---|---|
+| wd 0 i30000 | 0.22 / 0.34 | 0.000 / 0.000 / 1.000 | **0.466 / 0.486 / 0.632** | 8.36 | 0.23 / 0.18 | 0.087 (0.120) | 0.036 (0.054) |
+| wd 0 i30001 | 0.23 / 0.40 | 0.002 / 0.002 / 1.000 | **0.325 / 0.328 / 0.485** | 8.75 | 0.25 / 0.19 | 0.075 (0.112) | 0.029 (0.037) |
+| wd 0 i30002 | 0.23 / 0.43 | 0.000 / 0.000 / 1.000 | **0.416 / 0.440 / 0.609** | 8.65 | 0.24 / 0.20 | 0.113 (0.133) | 0.029 (0.037) |
+| 30% (decay) i30000–i30002, from above | 0.40–0.44 / 0.66–0.75 | 0.000–0.004 / 0.000–0.003 / 1.000 | 0.43–0.58 / 0.44–0.61 / 0.69–0.79 | 3.98–4.08 | 0.42–0.46 / 0.37–0.39 | 0.064–0.078 (≤ 0.106) | 0.032–0.037 (≤ 0.060) |
+
+Filtered common-set accuracy over training (unedited in brackets):
+
+| runs | 1k | 5k | 20k | 50k |
+|---|---|---|---|---|
+| wd 0 | 0.25–0.35 (0.000) | 0.34–0.39 (0.000–0.002) | 0.32–0.48 (0.000–0.002) | 0.33–0.47 (0.000–0.002) |
+| 30% with decay | 0.28–0.34 (0.000–0.002) | 0.29–0.46 (0.000) | 0.50–0.59 (0.000) | 0.43–0.58 (0.000–0.004) |
+
+Observations:
+- **The no-decay runs respond to the filter much as the decayed 30% runs do.** Common-set accuracy goes from 0.000–0.002 to 0.33–0.47, and their own nulls stay low (random other frequency ≤ 0.145 at any step from 1k on, phases scrambled ≤ 0.075). The same filter at step 0 is the same three networks as before (0.029–0.064).
+- **Held-out accuracy against retained train fit (bottom middle).** At every checkpoint from 1k on, the filtered held-out accuracy is 0.57–0.78 of the filtered train accuracy in the decayed 30% runs and 0.62–0.76 in the no-decay runs. The red and orange points lie on one band. The 50% runs sit nearer the diagonal (0.83–1.00), with more training pairs.
+- **Over training.** At 1k and 5k the two 30% groups overlap. At 20k and 50k the decayed runs are higher on average (0.43–0.59 against 0.32–0.48), and they also keep more train accuracy after the edit (0.69–0.79 against 0.49–0.63). One seed overlaps: wd 0 i30000 (0.466) is above decayed i30000 (0.431).
+- **Differences that do separate the groups.**
+  - Concentration: 0.22–0.23 against 0.40–0.44.
+  - Energy the edit keeps: 0.23–0.25 against 0.42–0.46.
+  - Size of the edit: RMS logit change 8.4–8.8 against about 4. The no-decay weights are larger.
+  - Half-filters: inputs only 0.077–0.083, output only 0.029–0.046 (decayed: 0.15–0.19 and 0.13–0.21).
+  - Input DC removed: 0.58–0.64 (decayed: 0.64–0.72).
+- **Scaling edit.** Upweighting aligned units does nothing here either (common accuracy ≤ 0.012, matched random sets ≤ 0.012).
+
+Check: the packet 2 rows (the first nine runs) are byte-identical in the regenerated CSV; the no-decay rows were appended after them. Outputs were regenerated from clean commit `fa0a770`, the last change to figure code only. The recorded tree status lists only the CSV being rewritten.
+
+Reproduce packet 2 and its close-out:
 
 ```bash
 C=research/coordinator/runs; S=research/size-time/runs; T=0,1000,5000,20000,50000
-uv run --locked --group analysis python research/e2/mechanisms/unitfilter.py --source-commit 129e3df --out research/e2/mechanisms/figures/unitfilter \
+uv run --locked --group analysis python research/e2/mechanisms/unitfilter.py --source-commit 3b94f0f --out research/e2/mechanisms/figures/unitfilter \
     --runs $C/e1f2-co-add-w128-i30000-tf50-a1:$T $C/e1f2-co-add-w128-i30001-tf50-a1:$T $C/e1f2-co-add-w128-i30002-tf50-a1:$T \
     $C/e1-co-add-w128-i30000-a1:$T $S/e1-st-add-w128-i30001-a1:$T $S/e1-st-add-w128-i30002-a1:300,50000 \
-    $S/e1-st-shuf-w128-i30000-a1:$T $S/e1-st-shuf-w128-i30001-a1:$T $S/e1-st-shuf-w128-i30002-a1:$T
+    $S/e1-st-shuf-w128-i30000-a1:$T $S/e1-st-shuf-w128-i30001-a1:$T $S/e1-st-shuf-w128-i30002-a1:$T \
+    $S/e1-st-add0-w128-i30000-a1:$T $S/e1-st-add0-w128-i30001-a1:$T $S/e1-st-add0-w128-i30002-a1:$T
 uv run --locked --group analysis python -m unittest discover -s research/e2/mechanisms -v
 ```
 
-Budget: e2 numerical execution so far is about 5 minutes (packet 1 about 4, packet 2 under 1), in one process with one BLAS thread. e1 usage was about 14 minutes, recorded separately.
+Budget: e2 numerical execution is about 5 minutes in total (packet 1 about 4; packet 2 and its close-out under 1 together), in one process with one BLAS thread. e1 usage was about 14 minutes, recorded separately. Both e2 inquiry cycles are used (DECISIONS D10).
 
 ## Packet 1. Unit groups by dominant frequency, in failed (30%) and successful (50%) runs
 
@@ -143,7 +179,7 @@ Observations:
   - Group shares are 0.012–0.017 (median by run), 3× their random sets (0.004–0.005) and about 15× step 0 (0.001), but 20× below the 50% runs.
   - All 45 own-frequency terms point at the correct label: |phase| < π/2 for 45/45 and < 0.5 rad for 40/45.
   - Their amplitude, 0.02–0.36 logits (median 0.12–0.15), is about one fifth of the 50% runs'.
-  - The null reference: groups at step 0 point within ±π/2 in 34/75 cases, with amplitude about 0.0004.
+  - The null reference: groups at step 0 point within ±π/2 in 21 of the 45 groups of the three distinct step-0 networks, with amplitude about 0.0004. (Corrected after e2 audit cycle 2, G13. This line first said 34/75, which counted byte-identical step-0 networks more than once: runs with the same init seed start from the same weights.)
 - **Over training** (top right; groups read at each checkpoint).
   - The 30% runs' group share rises from 0.001 at step 0 to 0.005 at 5k and 0.012–0.017 at 50k. At 5k, 27/30 phases are aligned, with amplitude 0.03.
   - The 50% runs reach that amplitude by step 1k (0.04, 15/15 aligned) and 0.18 by 5k, while common-set accuracy is still 0.02–0.07.

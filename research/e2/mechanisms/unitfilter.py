@@ -12,7 +12,8 @@ a + b - c. For each live unit j, k_j is its dominant input frequency (units.py).
   frequencies agree; s = inf keeps only those units.
 Nulls: the same edit at step 0, the filter to a random non-dominant frequency per unit
 (seed 36000), the scaling of random live-unit sets matched in count and total
-|u_j||w_j| within 10%, and the e1 shuffled-label runs. Scores: argmax accuracy against
+|u_j||w_j| within 10%, and the e1 shuffled-label runs. Comparison added at the close of
+cycle 2 (DECISIONS D10): the e1 no-decay runs, same split and a+b labels, weight decay 0. Scores: argmax accuracy against
 a + b on the common never-trained set (research/e2/data) and on the run's own cal + audit;
 train accuracy against the run's own training labels; RMS pair-centred logit change.
 
@@ -170,18 +171,19 @@ def plot(rows, path):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
-    cls = lambda run: 'shuffled' if '-shuf-' in run else '50%' if 'tf50' in run else '30%'
-    order = {'50%': 0, '30%': 1, 'shuffled': 2}
+    cls = lambda run: 'shuffled' if '-shuf-' in run else 'no decay' if '-add0-' in run else '50%' if 'tf50' in run else '30%'
+    order = {'50%': 0, '30%': 1, 'no decay': 2, 'shuffled': 3}
     runs = sorted({r['run_id'] for r in rows}, key=lambda r: (order[cls(r)], r))
-    color = {'50%': '#1f6fb4', '30%': '#c0392b', 'shuffled': '#7d3c98'}
+    color = {'50%': '#1f6fb4', '30%': '#c0392b', 'no decay': '#e08a1e', 'shuffled': '#7d3c98'}
     col = {run: color[cls(run)] for run in runs}
-    label = {run: cls(run).replace('shuffled', 'shuf.') + '\ni' + run.split('-i')[1][:5] for run in runs}
+    short = {'50%': '50%', '30%': '30%', 'no decay': 'wd 0', 'shuffled': 'shuf.'}
+    label = {run: short[cls(run)] + '\ni' + run.split('-i')[1][:5] for run in runs}
     final = {run: max(r['step'] for r in rows if r['run_id'] == run) for run in runs}
     first = {run: min(r['step'] for r in rows if r['run_id'] == run) for run in runs}
     sel = lambda run, step, kind, scale='': [r for r in rows if r['run_id'] == run and r['step'] == step
                                              and r['kind'] == kind and str(r['scale']) == str(scale)]
     rng = np.random.default_rng(0)
-    fig, ax = plt.subplots(2, 3, figsize=(16, 9.5), constrained_layout=True)
+    fig, ax = plt.subplots(2, 3, figsize=(18, 9.5), constrained_layout=True)
     for panel, key, title in ((ax[0, 0], 'common_acc', 'common set (483 pairs neither split trains on)'),
                               (ax[0, 1], 'own_heldout_acc', "run's own held-out split (cal + audit)"),
                               (ax[0, 2], 'train_acc', "training pairs, against the run's own training labels")):
@@ -195,6 +197,7 @@ def plot(rows, path):
                 v = [r[key] for r in sel(run, step, kind)]
                 panel.plot(i + x0 + (rng.uniform(-.06, .06, len(v)) if len(v) > 1 else 0), v, ls='none', **style)
         panel.axhline(1/31, color='k', ls=':', lw=1)
+        panel.tick_params(axis='x', labelsize=8)
         panel.set(xticks=range(len(runs)), xticklabels=[label[r] for r in runs], ylim=(-.03, 1.03),
                   ylabel='argmax accuracy' + (' (a+b)' if key != 'train_acc' else ''), title=title)
     for run in runs:
@@ -205,15 +208,16 @@ def plot(rows, path):
     ax[1, 0].axhline(1/31, color='k', ls=':', lw=1)
     ax[1, 0].set(xscale='log', ylim=(-.03, 1.03), xlabel='update step (step 0 drawn at 100)', ylabel='common-set accuracy (a+b)',
                  title='over training: filtered (solid) vs unedited (dashed)\n(dominant frequencies read at each checkpoint)')
-    for run in runs:
+    for run in [r for r in runs if cls(r) != 'shuffled']:
         for kind, style in (('filter random non-dominant', dict(color='#999999', marker='.', s=10)),
                             ('filter dominant, phases scrambled', dict(color='#999999', marker='d', s=6)),
                             ('filter dominant', dict(color=col[run], marker='o', s=22))):
             v = [r for r in rows if r['run_id'] == run and r['kind'] == kind]
-            ax[1, 1].scatter([r['logit_change_rms'] for r in v], [r['common_acc'] for r in v], **style)
+            ax[1, 1].scatter([r['train_acc'] for r in v], [r['common_acc'] for r in v], **style)
+    ax[1, 1].plot([0, 1], [0, 1], color='k', lw=.8)
     ax[1, 1].axhline(1/31, color='k', ls=':', lw=1)
-    ax[1, 1].set(xlabel='RMS logit change from the edit (pair-centred)', ylabel='common-set accuracy (a+b)', ylim=(-.03, 1.03),
-                 title='filter edits at every analysed checkpoint')
+    ax[1, 1].set(xlabel='train accuracy after the edit', ylabel='common-set accuracy (a+b)', xlim=(-.03, 1.03), ylim=(-.03, 1.03),
+                 title='filter edits at every analysed checkpoint, a+b runs\n(held-out against retained training fit; line: equal)')
     xs = {2: 1, 4: 2, 8: 3, np.inf: 4}
     for run in [r for r in runs if cls(r) != '50%']:
         base = sel(run, final[run], 'none')[0]['common_acc']
@@ -223,7 +227,7 @@ def plot(rows, path):
     ax[1, 2].axhline(1/31, color='k', ls=':', lw=1)
     ax[1, 2].set(xticks=range(5), xticklabels=['1', '2', '4', '8', 'aligned\nonly'], ylim=(-.03, 1.03),
                  xlabel='output-row scale s', ylabel='common-set accuracy (a+b)',
-                 title='30% and shuffled-label runs, final step:\nupweight frequency-aligned units (solid)\n'
+                 title='30%, no-decay and shuffled-label runs, final step:\nupweight frequency-aligned units (solid)\n'
                        'or matched random sets (dotted, median)')
     keys = [Line2D([], [], color='k', marker='x', ls='none', label='unedited, final step'),
             Line2D([], [], color='#555555', marker='o', ls='none', label='each unit filtered to its dominant frequency, final step'),
@@ -233,10 +237,11 @@ def plot(rows, path):
                    label='dominant-frequency filter with phases scrambled (8 draws)'),
             Line2D([], [], color='k', ls=':', label='chance 1/31')]
     keys += [Line2D([], [], color=c, lw=6, label=f'{n} runs') for n, c in
-             (('50% share', color['50%']), ('30% share', color['30%']), ('shuffled-label (30% split)', color['shuffled']))]
+             (('50% share', color['50%']), ('30% share', color['30%']), ('30% share, weight decay 0', color['no decay']),
+              ('shuffled-label (30% split)', color['shuffled']))]
     fig.legend(handles=keys, loc='outside lower center', ncol=4, fontsize=9)
     fig.suptitle('Width 128, weights-only edits scored by plain argmax: 50% share (blue), 30% share (red), '
-                 'shuffled training labels (purple)', fontsize=10)
+                 '30% share without weight decay (orange), shuffled training labels (purple)', fontsize=10)
     for ext in ('png', 'svg'):
         fig.savefig(path.with_suffix(f'.{ext}'), dpi=120)
     plt.close(fig)
