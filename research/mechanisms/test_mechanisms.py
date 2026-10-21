@@ -11,6 +11,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from freq import (ROOT, curve, evaluate, filter_inputs, kendall_tau, prune_order, ranking, rescale,  # noqa: E402
                   spectrum, synthetic, targeted)
+from drift import drift  # noqa: E402
 from gauge import balance  # noqa: E402
 from relational import absent_labels, relational, rotation, subspace_removal  # noqa: E402
 from experiment import forward, init, interventions  # noqa: E402
@@ -152,6 +153,17 @@ class RelationalTests(unittest.TestCase):
         self.assertEqual(np.linalg.matrix_rank(w[0] - wn[0], tol=1e-10), 6)
         for x, y in zip(subspace_removal(wn, [2, 5, 9], r), wn):  # idempotent
             np.testing.assert_allclose(x, y, atol=1e-12)
+
+
+class DriftTests(unittest.TestCase):
+    def test_change_at_one_frequency(self):
+        w = init(31, 24, 5)
+        moved = [w[0] + (w[0] - filter_inputs(w, [7], False)[0]), w[1], 2*w[2]]
+        out = drift(w, moved)
+        self.assertEqual(out['change_ranking'][0], 7)
+        self.assertAlmostEqual(out['change_energy_share'][6], 1.)
+        self.assertEqual(out['relative_change']['V'], 0.)
+        self.assertAlmostEqual(out['relative_change']['W'], 1.)
 
 
 class SyntheticTests(unittest.TestCase):
