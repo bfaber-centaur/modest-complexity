@@ -1,0 +1,107 @@
+{
+ "hash": {
+  "0.3": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+  "0.4": "5c843bb877255505545a35a718349e654b02b7feb535561fa15751374075e5a9",
+  "0.45": "44e5774e0051bdd952ed089b3bda8513922fc856eed1efe56239b82cf633c7aa",
+  "0.5": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49"
+ },
+ "regenerated_0.3_equals_e1-split.npz": true,
+ "regenerated_0.5_equals_e1f2-split-tf50.npz": true,
+ "hash_matches_claim": {
+  "0.4": true,
+  "0.45": true
+ },
+ "nested_30_40_45_50": true,
+ "train_sizes": {
+  "0.3": 299,
+  "0.4": 359,
+  "0.45": 417,
+  "0.5": 478
+ },
+ "split_sizes": {
+  "0.3": [
+   299,
+   118,
+   544
+  ],
+  "0.4": [
+   359,
+   119,
+   483
+  ],
+  "0.45": [
+   417,
+   119,
+   425
+  ],
+  "0.5": [
+   478,
+   119,
+   364
+  ]
+ },
+ "common_untrained_at_every_share": true,
+ "common_equals_40_audit": true,
+ "common_minus_45_audit_groups": 31,
+ "common_minus_45_audit_in_45_cal": true,
+ "groups_per_class": {
+  "0.3": [
+   [
+    5
+   ],
+   [
+    2
+   ],
+   [
+    9
+   ]
+  ],
+  "0.4": [
+   [
+    6
+   ],
+   [
+    2
+   ],
+   [
+    8
+   ]
+  ],
+  "0.45": [
+   [
+    7
+   ],
+   [
+    2
+   ],
+   [
+    7
+   ]
+  ],
+  "0.5": [
+   [
+    8
+   ],
+   [
+    2
+   ],
+   [
+    6
+   ]
+  ]
+ },
+ "added_over_30_from_e1": {
+  "0.4": {
+   "cal": 60,
+   "audit": 0
+  },
+  "0.45": {
+   "cal": 118,
+   "audit": 0
+  },
+  "0.5": {
+   "cal": 118,
+   "audit": 61
+  }
+ }
+}
