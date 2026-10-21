@@ -1,23 +1,46 @@
 # Mechanism lane: interpretations (read [README.md](README.md) figures first)
 
-Candidate explanations, not conclusions. One seed, one width, one checkpoint.
+These are candidate explanations, not conclusions. All evidence so far comes from one seed and from models that do not generalize.
 
-## Packet 1. Retention/removal on the non-generalizing width-128 checkpoint
+## Packet 1. Retention/removal on non-generalizing checkpoints
 
-Candidate: this checkpoint stores its training fit diffusely across all 15 input frequencies, roughly in proportion to their energy, rather than in a small frequency subset. The spectrum stays close to the flat spectrum of the random initialization, train accuracy grows gradually with the energy retained, and random K-subsets of similar size do almost as well as the top-K. The held-out loss rising as more frequencies are kept fits the coordinator's account of below-chance held-out accuracy: whatever the input weights encode about the training pairs pushes held-out pairs further from their labels, and removing input structure moves predictions back toward the DC-only baseline (CE 3.54).
+Candidate: these checkpoints store their training fit diffusely across all 15 input frequencies, roughly in proportion to energy, rather than in a small subset of frequencies. The evidence:
 
-Strongest alternative: input-embedding Fourier energy is simply the wrong coordinate system for this model. A memorized table can be spread over frequencies for reasons unrelated to how it is computed, and filtering U and V while keeping W fixed also changes which hidden units are active, so the curves partly measure ReLU gating disruption rather than the removal of a "component". A per-unit or output-side (W) analysis could look different.
+- The spectrum stays about as flat as at initialization.
+- Train accuracy grows gradually with the energy retained.
+- Random K-subsets do almost as well as the top-K, even though they carry less energy.
 
-What would distinguish them: the same curves on a generalizing checkpoint (if the size/time lane or a follow-up produces one), where a Fourier account predicts a sharp rise at small K that random subsets do not reproduce; and an energy-matched null (removing a random perturbation of the same norm and rank) instead of random frequency subsets.
+The pattern repeats at widths 32, 128 and 512 and at the first-fit step 300. The width-512 and step-300 checkpoints show the clearest advantage of top-K over random subsets, which is still modest: 0.53 versus at most 0.49, and 0.32 versus at most 0.31, at K=4.
 
-Do not read: the small held-out accuracy above chance at retention K=1 to 3 (0.064 to 0.072, about 35 to 39 of 544 pairs). Random subsets reach 0.105, so this is within the spread of arbitrary filtering of a memorizing model.
+Held-out loss rises as more frequencies are kept. That fits the coordinator's account of below-chance held-out accuracy: whatever the input weights encode about the training pairs pushes held-out pairs further from their labels, and removing input structure moves predictions back toward the DC-only baseline.
 
-## Packet 2. Rescaling sensitivity
+Strongest alternative: input-embedding Fourier energy is the wrong coordinate system for these models. A memorized table can be spread over frequencies for reasons unrelated to how it is computed. Filtering U and V while keeping W fixed also changes which hidden units are active, so the curves partly measure disruption of ReLU gating rather than removal of a component. A per-unit or output-side (W) analysis could look different.
 
-Candidate: on this checkpoint, the input-energy frequency ranking is not a property of the computed function. A 4% gain on seven units changes the top-4 set, and random gains of about ±10% (σ=0.1) change it in most draws, with no change in any logit. Because the spectrum is nearly flat, small gauge changes are enough; the ranking's fragility here is partly a consequence of the flat spectrum and may be much smaller for a model with concentrated frequencies (in the synthetic network, lifting k=7, built with 0.9 of k=3's input gain, to rank 1 took a 1.116 gain).
+What would distinguish them:
 
-The codec is less fragile than the ranking (unchanged at σ=0.1) but still not a function property: identical functions can cost 95,496 or 190,728 bits. The pruning order is invariant, so all of the sensitivity enters through per-matrix quantization ranges.
+- The same curves on a generalizing checkpoint. A Fourier account predicts a sharp rise at small K there, one that random subsets do not reproduce.
+- An energy-matched null in place of random frequency subsets.
 
-Strongest alternative: these rescalings are off the set of points the optimizer actually reaches. Every random draw increased the parameter norm, consistent with weight decay settling near a norm-minimizing balance between each unit's input and output weights. If proxies are only ever compared at that balanced gauge, the sensitivity shown here may not matter in practice. That is a normalization convention, which is the next analysis; it would fix this one symmetry, not every equivalent representation.
+Do not read too much into the small above-chance held-out accuracy at small retained K (at most 0.072). Random subsets reach 0.105, so this is within the spread of arbitrary filtering of a memorizing model.
 
-Missing check: whether the codec can get shorter under some rescaling (no random draw shortened it, which also fits the balanced-gauge account), and the same audit on a generalizing checkpoint.
+## Packet 2. Rescaling sensitivity of raw proxies
+
+Candidate: on these checkpoints, the input-energy frequency ranking is not a property of the computed function. Gains of 2 to 23% on 2 to 33 units change the top-4 set, and ±10% random gains change it in most draws, with no change in any logit.
+
+Because the spectra are nearly flat, small gauge changes are enough. The fragility is partly a consequence of flatness and may be much smaller for a model with concentrated frequencies. In the synthetic network, lifting k=7 (built with 0.9 of k=3's input gain) to rank 1 took a gain of 1.116.
+
+The codec is less fragile than the ranking but still not a property of the function. Identical functions cost 95,496 or 190,728 bits at width 128, and the code can get longer (final checkpoints) or shorter (step 300) under rescaling. The pruning order is invariant, so all of this sensitivity enters through per-matrix quantization ranges. With only four quantization levels, the codec jumps by factors of two, and a checkpoint near the q=8 fidelity threshold flips easily.
+
+Strongest alternative: these rescalings are off the set of points the optimizer actually reaches, so in practice the sensitivity may not matter. Packet 3 tests this directly.
+
+## Packet 3. Balanced gauge
+
+Observation summary: the convention works as designed. Every rescaled copy normalizes to the same weights, so the ranking and codec of the balanced copy are rescaling-invariant.
+
+On these trained checkpoints, balancing changes little. The top-4 set is unchanged at all four checkpoints, and the codec is unchanged except at step 300, where it halves. That fits the packet-2 alternative: the trained weights sit near, but not at, the minimum-norm gauge. Every unit has its input norm somewhat larger than its output norm. This is the direction expected from initialization, where input weights (SD .2 over 62 entries) start much larger than output weights (SD 1/sqrt(width) over 31 entries). It also fits the gap shrinking with training (step 300 versus 50k) and with width.
+
+What the convention does not do: it does not turn energy into a measure of functional importance. In the synthetic network, four groups with identical logit contributions get balanced energy shares from 0.11 to 0.53, because balanced energy tracks per-unit weight magnitude, including the parts of units' contributions that cancel each other. A function-sensitive ranking, such as the loss change when a frequency is removed alone, would answer a different question from any weight-energy ranking under any gauge.
+
+Strongest alternative to "balanced proxies are the ones to report": the balanced gauge is one convention among several (for example, unit-norm inputs). Its codec numbers are as conventional as the raw ones, just reproducible. The choice should be stated with every codec or ranking number, not treated as removing the measurement question.
+
+Missing check: everything here on a generalizing checkpoint.

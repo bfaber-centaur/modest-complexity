@@ -1,0 +1,111 @@
+{
+ "label": "first logged step with train acc >= .99, does not generalize",
+ "input": {
+  "run_id": "e1-co-add-w128-i30000-a1",
+  "step": 300,
+  "purpose": "exploratory",
+  "checkpoint": "research/coordinator/runs/e1-co-add-w128-i30000-a1/checkpoint_000300.npz",
+  "checkpoint_sha256": "103d31ea37053012c01d1cb2da63e736a41931fe8a43ef317850955ae67c6f19",
+  "data_sha256": "3fa3dbf0c04e1c6033f36d72a039d402aa244a685cd75791cd5ebb46f6571857",
+  "manifest_hashes_verified": true,
+  "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+  "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+  "producing_code_commit": "ebd874e17028f2c2f04de5ecea9fe4b51b77e425",
+  "max_abs_diff_vs_logged_metrics": 0.0,
+  "read_from_commit": "67a10d8d282fd1d57ae6b3aba5a992f8d040203d"
+ },
+ "balance_gain_log2": {
+  "median_abs": 0.3042219410892172,
+  "min": -0.4709522825227733,
+  "max": -0.18013989533689187,
+  "dead_units": 0
+ },
+ "balanced_max_abs_logit_diff": 1.7763568394002505e-15,
+ "param_norm": {
+  "checkpoint": 32.951371690699624,
+  "balanced": 31.480456694886282
+ },
+ "ranking": {
+  "checkpoint": [
+   2,
+   4,
+   11,
+   5,
+   14,
+   10,
+   15,
+   8,
+   9,
+   12,
+   6,
+   3,
+   1,
+   13,
+   7
+  ],
+  "balanced": [
+   2,
+   4,
+   11,
+   5,
+   14,
+   10,
+   15,
+   8,
+   9,
+   12,
+   3,
+   6,
+   1,
+   13,
+   7
+  ],
+  "kendall_tau": 0.9809523809523809,
+  "topK_changed": false
+ },
+ "balanced_energy_share": [
+  0.06002315577282076,
+  0.08370289648491602,
+  0.06194442506563541,
+  0.07567574913614193,
+  0.07298408462677881,
+  0.06170748853723462,
+  0.05610565047103013,
+  0.06502973687187866,
+  0.06479911055126308,
+  0.06739388723539244,
+  0.07379041004341412,
+  0.06286724983615662,
+  0.05914086133052179,
+  0.0694831031664545,
+  0.06535219087036113
+ ],
+ "codec": {
+  "checkpoint": {
+   "codec_bits": 190728,
+   "codec_k": 128,
+   "codec_q": 16
+  },
+  "balanced": {
+   "codec_bits": 95496,
+   "codec_k": 128,
+   "codec_q": 8
+  }
+ },
+ "invariance": {
+  "draws": 64,
+  "max_rel_weight_diff": 3.2688832874213035e-16,
+  "balanced_ranking_equal_all": true,
+  "balanced_codec_values": [
+   95496
+  ],
+  "raw_codec_values": [
+   95496,
+   190728
+  ]
+ },
+ "analysis_code_commit": "6d66084b1a7be84880cd8f547a9a9142ae226a5c",
+ "analysis_tree_status": "M research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/crosscheck.json\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s300/\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge.png\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge.svg\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge_retention.csv\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge_summary.json\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge_sweep.csv\n?? research/mechanisms/figures/e1-co-add-w32-i30000-a1-s50000/\n?? research/mechanisms/figures/e1-co-add-w512-i30000-a1-s50000/\n?? research/mechanisms/figures/synthetic/gauge.png\n?? research/mechanisms/figures/synthetic/gauge.svg\n?? research/mechanisms/figures/synthetic/gauge_retention.csv\n?? research/mechanisms/figures/synthetic/gauge_summary.json\n?? research/mechanisms/figures/synthetic/gauge_sweep.csv",
+ "analysis_script_sha256": "132b065c7925c4987faca55c6d75e7e2cced2750f732d0fdc22db0c4916a0d2b",
+ "command": "python research/mechanisms/gauge.py --run research/coordinator/runs/e1-co-add-w128-i30000-a1 --step 300 --source-commit 67a10d8d282fd1d57ae6b3aba5a992f8d040203d --label first logged step with train acc >= .99, does not generalize --out research/mechanisms/figures/e1-co-add-w128-i30000-a1-s300"
+}

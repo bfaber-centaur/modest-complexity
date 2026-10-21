@@ -1,0 +1,111 @@
+{
+ "label": "late checkpoint, fits train, does not generalize",
+ "input": {
+  "run_id": "e1-co-add-w32-i30000-a1",
+  "step": 50000,
+  "purpose": "exploratory",
+  "checkpoint": "research/coordinator/runs/e1-co-add-w32-i30000-a1/checkpoint_050000.npz",
+  "checkpoint_sha256": "0f34de5c94b67b1f348bb66f7b2b06511331e8c8a39565299d43ed13bd3d454f",
+  "data_sha256": "3fa3dbf0c04e1c6033f36d72a039d402aa244a685cd75791cd5ebb46f6571857",
+  "manifest_hashes_verified": true,
+  "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+  "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046",
+  "producing_code_commit": "ebd874e17028f2c2f04de5ecea9fe4b51b77e425",
+  "max_abs_diff_vs_logged_metrics": 0.0,
+  "read_from_commit": "67a10d8d282fd1d57ae6b3aba5a992f8d040203d"
+ },
+ "balance_gain_log2": {
+  "median_abs": 0.15546806656382328,
+  "min": -0.22888198195273365,
+  "max": -0.04574387467040577,
+  "dead_units": 0
+ },
+ "balanced_max_abs_logit_diff": 7.105427357601002e-15,
+ "param_norm": {
+  "checkpoint": 47.82748712108812,
+  "balanced": 47.281911742187575
+ },
+ "ranking": {
+  "checkpoint": [
+   10,
+   9,
+   1,
+   7,
+   8,
+   6,
+   11,
+   4,
+   2,
+   12,
+   13,
+   5,
+   3,
+   14,
+   15
+  ],
+  "balanced": [
+   10,
+   9,
+   7,
+   1,
+   8,
+   11,
+   6,
+   4,
+   2,
+   12,
+   13,
+   14,
+   3,
+   5,
+   15
+  ],
+  "kendall_tau": 0.9047619047619048,
+  "topK_changed": false
+ },
+ "balanced_energy_share": [
+  0.07598480237203056,
+  0.0632598273657517,
+  0.05420712265604232,
+  0.065064984716669,
+  0.054093975117939314,
+  0.06771950618383786,
+  0.07771293477870138,
+  0.07022767143189274,
+  0.08278969008175778,
+  0.09722139757247579,
+  0.0678392482978059,
+  0.06243677663086612,
+  0.05776574343680451,
+  0.055286408694595855,
+  0.04838991066282914
+ ],
+ "codec": {
+  "checkpoint": {
+   "codec_bits": 24072,
+   "codec_k": 32,
+   "codec_q": 8
+  },
+  "balanced": {
+   "codec_bits": 24072,
+   "codec_k": 32,
+   "codec_q": 8
+  }
+ },
+ "invariance": {
+  "draws": 64,
+  "max_rel_weight_diff": 3.3680635991334206e-16,
+  "balanced_ranking_equal_all": true,
+  "balanced_codec_values": [
+   24072
+  ],
+  "raw_codec_values": [
+   24072,
+   47880
+  ]
+ },
+ "analysis_code_commit": "6d66084b1a7be84880cd8f547a9a9142ae226a5c",
+ "analysis_tree_status": "M research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/crosscheck.json\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s300/\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge.png\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge.svg\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge_retention.csv\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge_summary.json\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge_sweep.csv\n?? research/mechanisms/figures/e1-co-add-w32-i30000-a1-s50000/\n?? research/mechanisms/figures/e1-co-add-w512-i30000-a1-s50000/\n?? research/mechanisms/figures/synthetic/gauge.png\n?? research/mechanisms/figures/synthetic/gauge.svg\n?? research/mechanisms/figures/synthetic/gauge_retention.csv\n?? research/mechanisms/figures/synthetic/gauge_summary.json\n?? research/mechanisms/figures/synthetic/gauge_sweep.csv",
+ "analysis_script_sha256": "132b065c7925c4987faca55c6d75e7e2cced2750f732d0fdc22db0c4916a0d2b",
+ "command": "python research/mechanisms/gauge.py --run research/coordinator/runs/e1-co-add-w32-i30000-a1 --source-commit 67a10d8d282fd1d57ae6b3aba5a992f8d040203d --label late checkpoint, fits train, does not generalize --out research/mechanisms/figures/e1-co-add-w32-i30000-a1-s50000"
+}

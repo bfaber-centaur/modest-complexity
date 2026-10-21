@@ -1,0 +1,1 @@
+{"retention_rows": 32, "max_abs_diff_vs_csv": 2.930988785010413e-14, "targeted_units": 33, "targeted_max_abs_logit_change": 3.552713678800501e-15, "targeted_top4": [1, 4, 8, 10], "freq_py_targeted_top4": [1, 4, 8, 10], "gauge_max_abs_share_diff": 5.551115123125783e-17, "gauge_ranking_equal": true}

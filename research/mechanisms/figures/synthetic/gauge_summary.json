@@ -1,0 +1,101 @@
+{
+ "label": "synthetic, hand-built, not trained",
+ "input": {
+  "run_id": "synthetic",
+  "purpose": "synthetic code check: hand-built, not trained",
+  "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24"
+ },
+ "balance_gain_log2": {
+  "median_abs": 0.819137348733469,
+  "min": -2.7477333083216777,
+  "max": 2.10608663954131,
+  "dead_units": 0
+ },
+ "balanced_max_abs_logit_diff": 1.0130785099704553e-14,
+ "param_norm": {
+  "checkpoint": 131.52357797391753,
+  "balanced": 73.84716655375796
+ },
+ "ranking": {
+  "checkpoint": [
+   3,
+   7,
+   11,
+   14,
+   10,
+   12,
+   13,
+   15,
+   9,
+   6,
+   8,
+   4,
+   1,
+   5,
+   2
+  ],
+  "balanced": [
+   14,
+   11,
+   7,
+   3,
+   10,
+   12,
+   13,
+   15,
+   9,
+   4,
+   6,
+   1,
+   8,
+   5,
+   2
+  ],
+  "kendall_tau": 0.8285714285714286,
+  "topK_changed": true
+ },
+ "balanced_energy_share": [
+  3.7821801047030193e-31,
+  2.002785373157886e-31,
+  0.10730290546907324,
+  5.21618038568096e-31,
+  2.151614683709454e-31,
+  4.87819852362352e-31,
+  0.12753303085625967,
+  3.2271639198766558e-31,
+  6.61374531265346e-31,
+  1.4295994957907288e-30,
+  0.23686669041307304,
+  1.3602271905610825e-30,
+  1.3065976622093658e-30,
+  0.528297373261594,
+  6.890491398171337e-31
+ ],
+ "codec": {
+  "checkpoint": {
+   "codec_bits": 190728,
+   "codec_k": 128,
+   "codec_q": 16
+  },
+  "balanced": {
+   "codec_bits": 95496,
+   "codec_k": 128,
+   "codec_q": 8
+  }
+ },
+ "invariance": {
+  "draws": 64,
+  "max_rel_weight_diff": 3.125961898993964e-16,
+  "balanced_ranking_equal_all": true,
+  "balanced_codec_values": [
+   95496
+  ],
+  "raw_codec_values": [
+   190728
+  ]
+ },
+ "analysis_code_commit": "6d66084b1a7be84880cd8f547a9a9142ae226a5c",
+ "analysis_tree_status": "M research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/crosscheck.json\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s300/\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge.png\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge.svg\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge_retention.csv\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge_summary.json\n?? research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/gauge_sweep.csv\n?? research/mechanisms/figures/e1-co-add-w32-i30000-a1-s50000/\n?? research/mechanisms/figures/e1-co-add-w512-i30000-a1-s50000/\n?? research/mechanisms/figures/synthetic/gauge.png\n?? research/mechanisms/figures/synthetic/gauge.svg\n?? research/mechanisms/figures/synthetic/gauge_retention.csv\n?? research/mechanisms/figures/synthetic/gauge_summary.json\n?? research/mechanisms/figures/synthetic/gauge_sweep.csv",
+ "analysis_script_sha256": "132b065c7925c4987faca55c6d75e7e2cced2750f732d0fdc22db0c4916a0d2b",
+ "command": "python research/mechanisms/gauge.py --synthetic --top 1 --label synthetic, hand-built, not trained --out research/mechanisms/figures/synthetic"
+}
