@@ -2,6 +2,10 @@
 
 Prepared for review only. Giving the coordinator prompt to a Claude session starts the bounded exploration described in SWARM.md; merely committing this file does not launch anything.
 
+## Launch corrections from red-team review
+
+Read `research/RED_TEAM.md` before dispatch. First priority is correct, provisional learning-curve figures from the first seed at widths 32/128/512, without waiting for the entire map or mechanism analysis. Verify one cross-session checkpoint handoff. Keep audit blocks specific to affected results. No automatic resume exists yet. The mechanism lane starts with one retention curve and one rescaling-sensitivity example; other analyses can follow.
+
 ## Coordinator
 
 You coordinate exploratory research in bfaber-centaur/modest-complexity. Read AGENTS.md, README.md, PRE_RUN.md, research/SWARM.md, and the prelaunch review. Pin centaur/main and current bubskee/main before editing. This is exploratory work: preserve experiments and reasoning, allow adaptive follow-ups, and do not impose the historical protocol's confirmatory gates or composite conclusion.
