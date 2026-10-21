@@ -1,0 +1,315 @@
+{
+ "inputs": [
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 0,
+   "checkpoint_sha256": "c711ab962b37999c38bec82115661011eb1d258f2c96fdb24136e608e38e7ae3",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 1000,
+   "checkpoint_sha256": "295252d7eda9e9a2d84b1ac1c26f649475eb1535bf4791d8941d967ad368d7a2",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 5000,
+   "checkpoint_sha256": "b13b2ceaa1f3f33ec4dfe5542870fa7b5fc56214b7785189884c7b6b6e479831",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 10000,
+   "checkpoint_sha256": "a810985b9e10ca0ed93e06df14ebb842d2c4511051a21df85f030f4716cca5a6",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 20000,
+   "checkpoint_sha256": "89069d7a40dfd01dc6cc98360c12997b40a39ded1e01d63cfd8b0802a14d1e78",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 50000,
+   "checkpoint_sha256": "715938968c673fdc77b9a0aa94e29e077b482543c475ffd28dff1d0c6eea4a24",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30001-tf50-a1",
+   "step": 0,
+   "checkpoint_sha256": "381b71796848a2cff70c7e70fefa23a93feff8b8b9526df2babfea0fea134a26",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30001-tf50-a1",
+   "step": 5000,
+   "checkpoint_sha256": "570670502c4516fcea6df2bd6efab58dd218f06dc7e2996cbfaad23b422a39a6",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30001-tf50-a1",
+   "step": 50000,
+   "checkpoint_sha256": "2dc01d5e8888c1073124f9cf120bfacd07e3dd8d9fd48746b02f510072874cba",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30002-tf50-a1",
+   "step": 0,
+   "checkpoint_sha256": "836a121acfe30a8afa5990dcb570e9daf0077c906fe5e5c7ddfdf003c2024cdc",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30002-tf50-a1",
+   "step": 5000,
+   "checkpoint_sha256": "0f8c68b5a7320e242257951afa81d1840b753dde4ab0646c81c8a1477cfd63ca",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30002-tf50-a1",
+   "step": 50000,
+   "checkpoint_sha256": "bab540dc040f8ad7b6d6520f3687d642d7ab98d9816253f626786b7d056595ae",
+   "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-co-add-w128-i30000-a1",
+   "step": 0,
+   "checkpoint_sha256": "c711ab962b37999c38bec82115661011eb1d258f2c96fdb24136e608e38e7ae3",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-co-add-w128-i30000-a1",
+   "step": 5000,
+   "checkpoint_sha256": "e282c2d325f01dd267d86f07dba19d383cd3d3f5e3a32668729ac5b4a8cfd6b2",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-co-add-w128-i30000-a1",
+   "step": 50000,
+   "checkpoint_sha256": "326cfc1ec1583d94993b2b3b289cd3bb9081f64a0ece5060a817375aadd111b4",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add-w128-i30001-a1",
+   "step": 0,
+   "checkpoint_sha256": "381b71796848a2cff70c7e70fefa23a93feff8b8b9526df2babfea0fea134a26",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add-w128-i30001-a1",
+   "step": 5000,
+   "checkpoint_sha256": "648d0304999be4749c9280e09a0cf9598bf43c544f74da6d55a219adcfc19af5",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add-w128-i30001-a1",
+   "step": 50000,
+   "checkpoint_sha256": "a96bc6e275fcbf7aae74163418ce9a1147249d0b746b1edddf8f9ddeaa545ad5",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add-w128-i30002-a1",
+   "step": 300,
+   "checkpoint_sha256": "53de4b56012a4dc8ad7dcb30c35e67022454b219b2a69522bc6a3af2b7c98155",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  },
+  {
+   "run_id": "e1-st-add-w128-i30002-a1",
+   "step": 50000,
+   "checkpoint_sha256": "cb7dd55b558f77bf3f0ac8c38a02c9abfa2c280371a026882a94e0544ca73b62",
+   "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+   "max_abs_diff_vs_logged_metrics": 0.0,
+   "manifest_hashes_verified": true
+  }
+ ],
+ "pizza_reference": [
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 0,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 1000,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 5000,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 10000,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 20000,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30000-tf50-a1",
+   "step": 50000,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30001-tf50-a1",
+   "step": 0,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30001-tf50-a1",
+   "step": 5000,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30001-tf50-a1",
+   "step": 50000,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30002-tf50-a1",
+   "step": 0,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30002-tf50-a1",
+   "step": 5000,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1f2-co-add-w128-i30002-tf50-a1",
+   "step": 50000,
+   "pizza_d_share_train": 0.8120138428426672,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8107543153524527
+  },
+  {
+   "run_id": "e1-co-add-w128-i30000-a1",
+   "step": 0,
+   "pizza_d_share_train": 0.8120200248763949,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8110684638996706
+  },
+  {
+   "run_id": "e1-co-add-w128-i30000-a1",
+   "step": 5000,
+   "pizza_d_share_train": 0.8120200248763949,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8110684638996706
+  },
+  {
+   "run_id": "e1-co-add-w128-i30000-a1",
+   "step": 50000,
+   "pizza_d_share_train": 0.8120200248763949,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8110684638996706
+  },
+  {
+   "run_id": "e1-st-add-w128-i30001-a1",
+   "step": 0,
+   "pizza_d_share_train": 0.8120200248763949,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8110684638996706
+  },
+  {
+   "run_id": "e1-st-add-w128-i30001-a1",
+   "step": 5000,
+   "pizza_d_share_train": 0.8120200248763949,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8110684638996706
+  },
+  {
+   "run_id": "e1-st-add-w128-i30001-a1",
+   "step": 50000,
+   "pizza_d_share_train": 0.8120200248763949,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8110684638996706
+  },
+  {
+   "run_id": "e1-st-add-w128-i30002-a1",
+   "step": 300,
+   "pizza_d_share_train": 0.8120200248763949,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8110684638996706
+  },
+  {
+   "run_id": "e1-st-add-w128-i30002-a1",
+   "step": 50000,
+   "pizza_d_share_train": 0.8120200248763949,
+   "pizza_d_share_common": 0.8107543153524527,
+   "pizza_d_share_own_heldout": 0.8110684638996706
+  }
+ ],
+ "common_set_sha256": "7c3eb3b2e73a09fe0bdedaddf82a71bc5e24ea2d581de03102678e17d1838137",
+ "seed": 35000,
+ "draws": 16,
+ "read_from_commit": "9e56faf7",
+ "session_label": "e2-me-cloud-1",
+ "analysis_code_commit": "e605a7aa4fabae3ff0938cd074b14fd3a6051a67",
+ "analysis_tree_status": "M research/e2/mechanisms/figures/groups/groups.csv\n M research/e2/mechanisms/figures/groups/groups_summary.json\n?? research/e2/mechanisms/figures/groups/groups.png\n?? research/e2/mechanisms/figures/groups/groups.svg",
+ "analysis_script_sha256": "58da8da5e933f72120cd9af4babce5843a77c93c7e5e2ae1931068493e2c36f4",
+ "command": "python research/e2/mechanisms/groups.py --source-commit 9e56faf7 --out research/e2/mechanisms/figures/groups --runs research/coordinator/runs/e1f2-co-add-w128-i30000-tf50-a1:0,1000,5000,10000,20000,50000 research/coordinator/runs/e1f2-co-add-w128-i30001-tf50-a1:0,5000,50000 research/coordinator/runs/e1f2-co-add-w128-i30002-tf50-a1:0,5000,50000 research/coordinator/runs/e1-co-add-w128-i30000-a1:0,5000,50000 research/size-time/runs/e1-st-add-w128-i30001-a1:0,5000,50000 research/size-time/runs/e1-st-add-w128-i30002-a1:300,50000"
+}
