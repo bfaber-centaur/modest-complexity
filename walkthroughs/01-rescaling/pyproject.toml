@@ -1,0 +1,19 @@
+[project]
+name = "modest-complexity-rescaling-walkthrough"
+version = "0.1.0"
+requires-python = "==3.12.14"
+dependencies = [
+    "numpy==2.3.5",
+    "matplotlib==3.11.2",
+    "jupyterlab>=4,<5",
+    "nbconvert>=7,<8",
+    "ipykernel>=6,<8",
+]
+
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
