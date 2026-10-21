@@ -60,3 +60,11 @@ Accepted six runs from `research/e2/dynamics/REQUEST.md`: `e2-dy-add-w128-i3000{
 ## D9 (2026-10-21) Extra e1 checkpoints around the 50% onset
 
 Published from the coordinator's local run directories, each checked against its e1 manifest SHA-256 (the dynamics lane's `publish_e1_checkpoints.py`): steps 3k, 4k and 6k-9k of the three `e1f2-…-tf50-a1` runs, and 3k, 4k, 6k-9k, 15k, 30k and 40k of `e1-co-add-w128-i30000-a1`, in [e1-checkpoints/](e1-checkpoints/). The e1 run directories are unchanged.
+
+## D10 (2026-10-21) Coordinator spot check of mechanisms packet 2, and a counterexample
+
+Mechanisms packet 2 (PR #17): filtering every unit to its own dominant frequency, a weights-only edit, takes the 30% runs from 0.000–0.004 to 0.43–0.58 common-set accuracy. `spot_unitfilter.py` (separate code: explicit cos/sin projections, no rfft) reproduces 0.431 and 0.540 for 30% i30000 and i30001, 1.000 for 50% i30000 and 0.064 at step 0 (`spot_unitfilter.jsonl`).
+
+The same script on the e1 **no-decay** width-128 runs, which fit the same a+b training labels but have input concentration 0.22–0.23 (step 0: 0.17) and a null restricted rank (0.48–0.49; e2 audit G6), gives filtered common-set accuracy **0.466 / 0.325 / 0.416** (train 0.49–0.63). Unaudited coordinator observation, without the lane's nulls. If it holds, the filter's held-out accuracy in the 30% runs is mostly available from any network that fits a+b on these pairs, so it does not show that weight decay's per-unit structure in the failed runs is the successful computation. It fits the lane's own alternative ("fit-induced interpolation, the projection supplies the prior") and the audit's cycle-2 finding that label fitting without decay already gives a weak aligned term. Assigned: the mechanisms lane adds the no-decay runs to `unitfilter.py` with its full null set as the close of cycle 2; the auditor checks it.
+
+Cycle count: the mechanisms lane has used its two e2 inquiry cycles (packets 1 and 2). The no-decay comparison closes cycle 2; a training-time intervention (e.g. penalizing non-dominant components) is recorded as the lane's best next question, not run in e2.

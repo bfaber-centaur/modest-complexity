@@ -21,7 +21,7 @@ Observations:
 - At 50,000 updates on these 483 pairs: 30% runs 0.000 / 0.000 / 0.004; 50% runs 0.913 / 0.878 / 0.909 (own audit split 0.923 / 0.868 / 0.904). Common-set cross-entropy at 50k: 9.9–10.5 against 0.39–0.50.
 - e1 i30002 has only steps 300 and 50,000 published (markers without a line).
 
-Status: software checks on the 50% runs PASS in audit Part 4 (F10–F15, independent code). The common-set scores here use the shared forward pass, so they are not an independent check. "Amount of data" versus "which pairs" is AMBIGUOUS (D6).
+Status: software checks on the 50% runs PASS in audit Part 4 (F10–F15, independent code). The common-set result was recomputed with independent code in e2 audit G7 (PASS: all fields and all 51 rows match). "Amount of data" versus "which pairs" is AMBIGUOUS (D6).
 
 Reproduce: `uv run --locked --group analysis python research/e2/coordinator/common_set.py`
 
@@ -31,7 +31,7 @@ Reproduce: `uv run --locked --group analysis python research/e2/coordinator/comm
 |---|---|---|
 | dynamics | [research/e2/dynamics/](../dynamics/) | packet 1 integrated (`7f2b6e8`): correct-label margins on the common pairs, [share figure](../dynamics/figures/share/margins.png), [width figure](../dynamics/figures/width30/margins_width30.png); not audited. Cycle 2 runs claimed (D8) |
 | mechanisms | [research/e2/mechanisms/](../mechanisms/) | packet 1 integrated (PR #15, `cb03dcb`): unit groups by dominant frequency, [figure](../mechanisms/figures/groups/groups.png); not audited |
-| audit | [research/e2/audit/](../audit/) | assigned 2026-10-21 |
+| audit | [research/e2/audit/](../audit/) | packet 1 integrated (PR #16): [AUDIT.md](../audit/AUDIT.md), restricted-rank definition and nulls, `common_set.py` recomputed independently (G7 PASS), "rank precedes accuracy" SUPPORTED LOCALLY (partly by construction), "early signature of success" CONTRADICTED as a level, AMBIGUOUS as a rate |
 
 Run claims: [research/e2/plan.json](../plan.json): six dynamics runs at 40% and 45% share (D8). Extra e1/e1f2 checkpoints: [e1-checkpoints/](e1-checkpoints/) (D9).
 
