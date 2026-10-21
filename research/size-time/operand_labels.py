@@ -52,8 +52,9 @@ def figure(results, step, out):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    # Run IDs are e1-<session>-<condition>-w<width>-i<seed>-a<attempt>; sort by condition, width, seed.
-    key = lambda r: (r['run'].split('-')[2], int(r['run'].split('-')[3][1:]), r['run'].split('-')[4])
+    # Run IDs are <expedition>-<session>-<condition>-w<width>-i<seed>-...; sort by condition, width, expedition, seed.
+    key = lambda r: (r['run'].split('-')[2], int(r['run'].split('-')[3][1:]), r['run'].split('-')[0],
+                     r['run'].split('-')[4])
     rows = sorted((r for r in results if r['step'] == step), key=key)
     fig, ax = plt.subplots(figsize=(7.5, .24*len(rows)+1.6), layout='constrained')
     y = range(len(rows))
