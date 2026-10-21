@@ -42,3 +42,38 @@ Expected under E2: the N-margin fraction is clearly higher at 50% than at 30% be
 - A maximum over more labels is larger, so a margin against a bigger set is lower by construction. Comparing shares on the same S and N removes this between shares, but not between S and N within a run (sizes differ). Fractions are reported next to the no-preference value for each pair's set size.
 - Published checkpoints are sparse: 1,000, 2,000, 5,000, 10,000 for most runs, and the 30% run `e1-st-add-w128-i30002-a1` publishes only 300 and 50,000. The 50% onsets fall between 2,000 and 5,000, so "one checkpoint earlier" may be 3,000 updates earlier. This session still holds that run's and `e1-st-add-w128-i30001-a1`'s every-1,000 checkpoints locally; any of them used here gets published with its hash checked against the existing e1 manifest.
 - Logit scale grows with the parameter norm, so margin sizes are not comparable across steps; signs and fractions are.
+
+### Outcome (2026-10-21, after packet 1 in README.md)
+
+Neither explanation fits as written. Against E1: by 2,000 updates, before any 50% run answers held-out pairs, the 50% runs beat every N label on 0.29-0.39 of common pairs and the 30% runs on 0.14-0.16, so the shares do not share the early ordering against unrelated labels. Against E2: at 5,000 and 10,000 updates 57-71% of common pairs in the 50% runs beat every label outside their own set while losing to one inside, and those pairs become correct by the next checkpoint more often than other wrong pairs. Not predicted by either: at 50% the gap between the strongest S label and the strongest N label stays at 3.7-4.8 logits throughout, while at 30% it doubles to about 8; up to 1,000 updates the two shares are indistinguishable on every measure except the D labels.
+
+## Q2 (2026-10-21, cycle 2, written before any run below exists)
+
+### Already seen
+
+Packet 1 (README.md), including the 1,000-2,000-update separation and the S − N gap behavior. Nothing at a training share between 30% and 50%.
+
+### Question
+
+With the data seed fixed, training sets nest at every share: each class has 16 unordered pairs in a seeded order, and the training set takes the first 5 (30%), 6 (40%), 7 (45%) or 8 (50%). The 483 common pairs are untrained at all four. As the training set grows by one unordered pair per class at a time, does behavior on the common pairs change gradually, or does each run follow either the 30% pattern or the 50% pattern?
+
+### Two explanations
+
+- E3, graded: the rise of the correct label against N labels and the growth of the S − N gap both change smoothly with the number of training groups; 40% and 45% runs sit between the 30% and 50% runs on both measures and on common-set accuracy at 50,000, with seed spread smaller than the share effect.
+- E4, two patterns: each run settles within the first few thousand updates into one of the two packet-1 patterns: margin over N flat with a growing gap (30%), or margin over N rising with the gap near 4 (50%), possibly with a later onset. Intermediate shares change which pattern a run takes, so seeds at the same share can split.
+
+### Separating observation
+
+Six runs, width 128, init seeds 30000-30002, at 40% and 45% (plan entries in REQUEST.md); every other setting as the e1 and e1f2 runs. Per run, on the same 483 pairs and the same S, D, N sets as packet 1 (the 40% and 45% sets lie between the 30% and 50% ones, so D splits into labels a run has and has not seen with an operand; `margins.py` gets a per-run own-set definition): margin over N, S − N gap, "beats every N", accuracy at 1,000-10,000 (every 1,000), 20,000 and 50,000 updates.
+
+Expected under E3: at 2,000 and 10,000 updates the median margin over N and the S − N gap of the 40% and 45% runs fall between the 30% and 50% ranges, ordered by share, and accuracy at 50,000 is intermediate for every seed.
+
+Expected under E4: each run's (margin over N, gap) at 10,000 lies near the 30% cluster (about −1.5, 5.8) or the 50% cluster (about 2.4-3.3, 3.8), and accuracy at 50,000 is near 0 or above 0.5; at least one share may split by seed.
+
+A run whose margin over N rises while its gap still grows would fit neither and would show that the two measures can come apart at a fixed width (at 30%, width 512 already shows this pattern weakly).
+
+### Failure modes
+
+- Three seeds per share cannot tell a narrow graded transition from a switch; a split by seed is informative, an absence of one is weak.
+- A 40% run whose correct-answer onset is later than 50,000 updates would look like the 30% pattern on accuracy; the margin and gap trajectories are what distinguish it, and runs still changing at 50,000 are reported as such.
+- Amount and identity of training data still change together: the added groups are fixed by the seeded order (at 40% each class adds the group that was first in the e1 calibration split, at 45% both e1 calibration groups). A second data seed would be needed to separate them and is not part of this cycle.

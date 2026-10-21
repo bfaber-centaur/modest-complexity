@@ -1,0 +1,17 @@
+{
+ "run_id": "e1-st-add-w128-i30001-a1",
+ "e1_manifest": "research/size-time/runs/e1-st-add-w128-i30001-a1/manifest.json",
+ "e1_manifest_sha256": "1e9ca67d2c008ee212e87607fc096fb43bde7d5c906aec0971e7e8a42ebf7914",
+ "note": "Checkpoints of the e1 run not published in its e1 directory; each SHA-256 equals the e1 manifest entry.",
+ "files": {
+  "checkpoint_003000.npz": "8bb690b97077b3f8da16807bff90cf5723466d51ce9766bccda49a61ed180b1a",
+  "checkpoint_004000.npz": "6a9c5651bd7a7412a7f30c069cf4eb2b563cdbbeed5834dd9dc7604594f16cb5",
+  "checkpoint_006000.npz": "38cb58ecddc3318ab15331c2a76326778b23cffa06423be91e086ba0ab7c07c7",
+  "checkpoint_007000.npz": "bbb3d26dee121c514871d9c505132b7645df62211538e8665a99a8752f390c15",
+  "checkpoint_008000.npz": "209441eb6cfe853fc15c28e48811d9494e19903f6a4581d4681ffdf41d9eff4e",
+  "checkpoint_009000.npz": "4fd8b598afb1ce370b7649c2c13b1079ed1e618c1d71b36a3a8bb960fb342a6d",
+  "checkpoint_015000.npz": "1bc64d645a5864fbb6f5d0a25672d0696b89948abb38656c477d90b2511cce4c",
+  "checkpoint_030000.npz": "f62bd5287b394a38448a4d497fa9f8b1fe7f7401e1550a4af594558235ff97ef",
+  "checkpoint_040000.npz": "37689453036c86b96ad6dce2c7563074561ea0ab561298a55a1ecf5e768cf0e3"
+ }
+}
