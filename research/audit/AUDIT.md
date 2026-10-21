@@ -1,12 +1,16 @@
-# Independent audit, expedition e1: Priority 1 (first preview)
+# Independent audit, expedition e1
+
+Contents: [Part 1, first preview runs](#part-1-first-preview-runs) · [Part 2, mechanism lane first deliverable](#part-2-mechanism-lane-first-deliverable)
+
+## Part 1: first preview runs
 
 Auditor session `au-cloud-1`, 2026-10-21. Branch `claude/project-thread-id1tmm` (this session's designated branch, used instead of `swarm/audit`), started from `c7c1c2ad8ac0bb23c9d0f84f9f1c9438764d03c6` (shared code identical to `ebd874e`). Published runs read from `swarm/exploration` at `67a10d8d282fd1d57ae6b3aba5a992f8d040203d`.
 
-**Checked scope:** the Stage 0 diff `e0a6e0f..ebd874e` and the three preview runs `e1-co-add-w{32,128,512}-i30000-a1` with their registry, figures and index table. Nothing from the size/time or mechanism lanes yet. A software PASS means the stated check passed. It does not confirm any scientific claim.
+**Checked scope:** the Stage 0 diff `e0a6e0f..ebd874e` and the three preview runs `e1-co-add-w{32,128,512}-i30000-a1` with their registry, figures and index table. Part 2 covers the mechanism lane; nothing from the size/time lane yet. A software PASS means the stated check passed. It does not confirm any scientific claim.
 
 **Independence:** `independent.py` imports no project code. It rebuilds the split from the written rule, uses one-hot matrix products instead of indexing and `np.add.at`, `np.logaddexp.reduce` for cross-entropy, an explicit other-logits matrix for margins, and AdamW in PyTorch's update order. `shared_checks.py` and `divergence.py` import `experiment.py` only as the code under test.
 
-## Figure: held-out true label vs labels never seen with either operand
+### Figure: held-out true label vs labels never seen with either operand
 
 ![held-out rank](figures/heldout-rank.png)
 
@@ -14,7 +18,7 @@ Look before reading: in modular addition, the true label of a held-out pair (a, 
 
 Source: `results/preview-1-heldout-rank.jsonl`. The figure uses only the published checkpoints. Vector version: `figures/heldout-rank.svg`.
 
-## Software checks
+### Software checks
 
 Tolerances were fixed before running. Recomputed metrics must match to 1e-12 relative, with accuracies identical. Replays must match to 1e-8 relative (weights, both moments, logged loss and margins), with accuracies identical.
 
@@ -51,7 +55,7 @@ Notes (none blocks a run, metric or figure):
 - INDEX.md says `git_status` lists only the untracked registry. The w32 config also lists untracked `research/coordinator/WORKER_PROMPTS.md`, which is documentation; the source hashes still match `ebd874e`.
 - `loss.png`: the train and held-out rows share a log y-axis from 1e-6 to about 10, which squeezes the held-out rise (about 3.5 to 10 nats) into the top decade. The figure's prompt ("does held-out loss move with training loss") is hard to answer from it, so a separate held-out panel scale or a linear inset would help. `accuracy.png` starts at step 100, by which point width 512 has already fitted (step 0 is in `curves.csv`).
 
-## Interpretations (seed 30000, one split, three widths)
+### Interpretations (seed 30000, one split, three widths)
 
 | Statement (source) | Status | Basis |
 |---|---|---|
@@ -64,7 +68,7 @@ Notes (none blocks a run, metric or figure):
 
 The figure's preference cannot come from co-occurrence statistics: every absent label, including the true one, has zero co-occurrence with both operands. It needs relational structure. A distinguishing check would be the same rank statistic on all 51 or 52 checkpoints and on seeds 30001 and 30002 (size/time lane runs), plus a run continued past 50k at width 512.
 
-## Reproduce
+### Reproduce
 
 ```bash
 uv sync --locked --group analysis
@@ -88,3 +92,62 @@ uv run --locked --group analysis python research/audit/plot_heldout_rank.py rese
 ```
 
 Numerical execution in this session was about 12 minutes elapsed, with at most two processes. Each full replay covers 50,000 updates per width (w512 takes about 3.5 minutes).
+
+## Part 2: mechanism lane first deliverable
+
+Audited 2026-10-21 on `swarm/exploration` at `a096c82` (mechanism lane integrated at `fff276c`; analysis commit `317e00a`, whose `freq.py` SHA-256 `08df2af9…` equals the hash recorded in `summary.json`). Input checkpoint: `e1-co-add-w128-i30000-a1` step 50,000 (SHA-256 `326cfc1e…11b4`, which matches the manifest and `summary.json`). The lane's figures are [retention.png](../mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/retention.png) and [rescaling.png](../mechanisms/figures/e1-co-add-w128-i30000-a1-s50000/rescaling.png).
+
+**Independence:** frequencies come from an explicit DFT matrix (no FFT), with token-mean plus cosine/sine reconstruction, and the lane's codec rule is rewritten in `independent.py`. None of this imports `freq.py`, `crosscheck.py` or `experiment.py`. The lane's own crosscheck did not recompute the codec; this audit does.
+
+### Software checks
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| M1 | Lane and shared tests at `a096c82` | PASS | `research/mechanisms`: 8 tests OK. `test_exploration` and `test_instrumentation`: 9 tests OK |
+| M2 | Input and analysis provenance | PASS | The checkpoint hash equals the manifest and `summary.json`. `freq.py` is unchanged since the analysis commit, and the analysis tree was clean |
+| M3 | Spectrum and ranking | PASS | Energy shares match `summary.json` to 6e-17 at step 50,000 and step 0. Ranking identical: 8, 1, 11, 4, 5, … |
+| M4 | All 32 retention/removal rows | PASS | Every row's frequencies are the top-K prefix. Accuracies are identical on all three splits. CE and margin min/median/p05 agree to 3.2e-14 relative. Full retention reproduces the original |
+| M5 | Random-subset reference | PASS | Energy fractions of all 448 rows agree to 2e-16. 112 rows were recomputed: accuracies identical, the rest within 4.1e-14 |
+| M6 | Function invariance under rescaling | PASS | All 64 random draws were regenerated from the documented gain procedure (seed 33200). Rankings and norms match the CSV in 64/64. The largest relative logit change is 4.8e-16 |
+| M7 | Codec under rescaling (independent reimplementation) | PASS | 95,496 bits (k=128, q=8) at the checkpoint. The code length matches the CSV in 64/64 draws: unchanged at σ=0.1; doubled to 190,728 (q=16) in 3/16 draws at σ=0.25, 7/16 at σ=0.5 and 16/16 at σ=1. No draw is shorter |
+| M8 | Targeted rescaling | PASS | 7 units are dominated by k=5. A gain of 1.0406 moves k=5 into the top 4 ({1, 5, 8, 11}), while the previous grid value, 1.0303, does not. The largest logit change is 3.6e-15 (max \|logit\| 22.2). Retained top-4 train accuracy goes 0.421 → 0.448 and CE 2.14 → 2.00; codec 95,496; norm 60.338 → 60.361 |
+| M9 | README numbers | PASS | Every quoted value reproduces: shares 0.052–0.077; top 4 = 30.0% of energy; step-0 top 4 = 2, 14, 8, 9; first full train fit at K=12; removal values at K=2/4/8; top-4 retention beats 14/16 random subsets; top-8 removal is below 16/16; held-out accuracy ≤ 0.072 (random up to 0.105); held-out CE rises monotonically 3.54 → 10.55; held-out median margin is negative at every K |
+| M10 | Figures | PASS | Exported PNGs inspected; axes, annotations and marked top-4 sets match the tables |
+| – | Synthetic network, Kendall tau values | NOT CHECKED | Not recomputed. The tau values follow from the rankings, which match in 64/64 draws |
+
+### Two extra measurements (source: `results/mechanisms-w128-s50000.json`, `results/mechanisms-filtered-heldout.jsonl`)
+
+- **The checkpoint is not at per-unit balance.** Every hidden unit's input energy \|u\|²+\|v\|² is 1.15 to 1.46 times its output energy \|w\|² (median 1.32). Rescaling each unit to balance lowers the norm by 0.48% (60.338 → 60.049) and changes no logit (7e-15). It also leaves the top 4 (8, 1, 11, 4) and the codec (95,496 bits) unchanged.
+- **Keeping only one to three input frequencies gives above-chance held-out accuracy on the trained model, not on its initialization.** Held-out here means cal + audit (662 pairs), averaged over all 15, 105 and 455 subsets of size 1, 2 and 3:
+
+| run | step | mean held-out acc, K=1 / 2 / 3 | subsets above chance (1/31) |
+|---|---|---|---|
+| w32 | 0 | 0.033 / 0.032 / 0.033 | 53% / 44% / 48% |
+| w32 | 50,000 | 0.042 / 0.045 / 0.042 | 80% / 89% / 80% |
+| w128 | 0 | 0.034 / 0.034 / 0.035 | 53% / 60% / 61% |
+| w128 | 50,000 | 0.056 / 0.057 / 0.052 | 93% / 98% / 96% |
+| w512 | 0 | 0.031 / 0.031 / 0.031 | 33% / 38% / 40% |
+| w512 | 50,000 | 0.060 / 0.064 / 0.060 | 100% / 99% / 100% |
+
+### Interpretations (one checkpoint: width 128, seed 30000, step 50,000)
+
+| Statement (source) | Status | Basis |
+|---|---|---|
+| The training fit is spread across all 15 input frequencies roughly in proportion to energy, not held in a small subset (Packet 1 candidate) | SUPPORTED LOCALLY as a description in input-Fourier coordinates | M3 to M5. The lane's own alternative, that input-Fourier energy is the wrong coordinate system, is not distinguished |
+| Held-out CE rising as frequencies are kept "fits" the account that input weights push held-out pairs away from their labels | AMBIGUOUS | CE rises, but Part 1 shows the true label also rising among the never-co-occurring labels. The model holds both effects |
+| "Do not read" the above-chance held-out accuracy at K=1–3, because random subsets reach 0.105 and so this is arbitrary filtering of a memorizing model | AMBIGUOUS (the reference is not a no-structure null) | At the trained checkpoint, 93–98% of all small subsets (width 128) give above-chance held-out accuracy, while the same filtering at step 0 stays at chance. The effect grows with width (w32 < w128 < w512), the same order as the Part 1 rank statistic. A filtering artifact specific to trained weights is not excluded without a trained no-structure control |
+| The input-energy frequency ranking is not a property of the computed function (Packet 2) | SUPPORTED LOCALLY | M6 and M8 |
+| The codec is less fragile than the ranking but is not a function property; the pruning order is invariant and only quantization responds | SUPPORTED LOCALLY | M7, with an independent codec |
+| Alternative: "every random draw increased the parameter norm, consistent with weight decay settling near a norm-minimizing balance" | AMBIGUOUS | Random log-normal gains would raise the norm from almost any starting point, so they do not test balance. Measured directly, the checkpoint is within 0.5% of its minimum-norm gauge in norm, but systematically unbalanced (input/output energy 1.15–1.46 for every unit). At the balanced gauge the top 4 and the codec equal the checkpoint's |
+
+### Reproduce
+
+```bash
+uv run --locked --group analysis python -m unittest discover -s research/mechanisms
+uv run --locked python research/audit/audit_mechanisms.py research/coordinator/runs/e1-co-add-w128-i30000-a1 \
+    research/mechanisms/figures/e1-co-add-w128-i30000-a1-s50000 research/audit/results/mechanisms-w128-s50000.json
+for w in 32 128 512; do uv run --locked python research/audit/filtered_heldout.py \
+    research/coordinator/runs/e1-co-add-w$w-i30000-a1 0 50000; done > research/audit/results/mechanisms-filtered-heldout.jsonl
+```
+
+Numerical execution for Part 2 took under 2 minutes, with one process.
