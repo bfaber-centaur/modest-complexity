@@ -119,7 +119,19 @@ Cross-check: the auditor's independent `research/audit/heldout_rank.py` (on `swa
 
 Missing check. This is an association between predictions and a label set, not an intervention, and L covers about half the labels, so it is a coarse test. The 18 runs beyond the preview have not been recomputed by the auditor.
 
-## Proposed follow-ups (not run; ownership to be agreed with the coordinator)
+## Follow-up 2 comparison: 50% training share at width 128 (separately labeled)
+
+Not part of the e1 map. The coordinator chose and ran follow-up 2 (`e1f2-co-add-w128-i3000{0,1,2}-tf50-a1`, `research/plan-followups.json`, published at 61050c4; all published files match their manifests). Same recipe, data seed and init seeds as the e1 width-128 runs; the split is a different partition of the same 961 pairs: 478 train / 119 cal / 364 audit pairs (split hash `6dc868be…3b49`) instead of 299 / 118 / 544. Each run is scored on its own audit pairs, so held-out sets differ in size and membership between the groups. This lane ran no training for it.
+
+Figure: [followup2/heldout.png](figures/followup2/heldout.png); also [followup2/curves.png](figures/followup2/curves.png) (train and audit, accuracy and loss by step), [followup2/loss_matched.png](figures/followup2/loss_matched.png); tables [summary.csv](figures/followup2/summary.csv), [operand_labels.jsonl](figures/followup2/operand_labels.jsonl).
+
+Look before reading: in the first panel, when does each blue line leave zero, and where does it end? In the third panel, compare each blue curve with one minus its accuracy in the first panel. In the fourth, where are the points relative to the dashed lines?
+
+Observation. Both groups fit training data almost at once (first train accuracy >= .99 at step 300 for e1, 300-400 for e1f2). With 50% training share, held-out audit accuracy first exceeds 2/31 at steps 5,400, 6,700 and 6,300 (seeds 30000/30001/30002), reaches .5 at 11,100, 17,400 and 14,300, and is 0.92, 0.87 and 0.90 at 50,000 (maximum 0.93, 0.87, 0.92; none reaches the .95 threshold within the horizon). The e1 width-128 runs stay at 0-0.004. Held-out cross-entropy follows e1 for the first 1,000 updates, peaks at 6.9-7.2 nats at step 600-700, and falls to 0.37-0.52 at 50,000, while e1's rises to 9.9-10.5. The audit median margin turns positive at steps 11,100-17,400. Where held-out predictions go (published checkpoints only): in e1f2 the share of all audit predictions in L(a,b) falls from 0.997-1.000 at step 2,000 to 0.08-0.13 at 50,000, equal to one minus accuracy; at every published checkpoint (steps 300-50,000) 0.997-1.000 of wrong predictions are in L, against 0.755 expected if wrong predictions were uniform (L averages 22.6 labels here, 16.1 in e1). In e1, 0.996-1.000 of all predictions are in L throughout.
+
+Missing check. One width and one split per training share, three seeds each; the two splits differ in membership as well as size, so the comparison is between splits, not only between amounts of data. Only width 128 was run at 50%. The fourth panel's test is weaker for e1f2 because L covers three quarters of the wrong labels.
+
+## Proposed follow-ups (as proposed at handoff; the coordinator ran its own width-512 extension and chose proposal 2, above)
 
 1. Horizon: the coordinator's follow-up `e1f1-co-add-w512-i30000-s200k-a1` (`research/plan-followups.json` on `swarm/exploration`) already extends width 512. Its neighbor in this map that has not reached the stationary state is width 64 (norm and train loss still moving at 50,000; packet 1 and [norm_add.png](figures/trajectories/norm_add.png)), so if a second horizon run is wanted, width 64 seed 30000 for 200,000 updates is the case that addresses censoring where the trajectory is still changing. About 5 minutes on this host.
 2. Training fraction: a separately labeled comparison at width 128, three seeds, with a larger train fraction (for example 50%), to ask whether packet 1's absence of generalization belongs to this split's 299 training pairs rather than to width or horizon. Needs a shared-code change (`data()` fixes 30/10/60), so it is the coordinator's call.
@@ -147,4 +159,13 @@ uv run --locked --group analysis python research/size-time/operand_labels.py res
     --out research/size-time/figures/operand_labels
 ```
 
-The `report_map.py` figures here were drawn with the shared code at `c7c1c2a`; on `swarm/exploration` from a096c82 the loss rows use per-row y scales, so regenerated loss figures will look different from the same data. A replay of the same configuration and seed is a reproducibility check, not a new seed. Bitwise agreement across hosts is not promised.
+The `report_map.py` figures here were drawn with the shared code at `c7c1c2a`; on `swarm/exploration` from a096c82 the loss rows use per-row y scales, so regenerated loss figures will look different from the same data. Follow-up 2 comparison (on `swarm/exploration` from 61050c4):
+
+```bash
+C=research/coordinator/runs; T=research/size-time/runs
+uv run --locked --group analysis python research/size-time/compare_groups.py \
+    --group "e1, 30% train" $C/e1-co-add-w128-i30000-a1 $T/e1-st-add-w128-i30001-a1 $T/e1-st-add-w128-i30002-a1 \
+    --group "e1f2, 50% train" $C/e1f2-co-add-w128-i3000{0,1,2}-tf50-a1 --out research/size-time/figures/followup2
+```
+
+A replay of the same configuration and seed is a reproducibility check, not a new seed. Bitwise agreement across hosts is not promised.

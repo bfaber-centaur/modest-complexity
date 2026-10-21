@@ -12,7 +12,8 @@ checkpoints with its own forward pass (no imports from experiment.py):
 - pred_in_L: fraction of audit argmax predictions that fall in L(a, b);
 - base_rate: the same fraction expected if each wrong prediction were uniform over
   the other p-1 labels;
-- mass_L / mass_correct: mean softmax probability on L(a, b) and on the correct label.
+- mass_L / mass_correct: mean softmax probability on L(a, b) and on the correct label;
+- wrong_in_L: among wrong argmax predictions only, the fraction in L(a, b).
 
 uv run --locked --group analysis python research/size-time/operand_labels.py RUN_DIR ... \
     --steps 1000,5000,20000,50000 --out research/size-time/figures/operand_labels
@@ -45,7 +46,8 @@ def check(run_dir, step):
     return dict(run=run_dir.name, step=step, audit_accuracy=float(np.mean(pred == ya)),
                 premise=float(np.mean(L[rows, ya])), pred_in_L=float(np.mean(L[rows, pred])),
                 base_rate=float(np.mean(wrong_L.sum(1)/(p-1))), mean_L_size=float(L.sum(1).mean()),
-                mass_L=float(np.mean((pr*L).sum(1))), mass_correct=float(np.mean(pr[rows, ya])))
+                mass_L=float(np.mean((pr*L).sum(1))), mass_correct=float(np.mean(pr[rows, ya])),
+                wrong_in_L=float(np.mean(L[rows, pred][pred != ya])) if np.any(pred != ya) else None)
 
 
 def figure(results, step, out):
