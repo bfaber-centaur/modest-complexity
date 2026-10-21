@@ -34,6 +34,9 @@ class ShareTests(unittest.TestCase):
         self.assertAlmostEqual(out['d_share'], 1.)
         self.assertAlmostEqual(out['k_share'], 1.)
         self.assertTrue(out['peak_d0'])
+        self.assertAlmostEqual(out['k_phase'], 0.)
+        shifted = d_shares(np.roll(self.term(lambda a, b: 1., 5), 1, axis=1), self.d, self.all, 5)
+        self.assertAlmostEqual(abs(shifted['k_phase']), 2*np.pi*5/31)  # peak moved to another label
 
     def test_pizza_term_matches_derived_share(self):
         # Over all pairs, the |cos(pi k (a-b)/p)| factor leaves E|cos|^2/E cos^2 = 8/pi^2 up to discreteness.

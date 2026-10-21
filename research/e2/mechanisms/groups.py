@@ -8,6 +8,10 @@ Question and predictions: QUESTION.md. For a set of live units S at one checkpoi
 - d_share: share of C_S's variance on a set of pairs explained by a function of
   d = a + b - c mod p (the within-d mean); k_share: by cos/sin(2 pi k d / p) alone;
   peak_d0: whether that function of d is largest at d = 0 (the correct label);
+  k_phase, k_amplitude: phase and amplitude of its cos(2 pi k d / p + phase) component;
+  phase 0 means the frequency-k term peaks at the correct label. (Added after seeing
+  that single groups' profiles dip at d = 0, where the label is always absent from
+  both operands' training pairs, so peak_d0 mixes in the present/absent contrast.)
 - ablation: logits without S. Accuracy on the common never-trained set (483 pairs,
   research/e2/data), on the run's own cal + audit and on train; the restricted rank
   among absent labels (research/mechanisms/relational.py) on the common set; and the
@@ -52,8 +56,9 @@ def d_shares(c, d, rows, k):
     basis = np.stack([np.cos(2*np.pi*k*np.arange(p)/p), np.sin(2*np.pi*k*np.arange(p)/p)], 1)
     gk = basis @ np.linalg.lstsq(basis, g, rcond=None)[0]
     total = np.sum(x**2)
+    coef = np.sum(g*np.exp(-2j*np.pi*k*np.arange(p)/p))
     return dict(d_share=float(1 - np.sum((x - g[dd])**2)/total), k_share=float(1 - np.sum((x - gk[dd])**2)/total),
-                peak_d0=bool(g.argmax() == 0))
+                peak_d0=bool(g.argmax() == 0), k_phase=float(np.angle(coef)), k_amplitude=float(2*np.abs(coef)/p))
 
 
 def pizza_reference(d, rows, p):
@@ -145,9 +150,69 @@ def main():
         read_from_commit=args.source_commit, session_label='e2-me-cloud-1', analysis_code_commit=git('rev-parse', 'HEAD'),
         analysis_tree_status=git('status', '--porcelain'), analysis_script_sha256=sha256(__file__),
         command=' '.join(['python', *sys.argv])), indent=1) + '\n')
-    for r in rows:
-        if r['kind'] in ('none', 'all units'):
-            print({k: (round(v, 4) if isinstance(v, float) else v) for k, v in r.items()})
+    plot(rows, references, args.out/'groups')
+
+
+def plot(rows, references, path):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    runs = sorted({r['run_id'] for r in rows}, key=lambda r: ('tf50' not in r, r))
+    final = {run: max(r['step'] for r in rows if r['run_id'] == run) for run in runs}
+    first = {run: min(r['step'] for r in rows if r['run_id'] == run) for run in runs}
+    color = {run: '#1f6fb4' if 'tf50' in run else '#c0392b' for run in runs}
+    label = {run: ('50% ' if 'tf50' in run else '30% ') + 'i' + run.split('-i')[1][:5] for run in runs}
+    sel = lambda run, step, kind: [r for r in rows if r['run_id'] == run and r['step'] == step and r['kind'] == kind]
+    rng = np.random.default_rng(0)
+    jitter = lambda n: rng.uniform(-.12, .12, n)
+    fig, ax = plt.subplots(2, 3, figsize=(16, 9.5), constrained_layout=True)
+    for panel, split in ((ax[0, 0], 'common'), (ax[1, 0], 'train')):
+        for i, run in enumerate(runs):
+            for step, kind, x0, style in ((first[run], 'group', -.3, dict(color='#999999', marker='o', ms=3, alpha=.6)),
+                                          (final[run], 'random set', 0, dict(color='#bbbbbb', marker='.', ms=3, alpha=.5)),
+                                          (final[run], 'group', .3, dict(color=color[run], marker='o', ms=4))):
+                v = [r[f'd_share_{split}'] for r in sel(run, step, kind)]
+                panel.plot(i + x0 + jitter(len(v)), v, ls='none', **style)
+        ref = np.mean([r[f'pizza_d_share_{split}'] for r in references])
+        panel.axhline(ref, color='k', ls='--', lw=1)
+        panel.text(len(runs) - .5, ref*1.1, f'ideal pizza term {ref:.2f}', ha='right', fontsize=8)
+        panel.set(yscale='log', ylim=(3e-4, 1.5), xticks=range(len(runs)), xticklabels=[label[r] for r in runs],
+                  ylabel=f'share of group contribution explained\nby a function of a+b-c ({split} pairs)',
+                  title=f'{split} pairs: grey = first published step, light grey = random sets, colour = groups (final step)')
+    for i, run in enumerate(runs):
+        g = sel(run, final[run], 'group')
+        ax[0, 1].scatter(i + jitter(len(g)), [r['k_phase_common'] for r in g], s=[600*r['k_amplitude_common'] for r in g],
+                         color=color[run], alpha=.7)
+    ax[0, 1].axhline(0, color='k', lw=.8)
+    ax[0, 1].set(xticks=range(len(runs)), xticklabels=[label[r] for r in runs], ylim=(-np.pi, np.pi),
+                 ylabel='phase of own-frequency term on common set\n(0 = peaks at the correct label)',
+                 title='final step: each group (marker area = amplitude, logit units)')
+    for run in runs:
+        steps = sorted({r['step'] for r in rows if r['run_id'] == run})
+        for kind, ls in (('group', '-'), ('random set', ':')):
+            ax[0, 2].plot([max(s, 100) for s in steps], [np.median([r['d_share_common'] for r in sel(run, s, kind)])
+                                                        for s in steps], color=color[run], ls=ls, marker='o', ms=3)
+    ax[0, 2].plot([], [], color='k', ls='-', label='groups (median)')
+    ax[0, 2].plot([], [], color='k', ls=':', label='random sets (median)')
+    ax[0, 2].legend(fontsize=8)
+    ax[0, 2].set(xscale='log', yscale='log', xlabel='update step (step 0 drawn at 100)', ylabel='median share (common pairs)',
+                 title='per checkpoint, groups read from that checkpoint')
+    for panel, share, key, ylabel in ((ax[1, 1], '50% ', 'common_acc', 'change in common-set accuracy'),
+                                      (ax[1, 2], '30% ', 'common_rank', 'change in restricted rank (common set)')):
+        for run in [r for r in runs if label[r].startswith(share)]:
+            base = sel(run, final[run], 'none')[0][key]
+            for kind, style in (('random set', dict(color='#bbbbbb', marker='.', s=8)),
+                                ('group', dict(color=color[run], marker='o', s=16))):
+                v = sel(run, final[run], kind)
+                panel.scatter([r['logit_change_rms'] for r in v], [r[key] - base for r in v], **style)
+        panel.axhline(0, color='k', lw=.8)
+        panel.set(xlabel='RMS logit change from the ablation', ylabel=ylabel,
+                  title=f'{share}runs, final step: ablate one group (colour) or a matched random set (grey)')
+    fig.suptitle('Width 128, units grouped by dominant input frequency: 50% training share (blue) vs 30% (red). '
+                 'Common set = 483 pairs neither split trains on', fontsize=10)
+    for ext in ('png', 'svg'):
+        fig.savefig(path.with_suffix(f'.{ext}'), dpi=120)
+    plt.close(fig)
 
 
 if __name__ == '__main__':
