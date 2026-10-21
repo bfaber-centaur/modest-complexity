@@ -136,6 +136,45 @@ The weights keep moving at constant norm (59.87 to 59.76). Measured as relative 
 
 Figures: [100k](figures/e1f1-co-add-w512-i30000-s200k-a1-s100k/) and [200k](figures/e1f1-co-add-w512-i30000-s200k-a1-s200k/) (retention, rescaling, gauge, relational). `crosscheck.py` passes at both steps (retention rows within 2.2e-14, relational rows exact).
 
+## Follow-up 2: the first generalizing checkpoints (width 128, 50% training share)
+
+Input: the coordinator's `e1f2-co-add-w128-i3000{0,1,2}-tf50-a1`, published at `61050c4` and not yet audited. These runs use a different split (`6dc868be…3b49`: 478 train, 119 calibration, 364 audit pairs), so their held-out sets are not the e1 ones. The loader now checks each run against the split that `research/plan-followups.json` assigns it.
+
+### Per-unit structure (all six width-128 runs with init seeds 30000-30002)
+
+![per-unit concentration](figures/w128-units-tf50-vs-e1/units.png)
+
+Look before reading: when does each blue curve in the top-right panel separate from the red ones, and when does held-out accuracy (top left) leave zero?
+
+`units.py` reads every published checkpoint. For each live unit it measures the largest share of the unit's non-DC input energy (U and V) in one frequency, the same for its output row of W along the label axis, and whether the two dominant frequencies agree. These ratios are within a unit, so rescaling a unit does not change them (tested). e1 i30002 has only steps 0, 300 and 50,000 published, so its dotted red line is a straight interpolation.
+
+| run (train pairs) | step-50k audit acc | input concentration | output concentration | in/out agreement | frequencies used (units per frequency) |
+|---|---|---|---|---|---|
+| tf50 i30000 (478) | 0.923 | 0.853 | 0.878 | 1.000 | 15 (6–12) |
+| tf50 i30001 (478) | 0.868 | 0.834 | 0.846 | 0.992 | 15 (7–10) |
+| tf50 i30002 (478) | 0.904 | 0.855 | 0.875 | 1.000 | 15 (6–10) |
+| e1 i30000 (299) | 0.000 | 0.401 | 0.392 | 0.664 | 15 (4–12) |
+| e1 i30001 (299) | 0.000 | 0.436 | 0.420 | 0.750 | 15 (5–11) |
+| e1 i30002 (299) | 0.004 | 0.441 | 0.421 | 0.711 | 15 (5–15) |
+
+At step 0 all six runs sit at 0.17 input concentration and 0.06 agreement. The two shares separate from the first published checkpoint: at step 1,000, the 50% runs have input concentration 0.31–0.34 and agreement 0.64–0.70, against 0.23 and 0.36–0.39 for the two e1 runs with a published step-1,000 checkpoint. At step 5,000, when held-out audit accuracy is still 0.025–0.06, they reach 0.53–0.61 and 0.83–0.87; the e1 runs are at 0.30 and 0.53–0.56. Every run, generalizing or not, spreads its units over all 15 frequencies.
+
+### Checkpoint-local frequency retention and relational readout (tf50 i30000)
+
+Figures: [5k](figures/e1f2-co-add-w128-i30000-tf50-a1-s5k/), [10k](figures/e1f2-co-add-w128-i30000-tf50-a1-s10k/), [20k](figures/e1f2-co-add-w128-i30000-tf50-a1-s20k/), [50k](figures/e1f2-co-add-w128-i30000-tf50-a1-s50k/) (`retention.png`, `rescaling.png`, `relational.png`).
+
+| step (audit acc) | top-4 energy share (step 0: 0.288) | retain top 1 / 4 / 8: audit acc (random subsets) | remove top 1 / 4 / 8: audit acc (random subsets) | rank among absent labels / top fraction (no preference 0.5 / 0.135) |
+|---|---|---|---|---|
+| 5k (0.060) | 0.316 | 0.071 / 0.077 / 0.082 (0.03–0.07 / 0.04–0.11 / 0.04–0.12) | 0.044 / 0.047 / 0.069 (0.04–0.10 / 0.03–0.10 / 0.04–0.12) | 0.058 / 0.785 |
+| 10k (0.376) | 0.306 | 0.058 / 0.132 / 0.173 (0.03–0.08 / 0.07–0.18 / 0.09–0.22) | 0.299 / 0.118 / 0.113 (0.26–0.37 / 0.12–0.27 / 0.10–0.21) | 0.012 / 0.950 |
+| 20k (0.766) | 0.311 | 0.077 / 0.228 / 0.382 (0.03–0.08 / 0.07–0.24 / 0.24–0.43) | 0.670 / 0.503 / 0.258 (0.64–0.73 / 0.42–0.57 / 0.21–0.37) | 0.0065 / 0.973 |
+| 50k (0.923) | 0.303 | 0.099 / 0.236 / 0.420 (0.03–0.10 / 0.11–0.26 / 0.31–0.48) | 0.852 / 0.632 / 0.349 (0.84–0.89 / 0.57–0.72 / 0.29–0.45) | 0.0015 / 0.990 |
+
+- The aggregate spectrum stays near-flat while the model generalizes. Held-out accuracy falls roughly linearly as frequencies are removed and rises roughly linearly as they are retained. The top-energy frequencies sit inside or at the edge of the random-subset range.
+- The relational readout keeps the earlier ordering. At 50k, removing 8 frequencies gives rank 0.049 for top-K, 0.021–0.048 for random frequency subsets, 0.032–0.055 for the rotated null and 0.142–0.182 for the subspace null. The subspace null also costs the most train accuracy (0.53–0.64, against 0.90 for top-K).
+- Rescaling: targeted gains of 1.01–1.02 on 9 or 10 units change the top-4 set at every step. The codec stays at 95,496 bits. Gauge balancing was not rerun here.
+- `crosscheck.py` passes at all four steps: retention rows agree within 1.5e-14 and relational rows are exact.
+
 ## Method check (synthetic, not a trained model)
 
 This is a hand-built network with known ground truth (`freq.synthetic`). Frequencies 3, 7, 11 and 14 each get 32 ReLUs with random phases, at input gains 1, .9, .8 and .7. Each group's output weights are a ridge fit of its own unit-amplitude target cos(2πk(a+b−c)/31), so the four groups contribute equally to the logits but rank by input gain.
@@ -150,8 +189,8 @@ This is a hand-built network with known ground truth (`freq.synthetic`). Frequen
 
 ## Checks run
 
-- Shared tests: `uv run --locked python -m unittest test_exploration test_instrumentation`, 9 OK.
-- Lane tests: `uv run --locked --group analysis python -m unittest discover -s research/mechanisms -v`, 16 OK. They cover reconstruction, full removal, parity with `interventions()` at K=4, rescaling invariance of logits and pruning order, filter/rescaling commutation, balanced-gauge logit preservation, orbit invariance, idempotence and norm minimality, the absent-label premise, rank-statistic extremes, the norm-matched null's norm, rank and singular values, the subspace null's limits (top-K removal when R = I, DC only at K=15), rank 2K and idempotence, the synthetic ground truth, targeted reordering, and drift attribution to a single frequency.
+- Shared tests: `uv run --locked python -m unittest test_exploration test_instrumentation`, 10 OK at `97a1db1`.
+- Lane tests: `uv run --locked --group analysis python -m unittest discover -s research/mechanisms -v`, 18 OK. They cover reconstruction, full removal, parity with `interventions()` at K=4, rescaling invariance of logits and pruning order, filter/rescaling commutation, balanced-gauge logit preservation, orbit invariance, idempotence and norm minimality, the absent-label premise, rank-statistic extremes, the norm-matched null's norm, rank and singular values, the subspace null's limits (top-K removal when R = I, DC only at K=15), rank 2K and idempotence, the synthetic ground truth, targeted reordering, drift attribution to a single frequency, the loader's per-run split check, and per-unit concentration (synthetic ground truth, rescaling invariance).
 - Handoff: every input file was verified against the coordinator's `manifest.json` SHA-256 hashes. The split hash equals the plan's `aa8f7504…` and the target hash equals the manifest's `6f1576d4…`. Metrics recomputed at each analysed step equal `metrics.jsonl` exactly at all four checkpoints.
 - `crosscheck.py` recomputes with separately written code (cosine/sine projection instead of rfft, its own forward pass and metrics, its own rescaling, and balanced energies computed without rescaling anything). At all four checkpoints, all 32 retention rows agree to within 2.9e-14, the targeted rescaling reproduces the same units and top 4, and balanced energy shares agree to within 8.3e-17 with the same ranking (`crosscheck.json` in each directory). The codec itself was not recomputed independently, because it is `experiment.compress()`, the object being measured.
 
@@ -159,7 +198,7 @@ This is a hand-built network with known ground truth (`freq.synthetic`). Frequen
 
 - Input: `research/coordinator/runs/e1-co-add-w{32,128,512}-i30000-a1/` as published at `67a10d8d282fd1d57ae6b3aba5a992f8d040203d` (identical in `fff276c`), produced by code `ebd874e`. The step-0 checkpoints supply the reference spectra.
 - Analysis code: the commit recorded in each `summary.json` / `gauge_summary.json`; the tree was clean apart from output files. The environment is CPython 3.12.14, NumPy 2.3.5 and Matplotlib 3.11.2 from the uv lock, with one BLAS thread. The 200k continuation was read from `e499dff`; its manifest records a tree dirty only in the coordinator's registry. Seeds: random subsets 33100, rescalings 33200, norm-matched null 33300, random-subspace null 33400, synthetic phases 34000.
-- Elapsed numerical execution in this lane so far was about 11 minutes. No training jobs were run.
+- Elapsed numerical execution in this lane so far was about 14 minutes. No training jobs were run.
 
 ```bash
 uv sync --locked --group analysis
@@ -175,6 +214,10 @@ uv run --locked python research/mechanisms/crosscheck.py $R/e1-co-add-w128-i3000
 # 200k continuation: the three scripts with --run $R/e1f1-co-add-w512-i30000-s200k-a1 --step 100000 (and 200000), --source-commit e499dff, then
 uv run --locked --group analysis python research/mechanisms/drift.py --run $R/e1f1-co-add-w512-i30000-s200k-a1 --steps 50000 100000 150000 200000 \
     --source-commit e499dff1589b5383da89bef1aba750e98908e52b --out $F/e1f1-co-add-w512-i30000-s200k-a1-drift
+# follow-up 2: freq.py and relational.py with --run $R/e1f2-co-add-w128-i30000-tf50-a1 --step 5000 (10000, 20000, 50000) --source-commit 61050c4, then
+uv run --locked --group analysis python research/mechanisms/units.py --source-commit 61050c43bff915c6169f05473dce60412cbfa34f \
+    --out $F/w128-units-tf50-vs-e1 --runs $R/e1f2-co-add-w128-i3000{0,1,2}-tf50-a1 $R/e1-co-add-w128-i30000-a1 \
+    research/size-time/runs/e1-st-add-w128-i3000{1,2}-a1
 # synthetic method check
 uv run --locked --group analysis python research/mechanisms/freq.py --synthetic --top 1 --label "synthetic, hand-built, not trained" --out $F/synthetic
 uv run --locked --group analysis python research/mechanisms/gauge.py --synthetic --top 1 --label "synthetic, hand-built, not trained" --out $F/synthetic
@@ -182,6 +225,6 @@ uv run --locked --group analysis python research/mechanisms/gauge.py --synthetic
 
 ## Next (not yet run)
 
-1. Run the same figures, including the held-out preference readout, on the coordinator's generalizing width-128 runs (follow-up 2).
+1. Retrospective tracing on follow-up 2: score each 50k unit's dominant frequency at earlier checkpoints, and intervene per unit group (a frequency's units, not a frequency's energy across all units).
 2. Retrospective tracing (scoring final-checkpoint frequencies at earlier steps), kept separate from checkpoint-local selection. The coordinator deferred this until a generalizing checkpoint exists.
 3. A direct test of the translation reading in INTERPRETATION.md: the same readout under a perturbation that commutes with cyclic shifts but removes nothing, such as random per-frequency phase rotations applied identically to U and V.

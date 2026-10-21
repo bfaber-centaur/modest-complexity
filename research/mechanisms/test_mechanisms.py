@@ -9,10 +9,11 @@ import unittest
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from freq import (ROOT, curve, evaluate, filter_inputs, kendall_tau, prune_order, ranking, rescale,  # noqa: E402
-                  spectrum, synthetic, targeted)
+from freq import (ROOT, curve, evaluate, filter_inputs, kendall_tau, load_run, prune_order, ranking,  # noqa: E402
+                  rescale, spectrum, synthetic, targeted)
 from drift import drift  # noqa: E402
 from gauge import balance  # noqa: E402
+from units import concentration  # noqa: E402
 from relational import absent_labels, relational, rotation, subspace_removal  # noqa: E402
 from experiment import forward, init, interventions  # noqa: E402
 
@@ -38,6 +39,14 @@ class FrequencyTests(unittest.TestCase):
         w = filter_inputs(self.w, np.arange(1, 16), False)
         for x, orig in zip(w[:2], self.w[:2]):
             np.testing.assert_allclose(x, np.broadcast_to(orig.mean(0), x.shape), atol=1e-12)
+
+    def test_loader_checks_each_run_against_its_planned_split(self):
+        runs = ROOT/'research/coordinator/runs'
+        for run, split in (('e1-co-add-w128-i30000-a1', 'aa8f7504'), ('e1f2-co-add-w128-i30000-tf50-a1', '6dc868be')):
+            if (runs/run).exists():
+                _, d, meta = load_run(runs/run, 0)
+                self.assertTrue(meta['split_sha256'].startswith(split))
+                self.assertEqual(meta['max_abs_diff_vs_logged_metrics'], 0)
 
     def test_matches_historical_top4_intervention(self):
         # The historical intervention at K=4 (experiment.interventions) on the audit split.
@@ -184,6 +193,16 @@ class SyntheticTests(unittest.TestCase):
                                    logits, atol=1e-12)
         # Removing all four zeroes every hidden unit: logits 0, loss ln 31.
         self.assertAlmostEqual(rows['remove', 4]['audit_cross_entropy'], np.log(31), places=10)
+
+    def test_per_unit_concentration(self):
+        # Every synthetic unit uses one frequency on both sides; rescaling units changes nothing.
+        c = concentration(self.w)
+        self.assertGreater(c['input_concentration'], 1 - 1e-9)
+        self.assertGreater(c['output_concentration'], .99)
+        self.assertEqual((c['in_out_agreement'], c['frequencies_used']), (1., 4))
+        gains = np.exp(np.random.default_rng(3).normal(size=self.w[2].shape[0]))
+        for key, value in concentration(rescale(self.w, gains)).items():
+            self.assertAlmostEqual(value, c[key], places=12) if isinstance(value, float) else self.assertEqual(value, c[key])
 
     def test_targeted_rescaling_reorders_without_changing_function(self):
         info, c = targeted(self.w, 1)

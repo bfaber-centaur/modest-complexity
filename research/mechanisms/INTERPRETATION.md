@@ -65,3 +65,18 @@ Do not read this as evidence that the model "knows" addition. The preference is 
 ## Follow-up. The 200k-update continuation
 
 Observation summary: from 50k to 200k updates every readout in this lane stays where it was, even though the weights move about 17% at constant norm. A reading consistent with this: after the fit, weight decay and the loss move the model along a set of near-equivalent memorizing solutions. The movement is not concentrated in any frequency, so it neither builds Fourier structure nor erodes the partial preference. Longer training alone does not turn this run's preference into held-out accuracy, as the coordinator's accuracy curves already show. The contrast these packets have been missing is a checkpoint that does generalize.
+
+## Follow-up 2. A generalizing checkpoint (width 128, 50% training share; not yet audited)
+
+Candidate: the generalizing networks compute with many single-frequency units spread across all 15 frequencies, so their structure is per unit, not in the aggregate spectrum. At 50k, units put 83–86% of their input energy and 85–88% of their output energy in one frequency, and the input and output frequencies agree for 99–100% of units. That is what a unit contributing a cos(2πk(a+b−c)/p)-like term to the logits looks like. The aggregate spectrum is flat because the frequencies are used about equally (6–12 units each). This also explains the retention curves. Each frequency's group of units contributes a comparable share of the constructive interference at the correct label, so held-out accuracy rises and falls roughly linearly with the number of frequencies kept, whichever frequencies they are.
+
+The packet-1 alternative is confirmed in its first half. Aggregate input energy is the wrong coordinate for these models, and it would have called the generalizing checkpoint "diffuse". The e1 checkpoints are diffuse per unit too (concentration 0.40–0.44, agreement 0.66–0.75), so for the comparison the earlier conclusion survives in a revised form: the failing runs lack the per-unit structure, not merely a sparse spectrum.
+
+Relation to the failures: the failed e1 runs also concentrate, more slowly (0.17 to 0.40–0.44 over 50k). The 50% runs pass the e1 runs' 50k level by about step 2,000 and keep going. Held-out accuracy appears only after concentration has passed about 0.5 (step 5,000), which fits partial per-unit structure being necessary but not sufficient. The held-out rank statistic is already at 0.058 at 5k, so the restricted preference appears alongside the structure, ahead of accuracy.
+
+Strongest alternatives:
+- The comparison changes the split as well as the amount of data, so "more data" is not isolated. The per-unit measure does not use the split, but the trajectories do.
+- High per-unit concentration may be a consequence of fitting more pairs with weight decay rather than of generalizing. A cleaner test is a 50% run that fits but does not generalize, or an intervention on unit groups.
+- These are three seeds of one width at one horizon.
+
+What would distinguish them: interventions on unit groups (ablate the units whose dominant frequency is k, against random unit sets of the same size and norm), compared with the frequency-filter interventions above, at both shares. Then retrospective tracing: whether the 50k groups are already identifiable at 1k–5k.
