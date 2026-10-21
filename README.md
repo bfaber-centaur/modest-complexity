@@ -2,6 +2,8 @@
 
 Small CPU experiments on the costs and robustness of learned modular-addition implementations.
 
+Current exploratory plan: [swarm design](research/SWARM.md) and [coordinator/worker prompts](research/LAUNCH_PROMPTS.md). These are prepared for review; no swarm has been launched. The exploratory charter permits adaptive runs and supersedes historical confirmatory gating for this exploration.
+
 **Status: instrumented pre-run prototype, not a frozen confirmatory study.** No full pilot or confirmatory run has been performed here. `PROTOCOL.md`, `analysis.py`, and `run_study.py` preserve the original proposal; its composite verdict and top-four-frequency criterion need revision before confirmation. See `PRELAUNCH_REVIEW.txt` and `PRE_RUN.md`.
 
 The uv project pins **CPython 3.12.14** and **NumPy 2.3.5**. `uv.lock` records distribution hashes, including macOS ARM64 wheels. No GPU or dataset download is required.

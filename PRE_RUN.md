@@ -1,5 +1,7 @@
 # Pre-run handoff — 2026-10-21
 
+**Exploratory update:** see `research/SWARM.md`. The next phase is adaptive exploration, not confirmation. The amendments below constrain eventual confirmatory interpretation; they do not all block exploratory training. Correctness checks still apply, and proxy validation can proceed alongside the size/time lane.
+
 This commit imports the original NumPy prototype and adds operational measurements. It does not resolve all scientific review findings or authorize a confirmatory interpretation. Benchmark outputs are calibration only.
 
 ## Settled scope
