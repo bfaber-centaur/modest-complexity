@@ -1,0 +1,790 @@
+{
+ "runs": {
+  "e3-dy-add-w128-i30001-tf50-d41002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 4.8313189337595606e-11,
+   "worst_ce_abs_diff": 1.7763568394002505e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 4.374278717023117e-14,
+    "tolerance": 8.203276737903675e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf30-d41003-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 1.223580771939245e-10,
+   "worst_ce_abs_diff": 1.7763568394002505e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 1.867950238931826e-14,
+    "tolerance": 8.964024588341059e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf50-d41002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    400,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 1.9765244922572765e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 400,
+    "max_abs_diff": 5.595524044110789e-14,
+    "tolerance": 8.771082634264172e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf30-d41001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 8.67064066492993e-11,
+   "worst_ce_abs_diff": 1.7763568394002505e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 2.425837308805967e-14,
+    "tolerance": 8.974027957610949e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf40-d41003-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 2.1970179220006303e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 2.867150961094467e-14,
+    "tolerance": 8.619767091182275e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf30-d41002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 2.944651188508275e-11,
+   "worst_ce_abs_diff": 3.552713678800501e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 3.2635005808856477e-13,
+    "tolerance": 8.530378864486593e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf40-d41003-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 8.850739077063673e-12,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 1.1921019726912618e-13,
+    "tolerance": 8.314931910174822e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf40-d41001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 7.330287952426342e-11,
+   "worst_ce_abs_diff": 1.7763568394002505e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 3.8538616742300746e-14,
+    "tolerance": 8.176645527077353e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf45-d41003-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 5.7326115672922075e-11,
+   "worst_ce_abs_diff": 4.440892098500626e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 2.84373219416878e-14,
+    "tolerance": 8.175593046606856e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf50-d41001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    400,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 5.5438144415459895e-11,
+   "worst_ce_abs_diff": 2.6645352591003757e-15,
+   "replay_to_first_checkpoint": {
+    "step": 400,
+    "max_abs_diff": 2.477532068390076e-14,
+    "tolerance": 8.340175867794981e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf30-d41002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 2.83065979934617e-11,
+   "worst_ce_abs_diff": 1.7763568394002505e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 9.992007221626409e-15,
+    "tolerance": 8.009150650634772e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf45-d41002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 4.061582909993689e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 4.701794509287538e-14,
+    "tolerance": 8.391421715259739e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf40-d41002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 4.213255138605079e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 2.1198320876436583e-14,
+    "tolerance": 8.470146865892861e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf30-d41003-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 4.7489173863731724e-11,
+   "worst_ce_abs_diff": 1.7763568394002505e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 4.2493786267527867e-14,
+    "tolerance": 8.50271016512161e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf50-d41001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 1.4444680773615397e-11,
+   "worst_ce_abs_diff": 1.7763568394002505e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 3.674838211509268e-14,
+    "tolerance": 8.274087933958977e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf45-d41001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 3.50554166428521e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 1.9834134334928422e-13,
+    "tolerance": 8.683441818092499e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf50-d41003-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 2.502808306035867e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 2.400857290751901e-14,
+    "tolerance": 8.429664422267618e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf40-d41002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 4.9712685301028784e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 3.991251773527438e-14,
+    "tolerance": 8.340241967942802e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf45-d41003-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 5.984993098289606e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 2.0899948438568572e-14,
+    "tolerance": 8.499139689349048e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf40-d41001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 1.0442080429401218e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 3.303954332345427e-14,
+    "tolerance": 8.815198654793379e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf30-d41001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 6.959295134617176e-11,
+   "worst_ce_abs_diff": 1.7763568394002505e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 3.0128677330765186e-14,
+    "tolerance": 8.302278014903939e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf45-d41002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 3.8767285373439814e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 2.961519918187605e-14,
+    "tolerance": 8.466931965491e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30000-tf50-d41003-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    300,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 6.153581768696353e-11,
+   "worst_ce_abs_diff": 2.6645352591003757e-15,
+   "replay_to_first_checkpoint": {
+    "step": 300,
+    "max_abs_diff": 5.917488721252084e-14,
+    "tolerance": 8.645295618777935e-10,
+    "PASS": true
+   }
+  },
+  "e3-dy-add-w128-i30001-tf45-d41001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "published": true,
+   "completed": 50000,
+   "status": "complete",
+   "config_matches_plan": true,
+   "train_pairs": true,
+   "manifest_ok": true,
+   "manifest_missing": [],
+   "checkpoints": [
+    400,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    30000,
+    50000
+   ],
+   "accuracies_exact": true,
+   "worst_ce_rel_diff": 4.929594315455709e-11,
+   "worst_ce_abs_diff": 8.881784197001252e-16,
+   "replay_to_first_checkpoint": {
+    "step": 400,
+    "max_abs_diff": 1.9068080447937064e-14,
+    "tolerance": 8.31914876232656e-10,
+    "PASS": true
+   }
+  }
+ },
+ "Y2_prime": true,
+ "Y3": {
+  "launched": 24,
+  "landed": 24,
+  "complete": 24,
+  "event_patterns": [
+   "running/complete"
+  ],
+  "unplanned_ids_in_registry": [],
+  "all_landed_consistent": true,
+  "PASS": true
+ },
+ "Y5": {
+  "accuracies_exact": true,
+  "worst_ce_rel_diff": 1.223580771939245e-10,
+  "worst_ce_abs_diff": 3.552713678800501e-15,
+  "PASS_as_prestated": false
+ }
+}

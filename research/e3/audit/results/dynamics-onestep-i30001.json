@@ -1,0 +1,21 @@
+{
+ "run": "e3-dy-add-w128-i30001-tf40-d41002-a1",
+ "mine_vs_mine_pairs_permuted": {
+  "30001": {
+   "relative_weight_distance": 3.206891707243583e-18,
+   "max_abs_diff": 1.1102230246251565e-16
+  },
+  "30010": {
+   "relative_weight_distance": 1.1749638584100546e-17,
+   "max_abs_diff": 1.1102230246251565e-16
+  }
+ },
+ "shared_rounding_of_logit_gradient_vs_shared_code_30001": {
+  "relative_weight_distance": 3.110673820785545e-18,
+  "max_abs_diff": 1.1102230246251565e-16
+ },
+ "one_minus_p_label_at_30k": {
+  "median": 6.9628578025504595e-06,
+  "min": 3.180764306609518e-06
+ }
+}
