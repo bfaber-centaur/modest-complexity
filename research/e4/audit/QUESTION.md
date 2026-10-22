@@ -173,3 +173,49 @@ Written before any channel, coherence or projection value was computed. Nothing 
   - the projection coefficient c_t = ⟨W_ref,t, W_ref,0⟩ / ‖W_ref,0‖² against ρ_t.
   - If s_t < 0.05 at 5,000 in every seed, "not erased" describes the frequency slot, not the edited weights. Those decay on schedule, and the reference content is rebuilt by the gradient.
   - c_t ≫ ρ_t would mean the rebuilt content points along the start's direction.
+
+## Addendum 3 (2026-10-22, 02:40 UTC by the container clock): section 3 completed for the decay-off runs (D13), the restricted-decay patch (D15) and the xref/onlyref runs, before examining any of them
+
+**Clock note.** The times in the earlier headings were my estimates and are wrong. The commit times are the record: section 1–3 at `33bf731` (02:13:38 UTC), addendum 1 at `2d81d64` (02:16:50), addendum 2 at `4e459bf` (02:29:19). Every rule above was committed before the computation it governs.
+
+**What had been seen when this was written.**
+- D13 and D15 in DECISIONS.md, the dynamics lane's Q2 (its rules and reference table), the mechanisms lane's INTERVENTION.md, and the diff of the shared-code commit `e9cbc84` against `72cfb5d`.
+- The names of the six D13 run directories and their registry timestamps. I have not opened their configs, metrics or checkpoints, nor the lane's `offswitch.py` or `figures/offswitch/`.
+- One D7 replay's config, first metric rows and manifest (to learn the format). The xref/onlyref runs are not published yet.
+- Nothing of the D6 runs beyond the README, its tables and their column names (section 3 rules stand as written).
+
+**Tolerances used below.** "Replay-equal" means: train, cal and audit accuracies identical at every logged row; cross-entropies, norm, adaptive and decay norms within 1e-8 relative + 1e-14; weights at each published checkpoint within 1e-10 relative (Frobenius, per matrix). Replays are mine: `research/audit/independent.py` gradients and my own AdamW, which imports nothing from `experiment.py`.
+
+### Restricted-decay patch, shared commit `e9cbc84` (pinned at `8108d8b`)
+
+| # | check | PASS if |
+|---|---|---|
+| Z1 | No-flag path unchanged | (a) `adam()` of `72cfb5d` and of the pin, fed the same states and gradients for 300 full-batch updates from each B start at wd 1 and wd 0.3, give bitwise equal weights and moments and equal measured norms. (b) A diagnostic CLI run at the pin without the flags, i30001 at wd 1 to 300 updates with the D7 replay's settings, equals that published replay's states at 0, 50, 100 and 300 bitwise and its metric rows except wall-clock fields |
+| Z2 | The projection | My P, written from the definition with an explicit DFT per unit (keep the cosine and sine at k_j), equals `decay_parts` on the start weights and on 10 random Gaussian matrices to 1e-12 relative, for both `on` values. P is idempotent and orthogonal (‖Pw‖² + ‖w − Pw‖² = ‖w‖², and ⟨Pw, w − Pw⟩ ≈ 0, all to 1e-12 relative). The rest holds every column's DC: the token means of (I − P)U and U are equal to 1e-14 |
+| Z3 | One step | With zero gradient and zero moments, one `adam()` step at the pin gives exactly w − lr·wd·D(w), with D = P or I − P computed by `decay_parts` (bitwise), and equals it with my P to 1e-14 relative. With a real gradient from the start file, the moments after the step are bitwise those of the no-flag step (moments gradient-only), and w_new − (w − lr·wd·D(w)) equals the no-flag step's w_new − (1 − lr·wd)·w bitwise or to 1e-15 absolute (the decay sits outside the Adam update). The measured `decay_norm` equals ‖lr·wd·D(w)‖ to 1e-12 relative |
+| Z4 | Projection files | Each file's SHA-256 equals plan.json and `decay_projection.json`. Its k equals my dominant input frequency (argmax over 1..15 of the summed energy of U and V columns, labels not used) of the B start file at update 0 for every unit, and its live mask equals mine (a unit is live if its U and V columns are not all zero). P(W₀) = W₀ to 1e-12 relative, as D15 states |
+
+### Decay-off runs, D13 (`e4-dy-filt-wd1to0-u{300,1000}-w128-i{30000,30001,30002}-a1`)
+
+| # | check | PASS if |
+|---|---|---|
+| Y1′ | Provenance | Six directories, each with one running and one complete registry event and 20,000 completed updates. `resume` is the e3 wd 1 run's checkpoint at s, its recorded hash equals Q2's table and the file. The config differs from the source e3 run only in wd (0), resume fields, checkpoint list and bookkeeping. The producing commit's shared code is `72cfb5d`, or the pin with no decay flags (covered by Z1) |
+| Y2′ | Same state at the switch | The metric row at s equals the source run's row at s except wall-clock fields. Any checkpoint at s equals the source checkpoint's weights, moments and step bitwise |
+| Y3′ | What carried over | My replay from the source checkpoint at s, with its moments and the update count continuing at s + 1, at wd 0, is replay-equal to the published run up to its first checkpoint after s (and every logged row up to it). As a sensitivity control, the same replay with the update count restarted at 1 must fail this tolerance at that checkpoint; if it does not, the check cannot tell a reset from a carry-over and is reported as uninformative |
+| Y4′ | The reading | A_1, A_0 recomputed from the e3 metrics reproduce Q2's reference table to its 3 decimals. A_off(s + 1,000), Δ's and f per run equal the lane's to 1e-12 and fall in the band the lane reports, and the recovery label (any logged A_off after s ≥ A_1(s) + 0.05) agrees. Secondary values (A at 20,000, T(0.10) after the switch, censoring) are recomputed and compared, not judged |
+
+**Intervention checklist for D13.** The immediate effect is nil by construction, which Y2′ verifies, so every difference is recovery under training. Perturbation size: only wd changes, so ‖Δw‖ = 0 at the switch, and the training damage is nil. Selection: s = 300 and 1,000 come from the D5 decline window, which was set on held-out accuracy. That is a choice of time, disclosed, not a FAIL. Fragility (reported, not judged): f with W = 500 and 2,000 and with the common-pair accuracy at the checkpoints nearest s + W.
+
+### Restricted-decay runs, D15 (`e4-me-filt-wd1-{xref,onlyref}-w128-i{30000,30001,30002}-a1`), once published
+
+| # | check | PASS if |
+|---|---|---|
+| X1 | Provenance | Registry events and 5,000 completed updates. The config equals the D7 wd 1 replay's from the same start except `decay_projection`, its hash, `decay_on` (`rest` for xref, `reference` for onlyref) and bookkeeping. The producing commit's shared files equal the pin's |
+| X2 | Update 0 | The update-0 state equals the start file and the D7 replay's update 0, and the metric rows are equal there except wall-clock fields. So the immediate effect is nil |
+| X3 | Step-by-step | My replay with w ← w − lr·wd·D(w) + Adam update, D from my own P, is replay-equal to every logged row and checkpoint up to 300, for all six runs. From 300 to 5,000 my replay must agree at every published checkpoint and logged row with a relative weight difference no more than 10× that of my no-flag replay of the D7 wd 1 replay from the same start (the floating-point baseline), and with identical accuracies at the published checkpoints. Larger gaps are investigated before any reading |
+| X4 | Decay norm | The logged `decay_norm` at each logged update t equals ‖lr·wd·D(w_{t−1})‖ from my replayed w_{t−1} within the replay tolerance up to 300, and within 10× the baseline gap after that. At update 1, for one source, ‖D_rest‖² + ‖D_ref‖² from the xref and onlyref runs' first replayed update equals the full-decay ‖lr·wd·w₀‖² to 1e-12 relative |
+| X5 | Reading | f = (acc_arm − acc_wd1)/(acc_wd0 − acc_wd1) on the 483 common pairs at 5,000 and 2,000, per source, recomputed and equal to the lane's to 1e-12. The band follows INTERVENTION.md as written |
+
+**Intervention checklist for D15.** The immediate effect is nil (X2). Perturbation size is reported as the per-update decay norm of each arm against full decay, and ‖w_arm − w_replay‖/‖w_replay‖ per matrix at 300, 2,000 and 5,000. Training damage is reported as train accuracy and cross-entropy at the same updates. Selection: k_j comes from the start file without labels (Z4). Nothing is frozen; every parameter gets its Adam update, which Z3 verifies.
+
+**Budget.** The diagnostic runs here are Z1(b) (300 updates, about 1 s), and possibly a diagnostic CLI rerun of one xref run if X3 needs investigating (about 16 s). My numpy replays count toward the audit's elapsed time; I estimate under 2 minutes in total.
