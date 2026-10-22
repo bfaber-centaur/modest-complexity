@@ -7,7 +7,7 @@ Plan: [../PLAN.md](../PLAN.md). Decisions: [DECISIONS.md](DECISIONS.md). Dispatc
 | R1 composing small programs | [composition/](../composition/) | started 02:34Z | — | — | — | — | — |
 | R2 shared subcomputations | [shared/](../shared/) | started 02:34Z | — | — | — | — | — |
 | R3 training history and recovery | [history/](../history/) | started 02:34Z | — | — | — | — | — |
-| R4 competing predictive routes | [routes/](../routes/) | started 02:34Z | — | — | — | — | — |
+| R4 competing predictive routes | [routes/](../routes/) | Rule versus shortcut | `claude/project-thread-d3kg6e` | `020c86b` | — | — | — |
 | independent review | [review/](../review/) | started 02:34Z | — | — | — | — | — |
 
 No results yet.
