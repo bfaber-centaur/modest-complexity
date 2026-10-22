@@ -64,7 +64,7 @@ The per-step-readout condition is my r1 arm (disclosure above). Checks, with cod
 
 (Dated, before the matching analysis or run.)
 
-- **04:2x, mechanisms counterexample.** This was written after reading its M0 `65f9245`, before opening its tables, CSV or figure. I had seen only the coordinator's one-line relay: interchange equals recombined evaluation, and centroid states do better exactly where natural states fail.
+- **04:21, mechanisms counterexample** (2cfd1e1). This was written after reading its M0 `65f9245`, before opening its tables, CSV or figure. I had seen only the coordinator's one-line relay: interchange equals recombined evaluation, and centroid states do better exactly where natural states fail.
   - **CX-M1, against "history-specific residue in the natural state causes the failures that centroid patches avoid".** The alternative is that a centroid patch simply injects the symbol, where the natural state no longer carries it.
   - **The cells.** Every cell with S_cent − S ≥ 0.05.
   - **(a) Symbol-present donors.** Restrict natural donors to those whose h_i is nearest, among the training centroids c_i(·), to its own true symbol. Then recompute S.

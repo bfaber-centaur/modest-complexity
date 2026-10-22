@@ -1,0 +1,50 @@
+PASS M1 at ckpt-0 and ckpt-1000 (9 runs each): my forward gives r1's published 128-character held-out prediction string
+PASS natural interchange by actual patching: S(i, j) in all 16 cells x 9 runs at 10k equals cells.csv  [max |diff| 0.0e+00]
+PASS centroid patches (centroids fit here on the 384 training rows): S_cent equals cells.csv in all 144 cells  [max |diff| 0.0e+00]
+PASS per-step readout: the V1 and V2 columns equal mine  [max |diff| 0.0e+00]
+PASS S is constant along every diagonal (i - j fixed) in all 9 runs; self-swap success equals unpatched accuracy
+CX-M1 cells with S_cent - S >= 0.05: S, S_cent, share of donors symbol-present, S on those donors, S with donors norm-matched; fraction of the gap closed by (a) and (b)
+  tied/inter              51200 i3 j0 L6: S 0.856 S_cent 0.994; symbol-present 0.650, S on them 0.860; norm-matched 0.919; closed (a) +0.04 (b) +0.46
+  tied/inter              51200 i3 j1 L5: S 0.950 S_cent 1.000; symbol-present 0.650, S on them 0.956; norm-matched 0.974; closed (a) +0.12 (b) +0.49
+  tied/inter              51201 i1 j0 L4: S 0.926 S_cent 0.984; symbol-present 0.844, S on them 0.927; norm-matched 0.958; closed (a) +0.01 (b) +0.54
+  tied/inter              51201 i2 j0 L5: S 0.744 S_cent 0.969; symbol-present 0.617, S on them 0.750; norm-matched 0.837; closed (a) +0.03 (b) +0.41
+  tied/inter              51201 i2 j1 L4: S 0.926 S_cent 1.000; symbol-present 0.617, S on them 0.942; norm-matched 0.965; closed (a) +0.22 (b) +0.53
+  tied/inter              51201 i3 j0 L6: S 0.560 S_cent 0.939; symbol-present 0.586, S on them 0.583; norm-matched 0.656; closed (a) +0.06 (b) +0.25
+  tied/inter              51201 i3 j1 L5: S 0.744 S_cent 1.000; symbol-present 0.586, S on them 0.774; norm-matched 0.812; closed (a) +0.12 (b) +0.27
+  tied/inter              51201 i3 j2 L4: S 0.926 S_cent 1.000; symbol-present 0.586, S on them 0.942; norm-matched 0.951; closed (a) +0.21 (b) +0.33
+  tied/inter              51202 i2 j0 L5: S 0.875 S_cent 0.982; symbol-present 0.672, S on them 0.882; norm-matched 0.943; closed (a) +0.06 (b) +0.63
+  tied/inter              51202 i3 j0 L6: S 0.718 S_cent 0.967; symbol-present 0.623, S on them 0.734; norm-matched 0.823; closed (a) +0.06 (b) +0.42
+  tied/inter              51202 i3 j1 L5: S 0.875 S_cent 1.000; symbol-present 0.623, S on them 0.891; norm-matched 0.928; closed (a) +0.13 (b) +0.42
+  per-step readout/inter  51200 i1 j0 L4: S 0.261 S_cent 0.320; symbol-present 0.656, S on them 0.272; norm-matched 0.296; closed (a) +0.18 (b) +0.59
+  per-step readout/inter  51200 i1 j1 L3: S 0.908 S_cent 0.969; symbol-present 0.656, S on them 0.920; norm-matched 0.912; closed (a) +0.19 (b) +0.06
+  per-step readout/inter  51200 i1 j2 L2: S 0.523 S_cent 0.625; symbol-present 0.656, S on them 0.548; norm-matched 0.562; closed (a) +0.24 (b) +0.38
+  per-step readout/inter  51200 i1 j3 L1: S 0.438 S_cent 0.750; symbol-present 0.656, S on them 0.429; norm-matched 0.438; closed (a) -0.03 (b) +0.00
+  per-step readout/inter  51200 i2 j1 L4: S 0.261 S_cent 0.375; symbol-present 0.516, S on them 0.257; norm-matched 0.293; closed (a) -0.04 (b) +0.28
+  per-step readout/inter  51200 i2 j2 L3: S 0.908 S_cent 1.000; symbol-present 0.516, S on them 0.955; norm-matched 0.916; closed (a) +0.50 (b) +0.09
+  per-step readout/inter  51200 i2 j3 L2: S 0.523 S_cent 0.875; symbol-present 0.516, S on them 0.439; norm-matched 0.523; closed (a) -0.24 (b) +0.00
+  per-step readout/inter  51200 i3 j2 L4: S 0.261 S_cent 0.500; symbol-present 0.445, S on them 0.272; norm-matched 0.273; closed (a) +0.04 (b) +0.05
+  per-step readout/inter  51200 i3 j3 L3: S 0.908 S_cent 1.000; symbol-present 0.445, S on them 0.987; norm-matched 0.908; closed (a) +0.86 (b) +0.00
+  per-step readout/inter  51201 i1 j2 L2: S 0.578 S_cent 0.719; symbol-present 0.688, S on them 0.557; norm-matched 0.594; closed (a) -0.15 (b) +0.11
+  per-step readout/inter  51201 i1 j3 L1: S 0.500 S_cent 0.625; symbol-present 0.688, S on them 0.591; norm-matched 0.500; closed (a) +0.73 (b) +0.00
+  per-step readout/inter  51201 i2 j1 L4: S 0.200 S_cent 0.312; symbol-present 0.469, S on them 0.182; norm-matched 0.229; closed (a) -0.16 (b) +0.25
+  per-step readout/inter  51201 i2 j2 L3: S 0.881 S_cent 1.000; symbol-present 0.469, S on them 0.912; norm-matched 0.887; closed (a) +0.27 (b) +0.05
+  per-step readout/inter  51201 i2 j3 L2: S 0.578 S_cent 1.000; symbol-present 0.469, S on them 0.633; norm-matched 0.578; closed (a) +0.13 (b) +0.00
+  per-step readout/inter  51201 i3 j3 L3: S 0.881 S_cent 1.000; symbol-present 0.410, S on them 0.957; norm-matched 0.881; closed (a) +0.64 (b) +0.00
+  per-step readout/inter  51202 i1 j2 L2: S 0.562 S_cent 0.656; symbol-present 0.719, S on them 0.587; norm-matched 0.570; closed (a) +0.26 (b) +0.08
+  per-step readout/inter  51202 i1 j3 L1: S 0.625 S_cent 0.875; symbol-present 0.719, S on them 0.609; norm-matched 0.625; closed (a) -0.07 (b) +0.00
+  per-step readout/inter  51202 i2 j0 L5: S 0.182 S_cent 0.258; symbol-present 0.500, S on them 0.186; norm-matched 0.196; closed (a) +0.05 (b) +0.18
+  per-step readout/inter  51202 i2 j1 L4: S 0.261 S_cent 0.484; symbol-present 0.500, S on them 0.274; norm-matched 0.294; closed (a) +0.06 (b) +0.15
+  per-step readout/inter  51202 i2 j2 L3: S 0.879 S_cent 1.000; symbol-present 0.500, S on them 0.891; norm-matched 0.893; closed (a) +0.10 (b) +0.11
+  per-step readout/inter  51202 i2 j3 L2: S 0.562 S_cent 1.000; symbol-present 0.500, S on them 0.609; norm-matched 0.562; closed (a) +0.11 (b) +0.00
+  per-step readout/inter  51202 i3 j1 L5: S 0.182 S_cent 0.273; symbol-present 0.412, S on them 0.217; norm-matched 0.191; closed (a) +0.38 (b) +0.09
+  per-step readout/inter  51202 i3 j2 L4: S 0.261 S_cent 0.562; symbol-present 0.412, S on them 0.305; norm-matched 0.283; closed (a) +0.14 (b) +0.07
+  per-step readout/inter  51202 i3 j3 L3: S 0.879 S_cent 1.000; symbol-present 0.412, S on them 0.962; norm-matched 0.879; closed (a) +0.69 (b) +0.00
+  tied/final              51200 i2 j2 L3: S 0.818 S_cent 0.875; symbol-present 0.422, S on them 0.852; norm-matched 0.822; closed (a) +0.59 (b) +0.07
+  tied/final              51200 i3 j2 L4: S 0.136 S_cent 0.188; symbol-present 0.393, S on them 0.141; norm-matched 0.140; closed (a) +0.08 (b) +0.08
+  tied/final              51200 i3 j3 L3: S 0.818 S_cent 1.000; symbol-present 0.393, S on them 0.940; norm-matched 0.818; closed (a) +0.67 (b) +0.00
+  tied/final              51201 i3 j3 L3: S 0.828 S_cent 1.000; symbol-present 0.418, S on them 0.949; norm-matched 0.828; closed (a) +0.70 (b) +0.00
+  tied/final              51202 i1 j3 L1: S 0.062 S_cent 0.125; symbol-present 0.531, S on them 0.000; norm-matched 0.062; closed (a) -1.00 (b) +0.00
+  tied/final              51202 i2 j2 L3: S 0.830 S_cent 0.969; symbol-present 0.367, S on them 0.883; norm-matched 0.836; closed (a) +0.38 (b) +0.04
+  tied/final              51202 i3 j3 L3: S 0.830 S_cent 1.000; symbol-present 0.400, S on them 0.976; norm-matched 0.830; closed (a) +0.86 (b) +0.00
+FAIL CX-M1 prediction (tied/inter): in every such cell (a) closes < 1/2 and (b) < 1/4 of the gap
+1 FAILED: ['CX-M1 prediction (tied/inter): in every such cell (a) closes < 1/2 and (b) < 1/4 of the gap']

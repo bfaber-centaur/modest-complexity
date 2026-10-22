@@ -4,6 +4,7 @@
 - [REVIEW.md](REVIEW.md): verdicts with exact artifact references.
 - [rev_pin.py](rev_pin.py): pin check of `b3e8132`, plus D10. Its output is [out/rev_pin.txt](out/rev_pin.txt).
 - [rev_gen.py](rev_gen.py): generalization lane checks at a lane commit, and CX-G1. Its output is [out/rev_gen.txt](out/rev_gen.txt).
+- [rev_mech.py](rev_mech.py): mechanisms lane checks at a lane commit, and CX-M1. Its output is [out/rev_mech.txt](out/rev_mech.txt).
 - [plan.json](plan.json), [registry.jsonl](registry.jsonl): reviewer runs (IDs `c2-rev-`, seeds 65000–65999). Outputs are local in `runs/c2/` (gitignored). [runs/](runs/MANIFEST.sha256) holds their small files and a manifest.
 
 ## Commands
@@ -16,6 +17,7 @@ uv run --locked python research/regimes/common/run_jobs.py --plan research/compo
     --ids c2-rev-verify-final-s51200-a1
 uv run --locked python research/composition-c2/review/rev_pin.py runs/c2 > research/composition-c2/review/out/rev_pin.txt
 uv run --locked python research/composition-c2/review/rev_gen.py 30c495f > research/composition-c2/review/out/rev_gen.txt
+uv run --locked python research/composition-c2/review/rev_mech.py 0949fa0 > research/composition-c2/review/out/rev_mech.txt
 ```
 
 `rev_pin.py` §7 reads the run's `ckpt-10000.npz`, which is local-only.
@@ -29,3 +31,4 @@ uv run --locked python research/composition-c2/review/rev_gen.py 30c495f > resea
 | 04:08 | `rev_pin.py` with §8 (c2probe) | 21.5 s | 1.5 min |
 | 04:16 | `rev_pin.py` with §9 (D10) and the post-pin recovery entry | 22.0 s | 1.9 min |
 | 04:17–04:20 | `rev_gen.py` (generalization Part A): one crash on the `steps.csv` summary row, then two complete passes | 3.4 + 15.6 + 16.3 s | 2.4 min |
+| 04:25–04:27 | `rev_mech.py` (mechanisms M1–M2, CX-M1), two passes | 13.4 + 13.5 s | 2.9 min |
