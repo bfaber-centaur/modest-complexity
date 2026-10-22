@@ -1,6 +1,6 @@
 # e3 review index (figures first)
 
-Round e3 ran under the [charter](charter/README.md). Assignments, seeds, budgets and the claim procedure are in [DECISIONS.md](DECISIONS.md) (D1–D15). Claims are in [../plan.json](../plan.json), run accounting in [RUNS.md](RUNS.md), and the short synthesis in [SYNTHESIS.md](SYNTHESIS.md). e1 and e2 are complete and unchanged: [../../coordinator/INDEX.md](../../coordinator/INDEX.md) and [../../e2/coordinator/INDEX.md](../../e2/coordinator/INDEX.md).
+**e3 is complete** (2026-10-22, [DECISIONS.md](DECISIONS.md) D17). Round e3 ran under the [charter](charter/README.md). Assignments, seeds, budgets and the claim procedure are in [DECISIONS.md](DECISIONS.md) (D1–D15). Claims are in [../plan.json](../plan.json), run accounting in [RUNS.md](RUNS.md), and the short synthesis in [SYNTHESIS.md](SYNTHESIS.md). e1 and e2 are complete and unchanged: [../../coordinator/INDEX.md](../../coordinator/INDEX.md) and [../../e2/coordinator/INDEX.md](../../e2/coordinator/INDEX.md).
 
 e3 base for workers: `9041a4839ceef0926015160f312c641f02615241`. Shared code was re-pinned once, at `72cfb5d0b4599c9e96cb3b9203980bc64b9b8d7a`, to add `--resume` for the dynamics follow-up (D15). All runs: p = 31, one hidden ReLU layer of width 128, full-batch AdamW, lr 1e-3, float64. Measures: [`research/e3/audit/pairwise.py`](../audit/pairwise.py) (D6). P(A over B) is the chance that a label in A outranks one in B for the same pair, ties counted ½. S = labels seen with an operand in the smallest training set; N = labels never seen with either operand.
 
@@ -23,7 +23,7 @@ One panel per data seed. Each panel is a nested ladder of training sets at the n
 
   Interpolated 0.5-accuracy crossings fall at 417–434 training pairs.
 - **Observation.** At 45%, the spread between ladders (0.076) is smaller than the largest init difference inside a ladder (0.142). The one graded hint of a ladder effect is 41002 at 40% on the σ-margin, and it does not show in accuracy.
-- **Correction (packet 2).** Packet 1 said the 45% runs were "still rising" at 50,000 updates, which was wrong. Every-100-update metrics show them within 0.01 of their 50k value from 37k–47k updates on.
+- **Correction (packet 2).** Packet 1 said the 45% runs were "still rising" at 50,000 updates, which was wrong. On every logged update they stay within 0.01 of their 50k value from 37,100–48,300 updates on (audit investigation 6, P3, which corrected the lane's 1,000-update-grid ranges).
 
 ![continuation](../dynamics/figures/continuation.png)
 
@@ -81,7 +81,8 @@ Three failed 30% checkpoints at 50k, three arms each: A unchanged; B the e2 per-
 | The nested-ladder ordering and accuracy bands reproduce on three new data seeds | observation | SUPPORTED LOCALLY (investigation 5) |
 | Ladder-to-ladder spread at 45% is within init spread (two inits) | observation | SUPPORTED LOCALLY; the spread is largely init × training-set interaction |
 | 41002's 40% margin lead is a training-set effect | explanation | CONTRADICTED (pre-stated rule, investigation 5) |
-| The 45% and 40% runs are settled by 50k; 100k more updates change nothing | observation | AUDIT PENDING (packet 2) |
+| The 45% and 40% runs are settled by 50k; 100k more updates change nothing | observation | SUPPORTED LOCALLY (investigation 6: resume provenance, replay past the resume and Table 4 PASS; settling ranges corrected) |
+| The 45% runs were "still rising" at 50k (packet 1; audit inv 5 rule 3) | observation | withdrawn; CONTRADICTED by every-100-update metrics |
 | The filter edit raises held-out accuracy of failed runs to 0.43–0.58; the sham does not | intervention | PASS (gate and investigation 3) |
 | Training after the edit first raises then erases B's held-out accuracy (with decay) | observation | SUPPORTED LOCALLY |
 | The erasure is in accuracy, not ranks; B does not return to A | observation | SUPPORTED LOCALLY (audit) |
@@ -97,7 +98,7 @@ Three failed 30% checkpoints at 50k, three arms each: A unchanged; B the e2 per-
 |---|---|---|
 | dynamics | 70 min | about 49 min (28.0 initial, 19.1 follow-up, 2 analysis) |
 | mechanisms | 25 min | about 5.5 min (3.5 initial, 2 follow-up) |
-| auditor | 30 min | about 14.6 min at investigation 5 |
+| auditor | 30 min | about 15.2 min (six investigations) |
 | coordinator | 15 min | about 2 min (calibration, smoke checks, spot checks) |
 
 No paid compute was used.

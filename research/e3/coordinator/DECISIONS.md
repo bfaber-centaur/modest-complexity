@@ -314,3 +314,36 @@ Audit investigation 5 (PR #29, `a62e308`) found:
 - 41002's 40% lead as a training-set effect CONTRADICTED.
 
 The audit of packet 2 is the last open item.
+
+## D17 (2026-10-22) Close e3
+
+All four sessions finished within their budgets (D7):
+
+| session | used | budget |
+|---|---|---|
+| dynamics | about 49 min | 70 |
+| mechanisms | about 5.5 min | 25 |
+| auditor | about 15 min | 30 |
+| coordinator | about 2 min | 15 |
+
+No paid compute was used.
+
+**Runs.** 49 claimed runs, all complete, with no failures, caps or unclaimed registry events ([RUNS.md](RUNS.md)):
+- dynamics: 24 initial runs and 10 resumes;
+- mechanisms: 9 continuations from edited weights and 6 at weight decay 0.
+
+**Shared code.** Pinned twice: `9041a48` (continuation from edited weights, dense checkpoints, empty-split guard) and `72cfb5d` (`--resume`). There was one accepted launch deviation (D16).
+
+**Integrated PRs:**
+- audit: #22, #23, #27, #29, #31;
+- mechanisms: #24, #25, #26;
+- dynamics: #28, #30, #32.
+
+Every packet is audited. The final claim statuses are in [INDEX.md](INDEX.md). Software checks all PASS, apart from audit investigation 6 P3, a FAIL on how settling ranges were measured. The lane fixed that in PR #32 and the reading did not change.
+
+**Deliverables:**
+- [INDEX.md](INDEX.md): figures first, claims labelled observation, explanation or intervention, with audit status and budget;
+- [SYNTHESIS.md](SYNTHESIS.md): three remaining questions;
+- [RUNS.md](RUNS.md): run accounting.
+
+The walkthrough branch stays separate, and nothing was merged upstream or into a main branch.
