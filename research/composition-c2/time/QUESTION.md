@@ -153,7 +153,7 @@ There is one follow-up, chosen after the nine continuations and the first figure
 
 ## Revisions
 
-**R1. Written 2026-10-22 04:13Z, while the nine continuations were running and before any of their records had been read.** These are the reviewer's wording notes T0.1 and T0.2 on b7d1ab6, relayed by the coordinator.
+**R1. Written 2026-10-22 04:12Z, while the nine continuations were running and before any of their records had been read.** These are the reviewer's wording notes T0.1 and T0.2 on b7d1ab6, relayed by the coordinator.
 - **T0.1.** The "gap persists" rule gets tolerances. "Churn ≈ 0" becomes at most 2 of 128 held-out predictions differing between 40,000 and 50,000. The rule also requires flat held-out CE: a change of less than 10% over the same interval. Both match measure 5.
 - **T0.2.** The ¬N ≥ 0.90 condition of the "speed" rule now has a time: each of the last five logged evaluations.
 - **Checkpoints.** `ckpt-40000` is committed with `ckpt-50000`, as the reviewer's pre-committed counterexamples use both. The 20k and 30k checkpoints are committed too, as already planned.
