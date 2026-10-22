@@ -13,7 +13,7 @@ Figures, observations, the explanations that survived or failed, confounds, run 
 | lane | initial experiment | status |
 |---|---|---|
 | dynamics | D6: six constant-decay runs at wd 0.1 and 0.3 from the filtered starts | packet 1 integrated (PR #33), audit pending; follow-up claimed (D13: decay off at update 300 or 1,000) |
-| mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | claimed |
+| mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | first figure integrated (PR #35), audit pending; intervention approved in principle (D14), waiting for the shared-code patch |
 | auditor | audit of the decomposition, the strongest cheap control (random-feature starts, D11–D12), dynamics and intervention checks | control C1 integrated (PR #34); decomposition and dynamics checks pending |
 
 ## 1. Decay strength between the peak and the collapse (dynamics, packet 1, not yet audited)
@@ -48,3 +48,36 @@ The **random-feature start** is built from untrained U and V of the same init, a
 - **Verdict under the pre-stated rule.** "Generic to filter plus training" is SUPPORTED LOCALLY in all three seeds and all three components (rise, collapse, hold).
 - **Explanation (auditor).** The peak-then-collapse, and the rank trace that survives it, do not need anything the failed runs learned. A mechanism found between B's peak and collapse describes filtered networks trained on these pairs. The failed runs contribute a head start. This is not yet shown to be the same mechanism in both arms.
 - **Coordinator spot check.** Common accuracy at updates 0, 100, 1k, 2k and 20k, recomputed from the published checkpoints, matches the table. Replaying `e4-au-rf-w128-i30000-a1` to update 300 is bitwise equal at 0, 10, 30, 100 and 300.
+
+## 3. What changes in the logits between the peak and the collapse (mechanisms, first figure, not yet audited)
+
+![channels](../mechanisms/figures/channels.png)
+
+The logits on the 483 common pairs are split exactly (relative error 1.6e-15) into three channels:
+- **the label offset μW**, where μ is the mean hidden activation on training pairs;
+- **a reference channel**, the readout at each unit's update-0 dominant frequency, the one the filter kept;
+- **the rest**.
+
+States come from the six dense replays (bitwise equal to e3 at every shared checkpoint) and the published e3 runs. Packet: [../mechanisms/README.md](../mechanisms/README.md).
+
+**Observations at wd 1, updates 100 → 2,000**
+- The mean margin of a+b over the operand-associated labels S falls by 2.5–3.0 logits:
+
+  | channel | share of the fall (logits) |
+  |---|---|
+  | reference | 1.1–1.4 |
+  | off-reference (from near zero) | 1.4–1.6 |
+  | label offset | < 0.01 |
+
+- The reference input weights keep their norm. The reference readout shrinks by about 13%, and the off-reference parts grow from about 4 to 16.
+- a+b-mode phase alignment stays at 0.98 or above.
+- 17–18% of gates change, against 7–8% at wd 0.
+- The reference channel alone still scores 0.47–0.52 at 5,000–20,000, against 0.16–0.27 for the same projection of A. The full network is at 0.02–0.03.
+
+**Observation at wd 0.** The reference channel's margin grows, and the competing contribution grows more slowly.
+
+**On the rise.** At update 0, the label offset costs 0.15–0.23 accuracy, and it is trained away by t_fit.
+
+**Explanation (lane, provisional).** The answers are outvoted, not erased. Decay stalls the reference part while a competing off-reference readout grows against a+b on the operand labels.
+
+**Strongest alternative (lane).** This is one integrated re-memorisation, cut into two channels by a task-informed basis.
