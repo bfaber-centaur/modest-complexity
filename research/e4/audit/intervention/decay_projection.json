@@ -1,0 +1,205 @@
+{
+ "files": [
+  {
+   "source": 30000,
+   "start": "init",
+   "file": "research/e4/audit/intervention/decay_projection_init_i30000.npz",
+   "sha256": "a405f353e46a1255e93aceef66232a87e229b05b48c2be4acc9034f145055ac2",
+   "live_units": 128,
+   "units_per_frequency": [
+    7,
+    11,
+    5,
+    4,
+    12,
+    10,
+    11,
+    12,
+    11,
+    13,
+    9,
+    7,
+    4,
+    7,
+    5
+   ]
+  },
+  {
+   "source": 30000,
+   "start": "rf",
+   "start_sha256": "898a65f828cdf80fe4d96050f5f247a05a9f0597d08d6ba8f07bd8ce13e4979d",
+   "gate_k_equals_init": true,
+   "gate_live_equals_init": true,
+   "file": "research/e4/audit/intervention/decay_projection_init_i30000.npz",
+   "sha256": "a405f353e46a1255e93aceef66232a87e229b05b48c2be4acc9034f145055ac2"
+  },
+  {
+   "source": 30000,
+   "start": "keep",
+   "start_sha256": "9cb87296954370e1dd4ad3d590881ceb3fe47ca18e1e34daaf4b44624a1fe066",
+   "gate_k_equals_B": true,
+   "gate_live_equals_B": true,
+   "file": "research/e4/mechanisms/intervention/decay_projection_i30000.npz",
+   "sha256": "94091ae52272f9024b8661c1a81ed5a6946e1ad9dd525b8072eb605aa0ee56be"
+  },
+  {
+   "source": 30000,
+   "start": "sham",
+   "same_k_share": 0.1015625,
+   "file": "research/e4/audit/intervention/decay_projection_sham_i30000.npz",
+   "sha256": "96bc5e547a183c42f5211ea48e0aec644a4293871e63b115c32aeb2af3886be3",
+   "live_units": 128,
+   "units_per_frequency": [
+    10,
+    8,
+    6,
+    12,
+    7,
+    10,
+    4,
+    9,
+    9,
+    11,
+    9,
+    8,
+    7,
+    11,
+    7
+   ]
+  },
+  {
+   "source": 30001,
+   "start": "init",
+   "file": "research/e4/audit/intervention/decay_projection_init_i30001.npz",
+   "sha256": "76ff1455baea7cc8f23e8ab8eff68766293587f4379fd69683c2f2e1f4773ab3",
+   "live_units": 128,
+   "units_per_frequency": [
+    10,
+    13,
+    6,
+    7,
+    4,
+    7,
+    6,
+    8,
+    7,
+    10,
+    8,
+    11,
+    15,
+    10,
+    6
+   ]
+  },
+  {
+   "source": 30001,
+   "start": "rf",
+   "start_sha256": "3d52f6185a43e4d99ca23a43fb2b94394cada05c45b147c54cdf12774fdb6592",
+   "gate_k_equals_init": true,
+   "gate_live_equals_init": true,
+   "file": "research/e4/audit/intervention/decay_projection_init_i30001.npz",
+   "sha256": "76ff1455baea7cc8f23e8ab8eff68766293587f4379fd69683c2f2e1f4773ab3"
+  },
+  {
+   "source": 30001,
+   "start": "keep",
+   "start_sha256": "15c51c5739cd197233f5b9bcad7da02bbd97958b596d7a66016952e6c353eaa2",
+   "gate_k_equals_B": true,
+   "gate_live_equals_B": true,
+   "file": "research/e4/mechanisms/intervention/decay_projection_i30001.npz",
+   "sha256": "c486ea007b6683b9812559b326653c6be3773e4be9f2bf8125b0b2396d1bca4e"
+  },
+  {
+   "source": 30001,
+   "start": "sham",
+   "same_k_share": 0.0625,
+   "file": "research/e4/audit/intervention/decay_projection_sham_i30001.npz",
+   "sha256": "4b0eb345750e477c179547c3e3142fc29be1df96022ccda4512220868d765b9e",
+   "live_units": 128,
+   "units_per_frequency": [
+    8,
+    11,
+    5,
+    8,
+    8,
+    8,
+    10,
+    11,
+    11,
+    9,
+    11,
+    7,
+    6,
+    6,
+    9
+   ]
+  },
+  {
+   "source": 30002,
+   "start": "init",
+   "file": "research/e4/audit/intervention/decay_projection_init_i30002.npz",
+   "sha256": "3440c4d6d365b5e59a9f6ae468d76f1e47d4fcf11b6655c01c4c3561c357d9ec",
+   "live_units": 128,
+   "units_per_frequency": [
+    12,
+    11,
+    5,
+    14,
+    8,
+    5,
+    10,
+    7,
+    6,
+    15,
+    8,
+    4,
+    7,
+    5,
+    11
+   ]
+  },
+  {
+   "source": 30002,
+   "start": "rf",
+   "start_sha256": "e15b1e44f7f82fce773864261e2c7e2c22f5ca2f7736be422ae4c64c71ea0545",
+   "gate_k_equals_init": true,
+   "gate_live_equals_init": true,
+   "file": "research/e4/audit/intervention/decay_projection_init_i30002.npz",
+   "sha256": "3440c4d6d365b5e59a9f6ae468d76f1e47d4fcf11b6655c01c4c3561c357d9ec"
+  },
+  {
+   "source": 30002,
+   "start": "keep",
+   "start_sha256": "011a47914e4afb1103614c99469633347b69af08c7800f7baf2c66a86c7553c5",
+   "gate_k_equals_B": true,
+   "gate_live_equals_B": true,
+   "file": "research/e4/mechanisms/intervention/decay_projection_i30002.npz",
+   "sha256": "4ae35c16c52a4978fbb7fdea99b8ffba7af26e25190e65becf98ea7199a9a3db"
+  },
+  {
+   "source": 30002,
+   "start": "sham",
+   "same_k_share": 0.078125,
+   "file": "research/e4/audit/intervention/decay_projection_sham_i30002.npz",
+   "sha256": "b8ffcaa18538219caff1e54ecf38c6f7437ef98458c451c9f468a56198870f86",
+   "live_units": 128,
+   "units_per_frequency": [
+    5,
+    8,
+    7,
+    10,
+    9,
+    6,
+    6,
+    12,
+    8,
+    10,
+    15,
+    11,
+    5,
+    7,
+    9
+   ]
+  }
+ ]
+}

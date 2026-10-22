@@ -219,3 +219,52 @@ Written before any channel, coherence or projection value was computed. Nothing 
 **Intervention checklist for D15.** The immediate effect is nil (X2). Perturbation size is reported as the per-update decay norm of each arm against full decay, and ‖w_arm − w_replay‖/‖w_replay‖ per matrix at 300, 2,000 and 5,000. Training damage is reported as train accuracy and cross-entropy at the same updates. Selection: k_j comes from the start file without labels (Z4). Nothing is frozen; every parameter gets its Adam update, which Z3 verifies.
 
 **Budget.** The diagnostic runs here are Z1(b) (300 updates, about 1 s), and possibly a diagnostic CLI rerun of one xref run if X3 needs investigating (about 16 s). My numpy replays count toward the audit's elapsed time; I estimate under 2 minutes in total.
+
+## Addendum 4 (2026-10-22, about 02:55 UTC): control X0 for the exempt-reference result, before any run
+
+**What had been seen.** The coordinator's summary of the mechanisms intervention (PR #40): xref reaches 0.998–1.000 common accuracy at 5,000, and onlyref collapses to 0.000, faster than uniform wd 1. I have not opened those runs or the lane's write-up. The projection files below were made by `xref_control.py`, from start weights only.
+
+**Question.** Is xref's rescue a property of B's start, or does the exemption itself supply the structure? The exemption is label-free, but its rule (one input frequency per unit, the readout kept at the same frequency) is the known Fourier structure of modular addition.
+
+**Design.** Four arms, each with three sources. All use exempt-reference decay (`decay_on rest`) with D15 settings otherwise: fresh Adam, lr 1e-3, wd 1, 5,000 updates, data seed 31000, log every 10, `diagnostics none`, shared code at the pin `8108d8b` or later. Checkpoints come every 1,000 plus 100, 300 and 500, and all are published.
+
+| arm | start | k_j (projection file) | run IDs |
+|---|---|---|---|
+| I | the untrained init, `experiment.init(31, 128, seed)` (no start file; the e1 runs' step 0) | dominant() of the init, `intervention/decay_projection_init_i<seed>.npz` | `e4-au-init-xref-w128-i<seed>-a1` |
+| RF | the C1 random-feature start file | the same file as I. Gate passed: dominant() of the RF start equals the init's k for all units, since the RF start keeps the init's U and V filtered at that frequency | `e4-au-rf-xref-w128-i<seed>-a1` |
+| A | the unedited 50k start, `e3-me-keep-w128-i<seed>-a1.npz` | B's own file, `research/e4/mechanisms/intervention/decay_projection_i<seed>.npz`. Gate passed: dominant() of A equals B's k and live mask for all units | `e4-au-keep-xref-w128-i<seed>-a1` |
+| S | B's start, `e3-me-filt-w128-i<seed>-a1.npz` | B's k permuted across the live units (numpy seed 41100; 6–10% of units keep their own k), `intervention/decay_projection_sham_i<seed>.npz` | `e4-au-filt-xrefsham-w128-i<seed>-a1` |
+
+**Measure.** The primary measure is accuracy on the 483 common pairs at update 5,000, per run. Also reported:
+- the same at 2,000;
+- own held-out accuracy every 10 updates (figure);
+- train accuracy and cross-entropy;
+- the per-update decay norm against full decay.
+
+**Labels, per seed, no pooling.**
+- **Rescued**: accuracy at 5,000 ≥ 0.90.
+- **Not rescued**: ≤ 0.30. For scale, B under uniform wd 1 is at 0.02–0.03 and B at wd 0 at 0.63–0.74.
+- Otherwise **intermediate**.
+- An arm is labelled when all three seeds agree; otherwise it is **mixed**.
+
+**Readings, stated now.**
+- **I rescued.** The exemption builds a working solution from untrained weights and 299 pairs. B's xref 1.0 is then a property of the intervention and says nothing about B's computation. The claim "the 1.00 is built in" is SUPPORTED LOCALLY. The lane's reading of necessity (decay on the reference parts is needed for B's collapse) is not affected, since it rests on f within B.
+- **I not rescued, RF rescued.** A start with one input frequency per unit is needed, but the failed run's features are not.
+- **A rescued.** B's edit is not needed, given the 50k features.
+- **S rescued.** The exempted frequency need not be the unit's own, so any single frequency per unit suffices, which again points to the intervention supplying the structure. **S not rescued** while B is means the match between unit and frequency matters.
+- **Only B rescued.** B's start matters, and "built in" is CONTRADICTED.
+
+**Comparators (existing runs).**
+- I: the e1 runs from the same init at wd 1 (`e1-co-add-w128-i30000-a1`, `e1-st-add-w128-i3000{1,2}-a1`), where a checkpoint at 5,000 exists, and otherwise their own held-out accuracy from `metrics.jsonl`.
+- RF: C1 at wd 1 and wd 0.
+- A: `e3-me-keep-w128-i<seed>-a1` at wd 1.
+- S: B's xref and B's D7 replays.
+
+**Checks on these runs.**
+- Provenance as X1 (registry, config against plan, projection hash, shared code at the pin).
+- Update 0 equals the start (X2).
+- My replay with my own P is replay-equal up to 300 (X3, early part).
+
+**Prediction (held loosely).** I, RF and A rescued. S not rescued, or intermediate.
+
+**Cost.** 12 runs of about 16–20 s each: about 4 min of process time, about 2 min elapsed on 2 workers. After it, the audit has used about 7 of its 25 min, counting §3's replays.
