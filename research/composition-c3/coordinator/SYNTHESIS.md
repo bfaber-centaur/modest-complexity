@@ -1,6 +1,6 @@
 # Composition follow-ups c3: synthesis
 
-**Status.** DRAFT. Sections 1 and 2 are written; the scaffolding follow-up, its review, limitations, next questions and the runs table are pending.
+**Status.** DRAFT, complete except the reviewer's check of the scaffolding follow-up and of this synthesis.
 
 **Scope of every claim.**
 - **Task.** The original task and split (`ops51000-ls51100`), with three paired init seeds (51200–51202). The correction follow-up adds eight tied/final bases from four new task draws.
@@ -66,21 +66,49 @@ Lane notes: [correction](../correction/NOTE.md), [scaffolding](../scaffolding/NO
 - **Three of the lane's six predictions failed.** It expected forgetting of the step-1/2 readout and of length transfer after S = 10k, and a stall short of keep after S = 1k. None happened by 50k.
 - **Checks.** Every branch joins r1 tied/inter exactly at S. The logged schedules and exposures match the declared ones. The frozen evaluation reproduces c2's published lengths table for keep and D. The reviewer recomputed every value from its own forward pass and passed the lane (REVIEW §3).
 
-**Attribution (pending the follow-up).** A drop changes the loss, but the Adam moments carried from three-head training remain for about a thousand updates (b2 = 0.999). The follow-up resets the moments at S = 1k in keep and in drop, with matched carried controls (6 runs). It asks whether the post-switch acquisition comes from the state at S or partly from the carried moments.
+**Follow-up: a fresh optimizer state at the switch.** A drop changes the loss, but Adam's moments carried from three-head training persist for about a thousand updates (b2 = 0.999). So the S = 1k branches were rerun from the same checkpoints with a fresh Adam state just before the update at 1,000 and the weights carried: A′ keep and B′ drop, three seeds each (pin `82cef77`, D10). They are compared with the carried A and B at equal updates. Under the new pin with no reset, the reused carried runs reproduce A and B row for row, so they are matched controls.
+
+| first of five logged evaluations ≥ 0.95, held-out length 3 | s51200 | s51201 | s51202 |
+|---|---|---|---|
+| A keep, moments carried | 7,700 | 9,150 | 8,200 |
+| A′ keep, Adam reset at 1k | 8,150 | 8,750 | 8,950 |
+| B drop at 1k, moments carried | 14,600 | 20,000 | 20,450 |
+| B′ drop at 1k, Adam reset at 1k | 12,250 | 14,100 | 16,350 |
+
+- **At 50k the reset changes nothing.** A′ − A and B′ − B are within 1 pp on every measure in all seeds. The weights at 1k, followed by final-only training, suffice to reach keep's endpoint; the carried moments are not needed for it.
+- **On the path, the reset speeds acquisition after the drop and barely moves keep.** B′ crosses 2,350–5,900 updates before B, which removes about a third to a half of B's lag behind keep. B′ − B on L6 at 20k is +0.18 to +0.33. A′ − A stays between −0.06 and +0.09 on every measure and time. B′ still lags keep in every seed.
+- **The reset does two things, and this follow-up does not separate them.** It discards the moments' history, and it enlarges the next steps: 17–22× the carried update on the first step, an RMS of 2.1–2.6× over the first 100 (reviewer CX-R1), and 1.15–1.75× at 1,050–1,500. Train final CE does not rise. So part of the slowdown after a drop goes with the optimizer state carried across it. Whether the history or the step size is responsible is open.
+- **Predictions.** Three of four held. The failed one expected B′ to cross within 3,000 updates of B in at least two seeds; it did so in one.
+- **Review.** *Pending* (reviewer items 6–8 and wording).
 
 **Reading.**
-- On this task and recipe, 1,000 updates of intermediate supervision were enough to put tied/tied training on keep's 50k endpoint. Removing the labels at 1k or 10k slowed acquisition but did not undo it, and nothing was forgotten by 50k.
-- This does not show that the labels are necessary: D is one tested baseline at a finite horizon, not a bound. It does not say what the trained network computes, or that the result holds past 50k, on other tasks, or under other recipes.
-- The equal endpoints hide different paths. At S = 1k the lag behind keep lasts 5,000–12,000 updates.
+- On this task and recipe, 1,000 updates of intermediate supervision were enough to put tied/tied training on keep's 50k endpoint. That benefit is carried by the weights at the switch: a fresh optimizer from those weights also gets there. Removing the labels at 1k or 10k slowed acquisition but did not undo it, and nothing measured was forgotten by 50k.
+- The equal endpoints hide different paths. After S = 1k the held-out crossing comes 4,350–12,250 updates after keep's. Part of that delay goes with the optimizer state carried across the drop.
+- This does not show that the labels are necessary: D is one tested baseline at a finite horizon, not a bound. It does not say what the trained network computes, or that the result holds past 50k, at other switch times, on other tasks, or under other recipes.
 
 ## 3. Limitations
 
-*Pending.*
+- **Coverage.** One task draw and split for both lanes, plus four new draws (eight tied/final bases) in the correction's F2. One recipe: width 128, full-batch Adam at lr 1e-3, eps 1e-8, decay 0.1. Three init seeds. Branches from one checkpoint share their history and are not independent samples.
+- **Horizons and times.** Scaffolding: two switch times, one taper length, one reset time, a 50k horizon. Correction: bases frozen at 10k only. From about 29k every arm trains in Adam's eps regime, so late dynamics are specific to this optimizer setting (as in r1 and c2).
+- **Measurement.** Training measures are logged every 50 updates; frozen lengths 1–6 are evaluated at fixed checkpoints only. "Nothing lost" means within 5 pp of keep on seven listed measures at those times.
+- **Correction design.** One adapter family, applied to h2 only. The grouped split fits 64 prefixes in a 128-dimensional state, and the task has only 16 depth-2 prefixes per symbol. The main evaluation's success is on seen states only. The base readout's ability to read every prefix's symbol (V2 at 1.00) is linear decodability, not evidence of causal use.
+- **Attribution.** The reset follow-up does not separate the moments' history from the larger early steps. Keep barely responds to the same reset, which is consistent with the history mattering after a loss change, but that is not a decomposition.
+- **Scope of claims.** Finite plateaus do not establish necessity or impossibility, and the tested baselines (A, D, the oracle-centroid arm E) are not bounds.
 
 ## 4. Next questions (at most two)
 
-*Pending.*
+1. **How little intermediate supervision is enough, and what in the state at the switch carries it?** At S = 1k a partial state (held-out 0.34–0.36, ¬N near 0) already reached keep's endpoint after the labels were removed. A dose sweep below 1k, or intermediate labels on a subset of rows, against the same keep and final-only references, would show where the lasting benefit begins and whether it tracks a measurable property of the state at S rather than the update count.
+2. **Does an oracle-free correction transfer to prefixes outside its fit when it is fit on many more prefixes than the state has dimensions?** Here each grouped fit had 64 prefixes in 128 dimensions, so the failure bounds this adapter at this exposure only. A task with many more depth-2 prefixes per symbol (more ops or symbols) would test whether the failure is about exposure or about the representation.
 
 ## Runs and compute
 
-*Pending.*
+All runs are CPU only, on the lanes' own hosts, with no rented compute. Wall time is elapsed time with at least one job running.
+
+| lane | runs | failed | wall time (budget) |
+|---|---|---|---|
+| learned correction | 6 (calibration, main and grouped, F2, post-hoc) | 0 | about 1.1 min (10 + 5) |
+| temporary scaffolding | 24 (2 calibration, 12 branches, 4 matched-control checks, 6 reset runs) | 0 | 27.2 + 16.8 min (40 + 20) |
+| reviewer | 15 so far | 1 (`c3-rev-corr-a1`, the reviewer's own panel mapping; rerun as `-a2`) | 10.3 min so far (20) |
+| coordinator | 3 (1 verification, 2 calibration) | 0 | about 1 min (10) |
+
+Every run is in its lane's `plan.json` and append-only `registry.jsonl`, including the failed one. Training updates: 534k in the 12 scaffolding branches, 294k in the reset runs, plus 8k in the checks.
