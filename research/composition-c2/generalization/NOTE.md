@@ -48,7 +48,7 @@ Chance is 0.125. The "all" column at L = 3 is 75% training rows; the held-out va
 **At 50k updates the length decline is gone for tied/inter (A5, `runs/c2-gen-frozen-50k-a1`).** These are the time lane's exact continuations of the same three runs: same recipe, length-3 training only, full Adam state, ckpt-10000 → 50,000. Their `ckpt-50000` came from branch `claude/project-thread-xb3nfz` at 543ed95; hashes match the time lane's manifests, and every check holds against their own logs.
 - tied/inter answers **every row of every length 1–6 correctly in all three seeds** (1.000 on 32,768 rows at L = 6). At step 6 the hidden-state norm and centroid distance are 0.99–1.00× their training-h3 medians, against 1.02–1.19× at 10k.
 - tied/final's length-3 held-out accuracy rose to 0.56 / 0.70 / 0.66 (¬N 0.12 / 0.26 / 0.14), but lengths 4–6 stay at 0.10–0.15.
-- The reviewer evaluated the time lane's intermediate checkpoints (G6, PR #59): the decline was already gone by 20k, with L = 6 at 0.9996 / 0.986 / 1.000. That is before the time lane's Adam-eps regime at about 25k, so the change does not depend on it.
+- The reviewer evaluated the time lane's intermediate checkpoints (G6, PR #59): the decline was already gone by 20k, with L = 6 at 0.9996 / 0.986 / 1.000. That is before the time lane's Adam-eps regime begins at about 25k.
 - So the 10k decline, the held-out-window effect and the follow-up's error anatomy describe the 10k models. They are finite-time properties of this recipe, not limits on these architectures.
 
 **Reference systems** (labelled references, not evidence of discovery).
