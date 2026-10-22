@@ -130,3 +130,56 @@ Chance is 1/31 ≈ 0.032.
   - The peak values above come from the dense audit log; the common-set values are at checkpoints.
 - **Peak accuracy.** The B peak is an observation of a trajectory. It is not a method: choosing the update with the best held-out accuracy would be selection on held-out data.
 - **Budget.** About 3.5 of the session's 25 minutes are used: the nine runs took 2.9 min elapsed, and the edits, tests and analysis seconds.
+
+## Follow-up 1: weight decay 0 (DECISIONS D11, 2026-10-22)
+
+The question and expectation are in [QUESTION.md](QUESTION.md#follow-up-1-decisions-d11-weight-decay-0), pushed at `ad6e923` before any wd-0 run.
+
+**Runs.** There are six runs, `e3-me-<filt|sham>-wd0-w128-i<30000|30001|30002>-a1`. They use the same B and C start files and hashes as packet 1, with `--wd 0` and nothing else changed. All six completed 20,000 updates; none failed or was capped. Each took 34–35 s, between 00:38:53 and 00:40:37 UTC.
+
+The producing commit is `ad6e923`, with shared code identical to the pin. The recorded tree status lists only lane files: the registry being appended, and in four runs the lane's analysis, plotting and notes files, which I was editing during the runs. `experiment.py` and the other shared files were unmodified. Checkpoints are published as in packet 1.
+
+**Analysis.** `continuation.py` and `plot_continuation.py` were committed at `d156aec` and run from that commit; the recorded tree status lists only the output files being rewritten. The tables now carry `wd`, `branch` (for example `filt-wd0`) and the weight `norm`. The packet-1 rows of `checkpoints.csv` are unchanged cell for cell, and the packet-1 figures are pixel-identical.
+
+New figure: [figures/weight_decay.png](figures/weight_decay.png) (and `.svg`). It shows B and C at wd 1 (solid, packet 1) and wd 0 (dashed), with the same layout as the packet-1 figures.
+
+**Accuracy on the 483 common pairs**, wd 0 runs (wd 1 values from packet 1 in brackets), with three other measures at update 20,000:
+
+| run | 0 | 100 | 300 | 1000 | 5000 | 20000 | train CE at 20k | P(a+b>N) / P(a+b>S) at 20k | input concentration at 20k | weight norm 0 → 20k |
+|---|---|---|---|---|---|---|---|---|---|---|
+| filt-wd0 i30000 | 0.431 | 0.758 (0.735) | 0.743 (0.621) | 0.692 (0.240) | 0.634 (0.025) | 0.561 (0.031) | 3.6e-8 (3.7e-5) | 0.99 / 0.90 | 0.87 (0.61) | 37.9 → 75.5 |
+| filt-wd0 i30001 | 0.540 | 0.805 (0.789) | 0.778 (0.679) | 0.739 (0.217) | 0.660 (0.021) | 0.565 (0.031) | 3.2e-8 (3.5e-5) | 0.99 / 0.89 | 0.85 (0.60) | 39.2 → 75.9 |
+| filt-wd0 i30002 | 0.580 | 0.872 (0.863) | 0.849 (0.739) | 0.812 (0.267) | 0.737 (0.027) | 0.619 (0.010) | 3.2e-8 (3.5e-5) | 0.99 / 0.92 | 0.87 (0.59) | 39.3 → 75.9 |
+| sham-wd0 i30000 | 0.010 | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.000) | 5.6e-8 (5.4e-5) | 0.55 / 0.08 | 0.31 (0.40) | 39.4 → 79.3 |
+| sham-wd0 i30001 | 0.010 | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.002) | 5.2e-8 (5.0e-5) | 0.50 / 0.06 | 0.27 (0.42) | 41.0 → 78.4 |
+| sham-wd0 i30002 | 0.010 | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.000) | 5.2e-8 (5.0e-5) | 0.50 / 0.06 | 0.27 (0.39) | 41.3 → 78.8 |
+
+### Observations
+
+1. **The early rise in B is the same at wd 0.**
+   - Common accuracy at update 100 is 0.758 / 0.805 / 0.872, against 0.735 / 0.789 / 0.863 at wd 1.
+   - Dense audit accuracy peaks at 0.767 / 0.812 / 0.886, at updates 100 / 110 / 80.
+2. **Without decay, B keeps most of its gain through 20,000 updates.**
+   - Common accuracy is 0.69–0.81 at update 1000, 0.63–0.74 at 5000 and 0.56–0.62 at 20,000. At wd 1 the same start files gave 0.22–0.27, 0.02–0.03 and 0.01–0.03.
+   - Audit accuracy never falls below its update-0 value.
+   - B at wd 0 still declines slowly and steadily on the log axis, by 0.20–0.25 from its peak over 20,000 updates.
+3. **B at wd 0 fits the training pairs harder, not less.**
+   - Its train cross-entropy at 20,000 is 3.2–3.6e-8, about 1000× lower than at wd 1, and it is still falling.
+   - The weight norm doubles, from 38–39 to 75–76. At wd 1 it stayed near 38–41 for about 1,000 updates and then grew to 57.
+4. **B's structure and preferences hold at wd 0.**
+   - All live units keep their update-0 dominant frequency. Input concentration is 0.85–0.87 at 20,000, against 0.59–0.61 at wd 1.
+   - P(a+b over N) stays at 0.99, and P(a+b over S) is 0.89–0.92 at 20,000 (wd 1: 0.39–0.45).
+   - P(S over N) still rises from 0.58 to 0.87, short of the 0.92–0.95 seen at wd 1 and in A.
+5. **C at wd 0 stays at chance throughout** (0.000 from update 100 on).
+   - Its P(a+b over N) drifts down to 0.50–0.55, and P(a+b over S) to 0.06–0.08.
+   - The removed frequency grows back less than at wd 1: share 0.11–0.13 against 0.24–0.31.
+   - Input concentration stays at 0.27–0.31.
+6. **Distance does not track retention.** At update 20,000, B at wd 0 is 1.12–1.19 from its update-0 weights, about as far as B at wd 1 (1.11–1.15), yet it kept its held-out accuracy.
+7. **The three seeds agree** on every point above.
+
+### Limitations
+
+- **Scope.** These are the same three start files, the same split and the same evaluation pairs as packet 1. They are not new replicates of the sources.
+- **20,000 is not an end state.** At wd 0 every run is still fitting, with train cross-entropy still falling and the norm still growing. B's slow decline might continue past 20,000, so "keeps most of its gain" holds only up to 20,000 updates.
+- **Decay was the only change, but its effects are coupled.** Turning it off also changes the weight norm, the effective step size relative to the weights and the logit scale. The accuracy and pairwise measures are scale-free; the train cross-entropy is not.
+- **Budget.** The follow-up used about 1.8 min elapsed for runs and seconds for analysis. The session total is about 5.5 of 25 min.

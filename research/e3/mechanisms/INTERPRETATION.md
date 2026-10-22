@@ -37,3 +37,31 @@ My stated expectation was partial erasure, keeping perhaps a few tenths. That wa
 - **Comparison.** These are the same start files and pairs, so each wd-0 branch is compared with its wd-1 branch seed by seed.
 
 Optimizer-state retention, which keeps the source's Adam moments, stays a separate possible follow-up. A shows that the reset alone does not move the converged memorizer, so it ranks lower.
+
+## Follow-up 1 (weight decay 0): reading
+
+**Answer to the follow-up question.** Within 20,000 updates, decay is necessary for the erasure seen in packet 1. The cross-entropy drive alone erodes B's held-out accuracy only slowly.
+
+**Why decay matters, not harder fitting.**
+- Without decay, the same start files kept 0.56–0.62 on the common pairs at update 20,000, against 0.01–0.03 with decay. This held even though they fit the training pairs about 1000× harder by cross-entropy.
+- So in packet 1 the gain was not lost because training kept fitting the 299 pairs.
+- One reading is that decay shrinks the weights the filter left. With wd 1 they keep about e^-5 of their size by update 5,000, and gradient-built weights replace them. At wd 0 the filtered structure stays: input concentration 0.85–0.87, every unit on its update-0 frequency, P(a+b over S) about 0.9. Training adds to that structure instead of replacing it.
+- This reading was not tested directly, for example by measuring how much of each run's weights still lies along the start weights.
+
+**The cross-entropy drive still contributes.**
+- B at wd 0 loses 0.20–0.25 from its peak over 20,000 updates, and the loss is still continuing.
+- "Both contribute, with decay dominating on this time scale" is the more careful summary. My stated expectation (QUESTION.md) matched: the same early rise, clearly more retention, and a slow drift down.
+
+**Specific to the dominant-frequency edit.**
+- C at wd 0 stays at chance and loses even the rank preference it had, so the retention belongs to B's edit.
+- The no-decay comparison does not change packet 1's caution. Retention under one objective is not evidence of a hidden algorithm in the failed runs. e2 showed the filter gives partial answers even on random features with a fitted readout.
+
+**An apparent tension, unresolved.**
+- e2 found that runs trained from scratch without decay also fail at 30%.
+- Here, training without decay preserves the filtered network's answers.
+- Together these say the objective at wd 0 does not find this solution from initialization, but it does not remove the solution once the edit puts the network there. With decay (packet 1), the objective does remove it. Neither result says why the original runs failed.
+
+**What remains open.** Not proposed, since the lane's follow-up is used:
+- whether B at wd 0 keeps declining past 20,000 updates;
+- whether an intermediate decay gives an intermediate rate;
+- whether optimizer-state retention changes anything.
