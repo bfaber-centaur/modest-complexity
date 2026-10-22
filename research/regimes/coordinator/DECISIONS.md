@@ -45,3 +45,14 @@ The reviewer passed `common/` at `0c7bd19` (PR #39, merged as `c6b8bc7`) with th
 - **C0.2, unfreeze without reset.** Lanes must call `adam_state` at any unfreeze and say so in the config.
 
 These two are forwarded to R2 (frozen features) and R3 (phases, readouts). R3's M0 design (`3369031`) already satisfies both for its initial comparison.
+
+## D7 (2026-10-22) C0.1 and C0.2 go through the reviewer, not lane messages
+
+This supersedes D6's "forwarded to R2 and R3". The reviewer checks C0.1 and C0.2 per lane (REVIEW.md §1–§4), so no separate lane message was sent. Both initial designs already avoid the patterns:
+- R2 (`db574da`): reset at every phase start; frozen readouts train only `new`; no unfreeze.
+- R3 (`3369031`): reset at every phase; the inactive head is excluded from `trainable`; wd 0.
+
+All four M0 designs had arrived by 02:42 UTC ([MILESTONES.md](MILESTONES.md)). None needed a coordinator change. Recipes differ across lanes on purpose, each lane's own choice:
+- R1 uses wd 0.1; R2, R3 and R4 use wd 0.
+- R2 uses lr 3e-3.
+Cross-regime comparisons of training speed are therefore not meaningful.
