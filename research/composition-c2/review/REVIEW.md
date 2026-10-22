@@ -7,7 +7,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | Pin `b3e8132` (common/, recovered/, verify_resume) | **CONCERN** (C1). Training may start. | §1 |
 | Time | M2 (`543ed95`, PR #55): **PASS** on every number checked. **CONCERN T1**: the late dynamics are in Adam's eps regime. CX-T1 half failed; CX-T2 held narrowly. F1 follow-up NOT CHECKED. | §2 |
 | Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd 0 follow-up (`501071c`): **PASS** on every number checked; note S1 (F4 lead is 0.05–0.13). CX-S2: "nearly flat" is a slow rise in every run while logits keep growing, not a plateau. wd 0 decode and group tables NOT CHECKED. | §5 |
-| Generalization | Parts A and B and A5 (PR #51, NOTE at `01d1296`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1 and G2. Notes G5 and G6. Follow-up anatomy numbers NOT CHECKED. | §3 |
+| Generalization | Parts A and B, A5 and the follow-up anatomy (NOTE `6fe1435`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1, G2, G5 and G6. CX-G3: drift predicts failures within a transition in every model, but only 1.2–3.3×, so it is a partial account (note G7). Note G8. | §3 |
 | Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. **CONCERN M1** on the centroid/residual reading, from CX-M1. NOTE wording notes M2, M3. | §4 |
 
 ## 1. Pin check (`b3e8132`)
@@ -198,7 +198,49 @@ Evidence: `rev_gen.py 30c495f 99c83c8 543ed95`, `a5()`. It is post hoc and descr
 - **A5, PASS.** The time lane's tied/inter `ckpt-50000` answers every row at every length 1–6 in all three seeds (my forward, every row). tied/final beyond L = 3 is 0.095–0.15. The NOTE says 0.10–0.15, which is right to rounding.
 - **G6 (note, which the NOTE could add).** The length decline was already gone at **20k**: L = 6 accuracy is 0.9996, 0.986 and 1.000. That is before every arm entered Adam's eps regime at about 25k (T1). So unlike the time lane's late catch-up, A5's removal of the decline happened in the ordinary Adam phase.
 - **G5 (note).** The NOTE says 0.62–0.71 of first wrong answers are another op applied to the right state, against "uniform 3/7 = 0.43". On the original draw, some ops send a state to the same symbol, so the per-(state, op) baseline averages 0.339 (minimum 0.286). The new draws differ, and draw 63001's sink makes it lower still. So 3/7 is an upper bound, and the stated lean is, if anything, understated.
-- **NOT CHECKED.** The follow-up's first-error anatomy (`anatomy.csv`, F1–F3) and the task-structure table (neighbour votes, repetition patterns).
+- **NOT CHECKED.** The task-structure table (neighbour votes, repetition patterns). The anatomy is checked below.
+
+### Follow-up anatomy and drift (NOTE `6fe1435`, merged at `fd4e21d`)
+
+Evidence: `rev_gen.py 30c495f 99c83c8 543ed95 fd4e21d`, `anatomy()`. Output in [out/rev_gen.txt](out/rev_gen.txt). The checks and CX-G3 were committed at 651de53, after I read the NOTE and `summary.json` and before the code existed. I used my own oracle, forward pass, and draws and splits recomputed from seeds. No claim here rests on my r1 arm.
+
+**PASS on every number checked.**
+- **`anatomy.csv`.** All 352 (model, transition) rows of first errors and at-risk counts at steps 4–6 equal mine.
+- **`summary.json`.** For all 11 models, these equal mine: counts by step, top-1/4/8 shares, both Spearman ρ, the other-op share, the window shares at the error and at risk, and the F1–F3 flags. So do `windows.csv` and `figures/followup.csv`.
+- **NOTE ranges.**
+
+  | measure | range |
+  |---|---|
+  | top-4 share | 0.198–0.290 |
+  | top-8 share | 0.362–0.504 |
+  | ρ(5, 6) | 0.623–0.956 |
+  | ρ(4, 5) | 0.084–0.802 |
+  | held-out window at the error | 0.313–0.411 |
+  | other op on the true state | 0.617–0.712 |
+
+  F1 holds in 0 of 11, F2 in 11 of 11 and F3 in 3 of 11.
+- **F3's baseline.** The at-risk window share is exactly 0.25 in every model. The Latin square forces this whatever the prefix filtering does, so F3 compares against the right baseline.
+- **Held-out windows (original three).** Accuracy with a window is lower by 0.011–0.101 at L = 4 and by 0.053–0.138 at L = 5–6. The held-out-prefix split at L = 6 matches the NOTE (0.810 vs 0.871, 0.498 vs 0.580, 0.654 vs 0.739). Programs without a held-out window reach 0.640–0.927 at L = 6 over the 11 models.
+- **Drift.** All 154 drift entries of `steps.csv` (22 frozen models, steps 0–6) equal mine. The NOTE's step-6 ranges are right for the original three:
+
+  | | norm | centroid distance |
+  |---|---|---|
+  | tied/inter | 1.016–1.173 | 1.026–1.188 |
+  | tied/final | 1.42–1.60 | 1.49–1.70 |
+
+  The after-first-error shares match per seed and step: recovered 0.266–0.385, follows its own error 0.379–0.414, neither 0.212–0.343.
+- **G8 (note).** The drift ranges cover the original task only, where the paragraph sits. Over all 11 models the step-6 ratios are wider:
+
+  | | norm | centroid distance |
+  |---|---|---|
+  | tied/inter | 1.02–1.27 | 1.03–1.37 |
+  | tied/final | 1.42–2.13 | 1.49–2.61 |
+
+**CX-G3, against "matches gradual degradation of the iterated continuous state". The prediction FAILED: 3 of 11 models met it, against the 9 required.** The test, within each transition, compares the error rate of rows whose incoming state h_{t−1} is furthest from its symbol's training centroid (top quartile) with the closest (bottom quartile).
+- **Direction: holds everywhere.** The more-drifted quartile fails more often in all 22 (model, step) cases. The top/bottom ratio is 1.3–3.3× at t = 5 and 1.2–2.9× at t = 6.
+- **Size: smaller than predicted.** The ratio is ≥ 2× in 7 of 11 models at t = 5 but only 3 of 11 at t = 6. In the three weakest models (`r1` s51201 and the two ops63001 s63201 runs) it is 1.2–1.4× at t = 6, and even the least-drifted quartile fails at 0.27–0.28.
+- **Reading.** Within a transition, drift tracks where failures fall in every model, but only partly. Many failures come from states no further from their centroid than successful ones. Drift as measured is therefore at most a partial account of the decline.
+- **G7 (note for the NOTE).** The NOTE already says the drift measures are descriptive and that the cause is not identified. Suggested addition: "Within a transition, rows whose incoming state has drifted further fail more often in every model (top vs bottom drift quartile 1.2–3.3×). Low-drift rows fail too, so this drift measure is at most a partial account."
 
 ## 4. Mechanisms
 

@@ -53,4 +53,35 @@ INFO tt-final s51201: L = 1..6 at 50k [0.031, 0.094, 0.924, 0.122, 0.095, 0.123]
 INFO tt-final s51202: L = 1..6 at 50k [0.062, 0.133, 0.914, 0.15, 0.114, 0.127]; L = 6 at 20k/30k/40k/50k [0.1248, 0.1247, 0.1281, 0.127]
 PASS A5: the time lane's tied/inter ckpt-50000 answers every row at every length 1-6 in all three seeds
 INFO original draw: share of the 7 wrong symbols that are another op applied to the true state, mean over (state, op) 0.339 (min 0.286); the NOTE uses 3/7 = 0.429
-1 FAILED: ['CX-G1 prediction: tied/inter accuracy differs by < 0.05 between rows with and without a held-out window, at every L = 4-6 and seed']
+PASS drift: norm_ratio and centroid_distance_ratio of steps.csv (154 rows: 22 frozen models x steps 0-6) equal mine
+PASS follow-up anatomy.csv: first errors and at-risk counts at steps 4, 5, 6 for 11 models x 32 transitions equal mine
+PASS follow-up summary.json: counts by step, top-1/4/8 shares, Spearman rho (5 vs 6; 4 vs 5 where >= 20 step-4 errors), other-op share, window shares at the error and at risk, and the F1-F3 flags equal mine for all 11 models
+PASS follow-up windows.csv: row counts and accuracies with and without a held-out window at L = 4-6 equal mine (11 models)
+PASS figures/followup.csv: all 11 rows equal mine
+PASS NOTE follow-up: top4_share over the 11 models is 0.20-0.29  [0.198-0.290]
+PASS NOTE follow-up: top8_share over the 11 models is 0.36-0.50  [0.362-0.504]
+PASS NOTE follow-up: spearman_rate_step5_vs_step6 over the 11 models is 0.62-0.96  [0.623-0.956]
+PASS NOTE follow-up: spearman_rate_step4_vs_step5 over the 11 models is 0.08-0.80  [0.084-0.802]
+PASS NOTE follow-up: first_error_window_is_held_out over the 11 models is 0.31-0.41  [0.313-0.411]
+PASS NOTE follow-up: wrong_answer_is_other_op_on_true_state over the 11 models is 0.62-0.71  [0.617-0.712]
+PASS NOTE follow-up: F1 met in 0 of 11, F2 in 11 of 11, F3 in 3 of 11; at-risk window share exactly 0.25 in every model (Latin square)
+PASS NOTE held-out-window bullet (original three): with-window programs less accurate by 0.01-0.10 at L = 4 and 0.05-0.14 at L = 5-6  [0.011-0.101; 0.053-0.138]
+PASS NOTE: L = 6 accuracy, held-out prefix vs not (original three): 0.81 vs 0.87, 0.50 vs 0.58, 0.65 vs 0.74  [[(0.81, 0.871), (0.498, 0.58), (0.654, 0.739)]]
+PASS NOTE: programs without a held-out window fall to 0.64-0.93 at L = 6 (11 models)  [0.640-0.927]
+PASS NOTE drift at step 6, tied/inter (original three): norm 1.02-1.17x, centroid distance 1.03-1.19x the training-h3 medians  [1.016-1.173, 1.026-1.188; all 11 inter models: norm 1.02-1.27, distance 1.03-1.37]
+PASS NOTE drift at step 6, tied/final (original three): norm 1.4-1.6x, centroid distance 1.5-1.7x the training-h3 medians  [1.423-1.596, 1.494-1.699; all 11 final models: norm 1.42-2.13, distance 1.49-2.61]
+PASS NOTE: after a first error at step 4 or 5 (original three, per seed and step): next step right again 27-38%, follows own error 38-41%, neither 21-34%  [0.385/0.404/0.212; 0.341/0.390/0.269; 0.311/0.379/0.311; 0.266/0.391/0.343; 0.371/0.400/0.229; 0.283/0.414/0.302]
+CX-G3: first-error rate at step t among rows at risk, by within-transition drift quartile of h_{t-1} (q1 lowest .. q4 highest); ratio q4/q1
+  r1-comp-rnn-inter-s51200-a1: t=5: 0.025 0.029 0.049 0.083 (x3.3); t=6: 0.065 0.090 0.125 0.186 (x2.9)
+  r1-comp-rnn-inter-s51201-a1: t=5: 0.177 0.194 0.211 0.294 (x1.7); t=6: 0.279 0.303 0.339 0.391 (x1.4)
+  r1-comp-rnn-inter-s51202-a1: t=5: 0.065 0.098 0.125 0.175 (x2.7); t=6: 0.143 0.204 0.239 0.287 (x2.0)
+  c2-gen-inter-ops63000-ls63100-s63200-a1: t=5: 0.094 0.125 0.162 0.194 (x2.1); t=6: 0.220 0.260 0.268 0.337 (x1.5)
+  c2-gen-inter-ops63000-ls63100-s63201-a1: t=5: 0.019 0.027 0.035 0.051 (x2.7); t=6: 0.077 0.097 0.109 0.138 (x1.8)
+  c2-gen-inter-ops63000-ls63101-s63200-a1: t=5: 0.092 0.146 0.171 0.279 (x3.0); t=6: 0.229 0.264 0.317 0.382 (x1.7)
+  c2-gen-inter-ops63000-ls63101-s63201-a1: t=5: 0.032 0.026 0.036 0.087 (x2.7); t=6: 0.067 0.096 0.138 0.191 (x2.8)
+  c2-gen-inter-ops63001-ls63102-s63200-a1: t=5: 0.130 0.146 0.154 0.245 (x1.9); t=6: 0.230 0.259 0.309 0.382 (x1.7)
+  c2-gen-inter-ops63001-ls63102-s63201-a1: t=5: 0.155 0.176 0.195 0.228 (x1.5); t=6: 0.274 0.297 0.320 0.339 (x1.2)
+  c2-gen-inter-ops63001-ls63103-s63200-a1: t=5: 0.108 0.139 0.146 0.213 (x2.0); t=6: 0.250 0.284 0.327 0.397 (x1.6)
+  c2-gen-inter-ops63001-ls63103-s63201-a1: t=5: 0.164 0.206 0.236 0.212 (x1.3); t=6: 0.276 0.290 0.338 0.346 (x1.3)
+FAIL CX-G3 prediction: top-quartile rate >= 2x bottom-quartile at both t = 5 and 6 in >= 9 of 11 models (3 of 11)
+2 FAILED: ['CX-G1 prediction: tied/inter accuracy differs by < 0.05 between rows with and without a held-out window, at every L = 4-6 and seed', 'CX-G3 prediction: top-quartile rate >= 2x bottom-quartile at both t = 5 and 6 in >= 9 of 11 models (3 of 11)']
