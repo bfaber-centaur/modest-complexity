@@ -146,6 +146,17 @@
     "--purpose",
     "reviewer verification: resume of c3-rev-taper-whole-s51201-a1 mid-taper at 1800, compare bitwise"
    ]
+  },
+  {
+   "run_id": "c3-rev-corr-a1",
+   "timeout": 600,
+   "argv": [
+    "research/composition-c3/review/rev_corr.py",
+    "--out",
+    "{out}",
+    "--lane",
+    "c3f03cd"
+   ]
   }
  ]
 }

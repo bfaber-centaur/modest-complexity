@@ -69,3 +69,15 @@ Three things in the first pass need entries before the second pass.
   - **P3b, new.** The same check at `ckpt-10000` plus N(0, 0.01²) per element, 3 seeds × 3 weightings. Prediction: ≤ 1e-6 relative.
 - **CX-P1, second line failed because my assumption about the file layout was wrong.** The per-step-readout runs have neither a `MANIFEST.json` nor their own `MANIFEST.sha256`. Their hashes are in the shared `research/regimes/review/runs/MANIFEST.sha256`, which `check_source` does not read. The check now tests that and that the recovered files match it. Prediction: true.
 - **P5 crashed** on a key name of mine (`bv` does not exist in the untied-readout scheme). The changed element is now in `bs`.
+
+### 44e7556 + script (before running `c3-rev-corr-a1`)
+
+- **Files read since 44e7556.** The header lines of the lane's CSVs, `corr_eval.py`, `corr_calib.py` and the first data row of `figures/correction.csv`. That row is A main held s51200 = 0.633, which equals r1's published value.
+- **C5, from the code.**
+  - `corr_core.correction` passes h_2 alone to B, C and D, and gives E the true symbol.
+  - `fit_arms` receives only the fit prefixes.
+  - `corr_calib.py` uses grouped fit → val prefixes only, with init seed 900200, and computes no final answers.
+  - Holds.
+- **C7, added (no prediction beyond "equal").** Every value in `figures/correction.csv` and `figures/followup_f2.csv` recomputes from my numbers: A, D and E exactly, and B and C within one row.
+- **Run.** `rev_corr.py` runs as `c3-rev-corr-a1` through `run_jobs.py` (plan entry in this commit).
+
