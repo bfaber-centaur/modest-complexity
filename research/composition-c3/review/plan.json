@@ -1,0 +1,173 @@
+{
+ "note": "c3 reviewer plan. Entries are appended, never edited after launch.",
+ "runs": [
+  {
+   "run_id": "c3-rev-verify-keep10k-s51202-a1",
+   "timeout": 180,
+   "argv": [
+    "research/composition-c3/common/c3train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "51202",
+    "--updates",
+    "11000",
+    "--resume",
+    "research/composition-c2/recovered/r1-comp-rnn-inter-s51202-a1/ckpt-10000.npz",
+    "--resume-sha256",
+    "413f8dd926a736e81eddb8c3b2ec68217e152038ac13bff58115a7e87fd6f79a",
+    "--resume-config",
+    "research/regimes/composition/runs/r1-comp-rnn-inter-s51202-a1/config.json",
+    "--diag",
+    "--run-id",
+    "c3-rev-verify-keep10k-s51202-a1",
+    "--purpose",
+    "reviewer verification: no-change resume of r1 tied/inter ckpt-10000 to 11000, compare with c2-time-tt-inter-s51202-a1"
+   ]
+  },
+  {
+   "run_id": "c3-rev-drop-s51200-a1",
+   "timeout": 120,
+   "argv": [
+    "research/composition-c3/common/c3train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "51200",
+    "--updates",
+    "10300",
+    "--switch-step",
+    "10000",
+    "--switch-weights",
+    "0",
+    "0",
+    "1",
+    "--resume",
+    "research/composition-c2/recovered/r1-comp-rnn-inter-s51200-a1/ckpt-10000.npz",
+    "--resume-sha256",
+    "046f4c250d8c7aacc9999437f0223fc029cee6e2cbae6c1644b282e20b9f8010",
+    "--resume-config",
+    "research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/config.json",
+    "--diag",
+    "--run-id",
+    "c3-rev-drop-s51200-a1",
+    "--purpose",
+    "reviewer verification: drop branch at 10000, compare with c3-rev-c2final-s51200-a1"
+   ]
+  },
+  {
+   "run_id": "c3-rev-c2final-s51200-a1",
+   "timeout": 120,
+   "argv": [
+    "research/composition-c2/common/c2train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "51200",
+    "--updates",
+    "10300",
+    "--step-weights",
+    "0",
+    "0",
+    "1",
+    "--resume",
+    "research/composition-c2/recovered/r1-comp-rnn-inter-s51200-a1/ckpt-10000.npz",
+    "--resume-sha256",
+    "046f4c250d8c7aacc9999437f0223fc029cee6e2cbae6c1644b282e20b9f8010",
+    "--diag",
+    "--run-id",
+    "c3-rev-c2final-s51200-a1",
+    "--purpose",
+    "reviewer verification: c2train final-only resume from the same state as c3-rev-drop-s51200-a1"
+   ]
+  },
+  {
+   "run_id": "c3-rev-taper-whole-s51201-a1",
+   "timeout": 180,
+   "argv": [
+    "research/composition-c3/common/c3train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "51201",
+    "--updates",
+    "2600",
+    "--switch-step",
+    "1000",
+    "--switch-weights",
+    "0",
+    "0",
+    "1",
+    "--taper-updates",
+    "2000",
+    "--resume",
+    "research/composition-c2/recovered/r1-comp-rnn-inter-s51201-a1/ckpt-1000.npz",
+    "--resume-sha256",
+    "e0bfd426c0267529aa76d2ccfe22132bde3f5a010677d59b894e50b55cbcf0b0",
+    "--resume-config",
+    "research/regimes/composition/runs/r1-comp-rnn-inter-s51201-a1/config.json",
+    "--checkpoint-steps",
+    "1800",
+    "--diag",
+    "--run-id",
+    "c3-rev-taper-whole-s51201-a1",
+    "--purpose",
+    "reviewer verification: taper branch at 1000 with a mid-taper checkpoint at 1800"
+   ]
+  },
+  {
+   "run_id": "c3-rev-taper-cont-s51201-a1",
+   "timeout": 120,
+   "argv": [
+    "research/composition-c3/common/c3train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "51201",
+    "--updates",
+    "2600",
+    "--switch-step",
+    "1000",
+    "--switch-weights",
+    "0",
+    "0",
+    "1",
+    "--taper-updates",
+    "2000",
+    "--resume",
+    "runs/c3/c3-rev-taper-whole-s51201-a1/ckpt-1800.npz",
+    "--resume-sha256",
+    "318cfd2e9268919142c99c051dc9405e86f6e9bd2fee396f666f44e6b2181378",
+    "--resume-config",
+    "runs/c3/c3-rev-taper-whole-s51201-a1/config.json",
+    "--diag",
+    "--run-id",
+    "c3-rev-taper-cont-s51201-a1",
+    "--purpose",
+    "reviewer verification: resume of c3-rev-taper-whole-s51201-a1 mid-taper at 1800, compare bitwise"
+   ]
+  },
+  {
+   "run_id": "c3-rev-corr-a1",
+   "timeout": 600,
+   "argv": [
+    "research/composition-c3/review/rev_corr.py",
+    "--out",
+    "{out}",
+    "--lane",
+    "c3f03cd"
+   ]
+  },
+  {
+   "run_id": "c3-rev-corr-a2",
+   "timeout": 600,
+   "argv": [
+    "research/composition-c3/review/rev_corr.py",
+    "--out",
+    "{out}",
+    "--lane",
+    "c3f03cd"
+   ]
+  }
+ ]
+}

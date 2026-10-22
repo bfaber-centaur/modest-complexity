@@ -1,0 +1,321 @@
+panel,task_id,seed,arm,prefixes,rows,n,value
+main final accuracy,ops63000-ls63100,63200,A,fit,held,128,0.484375
+main final accuracy,ops63000-ls63100,63200,A,fit,train,384,1.0
+main final accuracy,ops63000-ls63100,63200,B,fit,held,128,0.8984375
+main final accuracy,ops63000-ls63100,63200,B,fit,train,384,0.9010416666666666
+main final accuracy,ops63000-ls63100,63200,C,fit,held,128,0.3203125
+main final accuracy,ops63000-ls63100,63200,C,fit,train,384,0.78125
+main final accuracy,ops63000-ls63100,63200,D,fit,held,128,0.9375
+main final accuracy,ops63000-ls63100,63200,D,fit,train,384,0.9375
+main final accuracy,ops63000-ls63100,63200,E,fit,held,128,0.9375
+main final accuracy,ops63000-ls63100,63200,E,fit,train,384,0.9375
+main final accuracy,ops63000-ls63100,63201,A,fit,held,128,0.5
+main final accuracy,ops63000-ls63100,63201,A,fit,train,384,1.0
+main final accuracy,ops63000-ls63100,63201,B,fit,held,128,0.9765625
+main final accuracy,ops63000-ls63100,63201,B,fit,train,384,0.9713541666666666
+main final accuracy,ops63000-ls63100,63201,C,fit,held,128,0.3671875
+main final accuracy,ops63000-ls63100,63201,C,fit,train,384,0.9010416666666666
+main final accuracy,ops63000-ls63100,63201,D,fit,held,128,1.0
+main final accuracy,ops63000-ls63100,63201,D,fit,train,384,1.0
+main final accuracy,ops63000-ls63100,63201,E,fit,held,128,1.0
+main final accuracy,ops63000-ls63100,63201,E,fit,train,384,1.0
+main final accuracy,ops63000-ls63101,63200,A,fit,held,128,0.421875
+main final accuracy,ops63000-ls63101,63200,A,fit,train,384,1.0
+main final accuracy,ops63000-ls63101,63200,B,fit,held,128,0.828125
+main final accuracy,ops63000-ls63101,63200,B,fit,train,384,0.84375
+main final accuracy,ops63000-ls63101,63200,C,fit,held,128,0.3203125
+main final accuracy,ops63000-ls63101,63200,C,fit,train,384,0.8515625
+main final accuracy,ops63000-ls63101,63200,D,fit,held,128,0.9375
+main final accuracy,ops63000-ls63101,63200,D,fit,train,384,0.9375
+main final accuracy,ops63000-ls63101,63200,E,fit,held,128,0.9375
+main final accuracy,ops63000-ls63101,63200,E,fit,train,384,0.9375
+main final accuracy,ops63000-ls63101,63201,A,fit,held,128,0.453125
+main final accuracy,ops63000-ls63101,63201,A,fit,train,384,1.0
+main final accuracy,ops63000-ls63101,63201,B,fit,held,128,0.9140625
+main final accuracy,ops63000-ls63101,63201,B,fit,train,384,0.9010416666666666
+main final accuracy,ops63000-ls63101,63201,C,fit,held,128,0.375
+main final accuracy,ops63000-ls63101,63201,C,fit,train,384,0.8671875
+main final accuracy,ops63000-ls63101,63201,D,fit,held,128,1.0
+main final accuracy,ops63000-ls63101,63201,D,fit,train,384,1.0
+main final accuracy,ops63000-ls63101,63201,E,fit,held,128,1.0
+main final accuracy,ops63000-ls63101,63201,E,fit,train,384,1.0
+main final accuracy,ops63001-ls63102,63200,A,fit,held,128,0.546875
+main final accuracy,ops63001-ls63102,63200,A,fit,train,384,1.0
+main final accuracy,ops63001-ls63102,63200,B,fit,held,128,0.9921875
+main final accuracy,ops63001-ls63102,63200,B,fit,train,384,0.9947916666666666
+main final accuracy,ops63001-ls63102,63200,C,fit,held,128,0.4375
+main final accuracy,ops63001-ls63102,63200,C,fit,train,384,0.7682291666666666
+main final accuracy,ops63001-ls63102,63200,D,fit,held,128,1.0
+main final accuracy,ops63001-ls63102,63200,D,fit,train,384,1.0
+main final accuracy,ops63001-ls63102,63200,E,fit,held,128,1.0
+main final accuracy,ops63001-ls63102,63200,E,fit,train,384,1.0
+main final accuracy,ops63001-ls63102,63201,A,fit,held,128,0.5546875
+main final accuracy,ops63001-ls63102,63201,A,fit,train,384,1.0
+main final accuracy,ops63001-ls63102,63201,B,fit,held,128,0.8671875
+main final accuracy,ops63001-ls63102,63201,B,fit,train,384,0.8515625
+main final accuracy,ops63001-ls63102,63201,C,fit,held,128,0.515625
+main final accuracy,ops63001-ls63102,63201,C,fit,train,384,0.9375
+main final accuracy,ops63001-ls63102,63201,D,fit,held,128,0.875
+main final accuracy,ops63001-ls63102,63201,D,fit,train,384,0.875
+main final accuracy,ops63001-ls63102,63201,E,fit,held,128,0.875
+main final accuracy,ops63001-ls63102,63201,E,fit,train,384,0.875
+main final accuracy,ops63001-ls63103,63200,A,fit,held,128,0.546875
+main final accuracy,ops63001-ls63103,63200,A,fit,train,384,1.0
+main final accuracy,ops63001-ls63103,63200,B,fit,held,128,0.96875
+main final accuracy,ops63001-ls63103,63200,B,fit,train,384,0.9609375
+main final accuracy,ops63001-ls63103,63200,C,fit,held,128,0.4921875
+main final accuracy,ops63001-ls63103,63200,C,fit,train,384,0.9244791666666666
+main final accuracy,ops63001-ls63103,63200,D,fit,held,128,0.96875
+main final accuracy,ops63001-ls63103,63200,D,fit,train,384,0.96875
+main final accuracy,ops63001-ls63103,63200,E,fit,held,128,0.96875
+main final accuracy,ops63001-ls63103,63200,E,fit,train,384,0.96875
+main final accuracy,ops63001-ls63103,63201,A,fit,held,128,0.4921875
+main final accuracy,ops63001-ls63103,63201,A,fit,train,384,1.0
+main final accuracy,ops63001-ls63103,63201,B,fit,held,128,0.890625
+main final accuracy,ops63001-ls63103,63201,B,fit,train,384,0.8880208333333334
+main final accuracy,ops63001-ls63103,63201,C,fit,held,128,0.4140625
+main final accuracy,ops63001-ls63103,63201,C,fit,train,384,0.9140625
+main final accuracy,ops63001-ls63103,63201,D,fit,held,128,0.9375
+main final accuracy,ops63001-ls63103,63201,D,fit,train,384,0.9375
+main final accuracy,ops63001-ls63103,63201,E,fit,held,128,0.9375
+main final accuracy,ops63001-ls63103,63201,E,fit,train,384,0.9375
+grouped final accuracy,ops63000-ls63100,63200,A,eval,held,32,0.53125
+grouped final accuracy,ops63000-ls63100,63200,A,eval,train,96,1.0
+grouped final accuracy,ops63000-ls63100,63200,B,eval,held,32,0.25
+grouped final accuracy,ops63000-ls63100,63200,B,eval,train,96,0.25
+grouped final accuracy,ops63000-ls63100,63200,C,eval,held,32,0.1875
+grouped final accuracy,ops63000-ls63100,63200,C,eval,train,96,0.4895833333333333
+grouped final accuracy,ops63000-ls63100,63200,D,eval,held,32,0.28125
+grouped final accuracy,ops63000-ls63100,63200,D,eval,train,96,0.23958333333333334
+grouped final accuracy,ops63000-ls63100,63200,E,eval,held,32,0.9375
+grouped final accuracy,ops63000-ls63100,63200,E,eval,train,96,0.9375
+grouped final accuracy,ops63000-ls63100,63201,A,eval,held,32,0.5
+grouped final accuracy,ops63000-ls63100,63201,A,eval,train,96,1.0
+grouped final accuracy,ops63000-ls63100,63201,B,eval,held,32,0.34375
+grouped final accuracy,ops63000-ls63100,63201,B,eval,train,96,0.2604166666666667
+grouped final accuracy,ops63000-ls63100,63201,C,eval,held,32,0.25
+grouped final accuracy,ops63000-ls63100,63201,C,eval,train,96,0.6145833333333334
+grouped final accuracy,ops63000-ls63100,63201,D,eval,held,32,0.28125
+grouped final accuracy,ops63000-ls63100,63201,D,eval,train,96,0.28125
+grouped final accuracy,ops63000-ls63100,63201,E,eval,held,32,0.96875
+grouped final accuracy,ops63000-ls63100,63201,E,eval,train,96,0.96875
+grouped final accuracy,ops63000-ls63101,63200,A,eval,held,32,0.46875
+grouped final accuracy,ops63000-ls63101,63200,A,eval,train,96,1.0
+grouped final accuracy,ops63000-ls63101,63200,B,eval,held,32,0.25
+grouped final accuracy,ops63000-ls63101,63200,B,eval,train,96,0.3125
+grouped final accuracy,ops63000-ls63101,63200,C,eval,held,32,0.28125
+grouped final accuracy,ops63000-ls63101,63200,C,eval,train,96,0.6145833333333334
+grouped final accuracy,ops63000-ls63101,63200,D,eval,held,32,0.3125
+grouped final accuracy,ops63000-ls63101,63200,D,eval,train,96,0.3333333333333333
+grouped final accuracy,ops63000-ls63101,63200,E,eval,held,32,0.90625
+grouped final accuracy,ops63000-ls63101,63200,E,eval,train,96,0.8645833333333334
+grouped final accuracy,ops63000-ls63101,63201,A,eval,held,32,0.40625
+grouped final accuracy,ops63000-ls63101,63201,A,eval,train,96,1.0
+grouped final accuracy,ops63000-ls63101,63201,B,eval,held,32,0.25
+grouped final accuracy,ops63000-ls63101,63201,B,eval,train,96,0.22916666666666666
+grouped final accuracy,ops63000-ls63101,63201,C,eval,held,32,0.21875
+grouped final accuracy,ops63000-ls63101,63201,C,eval,train,96,0.5208333333333334
+grouped final accuracy,ops63000-ls63101,63201,D,eval,held,32,0.1875
+grouped final accuracy,ops63000-ls63101,63201,D,eval,train,96,0.1875
+grouped final accuracy,ops63000-ls63101,63201,E,eval,held,32,1.0
+grouped final accuracy,ops63000-ls63101,63201,E,eval,train,96,1.0
+grouped final accuracy,ops63001-ls63102,63200,A,eval,held,32,0.65625
+grouped final accuracy,ops63001-ls63102,63200,A,eval,train,96,1.0
+grouped final accuracy,ops63001-ls63102,63200,B,eval,held,32,0.34375
+grouped final accuracy,ops63001-ls63102,63200,B,eval,train,96,0.3541666666666667
+grouped final accuracy,ops63001-ls63102,63200,C,eval,held,32,0.46875
+grouped final accuracy,ops63001-ls63102,63200,C,eval,train,96,0.5
+grouped final accuracy,ops63001-ls63102,63200,D,eval,held,32,0.46875
+grouped final accuracy,ops63001-ls63102,63200,D,eval,train,96,0.4375
+grouped final accuracy,ops63001-ls63102,63200,E,eval,held,32,0.96875
+grouped final accuracy,ops63001-ls63102,63200,E,eval,train,96,0.8854166666666666
+grouped final accuracy,ops63001-ls63102,63201,A,eval,held,32,0.6875
+grouped final accuracy,ops63001-ls63102,63201,A,eval,train,96,1.0
+grouped final accuracy,ops63001-ls63102,63201,B,eval,held,32,0.34375
+grouped final accuracy,ops63001-ls63102,63201,B,eval,train,96,0.4583333333333333
+grouped final accuracy,ops63001-ls63102,63201,C,eval,held,32,0.46875
+grouped final accuracy,ops63001-ls63102,63201,C,eval,train,96,0.6145833333333334
+grouped final accuracy,ops63001-ls63102,63201,D,eval,held,32,0.40625
+grouped final accuracy,ops63001-ls63102,63201,D,eval,train,96,0.3645833333333333
+grouped final accuracy,ops63001-ls63102,63201,E,eval,held,32,1.0
+grouped final accuracy,ops63001-ls63102,63201,E,eval,train,96,0.9166666666666666
+grouped final accuracy,ops63001-ls63103,63200,A,eval,held,32,0.625
+grouped final accuracy,ops63001-ls63103,63200,A,eval,train,96,1.0
+grouped final accuracy,ops63001-ls63103,63200,B,eval,held,32,0.3125
+grouped final accuracy,ops63001-ls63103,63200,B,eval,train,96,0.3854166666666667
+grouped final accuracy,ops63001-ls63103,63200,C,eval,held,32,0.4375
+grouped final accuracy,ops63001-ls63103,63200,C,eval,train,96,0.59375
+grouped final accuracy,ops63001-ls63103,63200,D,eval,held,32,0.46875
+grouped final accuracy,ops63001-ls63103,63200,D,eval,train,96,0.4375
+grouped final accuracy,ops63001-ls63103,63200,E,eval,held,32,1.0
+grouped final accuracy,ops63001-ls63103,63200,E,eval,train,96,0.9583333333333334
+grouped final accuracy,ops63001-ls63103,63201,A,eval,held,32,0.46875
+grouped final accuracy,ops63001-ls63103,63201,A,eval,train,96,1.0
+grouped final accuracy,ops63001-ls63103,63201,B,eval,held,32,0.40625
+grouped final accuracy,ops63001-ls63103,63201,B,eval,train,96,0.3854166666666667
+grouped final accuracy,ops63001-ls63103,63201,C,eval,held,32,0.28125
+grouped final accuracy,ops63001-ls63103,63201,C,eval,train,96,0.5729166666666666
+grouped final accuracy,ops63001-ls63103,63201,D,eval,held,32,0.4375
+grouped final accuracy,ops63001-ls63103,63201,D,eval,train,96,0.3854166666666667
+grouped final accuracy,ops63001-ls63103,63201,E,eval,held,32,0.9375
+grouped final accuracy,ops63001-ls63103,63201,E,eval,train,96,0.9375
+symbol_acc,ops63000-ls63100,63200,A,eval,,32,0.1875
+symbol_acc,ops63000-ls63100,63200,A,fit,,128,0.375
+symbol_acc,ops63000-ls63100,63200,B,eval,,32,0.25
+symbol_acc,ops63000-ls63100,63200,B,fit,,128,1.0
+symbol_acc,ops63000-ls63100,63200,C,eval,,32,0.125
+symbol_acc,ops63000-ls63100,63200,C,fit,,128,0.3359375
+symbol_acc,ops63000-ls63100,63200,D,eval,,32,0.25
+symbol_acc,ops63000-ls63100,63200,D,fit,,128,1.0
+symbol_acc,ops63000-ls63100,63200,E,eval,,32,1.0
+symbol_acc,ops63000-ls63100,63200,E,fit,,128,1.0
+symbol_acc,ops63000-ls63100,63201,A,eval,,32,0.15625
+symbol_acc,ops63000-ls63100,63201,A,fit,,128,0.3828125
+symbol_acc,ops63000-ls63100,63201,B,eval,,32,0.21875
+symbol_acc,ops63000-ls63100,63201,B,fit,,128,1.0
+symbol_acc,ops63000-ls63100,63201,C,eval,,32,0.09375
+symbol_acc,ops63000-ls63100,63201,C,fit,,128,0.3828125
+symbol_acc,ops63000-ls63100,63201,D,eval,,32,0.28125
+symbol_acc,ops63000-ls63100,63201,D,fit,,128,1.0
+symbol_acc,ops63000-ls63100,63201,E,eval,,32,1.0
+symbol_acc,ops63000-ls63100,63201,E,fit,,128,1.0
+symbol_acc,ops63000-ls63101,63200,A,eval,,32,0.15625
+symbol_acc,ops63000-ls63101,63200,A,fit,,128,0.375
+symbol_acc,ops63000-ls63101,63200,B,eval,,32,0.28125
+symbol_acc,ops63000-ls63101,63200,B,fit,,128,1.0
+symbol_acc,ops63000-ls63101,63200,C,eval,,32,0.09375
+symbol_acc,ops63000-ls63101,63200,C,fit,,128,0.390625
+symbol_acc,ops63000-ls63101,63200,D,eval,,32,0.3125
+symbol_acc,ops63000-ls63101,63200,D,fit,,128,1.0
+symbol_acc,ops63000-ls63101,63200,E,eval,,32,1.0
+symbol_acc,ops63000-ls63101,63200,E,fit,,128,1.0
+symbol_acc,ops63000-ls63101,63201,A,eval,,32,0.125
+symbol_acc,ops63000-ls63101,63201,A,fit,,128,0.3671875
+symbol_acc,ops63000-ls63101,63201,B,eval,,32,0.21875
+symbol_acc,ops63000-ls63101,63201,B,fit,,128,1.0
+symbol_acc,ops63000-ls63101,63201,C,eval,,32,0.09375
+symbol_acc,ops63000-ls63101,63201,C,fit,,128,0.3671875
+symbol_acc,ops63000-ls63101,63201,D,eval,,32,0.1875
+symbol_acc,ops63000-ls63101,63201,D,fit,,128,1.0
+symbol_acc,ops63000-ls63101,63201,E,eval,,32,1.0
+symbol_acc,ops63000-ls63101,63201,E,fit,,128,1.0
+symbol_acc,ops63001-ls63102,63200,A,eval,,32,0.25
+symbol_acc,ops63001-ls63102,63200,A,fit,,128,0.4375
+symbol_acc,ops63001-ls63102,63200,B,eval,,32,0.375
+symbol_acc,ops63001-ls63102,63200,B,fit,,128,1.0
+symbol_acc,ops63001-ls63102,63200,C,eval,,32,0.28125
+symbol_acc,ops63001-ls63102,63200,C,fit,,128,0.3984375
+symbol_acc,ops63001-ls63102,63200,D,eval,,32,0.4375
+symbol_acc,ops63001-ls63102,63200,D,fit,,128,1.0
+symbol_acc,ops63001-ls63102,63200,E,eval,,32,1.0
+symbol_acc,ops63001-ls63102,63200,E,fit,,128,1.0
+symbol_acc,ops63001-ls63102,63201,A,eval,,32,0.21875
+symbol_acc,ops63001-ls63102,63201,A,fit,,128,0.4765625
+symbol_acc,ops63001-ls63102,63201,B,eval,,32,0.40625
+symbol_acc,ops63001-ls63102,63201,B,fit,,128,1.0
+symbol_acc,ops63001-ls63102,63201,C,eval,,32,0.21875
+symbol_acc,ops63001-ls63102,63201,C,fit,,128,0.4375
+symbol_acc,ops63001-ls63102,63201,D,eval,,32,0.40625
+symbol_acc,ops63001-ls63102,63201,D,fit,,128,1.0
+symbol_acc,ops63001-ls63102,63201,E,eval,,32,1.0
+symbol_acc,ops63001-ls63102,63201,E,fit,,128,1.0
+symbol_acc,ops63001-ls63103,63200,A,eval,,32,0.34375
+symbol_acc,ops63001-ls63103,63200,A,fit,,128,0.4765625
+symbol_acc,ops63001-ls63103,63200,B,eval,,32,0.375
+symbol_acc,ops63001-ls63103,63200,B,fit,,128,1.0
+symbol_acc,ops63001-ls63103,63200,C,eval,,32,0.25
+symbol_acc,ops63001-ls63103,63200,C,fit,,128,0.46875
+symbol_acc,ops63001-ls63103,63200,D,eval,,32,0.4375
+symbol_acc,ops63001-ls63103,63200,D,fit,,128,1.0
+symbol_acc,ops63001-ls63103,63200,E,eval,,32,1.0
+symbol_acc,ops63001-ls63103,63200,E,fit,,128,1.0
+symbol_acc,ops63001-ls63103,63201,A,eval,,32,0.1875
+symbol_acc,ops63001-ls63103,63201,A,fit,,128,0.421875
+symbol_acc,ops63001-ls63103,63201,B,eval,,32,0.4375
+symbol_acc,ops63001-ls63103,63201,B,fit,,128,1.0
+symbol_acc,ops63001-ls63103,63201,C,eval,,32,0.1875
+symbol_acc,ops63001-ls63103,63201,C,fit,,128,0.4140625
+symbol_acc,ops63001-ls63103,63201,D,eval,,32,0.40625
+symbol_acc,ops63001-ls63103,63201,D,fit,,128,1.0
+symbol_acc,ops63001-ls63103,63201,E,eval,,32,1.0
+symbol_acc,ops63001-ls63103,63201,E,fit,,128,1.0
+centroid_err,ops63000-ls63100,63200,A,eval,,32,3.5064344882343597
+centroid_err,ops63000-ls63100,63200,A,fit,,128,4.750560957189294
+centroid_err,ops63000-ls63100,63200,B,eval,,32,0.7491803075331124
+centroid_err,ops63000-ls63100,63200,B,fit,,128,0.3219594570681784
+centroid_err,ops63000-ls63100,63200,C,eval,,32,3.2116403068864776
+centroid_err,ops63000-ls63100,63200,C,fit,,128,4.5886356613864745
+centroid_err,ops63000-ls63100,63200,D,eval,,32,0.6734745931718853
+centroid_err,ops63000-ls63100,63200,D,fit,,128,0.0
+centroid_err,ops63000-ls63100,63200,E,eval,,32,0.0
+centroid_err,ops63000-ls63100,63200,E,fit,,128,0.0
+centroid_err,ops63000-ls63100,63201,A,eval,,32,3.6470192343194863
+centroid_err,ops63000-ls63100,63201,A,fit,,128,5.035108519529548
+centroid_err,ops63000-ls63100,63201,B,eval,,32,0.6995958196852395
+centroid_err,ops63000-ls63100,63201,B,fit,,128,0.13142293633987118
+centroid_err,ops63000-ls63100,63201,C,eval,,32,3.4293347908849343
+centroid_err,ops63000-ls63100,63201,C,fit,,128,4.866139242916591
+centroid_err,ops63000-ls63100,63201,D,eval,,32,0.6967352769437244
+centroid_err,ops63000-ls63100,63201,D,fit,,128,0.0
+centroid_err,ops63000-ls63100,63201,E,eval,,32,0.0
+centroid_err,ops63000-ls63100,63201,E,fit,,128,0.0
+centroid_err,ops63000-ls63101,63200,A,eval,,32,3.6501362043879633
+centroid_err,ops63000-ls63101,63200,A,fit,,128,4.816188906935327
+centroid_err,ops63000-ls63101,63200,B,eval,,32,0.6933449804281869
+centroid_err,ops63000-ls63101,63200,B,fit,,128,0.10958315914848592
+centroid_err,ops63000-ls63101,63200,C,eval,,32,3.2882966785600094
+centroid_err,ops63000-ls63101,63200,C,fit,,128,4.635457888512244
+centroid_err,ops63000-ls63101,63200,D,eval,,32,0.6199118585385242
+centroid_err,ops63000-ls63101,63200,D,fit,,128,0.0
+centroid_err,ops63000-ls63101,63200,E,eval,,32,0.0
+centroid_err,ops63000-ls63101,63200,E,fit,,128,0.0
+centroid_err,ops63000-ls63101,63201,A,eval,,32,3.7862520700901876
+centroid_err,ops63000-ls63101,63201,A,fit,,128,5.4518438158858205
+centroid_err,ops63000-ls63101,63201,B,eval,,32,0.8183493662285944
+centroid_err,ops63000-ls63101,63201,B,fit,,128,0.13518190417623027
+centroid_err,ops63000-ls63101,63201,C,eval,,32,3.572352066348821
+centroid_err,ops63000-ls63101,63201,C,fit,,128,5.273879656196194
+centroid_err,ops63000-ls63101,63201,D,eval,,32,0.7723912900038805
+centroid_err,ops63000-ls63101,63201,D,fit,,128,0.0
+centroid_err,ops63000-ls63101,63201,E,eval,,32,0.0
+centroid_err,ops63000-ls63101,63201,E,fit,,128,0.0
+centroid_err,ops63001-ls63102,63200,A,eval,,32,3.0912594815491516
+centroid_err,ops63001-ls63102,63200,A,fit,,128,3.1229297266756433
+centroid_err,ops63001-ls63102,63200,B,eval,,32,0.47630482741788965
+centroid_err,ops63001-ls63102,63200,B,fit,,128,0.06733868929987204
+centroid_err,ops63001-ls63102,63200,C,eval,,32,2.7512464615775047
+centroid_err,ops63001-ls63102,63200,C,fit,,128,3.0107092451531003
+centroid_err,ops63001-ls63102,63200,D,eval,,32,0.38308539250780455
+centroid_err,ops63001-ls63102,63200,D,fit,,128,0.0
+centroid_err,ops63001-ls63102,63200,E,eval,,32,0.0
+centroid_err,ops63001-ls63102,63200,E,fit,,128,0.0
+centroid_err,ops63001-ls63102,63201,A,eval,,32,2.9341950186161485
+centroid_err,ops63001-ls63102,63201,A,fit,,128,3.3072530110986023
+centroid_err,ops63001-ls63102,63201,B,eval,,32,0.43622258065373437
+centroid_err,ops63001-ls63102,63201,B,fit,,128,0.06399588872355906
+centroid_err,ops63001-ls63102,63201,C,eval,,32,2.6380970769544443
+centroid_err,ops63001-ls63102,63201,C,fit,,128,3.195805471870663
+centroid_err,ops63001-ls63102,63201,D,eval,,32,0.4140688921287922
+centroid_err,ops63001-ls63102,63201,D,fit,,128,0.0
+centroid_err,ops63001-ls63102,63201,E,eval,,32,0.0
+centroid_err,ops63001-ls63102,63201,E,fit,,128,0.0
+centroid_err,ops63001-ls63103,63200,A,eval,,32,2.9248156445545868
+centroid_err,ops63001-ls63103,63200,A,fit,,128,3.047372615614535
+centroid_err,ops63001-ls63103,63200,B,eval,,32,0.49287929004425374
+centroid_err,ops63001-ls63103,63200,B,fit,,128,0.01591743207608953
+centroid_err,ops63001-ls63103,63200,C,eval,,32,2.6677975040512125
+centroid_err,ops63001-ls63103,63200,C,fit,,128,2.9718100099481872
+centroid_err,ops63001-ls63103,63200,D,eval,,32,0.37582573141584025
+centroid_err,ops63001-ls63103,63200,D,fit,,128,0.0
+centroid_err,ops63001-ls63103,63200,E,eval,,32,0.0
+centroid_err,ops63001-ls63103,63200,E,fit,,128,0.0
+centroid_err,ops63001-ls63103,63201,A,eval,,32,2.956575745273373
+centroid_err,ops63001-ls63103,63201,A,fit,,128,3.3190064931875276
+centroid_err,ops63001-ls63103,63201,B,eval,,32,0.5733088351423776
+centroid_err,ops63001-ls63103,63201,B,fit,,128,0.20468669681227966
+centroid_err,ops63001-ls63103,63201,C,eval,,32,2.64484329136935
+centroid_err,ops63001-ls63103,63201,C,fit,,128,3.245380749894234
+centroid_err,ops63001-ls63103,63201,D,eval,,32,0.32177079528214436
+centroid_err,ops63001-ls63103,63201,D,fit,,128,0.0
+centroid_err,ops63001-ls63103,63201,E,eval,,32,0.0
+centroid_err,ops63001-ls63103,63201,E,fit,,128,0.0

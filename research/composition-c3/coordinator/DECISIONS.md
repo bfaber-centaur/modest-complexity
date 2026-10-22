@@ -48,6 +48,7 @@ Sources: c2 `coordinator/SYNTHESIS.md` and the lane NOTEs, with `review/REVIEW.m
 
 - **Verification.** `c3-co-verify-keep-s51200-a1` resumes r1's tied/inter `ckpt-1000` to 3,000 in no-change mode. Every r1 key equals r1's published row at all 41 logged steps.
 - **Pin.** `be41d16`: `common/*.py` as of that commit, unchanged on the branch head. The reviewer checks it before any worker training or fitting. Later coordinator commits change only `coordinator/` and docs unless this log records a re-pin.
+- **Review.** PASS (c3 `review/REVIEW.md` §1, PR #62). Note N1: `check_source` binds the r1 per-step-readout checkpoints to their config by run ID only, because their hashes sit in r1's shared `review/runs/MANIFEST.sha256`. No c3 lane resumes them; the correction lane checks their SHA-256 against `RECOVERY.json` itself.
 - **Not in the pin.**
   - An optimizer reset. A follow-up that needs one gets a coordinator re-pin and new attempt IDs.
   - The correction module and its fitting, which are lane code.
@@ -146,3 +147,22 @@ A lane that reaches 80% of a budget tells the coordinator before going further.
 - **Reviewer.** Commits at least one counterexample prediction per lane before inspecting that lane's result tables.
 - **Milestones.** Reported in one line to the coordinator thread "Four-regime expedition".
 - **Final packet.** `coordinator/SYNTHESIS.md` covers what an oracle-free correction achieved, what temporary supervision left behind, and the limitations, with at most two next questions.
+
+## D10. Re-pin for the scaffolding follow-up (2026-10-22 06:10Z)
+
+**Follow-up.** The scaffolding follow-up was approved after its first figure (PR #65): matched reset-versus-carried optimizer state at S = 1,000, in both keep and drop, seeds 51200–51202. That is 6 new runs to 50k. The carried arms are the existing keep trajectory and the existing drop branch.
+
+**Reason.** A drop after 1,000 supervised updates still composes, while final-only from init does not by 100k (c2). Whether that history is carried by the weights or by Adam's moments is the attribution this control separates. The packet names it.
+
+**Change.** `c3train.py` gains `--reset-optimizer-at R`. Just before the update at step R, it replaces both Adam moments and Adam's step count with a fresh state, and carries the weights.
+- The checkpoint at R holds the state before the reset.
+- Checkpoint meta `step` stays the global count. The saved Adam count is step − R after a reset.
+- `check_source` now checks the checkpoint's Adam count against the count its source's history implies, and requires the same reset history before the resume step.
+- Runs without the flag are unchanged.
+
+**Tests.** `test_c3.py` gains 1 test, for 9 in all:
+- the update at R equals one Adam step from a fresh state on the carried weights;
+- resuming at R or after it is bitwise equal to the uninterrupted run;
+- a resume after R that omits or moves the reset is refused.
+
+**Pin.** `common/*.py` at `82cef77`. The reviewer checks the re-pin before the follow-up launches. The 12 initial branches ran at `be41d16`, and their arithmetic is the same at the new pin.

@@ -10,6 +10,11 @@ update at S already uses w_a. With D > 1, the update at S moves 1/D of the way a
 at S + D - 1 is the first to use w_a in full. A weight that is equal in w_b and w_a stays
 exactly that value. Without --switch-step the run is c2train.py's, bitwise (test_c3.py).
 
+Optimizer reset. --reset-optimizer-at R replaces the Adam state (both moments and the step
+count used for bias correction) with a fresh one just before the update taken at step R; the
+weights are carried. The checkpoint saved at step R holds the state before the reset. Checkpoint
+meta `step` is the global update count; the saved Adam count is step - R after a reset.
+
 Resume. --resume CKPT continues from a checkpoint with its weights and full Adam state, to
 --updates total updates, as c2train.py does. It needs --resume-sha256 and --resume-config, the
 config.json of the run that wrote CKPT (r1's research/regimes/composition/train.py, c2train.py or
@@ -18,7 +23,8 @@ this script). Checked before any update:
   MANIFEST.json beside the config, if there is one;
 - the checkpoint's step and run ID equal the source config's;
 - this run's recipe equals the source's: task ID, tying scheme, width, lr, wd, Adam constants,
-  and the step weights of every update before the checkpoint's step.
+  the step weights of every update before the checkpoint's step, and any optimizer reset
+  before that step; and the checkpoint's Adam count is the one that history implies.
 A branch that changes the weights from the checkpoint's step on therefore passes, and any other
 recipe change fails. A c2 source's own resume chain was checked by its lane (c2 D9).
 
@@ -47,7 +53,7 @@ R1_WEIGHTS = {'inter': [1., 1., 1.], 'final': [0., 0., 1.]}
 
 
 def weights_at(t, sched):
-    """Step weights of the update taken at step t under sched = dict(before, switch_step, after, taper)."""
+    """Step weights of the update taken at step t under sched = dict(before, switch_step, after, taper[, reset_at])."""
     S = sched['switch_step']
     if S is None or t < S:
         return list(sched['before'])
@@ -55,6 +61,18 @@ def weights_at(t, sched):
     if f == 1.:
         return list(sched['after'])
     return [b + f*(a - b) for b, a in zip(sched['before'], sched['after'])]
+
+
+def reset_before(sched, step):
+    """The optimizer reset step if one happened before step (strictly), else None."""
+    R = sched.get('reset_at')
+    return R if R is not None and R < step else None
+
+
+def adam_count(sched, step):
+    """Adam's step count in a checkpoint saved at global step `step` under sched."""
+    R = reset_before(sched, step)
+    return step if R is None else step - R
 
 
 def recipe_of(cfg):
@@ -74,7 +92,7 @@ def recipe_of(cfg):
     return recipe, sched
 
 
-def check_source(ckpt, sha, cfg_path, meta, step, recipe, sched):
+def check_source(ckpt, sha, cfg_path, meta, step, adam_t, recipe, sched):
     """Raise ValueError unless the checkpoint belongs to the config's run and this run's recipe
     equals the source's up to `step`. Returns what was checked, for config.json."""
     cfg = json.loads(Path(cfg_path).read_text())
@@ -84,8 +102,8 @@ def check_source(ckpt, sha, cfg_path, meta, step, recipe, sched):
     listed = [e['sha256'] for e in json.loads(manifest.read_text()) if e['file'] == Path(ckpt).name] if manifest.exists() else []
     if listed and listed != [sha]:
         problems.append(f'{manifest} lists {listed} for {Path(ckpt).name}')
-    if meta.get('step') != step:
-        problems.append(f"checkpoint meta step {meta.get('step')} != Adam step {step}")
+    if adam_t != adam_count(src_sched, step):
+        problems.append(f'checkpoint Adam count {adam_t} != {adam_count(src_sched, step)} implied by the source at step {step}')
     if meta.get('run_id') and cfg.get('run_id') and meta['run_id'] != cfg['run_id']:
         problems.append(f"checkpoint run ID {meta['run_id']} != config run ID {cfg['run_id']}")
     for k in recipe:
@@ -94,6 +112,8 @@ def check_source(ckpt, sha, cfg_path, meta, step, recipe, sched):
     differ = [t for t in range(step) if weights_at(t, sched) != weights_at(t, src_sched)]
     if differ:
         problems.append(f'step weights differ from the source at {len(differ)} updates before {step}, first at {differ[0]}')
+    if reset_before(sched, step) != reset_before(src_sched, step):
+        problems.append(f'optimizer reset before {step}: {reset_before(sched, step)} here, {reset_before(src_sched, step)} in the source')
     if problems:
         raise ValueError('--resume recipe check failed: ' + '; '.join(problems))
     return dict(config=str(cfg_path), config_sha256=nets.sha256_file(cfg_path), run_id=cfg.get('run_id'),
@@ -117,6 +137,7 @@ def main():
     ap.add_argument('--switch-step', type=int, help='S: first update that moves toward --switch-weights')
     ap.add_argument('--switch-weights', type=float, nargs=3, help='w_a')
     ap.add_argument('--taper-updates', type=int, default=1, help='D: updates from S until w_a is reached (1 = at once)')
+    ap.add_argument('--reset-optimizer-at', type=int, help='R: fresh Adam state (moments and count) before the update at R')
     ap.add_argument('--init-seed', type=int, required=True)
     ap.add_argument('--hidden', type=int, default=128)
     ap.add_argument('--updates', type=int, default=10000, help='Total updates, counted from init (also on --resume)')
@@ -134,7 +155,8 @@ def main():
         ap.error('--taper-updates must be >= 1 and --switch-step >= 0')
     if args.resume and not (args.resume_sha256 and args.resume_config):
         ap.error('--resume needs --resume-sha256 and --resume-config')
-    sched = dict(before=args.step_weights, switch_step=args.switch_step, after=args.switch_weights, taper=args.taper_updates)
+    sched = dict(before=args.step_weights, switch_step=args.switch_step, after=args.switch_weights, taper=args.taper_updates,
+                 reset_at=args.reset_optimizer_at)
     recipe = dict(task_id=args.task_id, transition=args.transition, readout=args.readout, hidden=args.hidden,
                   lr=args.lr, wd=args.wd, adam=[c2train.B1, c2train.B2, c2train.EPS])
     args.out.mkdir(parents=True, exist_ok=False)
@@ -153,9 +175,9 @@ def main():
         p, st, src_meta = nets.load(args.resume)
         assert c2rnn.scheme(p) == tie, (c2rnn.scheme(p), tie)
         assert p['bs'].shape == (args.hidden,), 'width differs from the checkpoint'
-        start = st['t']
+        start = src_meta.get('step', st['t'])
         try:
-            source = check_source(args.resume, sha, args.resume_config, src_meta, start, recipe, sched)
+            source = check_source(args.resume, sha, args.resume_config, src_meta, start, st['t'], recipe, sched)
         except ValueError as e:
             ap.error(str(e))
         resumed = dict(path=str(args.resume), sha256=sha, step=start, meta=src_meta, source=source)
@@ -197,6 +219,8 @@ def main():
                 if logged:
                     log.write(json.dumps(row)+'\n')
                 break
+            if t == sched['reset_at']:
+                st = nets.adam_state(p)
             with timing.measure('update'):
                 g = c2rnn.loss_grad(p, fit['s'], fit['ops'], targets, w)[2]
                 before = {k: v.copy() for k, v in p.items()} if logged and args.diag else None

@@ -1,0 +1,93 @@
+{
+ "note": "c3 correction lane plan (DECISIONS D6-D8, QUESTION.md). Frozen bases; only the small correction maps and decoders are fit. IDs are never reused; main/grouped entries are added with the calibrated k and lr after an ADAPTIVE.md entry.",
+ "runs": [
+  {
+   "run_id": "c3-corr-calib-s900200-a1",
+   "argv": [
+    "research/composition-c3/correction/corr_calib.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 300,
+   "purpose": "training-only calibration of the map (k x lr on grouped fit -> val, init seed 900200) and host timing"
+  },
+  {
+   "run_id": "c3-corr-main-a1",
+   "argv": [
+    "research/composition-c3/correction/corr_eval.py",
+    "--out",
+    "{out}",
+    "--split",
+    "main",
+    "--k",
+    "64",
+    "--lr",
+    "1e-3"
+   ],
+   "timeout": 600,
+   "purpose": "arms A-E on the six frozen bases, main evaluation (k and lr from c3-corr-calib-s900200-a1)"
+  },
+  {
+   "run_id": "c3-corr-grouped-a1",
+   "argv": [
+    "research/composition-c3/correction/corr_eval.py",
+    "--out",
+    "{out}",
+    "--split",
+    "grouped",
+    "--k",
+    "64",
+    "--lr",
+    "1e-3"
+   ],
+   "timeout": 600,
+   "purpose": "arms A-E on the six frozen bases, grouped evaluation (k and lr from c3-corr-calib-s900200-a1)"
+  },
+  {
+   "run_id": "c3-corr-f2-main-a1",
+   "argv": [
+    "research/composition-c3/correction/corr_eval.py",
+    "--out",
+    "{out}",
+    "--split",
+    "main",
+    "--k",
+    "64",
+    "--lr",
+    "1e-3",
+    "--bases",
+    "f2"
+   ],
+   "timeout": 600,
+   "purpose": "follow-up F2: arms A-E on the eight c2 generalization tied/final 10k bases (new task draws), main evaluation, recipe fixed"
+  },
+  {
+   "run_id": "c3-corr-f2-grouped-a1",
+   "argv": [
+    "research/composition-c3/correction/corr_eval.py",
+    "--out",
+    "{out}",
+    "--split",
+    "grouped",
+    "--k",
+    "64",
+    "--lr",
+    "1e-3",
+    "--bases",
+    "f2"
+   ],
+   "timeout": 600,
+   "purpose": "follow-up F2: arms A-E on the eight c2 generalization tied/final 10k bases (new task draws), grouped evaluation, recipe fixed"
+  },
+  {
+   "run_id": "c3-corr-posthoc-v2-a1",
+   "argv": [
+    "research/composition-c3/correction/corr_posthoc.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 120,
+   "purpose": "post hoc (coordinator request): per-step bases own V2 on grouped fit/val/eval prefixes h_2; frozen forward, no fitting"
+  }
+ ]
+}

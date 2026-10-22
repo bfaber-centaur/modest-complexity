@@ -1,0 +1,103 @@
+warning: The `UV_NATIVE_TLS` environment variable is deprecated and will be removed in a future release. Use `UV_SYSTEM_CERTS` instead.
+PASS P0 common/*.py at HEAD equals the pin be41d16
+PASS P0 c2's common/ at HEAD equals its pin b3e8132
+PASS P1 research/composition-c3/common/test_c3.py in its own process  [Ran 8 tests in 14.483s OK; 14.7 s]
+PASS P1 research/composition-c2/common/test_c2.py in its own process  [Ran 10 tests in 15.146s OK; 15.3 s]
+PASS P2 weights_at equals D5 at every t < 50000, S=1000 D=1  [first mismatch []]
+PASS P2 exposure of the planned branch S=1000 D=1 (this run)  [[0, 0, 49000] [0.0, 0.0, 18816000.0]]
+PASS P2 weights_at equals D5 at every t < 50000, S=1000 D=2000  [first mismatch []]
+PASS P2 S=1000 D=2000: inter weight at S is 1 - 1/D, at S+D-2 is 1/D, 0 from S+D-1; final exactly 1
+PASS P2 exposure of the planned branch S=1000 D=2000 (this run)  [[1999, 1999, 49000] [383808.0, 383808.0, 18816000.0]]
+PASS P2 weights_at equals D5 at every t < 50000, S=10000 D=1  [first mismatch []]
+PASS P2 exposure of the planned branch S=10000 D=1 (this run)  [[0, 0, 40000] [0.0, 0.0, 15360000.0]]
+PASS P2 weights_at equals D5 at every t < 50000, S=10000 D=2000  [first mismatch []]
+PASS P2 S=10000 D=2000: inter weight at S is 1 - 1/D, at S+D-2 is 1/D, 0 from S+D-1; final exactly 1
+PASS P2 exposure of the planned branch S=10000 D=2000 (this run)  [[1999, 1999, 40000] [383808.0, 383808.0, 15360000.0]]
+PASS P2 the 12 planned branches total 534,000 updates  [534000]
+PASS P3 c2rnn.loss_grad total equals my loss at w = 001, .5 .5 1, 111 (6 tied/inter states)  [max |diff| 5.6e-16]
+FAIL P3 its gradient matches a central finite difference of my loss along a random direction  [max rel diff 3.8e-02]
+FAIL P3b the same at ckpt-10000 + N(0, 0.01^2) per element, 3 seeds x 3 weightings  [max rel diff 8.2e-06]
+PASS P4 accepted: inter s51200 ckpt-1000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-1000, own config, drop at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-1000, own config, taper at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-1000, own config, drop at 1500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-10000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-10000, own config, drop at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-10000, own config, taper at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-10000, own config, drop at 10500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51201 ckpt-1000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-1000, own config, drop at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-1000, own config, taper at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-1000, own config, drop at 1500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-10000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-10000, own config, drop at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-10000, own config, taper at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-10000, own config, drop at 10500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51202 ckpt-1000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-1000, own config, drop at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-1000, own config, taper at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-1000, own config, drop at 1500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-10000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-10000, own config, drop at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-10000, own config, taper at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-10000, own config, drop at 10500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: c2 time tt-inter s51200 ckpt-20000, own config, keep  [manifest_listed=True, meta run_id=c2-time-tt-inter-s51200-a1]
+PASS P4 accepted: c2 time tt-inter s51200 ckpt-20000, own config, drop at 20000  [manifest_listed=True, meta run_id=c2-time-tt-inter-s51200-a1]
+PASS P4 accepted: per-step-readout s51200 ckpt-10000, own config  [manifest_listed=False, meta run_id=r1-rev-comp-rnn-untied-s51200-a1]
+PASS P4 refused: (a) inter s51200 ckpt-10000, s51201 config  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-inter-s51201-a1/MANIFEST.json lists ['d83221c12ff2c2a7d41a7b39218978fedd0f68c78a09936]
+PASS P4 refused: (a) inter s51202 ckpt-1000, s51200 config  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/MANIFEST.json lists ['bc7cb3c42dae6b9e1e7557ff05b0346ffabde6f47693066]
+PASS P4 refused: (b) inter s51200 ckpt-10000, final config, weights 0 0 1  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-final-s51200-a1/MANIFEST.json lists ['e035a2e4312f722c645d88578304ea68fbb6ea66954d07e]
+PASS P4 refused: (b) final s51201 ckpt-10000, inter config, weights 1 1 1  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-inter-s51201-a1/MANIFEST.json lists ['d83221c12ff2c2a7d41a7b39218978fedd0f68c78a09936]
+PASS P4 refused: (c) inter s51200 ckpt-10000, switch at 1000  [step weights differ from the source at 9000 updates before 10000, first at 1000]
+PASS P4 refused: (c) inter s51200 ckpt-10000, taper from 9999  [step weights differ from the source at 1 updates before 10000, first at 9999]
+PASS P4 refused: (d) lr 2e-3  [lr: 0.002 here, 0.001 in the source]
+PASS P4 refused: (d) wd 0  [wd: 0.0 here, 0.1 in the source]
+PASS P4 refused: (d) task ops51010-ls51110  [task_id: ops51010-ls51110 here, ops51000-ls51100 in the source]
+PASS P4 refused: (d) width 64  [hidden: 64 here, 128 in the source]
+PASS P4 refused: (d) Adam eps 1e-7  [adam: [0.9, 0.999, 1e-07] here, [0.9, 0.999, 1e-08] in the source]
+PASS P4 refused: (e) c2 time ckpt-20000, switch at 10000  [step weights differ from the source at 10000 updates before 20000, first at 10000]
+PASS P4 refused: (f) per-step-readout s51200 ckpt-10000, tied/inter s51200 config  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/MANIFEST.json lists ['046f4c250d8c7aacc9999437f0223fc029cee6e2cbae6c1]
+PASS P4 refused: (f) per-step-readout s51200 ckpt-10000, s51201 per-step config  [checkpoint run ID r1-rev-comp-rnn-untied-s51200-a1 != config run ID r1-rev-comp-rnn-untied-s51201-a1]
+PASS CX-P1 every recovered ckpt-10000 carries its own run ID in its meta (the binding when no MANIFEST.json lists it)  [{}]
+PASS CX-P1 the per-step-readout run directories have no MANIFEST.json; their checkpoints are listed in review/runs/MANIFEST.sha256 (which check_source does not read), and the recovered files match it
+PASS P5 r1-rev-comp-rnn-untied s51200: identity equals my forward; class-mean logits equal my V3 continuation; steps 1-2 untouched  [identity 0.0e+00, class mean 0.0e+00, held-out class-mean acc 1.000]
+PASS P5 r1-rev-comp-rnn-untied s51200: frozen refuses a write and an Adam step; hash unchanged by the forwards, changed by one ulp
+PASS P5 r1-rev-comp-rnn-untied s51201: identity equals my forward; class-mean logits equal my V3 continuation; steps 1-2 untouched  [identity 0.0e+00, class mean 0.0e+00, held-out class-mean acc 1.000]
+PASS P5 r1-rev-comp-rnn-untied s51201: frozen refuses a write and an Adam step; hash unchanged by the forwards, changed by one ulp
+PASS P5 r1-rev-comp-rnn-untied s51202: identity equals my forward; class-mean logits equal my V3 continuation; steps 1-2 untouched  [identity 0.0e+00, class mean 0.0e+00, held-out class-mean acc 1.000]
+PASS P5 r1-rev-comp-rnn-untied s51202: frozen refuses a write and an Adam step; hash unchanged by the forwards, changed by one ulp
+PASS P5 r1-comp-rnn-final s51200: identity equals my forward; class-mean logits equal my V3 continuation; steps 1-2 untouched  [identity 0.0e+00, class mean 0.0e+00, held-out class-mean acc 0.875]
+PASS P5 r1-comp-rnn-final s51200: frozen refuses a write and an Adam step; hash unchanged by the forwards, changed by one ulp
+PASS P5 r1-comp-rnn-final s51201: identity equals my forward; class-mean logits equal my V3 continuation; steps 1-2 untouched  [identity 0.0e+00, class mean 0.0e+00, held-out class-mean acc 0.875]
+PASS P5 r1-comp-rnn-final s51201: frozen refuses a write and an Adam step; hash unchanged by the forwards, changed by one ulp
+PASS P5 r1-comp-rnn-final s51202: identity equals my forward; class-mean logits equal my V3 continuation; steps 1-2 untouched  [identity 0.0e+00, class mean 0.0e+00, held-out class-mean acc 0.969]
+PASS P5 r1-comp-rnn-final s51202: frozen refuses a write and an Adam step; hash unchanged by the forwards, changed by one ulp
+PASS P5 class-mean held-out accuracy reproduces c2 O4: per-step readout 1.00, tied/final 0.88 / 0.88 / 0.97  [[1.0, 1.0, 1.0] [0.875, 0.875, 0.969]]
+PASS P5 a per-step-readout model at length 5 without a step map is refused
+PASS P6 c2task's original draw and split equal r1's tables
+PASS P6 c2task.rows equals my oracle at L = 1 (4 programs)
+PASS P6 c2task.rows equals my oracle at L = 2 (16 programs)
+PASS P6 c2task.rows equals my oracle at L = 3 (64 programs)
+PASS P6 c2task.rows equals my oracle at L = 4 (256 programs)
+PASS P6 c2task.rows equals my oracle at L = 5 (1024 programs)
+PASS P6 c2task.rows equals my oracle at L = 6 (3000 programs)
+PASS P6 c2task.rows equals my oracle at L = 7 (3000 programs)
+PASS P7 verification: 41 rows 1000-3000, each equal to r1 published on every r1 key  [41 rows]
+PASS P7 verification: weights all 1 1 1; source manifest-listed, run ID r1-comp-rnn-inter-s51200-a1; resumed at 1000
+PASS P7 c3-co-calib-keep-s900200-a1: logged weights equal mine at all 41 rows; exposure equals mine; runtime complete  [{'updates_with_weight': [2000, 2000, 2000], 'weighted_row_presentations': [768000.0, 768000.0, 768000.0]}]
+PASS P7 c3-co-calib-taper-s900200-a1: logged weights equal mine at all 41 rows; exposure equals mine; runtime complete  [{'updates_with_weight': [1499, 1499, 2000], 'weighted_row_presentations': [383807.99999999994, 383807.99999999994, 768000.0]}]
+PASS P7 c3-co-calib-taper-s900200-a1: every committed file matches its MANIFEST.json hash  [3 of 5 files present]
+PASS P7 c3-co-calib-keep-s900200-a1: every committed file matches its MANIFEST.json hash  [3 of 5 files present]
+PASS P7 c3-co-verify-keep-s51200-a1: every committed file matches its MANIFEST.json hash  [3 of 4 files present]
+PASS P7 coordinator registry: each run has one complete record and nothing failed or capped
+PASS P8 run IDs unique across 18 plan.json files (394 IDs)  [{}]
+PASS P9 keep from 10k: all 21 rows equal c2-time-tt-inter-s51202-a1 on r1 keys and held_subset; diag on every row but the last
+PASS P9 keep from 10k: source manifest-listed, run ID r1-comp-rnn-inter-s51202-a1
+PASS P9 drop at 10k equals c2train final-only from the same state: ckpt-10300 (weights, m, v, step) and every row incl. diag
+PASS P9 drop exposure: this run [0, 0, 300] updates; from init [10000, 10000, 10300]
+PASS P9 drop: every parameter moves over 10000-10300 (no frozen head) and the Adam step count carries (10300)  [Ws 5.5e-02, bs 1.0e-02, A 5.4e-02, B 2.7e-02, bh 2.5e-03, V 2.9e-02, bv 1.3e-03]
+PASS P9 mid-taper resume at 1800 continues the uninterrupted run bitwise: ckpt-2600 and rows 1800-2600 incl. weights and diag  [17 rows]
+PASS P9 taper: logged weights equal D5 at every row of the whole run (S=1000, D=2000)  [1800: [0.5994999999999999, 0.5994999999999999, 1.0]]
+PASS P9 taper whole: its row at 1000 equals r1 published (branch point untouched)
+PASS P9 taper cont: source is the whole run (run ID bound, no MANIFEST.json in a local run directory)
+2 FAILED: ['P3 its gradient matches a central finite difference of my loss along a random direction', 'P3b the same at ckpt-10000 + N(0, 0.01^2) per element, 3 seeds x 3 weightings']
