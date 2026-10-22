@@ -1,7 +1,31 @@
 {
- "note": "R2 plan. Calibration/smoke runs use seeds 952xxx and are never pooled. Replicate r: init 5220r, data 5210r.",
+ "note": "R2 plan. Calibration/smoke runs use seeds 952xxx and are never pooled. Replicate r: init 5220r, data 5210r. Initial comparison (QUESTION.md): 8 arms x 3 replicates, timeout 3x the 10.1 s calibration.",
  "runs": [
   {"run_id": "r1-share-smoke-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "y1", "--init-seed", "952200", "--data-seed", "952100", "--pre-updates", "20", "--updates", "20"], "timeout": 120},
-  {"run_id": "r1-share-calib-rel-s952200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "y1", "--init-seed", "952200", "--data-seed", "952100"], "timeout": 900}
+  {"run_id": "r1-share-calib-rel-s952200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "y1", "--init-seed", "952200", "--data-seed", "952100"], "timeout": 900},
+  {"run_id": "r1-share-fresh-s52200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "none", "--init-seed", "52200", "--data-seed", "52100"], "timeout": 30},
+  {"run_id": "r1-share-fresh-s52201-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "none", "--init-seed", "52201", "--data-seed", "52101"], "timeout": 30},
+  {"run_id": "r1-share-fresh-s52202-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "none", "--init-seed", "52202", "--data-seed", "52102"], "timeout": 30},
+  {"run_id": "r1-share-rel-s52200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "y1", "--init-seed", "52200", "--data-seed", "52100"], "timeout": 30},
+  {"run_id": "r1-share-rel-s52201-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "y1", "--init-seed", "52201", "--data-seed", "52101"], "timeout": 30},
+  {"run_id": "r1-share-rel-s52202-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "y1", "--init-seed", "52202", "--data-seed", "52102"], "timeout": 30},
+  {"run_id": "r1-share-part-s52200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "part", "--init-seed", "52200", "--data-seed", "52100"], "timeout": 30},
+  {"run_id": "r1-share-part-s52201-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "part", "--init-seed", "52201", "--data-seed", "52101"], "timeout": 30},
+  {"run_id": "r1-share-part-s52202-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "part", "--init-seed", "52202", "--data-seed", "52102"], "timeout": 30},
+  {"run_id": "r1-share-unrel-s52200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "unrel", "--init-seed", "52200", "--data-seed", "52100"], "timeout": 30},
+  {"run_id": "r1-share-unrel-s52201-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "unrel", "--init-seed", "52201", "--data-seed", "52101"], "timeout": 30},
+  {"run_id": "r1-share-unrel-s52202-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "unrel", "--init-seed", "52202", "--data-seed", "52102"], "timeout": 30},
+  {"run_id": "r1-share-same-s52200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "y2", "--init-seed", "52200", "--data-seed", "52100"], "timeout": 30},
+  {"run_id": "r1-share-same-s52201-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "y2", "--init-seed", "52201", "--data-seed", "52101"], "timeout": 30},
+  {"run_id": "r1-share-same-s52202-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "y2", "--init-seed", "52202", "--data-seed", "52102"], "timeout": 30},
+  {"run_id": "r1-share-joint-rel-s52200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--mode", "joint", "--aux", "y1", "--init-seed", "52200", "--data-seed", "52100"], "timeout": 30},
+  {"run_id": "r1-share-joint-rel-s52201-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--mode", "joint", "--aux", "y1", "--init-seed", "52201", "--data-seed", "52101"], "timeout": 30},
+  {"run_id": "r1-share-joint-rel-s52202-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--mode", "joint", "--aux", "y1", "--init-seed", "52202", "--data-seed", "52102"], "timeout": 30},
+  {"run_id": "r1-share-joint-unrel-s52200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--mode", "joint", "--aux", "unrel", "--init-seed", "52200", "--data-seed", "52100"], "timeout": 30},
+  {"run_id": "r1-share-joint-unrel-s52201-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--mode", "joint", "--aux", "unrel", "--init-seed", "52201", "--data-seed", "52101"], "timeout": 30},
+  {"run_id": "r1-share-joint-unrel-s52202-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--mode", "joint", "--aux", "unrel", "--init-seed", "52202", "--data-seed", "52102"], "timeout": 30},
+  {"run_id": "r1-share-alone-y1-s52200-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "none", "--new", "y1", "--init-seed", "52200", "--data-seed", "52100"], "timeout": 30},
+  {"run_id": "r1-share-alone-y1-s52201-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "none", "--new", "y1", "--init-seed", "52201", "--data-seed", "52101"], "timeout": 30},
+  {"run_id": "r1-share-alone-y1-s52202-a1", "argv": ["research/regimes/shared/train.py", "--out", "{out}", "--pre", "none", "--new", "y1", "--init-seed", "52202", "--data-seed", "52102"], "timeout": 30}
  ]
 }
