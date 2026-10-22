@@ -375,6 +375,17 @@
     "--purpose",
     "reviewer re-pin check RP5: resume of c3-rev-reset-drop-s51200-a1 from its ckpt-1000 with the same flags"
    ]
+  },
+  {
+   "run_id": "c3-rev-scaf-a1",
+   "timeout": 900,
+   "argv": [
+    "research/composition-c3/review/rev_scaf.py",
+    "--out",
+    "{out}",
+    "--lane",
+    "4512bce"
+   ]
   }
  ]
 }
