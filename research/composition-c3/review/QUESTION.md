@@ -96,6 +96,22 @@ Read so far: the diff `fa02bf7..82cef77` of `common/` and D10. No run at the new
 
 **Counterexample CX-R1, a reset is more than removing memory.** With a fresh state, Adam's bias correction makes the first updates close to sign steps of size lr per coordinate. The carried state at 1,000 holds ~1,000 updates of second-moment history, from when gradients were larger. So a reset also changes the step size for a while, not only the direction memory. Prediction: over updates 1,000–1,099, the reset branch's RMS per-coordinate move (decay removed) is at least 1.5× the carried branch's. This holds in all six seed × {keep, drop} pairs, in-process from the r1 tied/inter `ckpt-1000` states. If the ratio is near 1, "weights versus moments" is a clean attribution. If it is large, the reset arms also carry a burst of larger steps, and the follow-up's wording should say so.
 
+## 5. Scaffolding follow-up: reset against carried at S = 1k (declared at `84dc657`)
+
+This section was written before I read any follow-up result. At `abfa30b` the lane's branch holds four published verify runs, and I have not opened them; no reset run is published yet. Script to come: `rev_scaf_fu.py`, with the same forward and oracle as §3.
+
+| # | check | prediction |
+|---|---|---|
+| F1 | **Branch points and the reset.** The 6 reset configs resume r1 tied/inter `ckpt-1000` at its hash with `schedule.reset_at = 1000`, and each first row (1,000) equals r1's published row. The saved Adam count is 2,000 at `ckpt-3000` and 49,000 at `ckpt-50000`, and meta `step` is global. The logged `diag.update_norm` at row 1,000 (the update taken at 1,000) equals the norm of my own fresh-state Adam update on the source weights, to 1e-12 relative | all 6 |
+| F2 | **Matched controls.** The carried-keep verify runs (1k → 3k) equal r1's rows in every r1 key, in all three seeds. The carried-drop verify run equals `c3-scaf-drop-at1k-s51200-a1`'s rows including `diag`, and its `ckpt-3000` equals that branch's bitwise | true |
+| F3 | **Records.** Manifests, registry, and every committed reset-run checkpoint rescored to its logged row (as S3). Frozen L1–6 at every fixed time recomputed exhaustively (as S4) | all |
+| F4 | **Arithmetic.** Δ_reset,B, Δ_reset,A and their difference, thresholds, the eps onsets, and the interpretation-rule label of each seed, recomputed from F3's values and the logged rows. Every value of the follow-up figure CSV | exact |
+
+**Counterexample CX-F1, the reset's burst helps, not hurts, early acquisition.** By my CX-R1, a reset gives 2.1–2.6× larger steps for the first hundred updates or more. If the carried moments carry useful history, the reset arms should be slower early. If the larger steps dominate, they should be at least as fast.
+- **Prediction.** B′'s held-out L3 accuracy at `ckpt-3000` and `ckpt-10000` is ≥ B's − 0.02 in at least two of three seeds at each time. The same holds for A′ against A, with A at 3k taken from the carried-keep verify runs.
+- **If it holds.** A "weights at S suffice" result (B′ ≈ B at 50k) cannot exclude a moments effect that the burst offsets, and I will say so.
+- **If B′ is clearly slower early but equal at 50k.** The reset costs time, which the carried moments save, and the endpoint hides it.
+
 ## Revisions
 
 ### 05aac5a + runs (05:23–05:24), before any analysis of them
