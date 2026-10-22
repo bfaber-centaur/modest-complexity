@@ -74,7 +74,7 @@ def length_figure():
             held = float(next(r for r in sel if r['subset'] == 'held-out programs')['accuracy'])
             ax.plot(lengths, acc, color=c, marker=m, ms=6, lw=2, label=f'init {seed}, all programs', zorder=3)
             ax.plot([3], [held], marker=m, ms=9, mfc='white', mec=c, mew=1.6, ls='none', zorder=4,
-                    label=f'init {seed}, length 3 held-out only')
+                    label=f'init {seed}, length 3 held-out only (like-for-like with 4-6)')
         ax.set_title(titles[cond], fontsize=9.5, color=INK, loc='left')
         ax.set_xticks(list(lengths)); ax.set_xlim(0.7, 6.6); ax.set_ylim(0, 1.04)
         ax.set_xlabel('program length (ops applied)', fontsize=9)
@@ -87,9 +87,10 @@ def length_figure():
     order = [l.index(x) for x in l if x.startswith('init')] + [l.index(x) for x in l if not x.startswith('init')]
     fig.legend([h[i] for i in order], [l[i] for i in order], loc='lower center', ncol=3, fontsize=7.5, frameon=False,
                bbox_to_anchor=(0.5, -0.01))
-    fig.suptitle('Frozen r1 RNNs (ckpt-10000, original task ops51000-ls51100) on programs of lengths 1-6; exhaustive rows, no fitting',
-                 fontsize=9.5, color=INK, x=0.01, ha='left')
-    fig.tight_layout(rect=(0, 0.13, 1, 0.97))
+    fig.suptitle('Frozen r1 RNNs (ckpt-10000, original task ops51000-ls51100) on programs of lengths 1-6; exhaustive rows, no fitting.\n'
+                 'Filled points at length 3 cover all 64 programs, 75% of them training rows; the open held-out-only point is the '
+                 'like-for-like comparison with lengths 4-6.', fontsize=9, color=INK, x=0.01, ha='left')
+    fig.tight_layout(rect=(0, 0.13, 1, 0.95))
     for ext in ('png', 'svg'):
         fig.savefig(FIGS/f'length.{ext}', dpi=150)
     plt.close(fig)
@@ -187,7 +188,7 @@ def replication_figure():
         axes[2, j].set_xlabel('program length (frozen, ckpt-10000)', fontsize=8)
     axes[0, 0].set_ylabel('held-out final accuracy\n(16 programs, 128 rows)', fontsize=8.5)
     axes[1, 0].set_ylabel('held-out accuracy on notN rows\n(no one-slot neighbour answers)', fontsize=8.5)
-    axes[2, 0].set_ylabel('accuracy, all 8·4^L rows', fontsize=8.5)
+    axes[2, 0].set_ylabel('accuracy, all 8·4^L rows\n(L=3: 75% training rows;\nheld-out-only: top row at 10k)', fontsize=8)
     handles = []
     from matplotlib.lines import Line2D
     for seed, (c, m) in style.items():

@@ -715,6 +715,16 @@
    ],
    "timeout": 300,
    "purpose": "Part B: frozen length 1-6 evaluation of the 16 replication runs (committed ckpt-10000) on their own tasks; no training"
+  },
+  {
+   "run_id": "c2-gen-followup-anatomy-a1",
+   "argv": [
+    "research/composition-c2/generalization/gen_followup.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 300,
+   "purpose": "Follow-up (QUESTION.md, approved at 99c83c8): frozen anatomy of first errors at steps 4-6 of the 11 tied/inter models; no training"
   }
  ]
 }
