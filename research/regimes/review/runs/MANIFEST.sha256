@@ -102,3 +102,31 @@ c30b4bbc9ff382469432a72e11f5c534107bf2f4693756a7b7698e01e6c14758  r1-rev-share-g
 a048858717be8255c7bc27dd83a98fc89f2d1674500a19bb976c3a60af70e08f  r1-rev-share-replay-part-s52200-a1/final_n512.npz  (local only)
 d9ba1c0702a5bad4b4443195ae900fab01701e765bd303fde13dbbae91cb5c08  r1-rev-share-replay-part-s52200-a1/final_n64.npz  (local only)
 ae605081afb74711a6e62770d263d598a2d0ca0f6b34cf9007e9a740908acdaf  r1-rev-share-replay-part-s52200-a1/pretrained.npz  (local only)
+bd8061e133731351424fddf286fa8fd98050f7dfdf2a3067466194ba4bcf5b93  r1-rev-comp-rnn-replay-inter-s51200-a1/ckpt-0.npz  (local only)
+26843792fab72393e9a9b80b814be97cae64520f31d4d8626df21c4dacf9eea0  r1-rev-comp-rnn-replay-inter-s51200-a1/ckpt-1000.npz  (local only)
+f910e2a492db40b2eb138569ceec53a9112602965937a44691f8df260896edda  r1-rev-comp-rnn-replay-inter-s51200-a1/ckpt-10000.npz  (local only)
+3eccdad857a81061c2a188944b613ddb3f30eca24d31edb5ed860987a382527b  r1-rev-comp-rnn-replay-inter-s51200-a1/config.json
+aa96084ff1e16f02f948788451302c515e8059484c6e47b6a4b1395921042546  r1-rev-comp-rnn-replay-inter-s51200-a1/metrics.jsonl
+4aac26226ae9617ff8efa0ca685cf486bf9597103155f8cdd7375d75fd8871e1  r1-rev-comp-rnn-replay-inter-s51200-a1/runtime.json
+55df2c583a4d58f4ead1ad913fc3ffbbf033958599e150890d46ee9d03745979  r1-rev-comp-rnn-replay-inter-s51200-a1/stdout.log
+2688ef9aa7fead06e525220540e9751a6e6cdb44292aeb254d7693fdf5542700  r1-rev-comp-rnn-untied-s51200-a1/ckpt-0.npz  (local only)
+2688e1779c73fb0af2e2b952326524e5de9311117d999e23177b3abfc791ec5e  r1-rev-comp-rnn-untied-s51200-a1/ckpt-1000.npz  (local only)
+b24370b8714501208ffa92f7f64fe0d6f6cdcdefd532a74fff20f427a9081130  r1-rev-comp-rnn-untied-s51200-a1/ckpt-10000.npz
+4080a8ca15bfb0592c1a0a1dbad75ed232fbdf5b96bfcedb62e740081f630e88  r1-rev-comp-rnn-untied-s51200-a1/config.json
+3c70dd05243b77dc2d9992d63d9e8bfcba04be148e4aeb48a1f9b7ade17275b4  r1-rev-comp-rnn-untied-s51200-a1/metrics.jsonl
+de7a1c6c5b0139f2d93b003ff6ceba862a5dfb4cb8406155aa0e0b4b143cacfc  r1-rev-comp-rnn-untied-s51200-a1/runtime.json
+16606b6736f55aba22e9a446c76f3ab401d553a9b8d79b47b20cb9e3de94b974  r1-rev-comp-rnn-untied-s51200-a1/stdout.log
+7457bce761a97520f4042e69d680b30b1562a165ff561426fc2ec59b2fa599cd  r1-rev-comp-rnn-untied-s51201-a1/ckpt-0.npz  (local only)
+97e0da905869e7d2642fe7aab819fde158661a504bf155d71b9d204164726a40  r1-rev-comp-rnn-untied-s51201-a1/ckpt-1000.npz  (local only)
+b3efe45fbddbb10229251e8119a788b7cab23cf899b1d0dedca47f131a985577  r1-rev-comp-rnn-untied-s51201-a1/ckpt-10000.npz
+d762a5a507d055d5c2112b2c5ac7df9dea41605849fe2c776f01910fbcec322f  r1-rev-comp-rnn-untied-s51201-a1/config.json
+a757d53a191ea16289c372882d892da60450a23f76734ac08100ad4b36b2828b  r1-rev-comp-rnn-untied-s51201-a1/metrics.jsonl
+bc99a2ab1a0a8a0ac8494b7f7e6db50aac0a619f5aa92965e1dbd34bf1ef8b61  r1-rev-comp-rnn-untied-s51201-a1/runtime.json
+16606b6736f55aba22e9a446c76f3ab401d553a9b8d79b47b20cb9e3de94b974  r1-rev-comp-rnn-untied-s51201-a1/stdout.log
+20d913def72c0c7200f0bd8c8c62d9bb8d15e820744330ed76d8c0d8ac96f18e  r1-rev-comp-rnn-untied-s51202-a1/ckpt-0.npz  (local only)
+d87276fc8d939c32a761305348438d480b8ca5dbe68661277968ce2ec8b866c7  r1-rev-comp-rnn-untied-s51202-a1/ckpt-1000.npz  (local only)
+fcc0145cf18b65b8f46287732a38a7346d91df88663099c9de20e4b426b37874  r1-rev-comp-rnn-untied-s51202-a1/ckpt-10000.npz
+b1090571f33591a439ac99df072b71569753c9933ca56b1ae972180688ae623b  r1-rev-comp-rnn-untied-s51202-a1/config.json
+69ebe32822c85051fb311b327ed6115cfc6b2b4c299387e7670b07f828789e9f  r1-rev-comp-rnn-untied-s51202-a1/metrics.jsonl
+9b47973dbb2699952ce459b3fef1fb0f5cda4ad03ac533f31b6d2870157029c8  r1-rev-comp-rnn-untied-s51202-a1/runtime.json
+16606b6736f55aba22e9a446c76f3ab401d553a9b8d79b47b20cb9e3de94b974  r1-rev-comp-rnn-untied-s51202-a1/stdout.log
