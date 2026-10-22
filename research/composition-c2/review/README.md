@@ -4,7 +4,7 @@
 - [REVIEW.md](REVIEW.md): verdicts with exact artifact references.
 - [rev_pin.py](rev_pin.py): pin check of `b3e8132`, plus D10. Its output is [out/rev_pin.txt](out/rev_pin.txt).
 - [rev_gen.py](rev_gen.py): generalization lane checks at lane commits: Part A with CX-G1, Part B with CX-G2, A5, and the follow-up anatomy with CX-G3. Its output is [out/rev_gen.txt](out/rev_gen.txt).
-- [rev_time.py](rev_time.py): time lane checks at a lane commit, and CX-T1/CX-T2. Its output is [out/rev_time.txt](out/rev_time.txt).
+- [rev_time.py](rev_time.py): time lane checks at lane commits: M2 with CX-T1/CX-T2, F1 with CX-T3/CX-T4, and the NOTE's numbers. Its output is [out/rev_time.txt](out/rev_time.txt).
 - [rev_share.py](rev_share.py): sharing lane checks at a lane commit, CX-S1, and the wd 0 follow-up with CX-S2. Its output is [out/rev_share.txt](out/rev_share.txt).
 - [rev_mech.py](rev_mech.py): mechanisms lane checks at a lane commit, and CX-M1. Its output is [out/rev_mech.txt](out/rev_mech.txt).
 - [plan.json](plan.json), [registry.jsonl](registry.jsonl): reviewer runs (IDs `c2-rev-`, seeds 65000–65999). Outputs are local in `runs/c2/` (gitignored). [runs/](runs/MANIFEST.sha256) holds their small files and a manifest.
@@ -21,7 +21,7 @@ uv run --locked python research/composition-c2/review/rev_pin.py runs/c2 > resea
 uv run --locked python research/composition-c2/review/rev_gen.py 30c495f 99c83c8 543ed95 fd4e21d > research/composition-c2/review/out/rev_gen.txt
 uv run --locked python research/composition-c2/review/rev_mech.py 817a768 817a768 0fe8624 > research/composition-c2/review/out/rev_mech.txt
 uv run --locked python research/composition-c2/review/rev_share.py 83b3303 501071c > research/composition-c2/review/out/rev_share.txt
-uv run --locked python research/composition-c2/review/rev_time.py 543ed95 > research/composition-c2/review/out/rev_time.txt
+uv run --locked python research/composition-c2/review/rev_time.py 543ed95 e44349b > research/composition-c2/review/out/rev_time.txt
 ```
 
 `rev_pin.py` §7 reads the run's `ckpt-10000.npz`, which is local-only.
@@ -44,5 +44,6 @@ uv run --locked python research/composition-c2/review/rev_time.py 543ed95 > rese
 | after 3be6632 (04:42) | `rev_share.py` with the wd 0 follow-up: one crash (no `diag` in the 10k row), the CX-S2 pass, the NOTE-check pass, a one-off read of the table values, and a final pass after fixing two rounding tolerances in my checks | 0.7 + 0.9 + 1.2 + 1 + 1.1 s | 4.7 min |
 | after 651de53 (04:51) | generalization anatomy: `anatomy()` alone, then the full `rev_gen.py` after correcting my aggregation of one NOTE check (per seed and step, not pooled) | 48.0 + 88.5 s | 7.0 min |
 | after 35ec5f5 (04:58) | `rev_mech.py` with `o6_scale` (mechanisms NOTE `0fe8624`) | 24.7 s | 7.4 min |
+| after ff3e589 / b7ddbfe (05:05–05:09) | `rev_time.py` with F1 (`f1`), then with `note_m4` twice (after loosening two of my range checks to the NOTE's rounding), plus one-off reads of the 75k rows and compatibility ranges | 9.2 + 9.4 + 9.5 + 2 s | 7.9 min |
 
 Times from 04:16 on were first written as clock guesses that ran 3–9 minutes ahead. They were replaced with the commit that recorded each run.
