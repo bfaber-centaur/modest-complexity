@@ -1,0 +1,49 @@
+system,length,accuracy
+oracle (per-row loop),1,1.0
+P2 iterated (r1-comp-interp-s51200-a1),1,1.0
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),1,0.125
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),1,0.09375
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),1,0.0625
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),1,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),1,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),1,1.0
+oracle (per-row loop),2,1.0
+P2 iterated (r1-comp-interp-s51200-a1),2,1.0
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),2,0.109375
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),2,0.1171875
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),2,0.109375
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),2,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),2,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),2,1.0
+oracle (per-row loop),3,1.0
+P2 iterated (r1-comp-interp-s51200-a1),3,1.0
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),3,0.119140625
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),3,0.12890625
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),3,0.126953125
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),3,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),3,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),3,1.0
+oracle (per-row loop),4,1.0
+P2 iterated (r1-comp-interp-s51200-a1),4,1.0
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),4,0.1259765625
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),4,0.1318359375
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),4,0.12744140625
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),4,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),4,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),4,1.0
+oracle (per-row loop),5,1.0
+P2 iterated (r1-comp-interp-s51200-a1),5,1.0
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),5,0.1275634765625
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),5,0.1241455078125
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),5,0.127685546875
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),5,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),5,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),5,1.0
+oracle (per-row loop),6,1.0
+P2 iterated (r1-comp-interp-s51200-a1),6,1.0
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),6,0.125213623046875
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),6,0.123687744140625
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),6,0.124420166015625
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),6,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),6,1.0
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),6,1.0

@@ -1,0 +1,20 @@
+[
+ {
+  "file": "checks.json",
+  "bytes": 7360,
+  "sha256": "8882759202808f0f8482de6b79d4db09c2f4eb65185ef964e86c4cf7c04d5c00",
+  "committed": true
+ },
+ {
+  "file": "decode_table.csv",
+  "bytes": 10505,
+  "sha256": "4fe668a70b339054f5bbb26cfcf7210465ab92ac4769d9eb457a447ce1f4ec12",
+  "committed": true
+ },
+ {
+  "file": "stdout.log",
+  "bytes": 739,
+  "sha256": "66f30a45917c1619c6c221951e57eceb1bb07d0e9beb2da612a31981272b0bbf",
+  "committed": true
+ }
+]

@@ -1,0 +1,29 @@
+r1-comp-rnn-inter-s51200-a1 0 match held final 0.109
+r1-comp-rnn-inter-s51200-a1 1000 match held final 0.336
+r1-comp-rnn-inter-s51200-a1 10000 match held final 1.000
+r1-comp-rnn-inter-s51201-a1 0 match held final 0.109
+r1-comp-rnn-inter-s51201-a1 1000 match held final 0.352
+r1-comp-rnn-inter-s51201-a1 10000 match held final 0.961
+r1-comp-rnn-inter-s51202-a1 0 match held final 0.125
+r1-comp-rnn-inter-s51202-a1 1000 match held final 0.359
+r1-comp-rnn-inter-s51202-a1 10000 match held final 1.000
+r1-rev-comp-rnn-untied-s51200-a1 0 match held final 0.109
+r1-rev-comp-rnn-untied-s51200-a1 1000 match held final 0.258
+r1-rev-comp-rnn-untied-s51200-a1 10000 match held final 0.633
+r1-rev-comp-rnn-untied-s51201-a1 0 match held final 0.109
+r1-rev-comp-rnn-untied-s51201-a1 1000 match held final 0.219
+r1-rev-comp-rnn-untied-s51201-a1 10000 match held final 0.523
+r1-rev-comp-rnn-untied-s51202-a1 0 match held final 0.125
+r1-rev-comp-rnn-untied-s51202-a1 1000 match held final 0.234
+r1-rev-comp-rnn-untied-s51202-a1 10000 match held final 0.516
+r1-comp-rnn-final-s51200-a1 0 match held final 0.109
+r1-comp-rnn-final-s51200-a1 1000 match held final 0.180
+r1-comp-rnn-final-s51200-a1 10000 match held final 0.273
+r1-comp-rnn-final-s51201-a1 0 match held final 0.109
+r1-comp-rnn-final-s51201-a1 1000 match held final 0.188
+r1-comp-rnn-final-s51201-a1 10000 match held final 0.312
+r1-comp-rnn-final-s51202-a1 0 match held final 0.125
+r1-comp-rnn-final-s51202-a1 1000 match held final 0.188
+r1-comp-rnn-final-s51202-a1 10000 match held final 0.320
+/home/user/modest-complexity/.venv/lib/python3.12/site-packages/numpy/__config__.py:155: UserWarning: Install `pyyaml` for better output
+  warnings.warn("Install `pyyaml` for better output", stacklevel=1)

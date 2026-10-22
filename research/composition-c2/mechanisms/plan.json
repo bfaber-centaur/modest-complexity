@@ -1,0 +1,67 @@
+{
+ "note": "c2 mechanisms lane plan (DECISIONS D4). Frozen analyses of recovered checkpoints; no training. IDs are never reused.",
+ "runs": [
+  {
+   "run_id": "c2-mech-calib-a1",
+   "argv": [
+    "research/composition-c2/mechanisms/mech_interchange.py",
+    "--out",
+    "{out}",
+    "--steps",
+    "0"
+   ],
+   "timeout": 300,
+   "purpose": "calibration: interchange analysis on the nine ckpt-0 files, to time one checkpoint"
+  },
+  {
+   "run_id": "c2-mech-eval-a1",
+   "argv": [
+    "research/composition-c2/mechanisms/mech_eval.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 300,
+   "purpose": "M1: SHA-256 and published-metric reproduction of all 27 recovered checkpoints"
+  },
+  {
+   "run_id": "c2-mech-interchange-a1",
+   "argv": [
+    "research/composition-c2/mechanisms/mech_interchange.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 900,
+   "purpose": "M2-M4: interchange, centroids, controls, geometry on 27 checkpoints (primary: 10k)"
+  },
+  {
+   "run_id": "c2-mech-probe-a1",
+   "argv": [
+    "research/composition-c2/mechanisms/mech_probe.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 600,
+   "purpose": "D5 decode tables, probe seed 64300, nine 10k checkpoints"
+  },
+  {
+   "run_id": "c2-mech-residual-a1",
+   "argv": [
+    "research/composition-c2/mechanisms/mech_residual.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 600,
+   "purpose": "follow-up B (approved by coordinator 04:18Z): residual dose, inside/outside centroid span, held-out subspace interchange; nine 10k checkpoints; seed 64302"
+  },
+  {
+   "run_id": "c2-mech-energy-a1",
+   "argv": [
+    "research/composition-c2/mechanisms/mech_energy.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 300,
+   "purpose": "post-hoc descriptive (ADAPTIVE.md 04:23): residual energy in U vs the follow-up random subspaces; negative coordinates of split states"
+  }
+ ]
+}

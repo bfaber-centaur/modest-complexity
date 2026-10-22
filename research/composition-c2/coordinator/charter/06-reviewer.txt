@@ -1,0 +1,33 @@
+You are working on composition round c2 in bfaber-centaur/modest-complexity.
+PR #49 was reviewed and merged into swarm/exploration at 5c0129b0e70d6263c5d6bd8fb68f4b940ce8d1e0. This is the minimum base, not permission to overwrite newer work. Read AGENTS.md, research/regimes/composition/NOTE.md, research/regimes/review/REVIEW.md section 1, and research/regimes/coordinator/SYNTHESIS.md. This new assignment supersedes r1 assignments and budgets only for c2. Use a separate swarm/composition-c2 integration branch and research/composition-c2 directory, coordinated through the coordinator. Worker PRs target that new branch. No main/upstream merge or paid compute.
+
+Evidence at r1's 10k updates, one permutation draw and split, three init seeds:
+- Final-only MLP 14–17%; intermediate-supervised MLP 20–25%.
+- Shared-transition RNN: final-only 27–32%; tied readout plus intermediate supervision 96–100%; per-step untied readouts plus intermediate supervision 52–63%.
+- Final-only and untied RNNs were still improving.
+- All held-out intermediate prefixes occur in training. Intermediate-head accuracy is NOT an unseen-prefix generalization test.
+- 42 of 128 held-out rows cannot be answered by copying any one-op-slot training neighbour. Final-only RNN gets none of those right at 10k. Tied/intermediate RNN reaches 88–100% on them, late in training. This rejects that particular copying rule, not every possible shortcut.
+- RNN checkpoints were local-only in r1; do not assume they are in Git. Recover and verify them, or explicitly replay original runs and compare published predictions/metrics before extending. Replays are not new seeds.
+
+Working contract:
+Exploratory science. Write QUESTION.md with predictions, controls, exact measures and a first-figure plan before new measurements. Record adaptive choices separately. Reuse locked uv dependencies and current NumPy code; no new experiment framework. Use short, inspectable implementations. Shared-code changes belong to the coordinator and must be pinned before workers launch.
+Calibrate actual CPU/memory. Coordinator assigns explicit elapsed budgets and run IDs; do not inherit an old cap blindly. Default one BLAS thread per process. Preserve failed/capped attempts, checkpoints, optimizer states, exact commands, task/split/init seeds and hashes. Keep host identity separate from scientific configuration. Test checkpoint continuation against uninterrupted execution before main continuation runs.
+Three initial paired seeds are exploratory coverage, not statistical power. Branches/checkpoints are not independent samples. Show every seed, training performance and missing runs. Keep task-draw and initialization variation distinct. Report updates, examples, parameter counts and elapsed execution; timing differs across architectures.
+One primary figure before expansion; one adaptive follow-up after the initial comparison, chosen with the coordinator. Publish PNG plus SVG, source CSV and regeneration command; visually inspect figures. Deliver a concise NOTE.md, manifest and reviewer handoff. Final scientific claims must remain bounded by tested tasks, recipes and budgets. Finite plateaus do not establish necessity or impossibility. Linear decodability does not establish causal use.
+Run existing lane/common tests in separate Python processes: local task/train module names collide in combined unittest discovery. Avoid introducing further import ambiguity.
+Starting literature: https://arxiv.org/abs/1802.06467 (lookup-table composition). Read relevant methods; distinguish reproduction, extension and speculation. No novelty claim without a targeted literature check.
+
+ROLE: INDEPENDENT REVIEWER
+Independently assess scientific correctness and interpretation across c2. Read the workers' questions, write your predictions/counterexamples before opening result tables, and block only affected claims or runs.
+
+Before training: verify the common pin's no-change mode, recurrent gradients (including untied variants), full optimizer-state resume, train/test construction and readout loss weights. Run test files in isolated processes. Check arbitrary-length evaluation against a plain independent oracle. Recovery/replay of unpublished r1 checkpoints must be explicitly identified; cross-host matches are not assumed.
+
+High-priority checks:
+- Time: compare resumed versus uninterrupted short trajectories; verify censoring/threshold resolution; a finite plateau never establishes necessity.
+- Sharing: identical initial forward functions; actual copied arrays are independent in untied mode; correct gradient aggregation; counts and decay exposure; no claimed factorial control of parameter count.
+- Generalization: actual new task draws and splits; reject-selection log; no train/test product collisions hidden by syntactic novelty; lengths 1–2 were supervised; original-draw initialization seeds do not substitute for dataset replication.
+- Mechanisms: recompute counterfactual targets; confirm suffix routing; self-swap identity; same-step full-state swaps equal recombined evaluations; cross-depth off-distribution caveats; avoid selecting only successful intervention pairs after seeing outputs.
+
+Attempt one concrete counterexample per substantive interpretation, using cheap analysis before training. For example, test whether apparent compositional progress is confined to neighbour-answerable rows, whether longer-length success is driven by repeated equivalent programs, or whether a claimed state code changes with history despite identical semantic state.
+
+Recompute primary metrics from checkpoints or raw predictions using independent code, inspect exported figures and verify manifests. Report PASS/CONCERN/BLOCK/NOT CHECKED with exact artifact references. A passed implementation test is not a passed scientific hypothesis. Record reviewer runs distinctly, preserve negative checks and keep the handoff concise.

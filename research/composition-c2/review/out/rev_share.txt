@@ -1,0 +1,49 @@
+PASS recipe: all 12 lane runs (UT, UU, TT and TU replays) have step weights 1 1 1, their cell's scheme, lr 1e-3, wd 0.1, the original task, the init seed in their ID, 10,000 updates, width 128, no resume
+PASS init identity: per seed, the step-0 rows (train, held, held_final_pred) of TT, TU, UT and UU are identical
+PASS replays: every logged row (201 per run) of the 6 TT/TU replays equals r1's published row in step, train, held, held_final_pred
+PASS parameter counts from the checkpoints: {'tt': {19208}, 'tu': {21272}, 'ut': {53256}, 'uu': {55320}}; every parameter is decayed (decoupled wd on all)
+PASS gradient aggregation at init (seeds 51200-51202, all 384 training rows, weights 1 1 1): untied copies sum to the tied gradient  [worst relative diff 1.7e-16]
+PASS 12 ckpt-10000 rescored: held-out, train and the prediction string equal the last logged row; N/notN equal held_subset where logged
+INFO TT held | N | notN | train at 10k: [(1.0, 1.0, 1.0, 1.0), (0.961, 1.0, 0.881, 1.0), (1.0, 1.0, 1.0, 1.0)]
+INFO TU held | N | notN | train at 10k: [(0.633, 0.826, 0.238, 1.0), (0.523, 0.744, 0.071, 1.0), (0.516, 0.744, 0.048, 1.0)]
+INFO UT held | N | notN | train at 10k: [(0.836, 0.953, 0.595, 1.0), (0.68, 0.849, 0.333, 1.0), (0.625, 0.837, 0.19, 1.0)]
+INFO UU held | N | notN | train at 10k: [(0.766, 0.953, 0.381, 1.0), (0.609, 0.814, 0.19, 1.0), (0.703, 0.919, 0.262, 1.0)]
+INFO s51200, 41 evaluations 8,000-10,000: UU - TU min +0.109 max +0.156, negative at 0; interaction min +0.289 max +0.398; held-out change 8k->10k TT +0.031, TU +0.102, UT +0.141, UU +0.109
+INFO s51201, 41 evaluations 8,000-10,000: UU - TU min +0.055 max +0.117, negative at 0; interaction min +0.344 max +0.430; held-out change 8k->10k TT +0.078, TU +0.094, UT +0.102, UU +0.070
+INFO s51202, 41 evaluations 8,000-10,000: UU - TU min +0.164 max +0.203, negative at 0; interaction min +0.547 max +0.609; held-out change 8k->10k TT +0.055, TU +0.070, UT +0.078, UU +0.094
+PASS CX-S1 prediction: UU - TU > 0 at every logged evaluation 8,000-10,000 in every seed
+PASS CX-S1 prediction: interaction (TT - TU) - (UT - UU) > 0 at every logged evaluation 8,000-10,000 in every seed
+INFO wd0 TT s51200: held at 10k 0.398 (notN 0.048); 5k->10k held +0.000, held CE 5.77->6.87, train margin median 5k->9,950 8.5->11.7; changed held-out predictions per evaluation: mean 0.10, max 2
+INFO wd0 TT s51201: held at 10k 0.383 (notN 0.071); 5k->10k held +0.016, held CE 5.31->6.14, train margin median 5k->9,950 8.5->11.5; changed held-out predictions per evaluation: mean 0.16, max 2
+INFO wd0 TT s51202: held at 10k 0.453 (notN 0.024); 5k->10k held +0.055, held CE 6.29->7.11, train margin median 5k->9,950 8.5->11.8; changed held-out predictions per evaluation: mean 0.16, max 2
+INFO wd0 TU s51200: held at 10k 0.297 (notN 0.000); 5k->10k held +0.023, held CE 9.57->11.36, train margin median 5k->9,950 8.5->11.6; changed held-out predictions per evaluation: mean 0.17, max 2
+INFO wd0 TU s51201: held at 10k 0.297 (notN 0.000); 5k->10k held +0.008, held CE 9.81->12.29, train margin median 5k->9,950 8.4->11.4; changed held-out predictions per evaluation: mean 0.23, max 1
+INFO wd0 TU s51202: held at 10k 0.320 (notN 0.048); 5k->10k held +0.008, held CE 9.75->12.20, train margin median 5k->9,950 8.5->11.5; changed held-out predictions per evaluation: mean 0.24, max 2
+INFO wd0 UT s51200: held at 10k 0.336 (notN 0.000); 5k->10k held +0.016, held CE 8.07->9.46, train margin median 5k->9,950 9.2->12.3; changed held-out predictions per evaluation: mean 0.15, max 1
+INFO wd0 UT s51201: held at 10k 0.336 (notN 0.000); 5k->10k held +0.039, held CE 8.11->9.64, train margin median 5k->9,950 9.3->12.3; changed held-out predictions per evaluation: mean 0.26, max 3
+INFO wd0 UT s51202: held at 10k 0.305 (notN 0.000); 5k->10k held +0.031, held CE 9.25->10.77, train margin median 5k->9,950 9.2->12.3; changed held-out predictions per evaluation: mean 0.16, max 3
+INFO wd0 UU s51200: held at 10k 0.297 (notN 0.024); 5k->10k held +0.008, held CE 7.64->8.85, train margin median 5k->9,950 9.5->12.4; changed held-out predictions per evaluation: mean 0.27, max 2
+INFO wd0 UU s51201: held at 10k 0.312 (notN 0.000); 5k->10k held +0.023, held CE 8.66->9.93, train margin median 5k->9,950 9.5->12.5; changed held-out predictions per evaluation: mean 0.06, max 1
+INFO wd0 UU s51202: held at 10k 0.305 (notN 0.000); 5k->10k held +0.023, held CE 8.30->9.66, train margin median 5k->9,950 9.4->12.4; changed held-out predictions per evaluation: mean 0.18, max 3
+PASS wd-0 recipes: 12 runs with wd 0 and otherwise the wd-0.1 recipe (step weights 1 1 1, cell scheme, lr, task, seed, 10,000 updates, width, no resume)
+PASS wd-0 pairing: each run's step-0 row equals its wd-0.1 counterpart's (r1's for TT/TU): same initial function
+PASS wd-0 endpoints: held-out and notN from the logged prediction string with my recount equal the last logged row
+FAIL CX-S2 prediction, first half: held-out changes by at most 0.03 from 5k to 10k in every run
+PASS CX-S2 prediction, second half: train margin grows > 10% (5k->9,950, the last row with diag) and held-out CE rises 5k->10k (in 12 of 12 runs; predicted all)
+PASS NOTE follow-up table: held-out, notN and wd 0 - wd 0.1 at 10k, per cell and seed
+PASS NOTE paired differences within wd 0 (five contrasts x three seeds)
+PASS NOTE: interaction at wd 0.1 is +0.30 to +0.56  [+0.297 to +0.562]
+PASS NOTE F2: TT at wd 0 below wd 0.1 by >= 0.2 on every seed (-0.55 to -0.60)
+PASS NOTE F3: spread across cells smaller at wd 0 on every seed (0.09-0.15 against 0.37-0.48)  [0.086-0.148 against 0.367-0.484]
+FAIL NOTE F4: TT highest at wd 0 on 3 of 3 seeds, "by 0.05-0.15" read as its lead over the next-best cell  [0.047-0.133]
+PASS NOTE trajectories: held-out at 1,000 is 0.23-0.34  [0.227-0.344]
+PASS NOTE trajectories: change over the last 2,000 updates -0.01 to +0.03 at wd 0, +0.03 to +0.14 at wd 0.1  [-0.008 to +0.031; +0.031 to +0.141]
+PASS NOTE trajectories: N 0.43-0.66 and notN <= 0.07 (to two decimals) at 10k  [N 0.430-0.663, notN max 0.071]
+PASS NOTE fit: every wd 0 run has all three training heads at 1.0 by 350-600 updates  [350-600]
+INFO wd 0 held-out change from 1,000 to 10,000: +0.016 to +0.109 (median +0.059); runs with a net rise: 12 of 12
+PASS followup_trajectories.csv: all 2,412 rows (12 wd 0 runs x 201 steps) equal the logged rows and my N/notN recount
+PASS followup_endpoints.csv: all 24 rows (both recipes) equal the logged rows, my recount, the parameter counts, the fit step and the first step of five consecutive held-out >= 0.95
+INFO wd 0 at 9,950: median sqrt(vhat) 5.9e-06-2.0e-05; update norm 8.4e-04-4.9e-03; train margin min 8.7-10.5; fraction below eps over 500-9,950 0.020-0.088
+PASS NOTE optimizer, against the 9,950 rows: median sqrt(vhat) within 6e-6 to 2e-5, fraction below eps 2-9% from 500 on, update norm within 8e-4 to 5e-3, train margin min within 8.7-10.5 (allowing for one update and rounding)
+PASS NOTE: TT s51200 transition norm 29.0 at wd 0 (groups_wd0.csv) against 19.1 at wd 0.1 (mine, from the recovered checkpoint: A, B, bh)  [29.017 and 19.072]
+2 FAILED: ['CX-S2 prediction, first half: held-out changes by at most 0.03 from 5k to 10k in every run', 'NOTE F4: TT highest at wd 0 on 3 of 3 seeds, "by 0.05-0.15" read as its lead over the next-best cell']

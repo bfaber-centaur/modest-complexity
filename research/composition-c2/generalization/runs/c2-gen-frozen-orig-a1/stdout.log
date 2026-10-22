@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/user/modest-complexity/research/composition-c2/generalization/gen_eval.py", line 242, in <module>
+    main()
+  File "/home/user/modest-complexity/research/composition-c2/generalization/gen_eval.py", line 219, in main
+    lr, sr, ck = evaluate(p, T)
+                 ^^^^^^^^^^^^^^
+  File "/home/user/modest-complexity/research/composition-c2/generalization/gen_eval.py", line 96, in evaluate
+    ok = c2rnn.forward(p, d['ops'], s=d['s'])[1][-1].argmax(1) == d['states'][:, -1]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/modest-complexity/research/composition-c2/common/c2rnn.py", line 83, in forward
+    smap = _step_map(p, ops.shape[1], step_map)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/modest-complexity/research/composition-c2/common/c2rnn.py", line 64, in _step_map
+    assert len(step_map) == n_steps and all(1 <= k <= TRAIN_LENGTH for k in step_map), step_map
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [1, 2, 3, 4]

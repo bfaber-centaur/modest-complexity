@@ -1,0 +1,20 @@
+{
+ "c2-co-verify-inter-s51200-a1": {
+  "source": "r1-comp-rnn-inter-s51200-a1",
+  "logged_steps": 181,
+  "metrics_identical": true,
+  "ckpt_10000_arrays_identical": true
+ },
+ "c2-co-verify-final-s51200-a1": {
+  "source": "r1-comp-rnn-final-s51200-a1",
+  "logged_steps": 181,
+  "metrics_identical": true,
+  "ckpt_10000_arrays_identical": true
+ },
+ "c2-co-verify-untiedro-s51200-a1": {
+  "source": "r1-rev-comp-rnn-untied-s51200-a1",
+  "logged_steps": 181,
+  "metrics_identical": true,
+  "ckpt_10000_arrays_identical": true
+ }
+}

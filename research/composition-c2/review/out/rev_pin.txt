@@ -1,0 +1,25 @@
+PASS test_c2.py in its own process: Ran 10 tests in 13.947s OK  [14.1 s]
+PASS c2task.load(): permutations, Latin square, train/held programs and task seed equal the r1 tables
+PASS c2task.rows and programs equal a plain-loop oracle for every row at lengths 1-6 and for the train/held programs
+PASS neighbour_answerable equals an independent recount (notN = 42 of 128; all neighbours are training rows)
+PASS c2rnn.init equals every recovered r1 ckpt-0 (9 runs; tied/tied and tied/per-step), every array bitwise
+PASS all four schemes compute the same function at init; writing one copy in place leaves the other copies unchanged
+PASS loss value equals the one written here (4 schemes x 4 weight vectors incl. 0 and non-unit)  [max |diff| 8.9e-16]
+PASS every gradient entry equals central differences of the loss written here (3856 entries)  [worst abs error 1.6e-09]
+PASS a weight-0 step gives its untied readout copy an exactly zero gradient
+PASS length-5 forward with step map [1,2,3,3,3] and continuation from h2 equal the forward written here (4 schemes)  [max |diff| 0.0e+00]
+PASS RECOVERY.json: 28 files (27 at the pin, added later: ['r1-comp-interp-s51200-a1']); committed bytes = recorded SHA-256 = r1 published manifest; step and scheme in each pin file as named; 9 also byte-equal to originals on this container; nothing unlisted
+PASS no-change evaluation: c2train.evaluate on all 9 recovered ckpt-10000 equals the last published r1 row exactly (train, held, held_final_pred)
+INFO notN accuracy at 10,000 from c2train.evaluate: {'r1-comp-rnn-inter-s51200-a1': 1.0, 'r1-comp-rnn-inter-s51201-a1': 0.881, 'r1-comp-rnn-inter-s51202-a1': 1.0, 'r1-comp-rnn-final-s51200-a1': 0.0, 'r1-comp-rnn-final-s51201-a1': 0.0, 'r1-comp-rnn-final-s51202-a1': 0.0, 'r1-rev-comp-rnn-untied-s51200-a1': 0.238, 'r1-rev-comp-rnn-untied-s51201-a1': 0.071, 'r1-rev-comp-rnn-untied-s51202-a1': 0.048}
+PASS resume refuses a wrong SHA-256 and a scheme that differs from the checkpoint
+INFO resume of r1 rnn-final ckpt-10000 with default step weights: exit 0, recorded step_weights [1.0, 1.0, 1.0] (source condition: final)
+INFO resume with another task id, lr, wd and init seed: exit 0, recorded task ops63000-ls63100, lr 0.003, wd 0.0, init seed 9
+FAIL EXPECTED GAP: resume compares the source run's recipe (step weights, task, lr, wd, init seed)  [accepted silently; see REVIEW.md C1]
+PASS cross-host resume on this host: 181 logged rows 1,000-10,000 equal r1 published; ckpt-10000 weights, both moments and t equal the recovered original
+INFO calibration on this host (1 job, tied/tied, step weights 0 0 1): 5.53 ms per update, peak RSS 41 MiB, wall 51.0 s
+PASS c2probe.decode_table (inter s51200 ckpt-10000, probe seed 64300): labels, r1 probe weights bitwise, every entry re-scored, orientation [fitted][scored], diagonal = r1 held-out probe accuracy
+INFO decode table rows = fitted position 0..3, columns = scored position: [[1.0, 0.781, 0.547, 0.383], [1.0, 1.0, 1.0, 0.992], [1.0, 1.0, 1.0, 1.0], [1.0, 1.0, 1.0, 0.992]] train fit [1.0, 1.0, 1.0, 1.0]
+INFO forward with no step map, exception by (tie transition, tie readout, length): {(True, True, 3): None, (True, True, 4): 'AssertionError', (True, True, 6): 'AssertionError', (True, False, 3): None, (True, False, 4): 'ValueError', (True, False, 6): 'ValueError', (False, True, 3): None, (False, True, 4): 'ValueError', (False, True, 6): 'ValueError', (False, False, 3): None, (False, False, 4): 'ValueError', (False, False, 6): 'ValueError'}
+PASS D10: no map raises AssertionError for tied/tied only past length 3, ValueError for untied schemes past length 3, nothing at length 3
+PASS D10: tied/tied, five valid explicit maps at length 6 give bitwise identical states and logits, equal to the forward written here; in each untied scheme two different maps give different logits
+1 FAILED: ["EXPECTED GAP: resume compares the source run's recipe (step weights, task, lr, wd, init seed)"]
