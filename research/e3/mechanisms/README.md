@@ -1,6 +1,6 @@
 # e3 mechanisms: figures first
 
-Question, arms, matching rule and expected outcomes: [QUESTION.md](QUESTION.md) (`5bfa578`). Assignment: DECISIONS D5. Session `e3-me-cloud-1`, branch `claude/project-thread-psralm`. Nothing here is audited yet.
+Question, arms, matching rule and expected outcomes: [QUESTION.md](QUESTION.md) (`5bfa578`). Assignment: DECISIONS D5. Session `e3-me-cloud-1`, branch `claude/project-thread-psralm`. The start files passed the audit gate (D10); the continuation packet below is not audited yet. Reading: [INTERPRETATION.md](INTERPRETATION.md).
 
 ## Start files and the update-0 report (before any continuation update)
 
@@ -39,3 +39,92 @@ Checks: `test_edits.py` passes 4 tests.
 - The sham removes the dominant frequency from U, V and W, keeps the DC, and matches the total input energy.
 
 Reproduce: `uv run --locked --group analysis python research/e3/mechanisms/edits.py`. The start files' SHA-256 values are in `update0.csv`. `np.savez` stamps the zip with the write time, so a rerun gives equal arrays but a different file hash; the committed files are the ones claimed.
+
+## Continuation packet 1: the nine runs (2026-10-22)
+
+**Runs.** All nine runs completed 20,000 updates; none failed or was capped. Each took 34–35 s. They were launched with two workers, arms and seeds interleaved, between 00:28:03 and 00:30:56 UTC (registry [registry.jsonl](registry.jsonl)). The producing commit is `59c822e`; its shared code (`experiment.py`, `launch_runs.py`, `publish_run.py`, `pyproject.toml`, `uv.lock`) is identical to the `9041a48` pin. The recorded tree status lists only untracked lane files: the registry the launcher was writing, and in five runs the plotting script, which was not yet committed. Published under [runs/](runs/) are checkpoints 0, 10, 30, 100, 300, 1000, 2000, 5000, 10000, 15000 and 20000, plus the first update with train accuracy ≥ .99; the others are listed with hashes in each manifest.
+
+**Checks** (`continuation.py`, every run, before any measure):
+- Published files match their manifests.
+- `config.json` matches the plan: start-file hash, `init_age` 50000, 20,000 steps, lr, wd and width.
+- Step-0 weights equal the start file exactly.
+- The step-0 logged metrics replay with a maximum difference of 0.0.
+- The split hash is the plan's.
+- The 483 common pairs do not overlap the training pairs.
+
+`test_continuation.py` passes 3 tests on the start files: update-0 values equal `update0.csv`, the frequency measures are right for each arm, and the pairwise and σ measures are unchanged when W is scaled by a positive factor.
+
+**Figures.** [figures/continuation.png](figures/continuation.png) shows held-out and train accuracy, train cross-entropy, P(a+b over N) and distance. [figures/structure.png](figures/structure.png) shows frequency structure, P(S over N) and the σ-margin. Both have SVG versions. Each cell is split in two. The left panel is what the edit did: the 50k source, then the edited weights at update 0. The right panel is what training did afterwards, over updates 10–20,000 on a log axis. Seeds are separate columns, with no pooling and no smoothing.
+
+Data: [results/checkpoints.csv](results/checkpoints.csv) has 9 source rows and 104 checkpoint rows. [results/dense.csv](results/dense.csv) is every 10 updates, from metrics.jsonl. [results/inputs.json](results/inputs.json) holds the hashes, commits and command. Analysis commit `94b9626`, run from a clean tree.
+
+Reproduce:
+```
+uv run --locked --group analysis python research/e3/mechanisms/continuation.py
+uv run --locked --group analysis python research/e3/mechanisms/plot_continuation.py
+```
+
+**Accuracy on the 483 common pairs** ("50k" is the source before the edit; the other columns are continuation updates), with three other measures at update 20,000:
+
+| run | 50k | 0 | 10 | 100 | 300 | 1000 | 5000 | 20000 | P(a+b>N) / P(a+b>S) at 20k | σ-margin over N at 20k | input concentration at 20k | units with update-0 dominant freq. at 20k | distance from update 0 / from 50k at 20k |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| keep i30000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.69 / 0.14 | −0.44 | 0.40 | 0.99 | 0.07 / 0.07 |
+| keep i30001 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.72 / 0.15 | −0.32 | 0.44 | 0.98 | 0.06 / 0.06 |
+| keep i30002 | 0.004 | 0.004 | 0.004 | 0.004 | 0.004 | 0.004 | 0.004 | 0.006 | 0.74 / 0.18 | −0.29 | 0.45 | 0.97 | 0.10 / 0.10 |
+| filt i30000 | 0.000 | 0.431 | 0.538 | 0.735 | 0.621 | 0.240 | 0.025 | 0.031 | 0.88 / 0.45 | 0.41 | 0.61 | 0.91 | 1.15 / 0.96 |
+| filt i30001 | 0.000 | 0.540 | 0.644 | 0.789 | 0.679 | 0.217 | 0.021 | 0.031 | 0.87 / 0.44 | 0.32 | 0.60 | 0.90 | 1.11 / 0.92 |
+| filt i30002 | 0.004 | 0.580 | 0.700 | 0.863 | 0.739 | 0.267 | 0.027 | 0.010 | 0.87 / 0.39 | 0.22 | 0.59 | 0.92 | 1.14 / 0.92 |
+| sham i30000 | 0.000 | 0.010 | 0.008 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.67 / 0.15 | −0.51 | 0.40 | 0.27 | 1.32 / 0.85 |
+| sham i30001 | 0.000 | 0.010 | 0.002 | 0.000 | 0.000 | 0.000 | 0.000 | 0.002 | 0.70 / 0.15 | −0.36 | 0.42 | 0.19 | 1.25 / 0.76 |
+| sham i30002 | 0.004 | 0.010 | 0.006 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.66 / 0.15 | −0.50 | 0.39 | 0.23 | 1.19 / 0.71 |
+
+Chance is 1/31 ≈ 0.032.
+
+### Observations
+
+1. **A, the optimizer reset alone, moves almost nothing.**
+   - Common accuracy stays at 0.000 / 0.000 / 0.004–0.006.
+   - Train cross-entropy stays at 3.5–3.7e-6.
+   - P(a+b over N) changes by at most 0.003.
+   - Distance from the start reaches 0.06–0.10 by update 20,000.
+2. **B, first ~100 updates: training raised held-out accuracy above what the edit gave.**
+   - Common accuracy went from 0.431 / 0.540 / 0.580 at update 0 to 0.735 / 0.789 / 0.863 at update 100.
+   - Dense audit accuracy (544 pairs, which include the 483) peaks at 0.746 / 0.798 / 0.884 at updates 80 / 70 / 70.
+   - That is just after train accuracy first reaches 1.0 (updates 70 / 50 / 40), when train cross-entropy is about 0.2.
+3. **B, afterwards: the gain is then erased.**
+   - Common accuracy is 0.62–0.74 at update 300, 0.22–0.27 at 1000, 0.02–0.03 at 5000 and 0.010–0.031 at 20,000, which is chance.
+   - Audit accuracy drops below its update-0 value at updates 490–600, and below half of it at 880–1090.
+   - After update 5000 it never exceeds 0.053.
+   - Meanwhile train cross-entropy keeps falling, from 0.2 at update 100 to about 3.5e-5 at 20,000, parallel to C's curve and slightly below it.
+4. **C shows no held-out accuracy at any point.**
+   - Common accuracy is 0.010 at update 0 and 0.000–0.002 from update 100 on.
+   - Train accuracy recovers to 1.0 by updates 100–110, later than B's 40–70.
+5. **B's frequency structure partly survives the erasure.**
+   - Input concentration falls from 1.0 to 0.59–0.61, still above A's 0.40–0.45.
+   - 90–92% of live units keep their update-0 dominant frequency.
+   - The units' share at that frequency is 0.58–0.60.
+6. **In C, the removed frequency partly grows back.**
+   - The share at each unit's 50k dominant frequency rises from about 0 to 0.24–0.31.
+   - 73–81% of units change dominant frequency.
+   - Input concentration returns to 0.39–0.42, about A's level.
+7. **At update 20,000, B keeps a rank preference for a+b over unrelated labels, but not over operand-associated ones.**
+   - P(a+b over N) is 0.87–0.88, against 0.69–0.74 for A and 0.66–0.70 for C.
+   - The median σ-margin over N is +0.22 to +0.41, against −0.29 to −0.44 for A and −0.36 to −0.51 for C.
+   - P(a+b over S) is only 0.39–0.45 (A 0.14–0.18, C 0.15). a+b is ranked below most labels seen with an operand in training, so accuracy is at chance.
+   - P(S over N), the preference for operand-associated over unrelated labels, also comes back. The edit lowered it from 0.94–0.95 to 0.58–0.59 in B and 0.75–0.76 in C. By update 1000 training had restored it to 0.91–0.92 in B and 0.96–0.97 in C; at 20,000 it is 0.92–0.95 in all nine runs.
+8. **Neither edited branch returns to its source.**
+   - At update 20,000, B is 1.11–1.15 from update 0 and 0.92–0.96 from the 50k source.
+   - C is 1.19–1.32 from update 0 and 0.71–0.85 from the source.
+9. **The three seeds agree.** All three B branches rise and then erase, with peak and erasure times within about 100 updates of each other. All three C branches stay at chance.
+
+### Limitations
+
+- **Replicates.** There are three checkpoints from one split at one width. They share their evaluation pairs, so pairs are not independent replicates. There is no rerun of any run.
+- **The reset.** Every branch includes the optimizer reset. A shows the reset alone does not move a converged memorizer, but B and C mix recovery from the edit with fresh-moment Adam steps.
+- **The sham.** C is input-energy-matched only. Its immediate damage is larger (train accuracy 0.43–0.48 against 0.69–0.79) and its W displacement smaller. Its later train recovery means C and B differ in more than which frequencies were kept.
+- **Measurement density.**
+  - The common-set, preference and frequency measures exist only at 11–12 checkpoints per run.
+  - Only train, cal and audit accuracy and loss are dense, every 10 updates.
+  - The peak values above come from the dense audit log; the common-set values are at checkpoints.
+- **Peak accuracy.** The B peak is an observation of a trajectory. It is not a method: choosing the update with the best held-out accuracy would be selection on held-out data.
+- **Budget.** About 3.5 of the session's 25 minutes are used: the nine runs took 2.9 min elapsed, and the edits, tests and analysis seconds.
