@@ -272,3 +272,28 @@ These observations fit the lane's pre-stated pattern "ordering and location both
 - A longer run from initialization needs no code change, and its first 50k replays the claimed run.
 
 Either must fit the lane's remaining budget, about 41 min, with the follow-up limited to 25 min (D7).
+
+## D15 (2026-10-22) Dynamics follow-up: resume past 50k (shared code re-pinned)
+
+The follow-up is the lane's proposal, research/e3/dynamics/QUESTION.md Q2 (`cd12d03`), written before any follow-up run. It continues runs past 50,000 updates to separate the 50k step location and init gaps from timing, and to see whether 41002's graded lead at 40% becomes an accuracy lead.
+
+**Runs.** The selection was fixed before any continuation.
+- **45%:** all six e3 runs, continued to 150,000 updates.
+- **40%:** the two ladders with the highest and lowest mean σ-margin at 50k (41002 and 41001), both inits, continued to 100,000 updates.
+- IDs follow `e3-dy-add-w128-i<init>-tf<share>-d<seed>-c<final updates>k-a1`, with queue positions 25–34 (seeded, `default_rng(20261023)`).
+- Expected time is about 19 min elapsed with two workers, inside the 25-minute follow-up allowance (D7).
+
+**Shared-code change (new pin).** `--resume CHECKPOINT.npz` loads U, V and W, the Adam moments and the update count from a checkpoint, and continues training uninterrupted. `--steps` is the final update count, and step numbers continue the source's numbering.
+- `--expect-init-sha256` now checks whichever start file is given, `--init-weights` or `--resume`.
+- `config.json` records `resume_sha256`.
+- `--resume` excludes `--init-weights` and requires `--diagnostics none`, because the inline readout diagnostic compares against initial weights, which a resumed run does not have.
+- `launch_runs.py` passes `resume` and `resume_sha256` from the plan.
+
+**Checks.**
+- New test `test_resume_continues_training_exactly`: resuming a short run at update 100 reproduces its checkpoints at 200 and 300 bitwise (weights and moments) and its metrics rows except wall-clock fields. The resumed step logs no optimizer update.
+- 14 tests OK, and the selftest passes.
+- On this host, resuming `e3-dy-add-w128-i30001-tf45-d41001-a1` from its published 50k checkpoint reproduces that run's step-50,000 metrics row exactly.
+- Every resume hash equals the checkpoint hash in the source manifest.
+- A resume on a different host from the one that produced the source may differ in floating-point summation order. That is recorded, not prevented.
+
+The new shared-code identity is the commit that adds this entry. The 15 mechanisms runs and the 24 dynamics runs were produced at the earlier pin. Their code paths are unchanged: the edit only adds a branch for `--resume`, and the existing tests still pass.

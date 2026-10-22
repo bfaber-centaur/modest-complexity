@@ -205,11 +205,16 @@ def run(args):
             # The split hash covers inputs, addition labels and split membership,
             # so it is identical for both tasks; the target hash identifies labels.
             hashes=dict(split_sha256=array_sha256(a,b,y,*masks),target_sha256=array_sha256(target))
-            start_sha=hashlib.sha256(Path(args.init_weights).read_bytes()).hexdigest() if args.init_weights else None
+            start_file=args.init_weights or args.resume
+            start_sha=hashlib.sha256(Path(start_file).read_bytes()).hexdigest() if start_file else None
             cfg=vars(args).copy()
-            cfg.update(seeds=seeds,data_hashes=hashes,host=platform.node(),runtime=inventory(out),init_weights_sha256=start_sha,
+            cfg.update(seeds=seeds,data_hashes=hashes,host=platform.node(),runtime=inventory(out),
+                       init_weights_sha256=start_sha if args.init_weights else None,
+                       resume_sha256=start_sha if args.resume else None,
                        init_rule=('U, V, W from --init-weights (init_seed unused); Adam moments zero, update count restarts at 1'
-                                  if args.init_weights else 'init(p, hidden, init_seed)'),
+                                  if args.init_weights else
+                                  'U, V, W, Adam moments and update count from the --resume checkpoint (uninterrupted training)'
+                                  if args.resume else 'init(p, hidden, init_seed)'),
                        purpose=args.purpose or ('calibration' if args.seed>=900000 else 'research-prototype'),
                        diagnostic_schedule=dict(metrics_every=args.log_every,checkpoint_every=args.checkpoint_every,
                            checkpoint_extra='last step, first train accuracy >= .99 and --checkpoint-steps',checkpoint_steps=args.checkpoint_steps,
@@ -217,27 +222,36 @@ def run(args):
             (out/'config.json').write_text(json.dumps(cfg,indent=2))
             if args.expect_split_sha256 and hashes['split_sha256']!=args.expect_split_sha256:
                 raise ValueError(f"split hash {hashes['split_sha256']} != expected {args.expect_split_sha256}")
+            if start_file and args.expect_init_sha256 and start_sha!=args.expect_init_sha256:
+                raise ValueError(f'start file hash {start_sha} != expected {args.expect_init_sha256}')
+            shapes=[(args.p,args.hidden),(args.p,args.hidden),(args.hidden,args.p)]
+            start=0
             if args.init_weights:
                 # A continuation from given (e.g. edited) weights restarts the optimizer: its
                 # checkpoint age lives in the plan, and every step here is a new update.
-                if args.expect_init_sha256 and start_sha!=args.expect_init_sha256:
-                    raise ValueError(f'init weights hash {start_sha} != expected {args.expect_init_sha256}')
                 with np.load(args.init_weights) as z: w=[z[k] for k in 'UVW']
-                shapes=[(args.p,args.hidden),(args.p,args.hidden),(args.hidden,args.p)]
-                if [x.shape for x in w]!=shapes or any(x.dtype!=np.float64 for x in w):
-                    raise ValueError(f'init weights must be float64 with shapes {shapes}')
+                m=[np.zeros_like(x) for x in w]; v=[x.copy() for x in m]
+            elif args.resume:
+                # An uninterrupted continuation: weights, moments and the update count carry
+                # over, so step numbers continue the source run's.
+                with np.load(args.resume) as z:
+                    w=[z[k] for k in 'UVW']; m=[z['m'+k] for k in 'UVW']; v=[z['v'+k] for k in 'UVW']
+                    start=int(z['step'])
+                if not 0<start<args.steps: raise ValueError(f'resume step {start} must lie in (0, --steps)')
             else:
                 w=init(args.p,args.hidden,seeds['init_seed'])
-            initial=[x.copy() for x in w]
-            m=[np.zeros_like(x) for x in w]; v=[x.copy() for x in m]
+                m=[np.zeros_like(x) for x in w]; v=[x.copy() for x in m]
+            if any(x.shape!=sh or x.dtype!=np.float64 for x,sh in zip(w+m+v,3*shapes)):
+                raise ValueError(f'start weights and moments must be float64 with shapes {shapes}')
+            initial=[x.copy() for x in w]; completed=start
         with timing.measure('data_write'):
             np.savez_compressed(out/'data.npz',a=a,b=b,y=target,yadd=y,train=masks[0],cal=masks[1],audit=masks[2])
         extra={int(s) for s in args.checkpoint_steps.split(',') if s}
         with (out/'metrics.jsonl').open('w') as stream:
-            for step in range(args.steps+1):
+            for step in range(start,args.steps+1):
                 logging=step%args.log_every==0 or step==args.steps
                 update=None
-                if step:
+                if step>start:
                     with timing.measure('training'):
                         tr=masks[0]
                         loss,g=lossgrad(w,a[tr],b[tr],target[tr])
@@ -324,7 +338,8 @@ if __name__=='__main__':
     ap.add_argument('--diagnostic-seed',type=int)
     ap.add_argument('--expect-split-sha256',help='Fail before training unless the split hash matches')
     ap.add_argument('--init-weights',help='Start from U, V, W in this .npz instead of init(); Adam starts fresh')
-    ap.add_argument('--expect-init-sha256',help='Fail before training unless the --init-weights file hash matches')
+    ap.add_argument('--resume',help='Continue from this checkpoint: weights, Adam moments and update count; --steps is the final count')
+    ap.add_argument('--expect-init-sha256',help='Fail before training unless the --init-weights or --resume file hash matches')
     ap.add_argument('--init-age',type=int,help='Updates the --init-weights source had taken (recorded only; steps here start at 0)')
     ap.add_argument('--run-id'); ap.add_argument('--purpose'); ap.add_argument('--session-label')
     ap.add_argument('--p',type=int,default=31)
@@ -342,6 +357,8 @@ if __name__=='__main__':
     else:
         if args.p<7 or args.p%2==0 or args.hidden<1 or args.steps<0 or min(args.log_every,args.audit_every,args.checkpoint_every,args.shams)<1:
             ap.error('Require odd p >= 7, positive hidden/cadences/shams, and nonnegative steps')
+        if args.resume and (args.init_weights or args.diagnostics!='none'):
+            ap.error('--resume excludes --init-weights and needs --diagnostics none (no initial weights to compare)')
         if not 0<args.train_fraction<=.8:
             ap.error('Require 0 < --train-fraction <= .8 (calibration keeps .1)')
         if args.checkpoint_every%args.log_every or args.audit_every%args.log_every or any(
