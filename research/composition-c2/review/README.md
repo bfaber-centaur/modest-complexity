@@ -18,7 +18,7 @@ uv run --locked python research/regimes/common/run_jobs.py --plan research/compo
     --registry research/composition-c2/review/registry.jsonl --session-label c2-rev-cloud-1 --workers 1 \
     --ids c2-rev-verify-final-s51200-a1
 uv run --locked python research/composition-c2/review/rev_pin.py runs/c2 > research/composition-c2/review/out/rev_pin.txt
-uv run --locked python research/composition-c2/review/rev_gen.py 30c495f 99c83c8 > research/composition-c2/review/out/rev_gen.txt
+uv run --locked python research/composition-c2/review/rev_gen.py 30c495f 99c83c8 543ed95 > research/composition-c2/review/out/rev_gen.txt
 uv run --locked python research/composition-c2/review/rev_mech.py 817a768 817a768 > research/composition-c2/review/out/rev_mech.txt
 uv run --locked python research/composition-c2/review/rev_share.py 83b3303 > research/composition-c2/review/out/rev_share.txt
 uv run --locked python research/composition-c2/review/rev_time.py 543ed95 > research/composition-c2/review/out/rev_time.txt
@@ -40,3 +40,4 @@ uv run --locked python research/composition-c2/review/rev_time.py 543ed95 > rese
 | 04:31 | `rev_share.py` (sharing M2, CX-S1) | 0.6 s | 3.3 min |
 | 04:33 | `rev_gen.py` with Part B and CX-G2 | 20.4 s | 3.7 min |
 | 04:38–04:40 | `rev_time.py` (time M2, CX-T1, CX-T2), two passes, plus a one-off read of the logged eps-regime steps | 2.0 + 1.7 + 1 s | 3.8 min |
+| 04:43–04:46 | A5 checks: two one-off reads (about 6 s), then `rev_gen.py` with `a5()` | 6 + 42.8 s | 4.6 min |

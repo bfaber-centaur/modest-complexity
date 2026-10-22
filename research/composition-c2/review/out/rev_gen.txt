@@ -45,4 +45,12 @@ INFO ('ops63001-ls63103', 63201, 'final'): held | notN (n) | train = (0.492, 0.0
 INFO number of (sigma, pi) with sigma A_k sigma^-1 = B_pi(k) for all k: {('orig 51000', 'orig 51000'): 1, ('orig 51000', 'draw 63000'): 0, ('orig 51000', 'draw 63001'): 0, ('draw 63000', 'draw 63000'): 1, ('draw 63000', 'draw 63001'): 0, ('draw 63001', 'draw 63001'): 1}
 PASS CX-G2 prediction: no two of the original and the two new draws are relabellings of each other (each draw relates only to itself)
 INFO automorphisms per draw (incl. identity): {'orig 51000': 1, 'draw 63000': 1, 'draw 63001': 1} -> with only the identity, two distinct squares on one draw are not relabellings of each other
+INFO tt-inter s51200: L = 1..6 at 50k [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]; L = 6 at 20k/30k/40k/50k [0.9996, 1.0, 1.0, 1.0]
+INFO tt-inter s51201: L = 1..6 at 50k [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]; L = 6 at 20k/30k/40k/50k [0.986, 0.9999, 1.0, 1.0]
+INFO tt-inter s51202: L = 1..6 at 50k [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]; L = 6 at 20k/30k/40k/50k [1.0, 1.0, 1.0, 1.0]
+INFO tt-final s51200: L = 1..6 at 50k [0.156, 0.109, 0.891, 0.132, 0.122, 0.13]; L = 6 at 20k/30k/40k/50k [0.1222, 0.1245, 0.1278, 0.1297]
+INFO tt-final s51201: L = 1..6 at 50k [0.031, 0.094, 0.924, 0.122, 0.095, 0.123]; L = 6 at 20k/30k/40k/50k [0.1262, 0.1265, 0.1255, 0.1227]
+INFO tt-final s51202: L = 1..6 at 50k [0.062, 0.133, 0.914, 0.15, 0.114, 0.127]; L = 6 at 20k/30k/40k/50k [0.1248, 0.1247, 0.1281, 0.127]
+PASS A5: the time lane's tied/inter ckpt-50000 answers every row at every length 1-6 in all three seeds
+INFO original draw: share of the 7 wrong symbols that are another op applied to the true state, mean over (state, op) 0.339 (min 0.286); the NOTE uses 3/7 = 0.429
 1 FAILED: ['CX-G1 prediction: tied/inter accuracy differs by < 0.05 between rows with and without a held-out window, at every L = 4-6 and seed']

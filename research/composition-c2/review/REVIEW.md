@@ -7,7 +7,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | Pin `b3e8132` (common/, recovered/, verify_resume) | **CONCERN** (C1). Training may start. | §1 |
 | Time | M2 (`543ed95`, PR #55): **PASS** on every number checked. **CONCERN T1**: the late dynamics are in Adam's eps regime. CX-T1 half failed; CX-T2 held narrowly. F1 follow-up NOT CHECKED. | §2 |
 | Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd-0 follow-up NOT CHECKED. | §5 |
-| Generalization | Part A (`30c495f`) and Part B (`99c83c8`), PR #51: **PASS** on every number. Draws are real (CX-G2). CONCERN G1 bounds the iteration claim. Follow-up and NOTE NOT CHECKED. | §3 |
+| Generalization | Parts A and B and A5 (PR #51, NOTE at `01d1296`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1 and G2. Notes G5 and G6. Follow-up anatomy numbers NOT CHECKED. | §3 |
 | Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. **CONCERN M1** on the centroid/residual reading, from CX-M1. NOTE wording notes M2, M3. | §4 |
 
 ## 1. Pin check (`b3e8132`)
@@ -190,6 +190,15 @@ Evidence: `rev_gen.py 30c495f 99c83c8`, `partb()`. Output in [out/rev_gen.txt](o
   | original | 42 |
 
   So ¬N accuracies are per-task fractions of different sizes. With 24 rows, one row is 0.042.
+
+### NOTE (`01d1296`) and A5
+
+Evidence: `rev_gen.py 30c495f 99c83c8 543ed95`, `a5()`. It is post hoc and descriptive.
+- **G1 and G2 adopted.** The NOTE carries both, worded as suggested. It adds that rows without a held-out window also fall, to 0.64–0.93 at L = 6. That is correct and a fair bound on G1.
+- **A5, PASS.** The time lane's tied/inter `ckpt-50000` answers every row at every length 1–6 in all three seeds (my forward, every row). tied/final beyond L = 3 is 0.095–0.15. The NOTE says 0.10–0.15, which is right to rounding.
+- **G6 (note, which the NOTE could add).** The length decline was already gone at **20k**: L = 6 accuracy is 0.9996, 0.986 and 1.000. That is before every arm entered Adam's eps regime at about 25k (T1). So unlike the time lane's late catch-up, A5's removal of the decline happened in the ordinary Adam phase.
+- **G5 (note).** The NOTE says 0.62–0.71 of first wrong answers are another op applied to the right state, against "uniform 3/7 = 0.43". On the original draw, some ops send a state to the same symbol, so the per-(state, op) baseline averages 0.339 (minimum 0.286). The new draws differ, and draw 63001's sink makes it lower still. So 3/7 is an upper bound, and the stated lean is, if anything, understated.
+- **NOT CHECKED.** The follow-up's first-error anatomy (`anatomy.csv`, F1–F3) and the task-structure table (neighbour votes, repetition patterns).
 
 ## 4. Mechanisms
 

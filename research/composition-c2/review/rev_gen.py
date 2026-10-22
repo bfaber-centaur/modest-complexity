@@ -3,7 +3,7 @@ Part A: task facts and the frozen length 1-6 evaluation of the six recovered r1 
 checkpoints, recomputed with the oracle and forward pass of rev_pin.py (not the lane's code),
 against the lane's published CSVs at a lane commit; then counterexample CX-G1.
 
-uv run --locked python research/composition-c2/review/rev_gen.py LANE_COMMIT [PART_B_COMMIT]
+uv run --locked python research/composition-c2/review/rev_gen.py LANE_COMMIT [PART_B_COMMIT [TIME_COMMIT]]
 """
 import csv
 import io
@@ -255,8 +255,32 @@ def partb(commit):
           '-> with only the identity, two distinct squares on one draw are not relabellings of each other')
 
 
+
+def a5(time_commit):
+    """NOTE A5 (time lane ckpt-20000..50000 of tt-inter and tt-final), plus the per-row baseline for
+    'another op applied to the true state' on the original draw. Post hoc, descriptive (REVIEW.md G5, G6)."""
+    git = lambda path: subprocess.check_output(['git', '-C', str(ROOT), 'show', f'{time_commit}:research/composition-c2/time/runs/{path}'])
+    D = {L: oracle_rows(list(product(range(4), repeat=L))) for L in range(1, 7)}
+    ok = True
+    for arm in ('tt-inter', 'tt-final'):
+        for s in (51200, 51201, 51202):
+            acc = {}
+            for step in (20000, 30000, 40000, 50000):
+                p = nets.load(io.BytesIO(git(f'c2-time-{arm}-s{s}-a1/ckpt-{step}.npz')))[0]
+                acc[step] = [float((my_forward(p, d['s'], d['ops'], [1]*L)[1][-1].argmax(1) == d['states'][:, -1]).mean()) for L, d in D.items()]
+            if arm == 'tt-inter':
+                ok &= all(a == 1. for a in acc[50000])
+            print(f'INFO {arm} s{s}: L = 1..6 at 50k {[round(a, 3) for a in acc[50000]]}; L = 6 at 20k/30k/40k/50k {[round(acc[k][5], 4) for k in sorted(acc)]}')
+    check('A5: the time lane\'s tied/inter ckpt-50000 answers every row at every length 1-6 in all three seeds', ok)
+    b = [len({P[k2][x] for k2 in range(4) if k2 != k} - {P[k][x]}) / 7 for x in range(8) for k in range(4)]
+    print(f'INFO original draw: share of the 7 wrong symbols that are another op applied to the true state, mean over (state, op) {np.mean(b):.3f} '
+          f'(min {min(b):.3f}); the NOTE uses 3/7 = 0.429')
+
+
 if __name__ == '__main__':
     main(sys.argv[1])
     if len(sys.argv) > 2:
         partb(sys.argv[2])
+    if len(sys.argv) > 3:
+        a5(sys.argv[3])
     print('ALL PASS' if not FAIL else f'{len(FAIL)} FAILED: {FAIL}')
