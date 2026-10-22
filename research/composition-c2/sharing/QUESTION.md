@@ -126,3 +126,38 @@ Starting point: Liška, Kruszewski and Baroni (2018), "Memorize or generalize? S
 - *Not a reproduction.* The architecture, task format and held-out unit differ. Here whole programs are held out by a Latin square, so the test is unseen compositions, the case that paper reports as failing.
 - *Extension.* The paper's recurrence always shares weights across time. Untying transitions and readouts in a small full-batch ReLU RNN is not done there.
 - *Novelty.* No claim is made without a targeted literature check.
+
+## Follow-up (proposed 2026-10-22 ~04:35Z, after the initial comparison; awaiting coordinator approval)
+
+**What the initial comparison left most ambiguous.** Only TT composed within 10k (0.96–1.00, ¬N 0.88–1.00). TU, UT and UU reached 0.52–0.84 and were still rising. The tyings interact strongly, and TU < UU on every seed. All cells fit by 700 updates, so every difference arises in the post-fit phase. In that phase:
+- decay is a large part of the dynamics: in tied groups the decay step is 0.44–0.94 of the Adam-direction step and opposes it (cosine −0.40 to −0.94), less closely so in per-step transition copies (0.10–0.74);
+- Adam is not eps-limited anywhere: √v̂ < eps for at most 8.8% of the coordinates in any group.
+
+By the indicators declared above, the regularization candidate is selected and the loss-scale candidate is not. Untying changes how decay is spread (three times as many decayed parameters in an untied group, each opposed by one gradient term instead of three). So the open question is whether the tying effects at 10k depend on decay.
+
+**Design.** The matched no-decay comparison. All four cells at wd 0, three paired init seeds (51200–51202), everything else identical to the initial runs:
+- task, width, lr, step weights 1 1 1, 10,000 updates, `--diag`;
+- checkpoints at 0, 1k, 2k, 4k, 7k and 10k.
+
+IDs are `c2-share-wd0-{tt,tu,ut,uu}-s5120{0,1,2}-a1`: 12 runs, and TT/TU at wd 0 are new runs. Each wd 0 run is paired with the same cell and seed at wd 0.1; they start from the identical `ckpt-0`. The cost at the observed rate is about 7.2 min wall at two workers, bringing the lane to about 14.8 of 20 min.
+
+**Measures.** The same as the primary ones:
+- held-out final, ¬N, N and train accuracy trajectories and 10k endpoints;
+- paired differences within wd 0, and wd 0 − wd 0.1 per cell and seed;
+- the decoder table at 10k, probe seed 64300;
+- group diagnostics.
+
+Figure: `figures/followup_wd0.png`, laid out like the primary figure with the wd 0.1 endpoints beside the wd 0 ones.
+
+**Predictions (before any wd 0 run).**
+- F1. All 12 runs fit training (all three steps at 1.0) by 1,000 updates.
+- F2. TT at wd 0 is below TT at wd 0.1 at 10k by at least 0.2 held-out on every seed: decay drives much of TT's late rise.
+- F3. The spread across cells (max − min held-out at 10k, per seed) is smaller at wd 0 than at wd 0.1 on every seed.
+- F4. TT is still the highest cell at wd 0 on at least 2 of 3 seeds.
+
+**Reading.**
+- If TT at wd 0 still reaches ≥ 0.9 while the other cells stay below, the tying effect within 10k does not depend on decay under this recipe.
+- If all cells are close and low at wd 0, the tying advantage seen at 10k depends on decay within this budget. This is not a claim that decay is necessary in general.
+- A reversal of TU < UU at wd 0 would tie that ordering to the decay accounting.
+
+**Limits.** wd 0 removes decay from every parameter. It is not a removal of only the decay-count difference between tied and untied groups, and it changes the post-fit dynamics of every cell. Values are at 10k only; longer training stays with the time lane.
