@@ -74,6 +74,13 @@ The TU cell is my r1 arm (disclosure above). Checks, with code written here:
 
 (Dated, before the matching analysis or run.)
 
+- **After the F1 checks ran: the rest of the time NOTE (M4, `e44349b`)** (recorded in the commit that adds this entry, before its code). F1's checks, CX-T3 and CX-T4 have run (REVIEW.md §2), and I have read the NOTE. These recompute its remaining numbers, with no new prediction.
+  - N and ¬N for `tu-inter` at 30k, and N for `tt-final` at 50k.
+  - The held-out predictions that change in `tt-final` from 40k to 50k, and in the inter arms over 49k–50k.
+  - The held-out CE change in `tt-inter` from 40k to 50k.
+  - The parameter norms and the distances between checkpoints from 40k to 50k (from the committed checkpoints), plus the peak near 20k.
+  - From the logged `diag` at 49,950: the train final margin, gradient norm and train CE.
+
 - **Time F1, `tt-final` 50k → 100k** (recorded in the commit that adds this entry). Written after reading the lane's F1 proposal and predictions (QUESTION.md "Follow-up F1") and the file list of `e44349b`. I wrote it before opening any F1 record, the NOTE or the coordinator's relay of results; the relay names only the topics to check.
   - **Checks.**
     1. *Recipe against source (D9).* The three configs against the 50k runs: step weights `0 0 1`, tied/tied, task, lr, wd, width, 100,000 updates. `resume_sha256` must equal the 50k run's MANIFEST entry for `ckpt-50000`, and `resumed_from` must be that run at step 50,000.
