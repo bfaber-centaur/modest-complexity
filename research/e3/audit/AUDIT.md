@@ -347,7 +347,7 @@ Look before reading: in the top right, does the thick orange pair stay on top wh
 |---|---|---|
 | 1. The ordering travels | SUPPORTED LOCALLY | In all 8 ladder × init sequences, accuracy, P(a+b over N), P(a+b over S) and the σ-margin rise at every rung, and the own-absent rank falls |
 | 2. P(S over N) falls with share in every ladder | SUPPORTED LOCALLY | From 30% to 50% it falls by 0.051–0.060 in all 8 sequences |
-| 3. The 45% runs are still rising at 50,000 | SUPPORTED LOCALLY | Accuracy rises by 0.067–0.112 from 30k to 50k in all six e3 45% runs |
+| 3. The 45% runs are still rising at 50,000 | SUPPORTED LOCALLY; **superseded: CONTRADICTED in investigation 6** | Accuracy rises by 0.067–0.112 from 30k to 50k in all six e3 45% runs. That rule rested on the 30k and 50k checkpoints alone |
 | 4. 41002 at 40% is a ladder (training-set) effect | CONTRADICTED (by the pre-stated rule; read with the caveat below) | (a) The lane's criterion fires by chance with probability 0.19 per cell, and it fires in 7 of 24 cells. (b) F = 2.95, p = 0.25 (three e3 ladders); F = 2.90, p = 0.20 (with 31000). (c) On the 53 fixed pairs 41002 leads for neither init. (d) Over training, against the other two e3 ladders, 41002 leads for init 30001 from 5k on, but for init 30000 only from 30k |
 
 **Rule 4 in detail.**
@@ -373,7 +373,7 @@ Look before reading: in the top right, does the thick orange pair stay on top wh
 | In this sample the transition does not clearly move | SUPPORTED LOCALLY, weak | Ladder against init is within chance on every measure. With two inits per cell, a ladder effect smaller than the interaction would not be detected |
 | 41002 at 40% is a hint of a ladder effect | CONTRADICTED as a training-set effect (rule 4) | Within init chance, and not stable to the evaluation pairs. The lane already said that two inits cannot separate it from chance |
 | P(S over N) falls with share in every ladder | SUPPORTED LOCALLY | Rule 2. This was investigation 1's cheapest next check, and it now holds across four data seeds. It says nothing yet about whether the fall comes from finding a+b or from fitting more pairs per operand |
-| The 45% runs are not at a plateau at 50k | SUPPORTED LOCALLY | Rule 3. Every accuracy crossing is a 50k description, not a threshold |
+| The 45% runs are not at a plateau at 50k | SUPPORTED LOCALLY; **superseded: CONTRADICTED in investigation 6** | Rule 3. Every accuracy crossing is a 50k description, not a threshold |
 
 **Separation of variation (post hoc, descriptive).** Inits differ consistently in some places and not others.
 - At 45% accuracy, init 30001 is ahead in all four ladders, by 0.015–0.142.
@@ -410,3 +410,27 @@ uv run --locked --group analysis python $E/plot_ladder.py $E/figures/ladder $E/r
 The full `experiment.py` arguments for the scratch resumes are `--expect-init-sha256 f81279e4… --data-seed 41002 --init-seed 30001 --control-seed 32000 --diagnostic-seed 33000 --train-fraction .4 --diagnostics none --expect-split-sha256 d044117b…`, with run IDs `audit-scratch-resume-check` and `audit-scratch-resume-step`. Their outputs stay in scratch.
 
 Budget: about 12 min of process time, at most two processes. The rounding controls account for about 8 min of it (four runs of 60k–80k updates). The checks, replays, recomputation and tracking took about 3 min, the shared-code resumes about 40 s, and three renders of the figure about 10 s. The audit total is about 14.6 of 30 min.
+
+# Investigation 6: dynamics packet 2, the continuations past 50k (PR #30)
+
+Base `3289ef1`. The checks and the re-reading rule were committed before computing: [QUESTION-6.md](QUESTION-6.md), `a41c247`. No figure: this is a short verdict table, as the coordinator asked.
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| P1 | Resume provenance, all ten runs | PASS | Each config's `resume` and the plan name the source's update-50,000 checkpoint. `resume_sha256` equals the file's SHA-256, the source manifest's hash and the plan. Each continuation's published 50k checkpoint equals the source's in weights, both moments and step. Registry: running then complete. Completed steps equal the planned 100,000 or 150,000 |
+| P2 | Short replay after the resume (`…-i30001-tf40-d41002-c100k-a1`) | PASS | My independent replay of updates 50,001–50,100 from the source checkpoint reproduces the logged row at 50,100. Accuracies are identical, and cross-entropies are within 3e-4 of the 1e-8 relative tolerance. **As found:** the replay to 60k is 0.033% from the published weights. Eval-pair accuracy (0.0958) and the own-absent rank are identical, and the σ-margin agrees to 1e-5 |
+| P3 | Packet-1 correction (item 6), from `metrics.jsonl` | FAIL as pre-stated (grid choice, not a computation error) | My own held-out accuracy at 30k, 40k and 50k equals `packet1_settle.csv` in all 24 runs. The settling updates match exactly only on a 1,000-update grid, which is what `continuation.settle` uses (verified post hoc). On every logged update, as the README describes it ("every-100-update metrics"), the six 45% runs settle within 0.01 at 37,100–48,300 updates, not 37,000–47,000. The six 50% runs settle at 33,700–46,100, not 34,000–47,000. Differences per run: 41001 i30000 45% at 45,600 against 37,000; 41001 i30000 50% at 37,000 against 34,000; the others within 1,300 |
+| P4 | Table 4 on the ladder eval pairs | PASS | `ladder_check` on all 62 published checkpoints of the continuations and their sources matches `continuation.csv` to 4.4e-16. From 50k to 150k, 45% accuracy changes by −0.012 to +0.013. From 50k to 100k, 40% accuracy changes by −0.006 to +0.002 |
+| P5 | Launch deviation (D16) | PASS | `git diff 72cfb5d 2f0aa7a` touches only `research/e3/dynamics/QUESTION.md`. All ten manifests record `producing_code_commit` `2f0aa7a`. Every config records `git_status` `M research/e3/dynamics/registry.jsonl`, the launcher's own append, and nothing else |
+
+**Re-reading investigation 5's rule 3: CONTRADICTED.** On every logged update, all six 45% runs are within 0.01 of their 50k own held-out accuracy by 48,300. Their eval-pair accuracy then moves by at most 0.013 over the next 100,000 updates. The 30k → 50k rise that rule 3 counted was real, but it happened before about 40,000 in five of the six 45% runs: by 40k they had made 90–105% of their 30k → 50k change. The exception is 41002 init 30000, which had made 57% by 40k and settled at 48,300. The lane's correction stands, with the settling dates read on every logged update as above.
+
+**Suggested wording fix (lane README, item 6).** Either say "on the 1,000-update grid", or give the every-logged-update ranges, 37,100–48,300 (45%) and 33,700–46,100 (50%). The reading does not change.
+
+## Reproduce (investigation 6)
+
+```bash
+uv run --locked python research/e3/audit/resume_check.py research/e3/audit/results
+```
+
+Budget: 16 s per run, run twice (the second run added the post-hoc grid comparison). Investigation 6 totals about 0.5 min, and the audit total is about 15.2 of 30 min.
