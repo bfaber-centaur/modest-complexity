@@ -165,7 +165,7 @@ There is one follow-up, chosen after the nine continuations and the first figure
 
 ## Follow-up F1: extend `tt-final` to 100,000 updates
 
-Proposed 2026-10-22 04:33Z, after the nine continuations and the first figure (PR #55). It waits for the coordinator's approval before any run.
+Proposed 2026-10-22 04:27Z, after the nine continuations and the first figure (PR #55). It waits for the coordinator's approval before any run.
 
 **Choice.** This is the default rule above.
 - **Why `tt-final`.** It is the only unresolved arm.
