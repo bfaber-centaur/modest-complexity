@@ -81,7 +81,8 @@ def load_base(b):
         raise ValueError(f"{b['path']}: SHA-256 {sha} is not the recovered {b['sha256']}")
     p, st, meta = nets.load(b['path'])
     recipe, sched = expected_recipe(b)
-    checked = c3train.check_source(b['path'], sha, b['config'], meta, st['t'], recipe, sched)
+    # Re-pin 82cef77 added the Adam-count argument; no reset here, so the count is the step.
+    checked = c3train.check_source(b['path'], sha, b['config'], meta, meta.get('step', st['t']), st['t'], recipe, sched)
     assert st['t'] == STEP, (st['t'], STEP)
     p = c3correct.frozen(p)
     rec = dict(condition=b['condition'], seed=b['seed'], run_id=b['run_id'], ckpt=str(b['path'].relative_to(REPO)),
