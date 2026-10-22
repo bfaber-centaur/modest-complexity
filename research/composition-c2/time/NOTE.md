@@ -137,7 +137,7 @@ All of this holds for one task draw and split, one recipe (including eps = 1e-8 
 - **This holds for length-3 accuracy only** (reviewer T2, CX-T4).
   - At 100k, the shared readout of `tt-final` reads the intermediate states h1 and h2 at 0.00–0.19.
   - On all programs of length 4–6, `tt-final` scores 0.06–0.14, against chance 0.125. Its tied transition is applied with the tied readout.
-  - I recomputed both from the committed `ckpt-100000`, and they agree with the reviewer.
+  - I recomputed both from the committed `ckpt-100000` (`time_analyze.py lengths` → `figures/time_followup_lengths.csv`), and they agree with the reviewer.
   - So at 100k final-only training still does not extend past length 3. Its length-3 gain does not come with intermediate states that the shared readout can read.
 - The rise is not a neighbour-copy plateau. ¬N, which no one-slot neighbour copy can answer, climbs from 0 at 10k to 0.74–0.88 at 100k.
 - Most of this rise happens in the eps regime. Whether it would continue, stall or speed up under a different eps, or under an optimizer that does not slow down at tiny gradients, is untested.

@@ -29,7 +29,7 @@ $R --workers 2 --ids c2-time-tt-final-ext-s51200-a1 c2-time-tt-final-ext-s51201-
 A="uv run --locked python research/composition-c2/time/time_analyze.py"
 $A publish --root runs/c2 --ids <the nine> --commit-checkpoints <ID>/ckpt-20000.npz ... <ID>/ckpt-50000.npz   # 36 files
 $A publish --root runs/c2 --ids <the three F1 IDs> --commit-checkpoints <ID>/ckpt-75000.npz <ID>/ckpt-100000.npz
-$A check && $A measure && $A figure
+$A check && $A measure && $A figure && $A lengths
 ```
 
 ## Environment and calibration

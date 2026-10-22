@@ -4,6 +4,7 @@
   uv run --locked python research/composition-c2/time/time_analyze.py check     # verify runs and joins -> checks.json
   uv run --locked python research/composition-c2/time/time_analyze.py measure   # CSVs in figures/
   uv run --locked python research/composition-c2/time/time_analyze.py figure    # figures/time_main and time_followup .{png,svg} from those CSVs
+  uv run --locked python research/composition-c2/time/time_analyze.py lengths   # F1 100k states: h1/h2 readout, lengths 4-6
 
 Everything reads the committed records: this lane's runs/, r1's published metrics of the
 source runs, and the committed checkpoints (../recovered/ for 10k, runs/ for 20k-50k).
@@ -302,6 +303,23 @@ def write_csv(path, rows):
     print(path.relative_to(REPO), len(rows), 'rows')
 
 
+def lengths():
+    """F1 states at 100k: the shared readout on h1, h2 of held-out rows, and final accuracy on every
+    program of length 4-6 (tied scheme, so step_map [1]*L) -> figures/time_followup_lengths.csv."""
+    import c2rnn
+    out = []
+    for s in SEEDS:
+        p = nets.load(RUNS/ext_id('tt-final', s)/'ckpt-100000.npz')[0]
+        logits = c2rnn.forward(p, HELD['ops'], s=HELD['s'])[1]
+        row = dict(run_id=ext_id('tt-final', s), step=100000,
+                   **{f'held_h{t+1}_readout_acc': float(np.mean(logits[t].argmax(1) == HELD['states'][:, t])) for t in (0, 1)})
+        for L in (4, 5, 6):
+            d = c2task.rows(_T['P'], c2task.programs(L))
+            row[f'all_programs_L{L}_acc'] = float(np.mean(c2rnn.forward(p, d['ops'], s=d['s'], step_map=[1]*L)[1][-1].argmax(1) == d['states'][:, -1]))
+        out.append(row)
+    write_csv(FIGS/'time_followup_lengths.csv', out)
+
+
 # ---- figure ---------------------------------------------------------------------------------
 
 COLOR = {'tt-inter': '#eb6834', 'tu-inter': '#1baf7a', 'tt-final': '#2a78d6'}  # r1's inter/final colours; dataviz slots 1-3
@@ -426,7 +444,7 @@ def main():
     sub = ap.add_subparsers(dest='cmd', required=True)
     p = sub.add_parser('publish'); p.add_argument('--root', type=Path, required=True); p.add_argument('--ids', nargs='+', required=True)
     p.add_argument('--commit-checkpoints', nargs='*', default=[])
-    sub.add_parser('check'); sub.add_parser('measure'); sub.add_parser('figure')
+    sub.add_parser('check'); sub.add_parser('measure'); sub.add_parser('figure'); sub.add_parser('lengths')
     a = ap.parse_args()
     if a.cmd == 'publish':
         publish(a.root, a.ids, set(a.commit_checkpoints))
@@ -434,6 +452,8 @@ def main():
         check()
     elif a.cmd == 'measure':
         measure()
+    elif a.cmd == 'lengths':
+        lengths()
     else:
         figure()
 
