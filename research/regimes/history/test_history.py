@@ -5,6 +5,7 @@ semantics (checkpoint round-trip, optimizer reset, frozen A head).
 uv run --locked python -m unittest -v research/regimes/history/test_history.py
 """
 import itertools
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -87,6 +88,22 @@ class Branching(unittest.TestCase):
             self.assertFalse(np.array_equal(branched['W1'], a_end['W1']))
             with self.assertRaises(ValueError):
                 H.run(d/'e', [('A', 1)], source=ck, source_sha256='0'*64)
+
+    def test_reset_head_restores_the_initial_draw_only(self):
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            H.run(d/'a', [('A', 5), ('Brel', 3)], init_seed=7)
+            ck = d/'a'/'ckpt_t8.npz'; trained = nets.load(ck)[0]
+            out = H.run(d/'r', [('A', 1)], source=ck, reset_head_seed=7)
+            init = nets.init(10, (128,), {'A': 2, 'B': 2}, 7)
+            cfg = json.loads((d/'r'/'config.json').read_text())
+            self.assertEqual(cfg['reset_head_A_to_init_seed'], 7)
+            start = nets.load(d/'r'/'ckpt_t0.npz')[0]
+            for k in ('W_A', 'b_A'):
+                np.testing.assert_array_equal(start[k], init[k])
+            for k in ('W1', 'b1', 'W_B', 'b_B'):
+                np.testing.assert_array_equal(start[k], trained[k])
+            self.assertFalse(np.array_equal(out['W_B'], init['W_B']))
 
     def test_optimizer_is_reset_at_each_phase(self):
         with tempfile.TemporaryDirectory() as d:

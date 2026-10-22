@@ -133,7 +133,7 @@ def parse_phases(text):
     return phases
 
 
-def run(out, phases, init_seed=None, source=None, source_sha256=None, snapshot_at=()):
+def run(out, phases, init_seed=None, source=None, source_sha256=None, snapshot_at=(), reset_head_seed=None):
     out = Path(out); out.mkdir(parents=True, exist_ok=False)
     timing = Timings()
     X = domain(); train, test = split()
@@ -147,7 +147,12 @@ def run(out, phases, init_seed=None, source=None, source_sha256=None, snapshot_a
         p, _, source_meta = nets.load(source)  # weights only; the optimizer is reset below
         if array_sha256(*(p[k] for k in sorted(p))) != source_meta['params_sha256']:
             raise ValueError('loaded weights do not match the hash recorded at save time')
-    config = dict(phases=phases, init_seed=init_seed, source=str(source) if source else None,
+    if reset_head_seed is not None:
+        # Follow-up (QUESTION.md): put head A back to its draw at initialization
+        # (nets.init with that seed), leaving the trunk and head B as loaded.
+        fresh = nets.init(N_BITS, (HIDDEN,), {'A': 2, 'B': 2}, reset_head_seed)
+        p['W_A'], p['b_A'] = fresh['W_A'], fresh['b_A']
+    config = dict(phases=phases, init_seed=init_seed, reset_head_A_to_init_seed=reset_head_seed, source=str(source) if source else None,
                   source_file_sha256=nets.sha256_file(source) if source else None, source_meta=source_meta,
                   seeds=dict(task=None, data_split=DATA_SEED, init=init_seed, readout_init=READOUT_SEED,
                              readout_null_permutation=NULL_SEED),
@@ -222,8 +227,10 @@ def main():
     ap.add_argument('--from-sha256', help='Expected SHA-256 of the --from file')
     ap.add_argument('--snapshot-at', type=lambda s: {int(v) for v in s.split(',')}, default=set(),
                     help='Extra run steps that get a checkpoint, readout and functional change')
+    ap.add_argument('--reset-head-A', type=int, metavar='INIT_SEED',
+                    help='Follow-up: reset head A to its initial draw for this init seed after loading')
     args = ap.parse_args()
-    run(args.out, args.phases, args.init_seed, args.source, args.from_sha256, args.snapshot_at)
+    run(args.out, args.phases, args.init_seed, args.source, args.from_sha256, args.snapshot_at, args.reset_head_A)
 
 
 if __name__ == '__main__':

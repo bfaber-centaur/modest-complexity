@@ -145,12 +145,32 @@ Phase A is drawn on a linear segment. B and return phases are drawn on log segme
 
 **Stopping.** I stop and ask the coordinator before exceeding 22 min.
 
-## Follow-up (to be written here before it runs, after M2)
+## Follow-up (M3, written after M2 at 9d758e1 and before any follow-up run)
 
-Candidates, of which at most one will be run:
-- (a) the return phase with a re-initialized A head, separating head-alignment savings from trunk savings;
-- (b) optimizer state preserved across boundaries;
-- (c) a task-ID input bit with one shared head.
+The candidates were (a) the return phase with a re-initialized A head, (b) optimizer state preserved across boundaries, and (c) a task-ID input bit with one shared head. I chose (a).
+
+**Motivation.** At M2 every B branch relearned A in 37–560 updates, against 540–700 for fresh-A, while the frozen-feature readout recovered 0.91–1.00 held-out from end-of-B trunks. Because B never touches the A head, those savings could be carried entirely by the preserved head (outcome 4's confound). Resetting head A to its own initial draw (`nets.init` with the run's init seed, so the head is identical to fresh-A's) makes the trunk the only thing that differs from fresh-A.
+
+**Arms.** Init seeds 53200–53202. Each arm is one return phase of A for 4000 updates with a fresh optimizer. Everything else is as before (lr 1e-3, wd 0, same split, same criterion).
+
+| arm | run ID | trunk (and head B) loaded from | head A |
+|---|---|---|---|
+| reset after related / unrelated B | `r1-hist-fu-reset-{rel,unrel}-d{1000,10000}-s{s}-a1` | the end-of-B checkpoint of the M2 branch with that d | reset to its init draw |
+| B-only trunk | `r1-hist-fu-reset-scratch-{Brel,Bunrel}-d{1000,10000}-s{s}-a1` | the scratch-B checkpoint after the same d | reset (already its init draw; this is a checked no-op) |
+| end-of-A trunk | `r1-hist-fu-reset-ckA-s{s}-a1` | ckA | reset to its init draw |
+
+That is 27 runs of 4000 updates, an estimated 1–1.5 min at two workers. d = 100 is left out because A was not forgotten there. Results stay in their own figure and table, separate from the initial comparison.
+
+**Predictions, recorded now.** Here t(·) is the number of return updates to held-out A ≥ 0.95, and fresh-A is 540–700.
+- With the head reset, t(end-of-B trunk) is below fresh-A in every seed and at most 0.5× fresh-A in most cases, because the readout already finds A in these trunks. It is above the preserved-head relearning time of the same branch, because the old head carried some alignment.
+- t(B-only trunk) is close to fresh-A. It is perhaps somewhat faster for Brel, whose B-only readout reached 0.65–0.79.
+- t(end-of-A trunk, head reset) is the smallest of the reset arms.
+
+**What would change the reading.**
+- If t(end-of-B, reset) ≈ t(B-only), the M2 savings were carried by the preserved head, and linear decodability of A in the trunk did not translate into faster learning at this lr.
+- If t(end-of-B, reset) ≈ the preserved-head time, the head contributed little.
+
+**Budget.** At most 6 min. There are no further follow-ups after this one.
 
 ## Literature
 
