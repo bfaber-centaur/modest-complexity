@@ -34,8 +34,8 @@ Threads 2–4 were started by the project coordinator at 03:58Z; 1 and 5 receive
 
 | # | thread id | designated branch |
 |---|---|---|
-| 1 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTU8s1uzfPigWN1q5DxvtmMS` | |
-| 2 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTAaEVfAVzHaVKDX6fqHWFyJ` | |
-| 3 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTDWFArk7gDAQdi4r2c532Ui` | |
-| 4 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTHq7m8eNJQc51iKX371EFA6` | |
+| 1 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTU8s1uzfPigWN1q5DxvtmMS` | `claude/project-thread-xb3nfz` |
+| 2 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTAaEVfAVzHaVKDX6fqHWFyJ` | `claude/project-thread-b72jcj` |
+| 3 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTDWFArk7gDAQdi4r2c532Ui` | `claude/project-thread-25n2g5` |
+| 4 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTHq7m8eNJQc51iKX371EFA6` | `claude/project-thread-gqcd3n` |
 | 5 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTAKMwUsYk2djqx7Pz1rukHx` | |

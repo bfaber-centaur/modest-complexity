@@ -243,6 +243,16 @@
    "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
    "matched": true,
    "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  },
+  {
+   "run_id": "r1-comp-interp-s51200-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 439546,
+   "sha256": "bedf8ed3b8532f51bc9ed4354431bd5223031d501894416432dc0c0eb9e7defd",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-interp-s51200-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container",
+   "note": "r1 positive control P2 (one-step net); added 04:07Z as a reference system for the generalization lane"
   }
  ]
 }
