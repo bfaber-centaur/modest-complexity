@@ -70,3 +70,34 @@ My expectation, stated before running: training accuracy recovers in B within a 
 - B and C are not matched on gates, output displacement or immediate damage. A difference between them may come from those mismatches and not from which frequencies were kept.
 - Three checkpoints from one split and one width. Their evaluation pairs are shared, so pair-level results are not independent replicates.
 - The filter was not tuned, and the sham seeds are fixed here before any held-out evaluation. Neither may be changed after seeing held-out accuracy.
+
+## Follow-up 1 (DECISIONS D11): weight decay 0
+
+Written 2026-10-22 at about 00:40 UTC, after continuation packet 1 (PR #24, integrated at `d0a0657`) and before any wd-0 run.
+
+**What packet 1 showed.**
+- In B, training raised held-out accuracy after the edit, from 0.43–0.58 at update 0 to 0.74–0.86 at updates 70–100.
+- B then lost that gain between about 300 and 2,000 updates and was near chance by 5,000.
+- C stayed at chance.
+
+**Question.** Does the decoupled weight decay remove B's held-out gain, or does the cross-entropy drive on the 299 training pairs remove it without decay?
+
+**Runs.** Six runs, `e3-me-<filt|sham>-wd0-w128-i<30000|30001|30002>-a1`. They use the same B and C start files and hashes as packet 1, with `--wd 0` and nothing else changed: fresh Adam, lr 0.001, 20,000 updates, the same cadence. Each wd-0 run is compared with the wd-1 run from the same start file, seed by seed.
+
+**Why decay is a candidate.** With lr 0.001 and wd 1 the decay multiplies every weight by 0.999 per update. After 1,000 updates the start weights retain about e^-1 of their size, after 5,000 about e^-5. Everything the filter put in place then has to be rebuilt by gradients, or it is gone. At wd 0 nothing shrinks the start weights.
+
+**Why the cross-entropy drive is a candidate.** Adam's steps stay about lr in size even as the loss becomes small, so training keeps moving the weights toward larger train margins. That alone could reshape the network into a memorizer.
+
+**Expectation, stated before running and held loosely.**
+- The early rise in B will happen at wd 0 too, since decay has barely acted by update 100 (factor 0.90).
+- Afterwards, B at wd 0 will keep clearly more held-out accuracy than at wd 1: well above 0.2 on the common pairs at 5,000 and 20,000 updates, where wd 1 gave 0.01–0.03. It will still drift down while train cross-entropy keeps falling.
+- I would not be surprised by partial erasure at wd 0 on a slower time course. Erasure with about the same timing as at wd 1 would surprise me.
+- C at wd 0 will stay near chance.
+
+**Readings.**
+- Erasure at both wd 1 and wd 0, on a similar time course: the cross-entropy drive is sufficient.
+- B at wd 0 holding its gain: decay is necessary for the erasure seen in packet 1.
+- An intermediate result: both contribute. The packet will then give the time course, without a single cause.
+- C at wd 0 rising above chance: any retention in B is not specific to the dominant-frequency edit.
+
+**Measures.** The same as packet 1 (`continuation.py`), plus each run's weight norm. At wd 0 the norm can grow, so the raw logit scale changes. The scale-free pairwise measures and accuracy are the primary readouts, and raw margins are not read as growing preference (D6).
