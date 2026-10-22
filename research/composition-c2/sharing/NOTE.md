@@ -1,4 +1,4 @@
-# c2 sharing lane: note (initial comparison; follow-up pending)
+# c2 sharing lane: note (M4)
 
 **Question.** Within the same three-step recurrent computation on r1's task, how do tying the transition and tying the readout across steps change held-out composition under r1's 10k recipe? Design, predictions and measures are in [QUESTION.md](QUESTION.md), committed before any measurement. Commands, budget and run manifest are in [README.md](README.md). Every number below comes from `figures/endpoints.csv`, `figures/trajectories.csv`, or the CSVs in `out/`.
 
@@ -75,7 +75,7 @@ Checkpoints at 4k, 7k and 10k (after the fit) compare the decay step with the Ad
 | 6 | off-diagonal decoding TT ≥ 0.8, UU ≤ 0.5, UT and TU between | held (TU only just above UU) |
 | 7 | untied-transition cells 10–20% slower per update | held (12–18%) |
 
-## Interpretation (bounded by this task, recipe and 10k budget)
+## Interpretation of the initial comparison (bounded by this task, recipe and 10k budget)
 
 1. **Only TT composed within 10k.** With both groups tied, held-out accuracy reaches 0.96–1.00, including the rows no neighbour copy answers. Untying either group, or both, gives 0.52–0.84 at 10k, with ¬N 0.05–0.60. All three of those cells were still rising, so these are finite-budget gaps, not plateaus.
 2. **The two tyings are strongly non-additive.**
@@ -97,10 +97,67 @@ Checkpoints at 4k, 7k and 10k (after the fit) compare the decay step with the Ad
 ## Limitations
 
 - **Coverage.** One task draw, one split, three paired init seeds. This is exploratory coverage; seed-to-seed spread within the untied cells is as large as 0.21.
-- **Budget.** Every value is a 10k-update value under one recipe (width 128, lr 1e-3, wd 0.1). Longer training is the time lane's; it continues TT and TU, not UT or UU.
+- **Budget.** Every value is a 10k-update value under two recipes (width 128, lr 1e-3, wd 0.1 or 0). Longer training is the time lane's; it continues TT and TU at wd 0.1, not UT, UU or any wd 0 run.
 - **Probes.** Probes are linear, fit on 384 rows. Held-out h1 and h2 are training-prefix states (C1.1).
 - **Shared evidence with the reviewer.** TU is the reviewer's r1 arm, so every contrast involving TU rests on the reviewer's runs.
 
-## Follow-up
+## Follow-up: the same 2×2 without weight decay
 
-The follow-up is proposed in QUESTION.md ("Follow-up") and awaits the coordinator's approval. Its indicators were declared in advance. The eps indicator does not hold. The decay/gradient balance indicator holds for the tied groups after the fit, and less closely for per-step transition copies. The proposal is therefore the matched no-decay comparison: all four cells at wd 0.
+Figure: [figures/followup_wd0.png](figures/followup_wd0.png). Decoder table: [figures/followup_decode_wd0.png](figures/followup_decode_wd0.png).
+
+**Design.**
+- Pre-registered in QUESTION.md ("Follow-up") at `d8735fc` and approved by the coordinator before launch.
+- All four cells run at wd 0 (`c2-share-wd0-*`), 12 runs, with the recipe otherwise unchanged.
+- Each wd 0 run starts from the same weights as its wd 0.1 counterpart and logs identical step-0 metrics (`out/checks.txt`).
+- wd 0 is a different recipe, not a control that isolates "regularization": it changes the whole post-fit trajectory, and with it the effective step size. A change in a tying effect between the two recipes says only that the effect depends on decay under this recipe.
+
+**Observations.**
+- **Fit.** Every run fits training at all three steps by 350–600 updates.
+- **Held-out final at 10,000 updates**, wd 0 against wd 0.1 (per seed 51200 / 51201 / 51202):
+
+  | cell | wd 0: all 128 rows | wd 0: ¬N | wd 0 − wd 0.1 |
+  |---|---|---|---|
+  | TT | 0.398 / 0.383 / 0.453 | 0.048 / 0.071 / 0.024 | −0.60 / −0.58 / −0.55 |
+  | TU | 0.297 / 0.297 / 0.320 | 0.000 / 0.000 / 0.048 | −0.34 / −0.23 / −0.20 |
+  | UT | 0.336 / 0.336 / 0.305 | 0.000 / 0.000 / 0.000 | −0.50 / −0.34 / −0.32 |
+  | UU | 0.297 / 0.312 / 0.305 | 0.024 / 0.000 / 0.000 | −0.47 / −0.30 / −0.40 |
+
+- **Paired differences within wd 0.**
+
+  | contrast | per seed |
+  |---|---|
+  | TT − UT | +0.06 / +0.05 / +0.15 |
+  | TU − UU | 0.00 / −0.02 / +0.02 |
+  | TT − TU | +0.10 / +0.09 / +0.13 |
+  | UT − UU | +0.04 / +0.02 / 0.00 |
+  | interaction | +0.06 / +0.06 / +0.13 |
+
+  At wd 0.1 the interaction was +0.30 to +0.56.
+- **Trajectories.**
+  - Held-out accuracy at wd 0 reaches 0.23–0.34 by 1,000 updates and then barely moves.
+  - The change over the last 2,000 updates is −0.01 to +0.03, against +0.03 to +0.14 at wd 0.1.
+  - Above-chance accuracy at wd 0 is almost all on N rows (N 0.43–0.66, ¬N ≤ 0.07).
+- **Optimizer.** The flat stretch is not an eps stall.
+  - Across all 12 runs at 10k, the median √v̂ is 6e-6 to 2e-5, far above eps. From 500 updates on, the fraction of coordinates below eps is 2–9%, as at wd 0.1.
+  - Updates do not vanish (update norm 8e-4 to 5e-3 at 10k), and the training margin keeps growing (minimum 8.7–10.5 at 10k).
+  - Parameter norms grow instead of shrinking. For example, at seed 51200 the TT transition norm is 29.0 at wd 0 against 19.1 at wd 0.1 (`out/groups_wd0.csv`).
+- **Decoding at 10k** (`out/decode_table_wd0.csv`).
+  - Mean off-diagonal entry among positions 1–3: TT 0.66–0.71, UT 0.57–0.64, TU 0.31–0.36, UU 0.28–0.33. The order is the same as at wd 0.1, but TT and UT are lower.
+  - Held-out h3 is decodable at only 0.30–0.45 in every cell.
+  - In TT and UT, probes fit on training h3 read the training-prefix states h1 and h2 at 0.70–1.00. The shared readout keeps training states in a common code without the held-out h3 joining it.
+
+**Predictions F1–F4 against outcomes.**
+
+| # | prediction | outcome |
+|---|---|---|
+| F1 | all 12 fit by 1,000 | held (350–600) |
+| F2 | TT at wd 0 below wd 0.1 by ≥ 0.2 on every seed | held (−0.55 to −0.60) |
+| F3 | spread across cells smaller at wd 0 on every seed | held (0.09–0.15, against 0.37–0.48) |
+| F4 | TT highest at wd 0 on ≥ 2 of 3 seeds | held (3 of 3, by 0.05–0.15) |
+
+**Reading** (bounded by this recipe and 10k).
+- Under this recipe, the large tying effects at 10k depend on decay. Without it, every cell stays at 0.30–0.45 held-out and answers almost none of the ¬N rows.
+- The interaction shrinks from +0.30 to +0.56 to +0.06 to +0.13.
+- TU < UU disappears: the two are within ±0.02.
+- A small TT advantage remains on every seed.
+- This does not show that decay is the mechanism of composition, or that composition is impossible without decay. The wd 0 cells are nearly flat at 10k, but a flat stretch within this budget is not a demonstrated plateau. And wd 0 changes the trajectory as a whole, not one ingredient of it.
