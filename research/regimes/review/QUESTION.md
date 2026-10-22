@@ -68,3 +68,38 @@ Each status names what it affects.
 ## Revisions
 
 (Counterexample refinements are recorded here, dated, before they are run.)
+
+**2026-10-22 ~03:00, R4, after reading M2 (`f0f68f7`) and before computing.**
+- *Revised target.* The lane's M2 reading has three parts:
+  - every ρ > 1/2 passes through a shortcut phase;
+  - exceptions are fit by memorization first;
+  - the rule's contribution then keeps growing, so the threshold at T depends on T.
+- *What the data already settle.* My pre-stated memorization test is already answered by the lane's own numbers, and I recheck them independently. At ρ ≥ 15/16 the exceptions are fit while reversed accuracy stays low. At ρ ≤ 7/8, reversed accuracy and rule flips approach 1 on unseen contexts.
+- *The weaker claim.* The README says that at ρ = 15/16 "which route wins depends on the held-out context". That is the claim I attempt to break.
+- *Counterexample.* Route choice may instead depend on the rule pattern (some of the 8 parity patterns already handled by the rule), or be unstructured.
+- *Test (analysis only).* From each ρ = 15/16 seed's final.npz, take the 32 held-out contexts × 8 rule patterns matrix of reversed-environment correctness. Split its variance into a context main effect and a rule-pattern main effect.
+- *Prediction if the lane is right:* the context share is well above the pattern share in each seed, and many contexts are all-correct or all-wrong.
+- *Prediction if the counterexample holds:* the pattern share is comparable or larger.
+- *Also checked.* The identity "flip_s = 1 − reversed and flip_rule = reversed whenever reliable = 1", over every logged row.
+
+**2026-10-22 ~03:05, R2, after reading M2 (`55d6787`) and before computing.**
+- *Revised target.* The M2 summary reads the frozen y1 features as giving a linear y2 readout of 0.98–1.00 at n ≥ 128, with +0.15 to +0.35 over `part` at n = 32–128. The tempting reading is that y1 pretraining builds *our* z = x1⊕x2.
+- *Counterexample.* y1 = x1⊕x2⊕x3 is symmetric in x1, x2 and x3. A y1 network may therefore support the gated readout for any of the three pairwise XORs, and z is not privileged.
+- *Test (analysis only, published `pretrained.npz` of the three `rel` runs).*
+  - First reproduce the lane's readout exactly: fresh copy of the init `new` head, Adam lr 3e-3, 2,000 updates on D_n, unstandardized last-layer features.
+  - Then fit the same readout for y2' = (x1⊕x3)∧x4 and y2'' = (x2⊕x3)∧x4.
+  - Score on the test rows with x4 = 1, at n ∈ {32, 64, 128, 512}.
+  - Reference: the same readouts on the untrained network.
+- *Prediction if z is privileged:* the y2 readout exceeds the y2' and y2'' readouts by ≥ 0.1 at n ≥ 128 on each replicate.
+- *Prediction if the counterexample holds:* all three are within about 0.05 of each other, so frozen-feature transfer says "pairwise XORs of y1's bits are linearly available", not "z".
+
+**2026-10-22 ~03:12, R2 M4 (`f493c1a`), before running.**
+- *Target.* NOTE.md's fine-tuning reading: `part` matches `rel` and `split` gives nothing, which "points at sharing the gate bit x4, or at fewer y2-irrelevant pretraining bits".
+- *Counterexample arm `gate`.* Pretrain on g = x3⊕x4⊕x5. It shares only the gate bit x4 with y2: no x1, no x2. It has two y2-irrelevant bits, x3 and x5, which puts it between `part`/`rel` (one) and `unrel` (three).
+- *Recipe.* The lane's exact train.py at `f493c1a`, loaded read-only, with g added to its label table in memory. The three lane replicates' init and data seeds are reused on purpose so the arm is paired with theirs. This is a new configuration, not a new independent seed.
+- *Wrapper check.* One replay of the lane's `part` replicate 52200 must reproduce its published final.csv rows bitwise.
+- *Predictions,* on fine-tuned test x4 = 1 accuracy at n = 32–64, paired against `fresh` and `part`:
+  - if the gate bit drives fine-tuned transfer: `gate` − `fresh` ≥ +0.05 on all three replicates, and `gate` is within about 0.05 of `part`;
+  - if the y2-irrelevant bit count drives it: `gate` lands between `part` and `unrel`, at or below `fresh`;
+  - if sharing x2 is what `part` adds: `gate` is below `part` on all three replicates.
+- *Budget.* 4 runs of about 10 s each.
