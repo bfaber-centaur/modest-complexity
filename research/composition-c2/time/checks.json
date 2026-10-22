@@ -1,0 +1,29 @@
+{
+ "c2-time-verify-tt-inter-s51200-a1": {
+  "source": "research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1",
+  "steps": [
+   1000,
+   3000
+  ],
+  "logged": 41,
+  "differing_steps": []
+ },
+ "c2-time-verify-tu-inter-s51200-a1": {
+  "source": "research/regimes/review/runs/r1-rev-comp-rnn-untied-s51200-a1",
+  "steps": [
+   1000,
+   3000
+  ],
+  "logged": 41,
+  "differing_steps": []
+ },
+ "c2-time-verify-tt-final-s51200-a1": {
+  "source": "research/regimes/composition/runs/r1-comp-rnn-final-s51200-a1",
+  "steps": [
+   1000,
+   3000
+  ],
+  "logged": 41,
+  "differing_steps": []
+ }
+}
