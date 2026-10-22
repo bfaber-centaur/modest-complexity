@@ -201,3 +201,6 @@ Three things in the first pass need entries before the second pass.
 - **Additions, with no prediction beyond "equal to the NOTE".**
   - The script also checks the NOTE's §F numbers: F1–F5, the crossing table, handoff item 6, prediction 3's 7-of-12 count, and the O7 ratio used in the interpretation.
   - Afterwards I check by hand that the M2 nits N-S1–N-S3 and the overplot caption were applied.
+- **`c3-rev-scaf-fu-a1` complete (72 s): every line passes, and CX-F1 held.**
+  - **Post-hoc, after reading the NOTE.** `rev_scaf_fu_posthoc.py` (reads logged rows only) tabulates A′ − A and B′ − B on held-out L3 and ¬N at 1,100–9,000, with A's own value. This was not pre-registered, and REVIEW §5 labels it that way.
+  - **Figures.** I have also looked at `scaf_followup.png`.

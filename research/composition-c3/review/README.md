@@ -6,6 +6,7 @@
 - [rev_corr.py](rev_corr.py): correction-lane recomputation, C1–C7, CX-C1, CX-C2 (run `c3-rev-corr-a2`; output [out/rev_corr.txt](out/rev_corr.txt)). [rev_corr_note.py](rev_corr_note.py) checks the NOTE's numbers ([out/rev_corr_note.txt](out/rev_corr_note.txt)).
 - [rev_repin.py](rev_repin.py): re-pin check of `82cef77` (D10), RP0–RP7 and CX-R1 (run `c3-rev-repin-a1`; output [out/rev_repin.txt](out/rev_repin.txt)).
 - [rev_scaf.py](rev_scaf.py): scaffolding-lane review, S0–S7, CX-S1 and CX-S2 (run `c3-rev-scaf-a1`; output [out/rev_scaf.txt](out/rev_scaf.txt)). [rev_scaf_note.py](rev_scaf_note.py) checks the NOTE's numbers ([out/rev_scaf_note.txt](out/rev_scaf_note.txt)).
+- [rev_scaf_fu.py](rev_scaf_fu.py): scaffolding follow-up review, F1–F4, CX-F1 and the NOTE's §F numbers (run `c3-rev-scaf-fu-a1`; output [out/rev_scaf_fu.txt](out/rev_scaf_fu.txt)). [rev_scaf_fu_posthoc.py](rev_scaf_fu_posthoc.py): post-hoc reset-effect table ([out/rev_scaf_fu_posthoc.txt](out/rev_scaf_fu_posthoc.txt)).
 - [plan.json](plan.json), [registry.jsonl](registry.jsonl): reviewer runs (IDs `c3-rev-`; these reuse the original init seeds for pairing, and new seeds would come from 73000–73999). Outputs are local in `runs/c3/` (gitignored).
 
 ## Commands
@@ -25,6 +26,8 @@ $R --workers 2 --ids c3-rev-reset-drop-cont1200-s51200-a1 c3-rev-reset-drop-cont
 $R --workers 1 --ids c3-rev-repin-a1   # rev_repin.py --runs runs/c3; stdout in runs/c3/c3-rev-repin-a1.log
 $R --workers 1 --ids c3-rev-scaf-a1    # rev_scaf.py --lane 4512bce; stdout in runs/c3/c3-rev-scaf-a1.log
 python3 research/composition-c3/review/rev_scaf_note.py runs/c3/c3-rev-scaf-a1
+$R --workers 1 --ids c3-rev-scaf-fu-a1   # rev_scaf_fu.py --lane 5317c54
+python3 research/composition-c3/review/rev_scaf_fu_posthoc.py runs/c3/c3-rev-scaf-fu-a1
 ```
 
 ## Budget tally (20 min of numerical execution, D8)
@@ -43,3 +46,5 @@ python3 research/composition-c3/review/rev_scaf_note.py runs/c3/c3-rev-scaf-a1
 | f3abedc (06:16) | `c3-rev-repin-a1` (includes both test suites, 29 s) | 39.5 s | 9.0 min |
 | d7a1613 (06:24) | `c3-rev-scaf-a1` | 77.8 s | 10.3 min |
 | 8f2b28c (06:27) | `rev_scaf_note.py` (reads only) | 0.6 s | 10.3 min |
+| 5236c16 (06:45) | `c3-rev-scaf-fu-a1` | 72.2 s | 11.5 min |
+| after the run (06:47) | `rev_scaf_fu_posthoc.py` (reads only) | < 1 s | 11.5 min |

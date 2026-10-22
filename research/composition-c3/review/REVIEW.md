@@ -8,6 +8,7 @@ Questions and predictions, committed before each measurement: [QUESTION.md](QUES
 | Correction lane (PR #63, `c3f03cd`) | **PASS**. Every number in its tables, both figures and the NOTE recomputes exactly from my own code (B and C to 0 rows). Leak checks hold. CX-C1 held: the bins of gain recovered are stable across three other map and probe draws. CX-C2 failed narrowly: a val-tuned ridge decoder reads new prefixes up to 5/32 better, but recovers at most 6% of the gain, so the conclusion stands. C6: on adapter-held-out prefixes B is not purely decoder-plus-centroid. Wording notes W1–W3. | §2 |
 | Scaffolding lane (PR #65, M2 at `4512bce`) | **PASS**. Every number in its six figure CSVs, its frozen L1–6 table and its checks recomputes from my own forward and oracle. That covers 317,262 trajectory values, 114 checkpoints exhaustively at L = 1–6, and 66 branch checkpoints rescored to their logged rows. The joins, schedules, exposure, manifests and registry hold. CX-S1 failed: length-3 retention at S = 10k does carry length 6 and the h1/h2 readout, so the lane's "persistence" stands. CX-S2 held for the total norm (4% below keep), but the shrinkage is in Ws, bs and bv, not V, and A grows. Three NOTE number nits (N-S1–N-S3) and a figure note. | §3 |
 | Follow-up plan entries (`84dc657`) and correction wording (`897fa97`) | **PASS** (short checks, §3 end and §2 end) | §2, §3 |
+| Scaffolding follow-up (PR #65 at `5317c54`): Adam reset against carried at S = 1k | **PASS**. Every number in NOTE §F and the seven follow-up CSVs recomputes from my own forward. The logged first update after the reset equals my fresh-state Adam update exactly. The matched controls hold bitwise, and the M2 nits and caption are applied. CX-F1 held: the reset does not slow early acquisition in either arm. Two wording points, W-F1 and W-F2: scope "carrying slows acquisition" to this switch and reset time, and note that up to 3k the reset speeds keep about as much as drop. One figure note. | §5 |
 | Re-pin `82cef77` (D10, `--reset-optimizer-at`) | **PASS**. Runs without the flag are bitwise unchanged; the reset is exactly a fresh Adam state on the carried weights; resumes after or at the reset continue bitwise; every wrong reset history is refused. CX-R1 held: a reset also gives 2.1–2.6× larger steps over the next 100 updates, which the follow-up's wording should name. Note N5. | §4 |
 
 ## 1. Pin check of `be41d16`
@@ -221,3 +222,61 @@ One nit, which the lane has since applied (`285b3dd`): the 13–33% on wrong-sym
 The carried second moment holds about 1,000 updates of history from larger early gradients. A fresh state re-estimates it from the current, smaller gradients, and its bias correction makes the first updates sign steps of size lr. So the reset arms differ from the carried arms in two ways: Adam's memory of earlier gradients is gone, and the effective step size is larger for at least the first hundred updates (β2 = 0.999 suggests several hundred). This is a design fact, not a defect. **Suggested wording for the follow-up:** "a reset removes the optimizer's history and also enlarges the next few hundred steps." Do not write "the reset removes only the moments' memory." A difference between reset and carried arms can come from either.
 
 **N5, a note, not a defect.** A reset step outside the run's own range, such as `--reset-optimizer-at` beyond `--updates` or before a resume's start, is not rejected by argument parsing. The second case is refused by `check_source` when the source had no reset there (RP6, r1 `ckpt-1000` with a reset at 500). The first case runs without a reset, while its config still records `reset_at`. The planned follow-up resumes at R = 1,000 with R = 1,000, which is inside the range, so this does not affect it. I will check the six plan entries when they are pushed.
+
+## 5. Scaffolding follow-up (PR #65 at `5317c54`): Adam reset against carried at S = 1k
+
+**PASS.** The checks F1–F4 and CX-F1 were committed at `8340a69`, before I read any follow-up result. The script was committed at `5236c16`, before its run.
+- **Evidence.** `rev_scaf_fu.py` (run `c3-rev-scaf-fu-a1`, 72 s), output [out/rev_scaf_fu.txt](out/rev_scaf_fu.txt). Every line passes.
+- **Post-hoc table.** [out/rev_scaf_fu_posthoc.txt](out/rev_scaf_fu_posthoc.txt), from `rev_scaf_fu_posthoc.py`, which reads logged rows only.
+
+**Recomputation.**
+- **F1, the reset runs.**
+  - All six resume r1 tied/inter `ckpt-1000` at its RECOVERY.json hash and record `reset_at` 1000, with the right flags.
+  - Each first row equals r1's at 1,000. Step weights and exposure equal my recount.
+  - The saved Adam count is step − 1,000 at every committed checkpoint (2,000 at 3k, 49,000 at 50k).
+  - The logged update and gradient norms at row 1,000 equal my own fresh-state Adam update on the source weights exactly.
+- **F2, matched controls.**
+  - The three carried-keep runs (1k → 3k, no reset) equal r1's rows in every r1 key.
+  - The carried-drop run equals the drop branch in every key including `diag`, and its `ckpt-3000` equals the branch's bitwise.
+- **F3, records.**
+  - Manifests and the registry (24 entries, one running and one complete event each) hold.
+  - All 37 committed follow-up checkpoints rescore to their logged rows.
+  - All 99 × 9 frozen values equal my exhaustive L1–6 evaluation.
+- **F4, arithmetic.** Every value of the effects, threshold, transient, optimizer and compatibility CSVs, and all 281,865 values of `scaf_followup.csv`, recompute. The keep rows for 1k–3k come from the verify runs, as the lane builds them. The rule label is "weights at S suffice" in all three seeds.
+- **NOTE §F.** Each of these recomputes as quoted:
+  - F1 (|reset effect| ≤ 0.003 at 50k);
+  - the F2 crossing table and its effect values;
+  - handoff 6 (0.766 against 0.438);
+  - the F3 ratios (16.9–21.6× first update; 1.15–1.75 over 1,050–1,500; 7 of 12 above 1.5);
+  - F3's train CE claims;
+  - the F4 eps onsets and F5;
+  - the O7 ratio (0.53–0.56).
+- **The M2 nits.** N-S1–N-S3 are applied in the NOTE, and the overplot caption is in the figure code.
+
+**CX-F1 held: the reset does not slow early acquisition, in either arm.**
+- **B′ − B** on held-out L3 is +0.086 / +0.055 / +0.039 at 3k and +0.055 / +0.125 / +0.125 at 10k.
+- **A′ − A** is +0.070 / +0.047 / +0.047 at 3k (A from r1's logged row) and −0.008 / +0.008 / −0.016 at 10k.
+
+So, as committed: "weights at S suffice" (B′ ≈ B at 50k) cannot exclude a moments effect that the burst of larger steps offsets. Here the burst, if anything, helps.
+
+**Post-hoc (after reading the NOTE): when the keep control is informative** ([out/rev_scaf_fu_posthoc.txt](out/rev_scaf_fu_posthoc.txt)).
+- **Up to 3k**, the reset raises held-out L3 by about the same amount in keep (A′ − A up to +0.07) as in drop (B′ − B up to +0.09).
+- **From 4k on**, keep's effect fades to −0.07 to +0.05, while drop's grows to +0.06 to +0.15.
+- **Keep is not yet at its ceiling at 4k–6k**: A is at 0.48–0.86 there. So the drop-specific part of the reset effect is visible without a ceiling. In the NOTE's "difference on L6 at 20k" (+0.25 / +0.31 / +0.18), keep is at 0.99–1.0, so that difference is effectively B′ − B alone.
+
+**Wording points (minimal remedies).**
+- **W-F1, scope of "carrying the Adam state across the drop slows acquisition".**
+  - **What the data support.** At one switch time that is also the reset time (1k), one recipe and three paired seeds, all three seeds show the same direction: the carried drop branch crossed 2,350–5,900 updates later than the reset one. Keep moved −400 to +750.
+  - **Remedy.** Scope the sentence: "Here (S = R = 1k, this recipe), the drop branch with its Adam state carried crossed 2,350–5,900 updates later than with a reset at the switch."
+  - **Clarity.** Replace "the cause is the reset, not a single mechanism" with "the effect belongs to the reset as a whole".
+  - **CX-R1.** The NOTE already names both components (lost history; larger early steps) and says the run does not separate them, which is what CX-R1 asked for.
+- **W-F2, the keep control.** Add one line that the post-hoc table supports:
+  - up to 3k, the reset speeds keep about as much as drop, which fits the early-step burst;
+  - the drop-specific part appears from about 4k, while keep is still below its ceiling;
+  - it is consistent with stale second moments (O7: carried B's update norm falls to 0.53–0.56 of its value at S by S + 2,000), but it does not prove it.
+
+  Also say that from about 8k on, keep is near its ceiling, so A′ − A cannot show a speed-up there.
+
+**Figure note.**
+- **The problem.** In `scaf_followup.png`'s 900–6,000 zoom, the frozen L4/L6 panel draws straight lines between fixed checkpoints: 1k → 3k → 10k, and 1k → 10k for keep, which has no 3k checkpoint. Inside the window they look like data at 4k–6k, and keep's line sits below A′'s there only because of the interpolation.
+- **Remedy.** In the zoom, draw markers only, or say "lines interpolate between checkpoints".
