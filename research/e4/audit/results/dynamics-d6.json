@@ -1,0 +1,982 @@
+{
+ "runs": {
+  "e3-me-filt-wd0-w128-i30000-a1": {
+   "wd": 0.0,
+   "seed": 30000,
+   "y5": {
+    "checkpoints": 12,
+    "lane_rows": 12,
+    "same_steps": true,
+    "worst_abs": 2.220446049250313e-16
+   },
+   "y6": {
+    "own_update0": 0.43655589123867067,
+    "lane_own_update0": 0.43655589123867067,
+    "update0": {
+     "peak_step": 100,
+     "peak": 0.7658610271903323,
+     "T": ">20000",
+     "recross": 0,
+     "E_at_T": null,
+     "lane": {
+      "peak_step": 100,
+      "T": ">20000",
+      "recross": 0
+     },
+     "equal": true
+    },
+    "fixed010": {
+     "peak_step": 100,
+     "peak": 0.7658610271903323,
+     "T": ">20000",
+     "recross": 0,
+     "E_at_T": null,
+     "lane": {
+      "peak_step": 100,
+      "T": ">20000",
+      "recross": 0
+     },
+     "equal": true
+    }
+   }
+  },
+  "e4-dy-filt-wd0p1-w128-i30000-a1": {
+   "wd": 0.1,
+   "seed": 30000,
+   "y1": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     20000
+    ],
+    "manifest_completed": 20000,
+    "init_hash_plan": true,
+    "init_weights_plan": true,
+    "wd_plan": true,
+    "checkpoint_steps_plan": true,
+    "config_differences_vs_wd1": [
+     "checkpoint_steps",
+     "diagnostic_schedule",
+     "out",
+     "run_id",
+     "runtime",
+     "session_label",
+     "wd"
+    ],
+    "shared": {
+     "commit": "52e7879094cb8a2a1812623f9c93a3098f30c4ce",
+     "equals_72cfb5d": true,
+     "equals_pin_8108d8b": false
+    },
+    "dirty": false,
+    "PASS": true
+   },
+   "y2": {
+    "step0_equals_start": true,
+    "step0_equals_wd1_step0": true,
+    "split": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+    "split_ok": true,
+    "row0_equals_wd1_row0": true,
+    "data_equal": true,
+    "PASS": true
+   },
+   "y3": {
+    "init_age": 50000,
+    "resume": null,
+    "update10_rel": 1.8605001407984282e-16,
+    "rows": {
+     "rows": 1,
+     "rows_acc_equal": 1,
+     "rows_within": 1,
+     "worst_row_rel_early": 6.761166145329145e-16,
+     "worst_row_rel_late": 0.0,
+     "first_row_fail": null,
+     "checkpoints": {
+      "10": 1.8605001407984282e-16
+     },
+     "worst_checkpoint_rel": 1.8605001407984282e-16
+    },
+    "PASS": true
+   },
+   "y5": {
+    "checkpoints": 21,
+    "lane_rows": 21,
+    "same_steps": true,
+    "worst_abs": 4.440892098500626e-16
+   },
+   "y6": {
+    "own_update0": 0.43655589123867067,
+    "lane_own_update0": 0.43655589123867067,
+    "update0": {
+     "peak_step": 100,
+     "peak": 0.7658610271903323,
+     "T": 4620,
+     "recross": 0,
+     "E_at_T": 0.46202310154011555,
+     "lane": {
+      "peak_step": 100,
+      "T": "4620",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 6002.701846398373,
+      "r": 0.7696534191135954,
+      "verdict": "exposure clock",
+      "lane_r": "0.7696534191135954",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    },
+    "fixed010": {
+     "peak_step": 100,
+     "peak": 0.7658610271903323,
+     "T": 14860,
+     "recross": 0,
+     "E_at_T": 1.486074304953705,
+     "lane": {
+      "peak_step": 100,
+      "T": "14860",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 16807.565169915448,
+      "r": 0.8841256808927045,
+      "verdict": "exposure clock",
+      "lane_r": "0.8841256808927045",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    }
+   }
+  },
+  "e4-dy-filt-wd0p3-w128-i30000-a1": {
+   "wd": 0.3,
+   "seed": 30000,
+   "y1": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     20000
+    ],
+    "manifest_completed": 20000,
+    "init_hash_plan": true,
+    "init_weights_plan": true,
+    "wd_plan": true,
+    "checkpoint_steps_plan": true,
+    "config_differences_vs_wd1": [
+     "checkpoint_steps",
+     "diagnostic_schedule",
+     "out",
+     "run_id",
+     "runtime",
+     "session_label",
+     "wd"
+    ],
+    "shared": {
+     "commit": "52e7879094cb8a2a1812623f9c93a3098f30c4ce",
+     "equals_72cfb5d": true,
+     "equals_pin_8108d8b": false
+    },
+    "dirty": false,
+    "PASS": true
+   },
+   "y2": {
+    "step0_equals_start": true,
+    "step0_equals_wd1_step0": true,
+    "split": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+    "split_ok": true,
+    "row0_equals_wd1_row0": true,
+    "data_equal": true,
+    "PASS": true
+   },
+   "y3": {
+    "init_age": 50000,
+    "resume": null,
+    "update10_rel": 4.183999717767078e-16,
+    "rows": {
+     "rows": 1,
+     "rows_acc_equal": 1,
+     "rows_within": 1,
+     "worst_row_rel_early": 6.761431047637081e-16,
+     "worst_row_rel_late": 0.0,
+     "first_row_fail": null,
+     "checkpoints": {
+      "10": 4.183999717767078e-16
+     },
+     "worst_checkpoint_rel": 4.183999717767078e-16
+    },
+    "PASS": true
+   },
+   "y5": {
+    "checkpoints": 21,
+    "lane_rows": 21,
+    "same_steps": true,
+    "worst_abs": 2.220446049250313e-16
+   },
+   "y6": {
+    "own_update0": 0.43655589123867067,
+    "lane_own_update0": 0.43655589123867067,
+    "update0": {
+     "peak_step": 100,
+     "peak": 0.7658610271903323,
+     "T": 1750,
+     "recross": 0,
+     "E_at_T": 0.5250787657535445,
+     "lane": {
+      "peak_step": 100,
+      "T": "1750",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 2000.7005020572356,
+      "r": 0.8746936376536864,
+      "verdict": "exposure clock",
+      "lane_r": "0.8746936376536864",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    },
+    "fixed010": {
+     "peak_step": 100,
+     "peak": 0.7658610271903323,
+     "T": 5120,
+     "recross": 0,
+     "E_at_T": 1.5362304460903702,
+     "lane": {
+      "peak_step": 100,
+      "T": "5120",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 5601.961405760259,
+      "r": 0.9139655968952805,
+      "verdict": "exposure clock",
+      "lane_r": "0.9139655968952805",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    }
+   }
+  },
+  "e3-me-filt-w128-i30000-a1": {
+   "wd": 1.0,
+   "seed": 30000,
+   "y5": {
+    "checkpoints": 12,
+    "lane_rows": 12,
+    "same_steps": true,
+    "worst_abs": 2.220446049250313e-16
+   },
+   "y6": {
+    "own_update0": 0.43655589123867067,
+    "lane_own_update0": 0.43655589123867067,
+    "update0": {
+     "peak_step": 80,
+     "peak": 0.7507552870090635,
+     "T": 600,
+     "recross": 0,
+     "E_at_T": 0.6003002001501201,
+     "lane": {
+      "peak_step": 80,
+      "T": "600",
+      "recross": 0
+     },
+     "equal": true
+    },
+    "fixed010": {
+     "peak_step": 80,
+     "peak": 0.7507552870090635,
+     "T": 1680,
+     "recross": 0,
+     "E_at_T": 1.6808405604203362,
+     "lane": {
+      "peak_step": 80,
+      "T": "1680",
+      "recross": 0
+     },
+     "equal": true
+    }
+   }
+  },
+  "e3-me-filt-wd0-w128-i30001-a1": {
+   "wd": 0.0,
+   "seed": 30001,
+   "y5": {
+    "checkpoints": 12,
+    "lane_rows": 12,
+    "same_steps": true,
+    "worst_abs": 4.440892098500626e-16
+   },
+   "y6": {
+    "own_update0": 0.5619335347432024,
+    "lane_own_update0": 0.5619335347432024,
+    "update0": {
+     "peak_step": 110,
+     "peak": 0.823262839879154,
+     "T": ">20000",
+     "recross": 0,
+     "E_at_T": null,
+     "lane": {
+      "peak_step": 110,
+      "T": ">20000",
+      "recross": 0
+     },
+     "equal": true
+    },
+    "fixed010": {
+     "peak_step": 110,
+     "peak": 0.823262839879154,
+     "T": ">20000",
+     "recross": 0,
+     "E_at_T": null,
+     "lane": {
+      "peak_step": 110,
+      "T": ">20000",
+      "recross": 0
+     },
+     "equal": true
+    }
+   }
+  },
+  "e4-dy-filt-wd0p1-w128-i30001-a1": {
+   "wd": 0.1,
+   "seed": 30001,
+   "y1": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     20000
+    ],
+    "manifest_completed": 20000,
+    "init_hash_plan": true,
+    "init_weights_plan": true,
+    "wd_plan": true,
+    "checkpoint_steps_plan": true,
+    "config_differences_vs_wd1": [
+     "checkpoint_steps",
+     "diagnostic_schedule",
+     "out",
+     "run_id",
+     "runtime",
+     "session_label",
+     "wd"
+    ],
+    "shared": {
+     "commit": "52e7879094cb8a2a1812623f9c93a3098f30c4ce",
+     "equals_72cfb5d": true,
+     "equals_pin_8108d8b": false
+    },
+    "dirty": false,
+    "PASS": true
+   },
+   "y2": {
+    "step0_equals_start": true,
+    "step0_equals_wd1_step0": true,
+    "split": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+    "split_ok": true,
+    "row0_equals_wd1_row0": true,
+    "data_equal": true,
+    "PASS": true
+   },
+   "y3": {
+    "init_age": 50000,
+    "resume": null,
+    "update10_rel": 2.1711925672369902e-16,
+    "rows": {
+     "rows": 1,
+     "rows_acc_equal": 1,
+     "rows_within": 1,
+     "worst_row_rel_early": 8.147206900169626e-16,
+     "worst_row_rel_late": 0.0,
+     "first_row_fail": null,
+     "checkpoints": {
+      "10": 2.1711925672369902e-16
+     },
+     "worst_checkpoint_rel": 2.1711925672369902e-16
+    },
+    "PASS": true
+   },
+   "y5": {
+    "checkpoints": 21,
+    "lane_rows": 21,
+    "same_steps": true,
+    "worst_abs": 2.220446049250313e-16
+   },
+   "y6": {
+    "own_update0": 0.5619335347432024,
+    "lane_own_update0": 0.5619335347432024,
+    "update0": {
+     "peak_step": 110,
+     "peak": 0.823262839879154,
+     "T": 2810,
+     "recross": 0,
+     "E_at_T": 0.2810140509367369,
+     "lane": {
+      "peak_step": 110,
+      "T": "2810",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 4702.116446345392,
+      "r": 0.597603235067478,
+      "verdict": "faster",
+      "lane_r": "0.597603235067478",
+      "lane_verdict": "faster",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    },
+    "fixed010": {
+     "peak_step": 110,
+     "peak": 0.823262839879154,
+     "T": 13100,
+     "recross": 0,
+     "E_at_T": 1.3100655043669942,
+     "lane": {
+      "peak_step": 110,
+      "T": "13100",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 15406.93473908916,
+      "r": 0.850266469083159,
+      "verdict": "exposure clock",
+      "lane_r": "0.850266469083159",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    }
+   }
+  },
+  "e4-dy-filt-wd0p3-w128-i30001-a1": {
+   "wd": 0.3,
+   "seed": 30001,
+   "y1": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     20000
+    ],
+    "manifest_completed": 20000,
+    "init_hash_plan": true,
+    "init_weights_plan": true,
+    "wd_plan": true,
+    "checkpoint_steps_plan": true,
+    "config_differences_vs_wd1": [
+     "checkpoint_steps",
+     "diagnostic_schedule",
+     "out",
+     "run_id",
+     "runtime",
+     "session_label",
+     "wd"
+    ],
+    "shared": {
+     "commit": "52e7879094cb8a2a1812623f9c93a3098f30c4ce",
+     "equals_72cfb5d": true,
+     "equals_pin_8108d8b": false
+    },
+    "dirty": false,
+    "PASS": true
+   },
+   "y2": {
+    "step0_equals_start": true,
+    "step0_equals_wd1_step0": true,
+    "split": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+    "split_ok": true,
+    "row0_equals_wd1_row0": true,
+    "data_equal": true,
+    "PASS": true
+   },
+   "y3": {
+    "init_age": 50000,
+    "resume": null,
+    "update10_rel": 4.091251081842456e-16,
+    "rows": {
+     "rows": 1,
+     "rows_acc_equal": 1,
+     "rows_within": 1,
+     "worst_row_rel_early": 9.25228713879951e-16,
+     "worst_row_rel_late": 0.0,
+     "first_row_fail": null,
+     "checkpoints": {
+      "10": 4.091251081842456e-16
+     },
+     "worst_checkpoint_rel": 4.091251081842456e-16
+    },
+    "PASS": true
+   },
+   "y4": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 5.072567477557209e-14,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "10": 4.091251081842456e-16,
+     "30": 1.0627841844313984e-15,
+     "50": 1.6833007242245592e-15,
+     "100": 3.0278379528310288e-15,
+     "300": 7.0862075852421204e-15
+    },
+    "worst_checkpoint_rel": 7.0862075852421204e-15,
+    "PASS": true
+   },
+   "y5": {
+    "checkpoints": 21,
+    "lane_rows": 21,
+    "same_steps": true,
+    "worst_abs": 4.440892098500626e-16
+   },
+   "y6": {
+    "own_update0": 0.5619335347432024,
+    "lane_own_update0": 0.5619335347432024,
+    "update0": {
+     "peak_step": 100,
+     "peak": 0.8187311178247734,
+     "T": 1190,
+     "recross": 0,
+     "E_at_T": 0.3570535607124103,
+     "lane": {
+      "peak_step": 100,
+      "T": "1190",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 1567.215393278168,
+      "r": 0.7593085194951149,
+      "verdict": "exposure clock",
+      "lane_r": "0.7593085194951149",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    },
+    "fixed010": {
+     "peak_step": 100,
+     "peak": 0.8187311178247734,
+     "T": 4700,
+     "recross": 0,
+     "E_at_T": 1.4102115423095196,
+     "lane": {
+      "peak_step": 100,
+      "T": "4700",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 5135.131288613571,
+      "r": 0.9152638434817795,
+      "verdict": "exposure clock",
+      "lane_r": "0.9152638434817795",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    }
+   }
+  },
+  "e3-me-filt-w128-i30001-a1": {
+   "wd": 1.0,
+   "seed": 30001,
+   "y5": {
+    "checkpoints": 12,
+    "lane_rows": 12,
+    "same_steps": true,
+    "worst_abs": 1.1102230246251565e-16
+   },
+   "y6": {
+    "own_update0": 0.5619335347432024,
+    "lane_own_update0": 0.5619335347432024,
+    "update0": {
+     "peak_step": 70,
+     "peak": 0.8066465256797583,
+     "T": 470,
+     "recross": 0,
+     "E_at_T": 0.47023515678426075,
+     "lane": {
+      "peak_step": 70,
+      "T": "470",
+      "recross": 0
+     },
+     "equal": true
+    },
+    "fixed010": {
+     "peak_step": 70,
+     "peak": 0.8066465256797583,
+     "T": 1540,
+     "recross": 0,
+     "E_at_T": 1.5407705137186416,
+     "lane": {
+      "peak_step": 70,
+      "T": "1540",
+      "recross": 0
+     },
+     "equal": true
+    }
+   }
+  },
+  "e3-me-filt-wd0-w128-i30002-a1": {
+   "wd": 0.0,
+   "seed": 30002,
+   "y5": {
+    "checkpoints": 11,
+    "lane_rows": 11,
+    "same_steps": true,
+    "worst_abs": 0.0
+   },
+   "y6": {
+    "own_update0": 0.6072507552870091,
+    "lane_own_update0": 0.6072507552870091,
+    "update0": {
+     "peak_step": 80,
+     "peak": 0.8806646525679759,
+     "T": ">20000",
+     "recross": 0,
+     "E_at_T": null,
+     "lane": {
+      "peak_step": 80,
+      "T": ">20000",
+      "recross": 0
+     },
+     "equal": true
+    },
+    "fixed010": {
+     "peak_step": 80,
+     "peak": 0.8806646525679759,
+     "T": ">20000",
+     "recross": 0,
+     "E_at_T": null,
+     "lane": {
+      "peak_step": 80,
+      "T": ">20000",
+      "recross": 0
+     },
+     "equal": true
+    }
+   }
+  },
+  "e4-dy-filt-wd0p1-w128-i30002-a1": {
+   "wd": 0.1,
+   "seed": 30002,
+   "y1": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     20000
+    ],
+    "manifest_completed": 20000,
+    "init_hash_plan": true,
+    "init_weights_plan": true,
+    "wd_plan": true,
+    "checkpoint_steps_plan": true,
+    "config_differences_vs_wd1": [
+     "checkpoint_steps",
+     "diagnostic_schedule",
+     "out",
+     "run_id",
+     "runtime",
+     "session_label",
+     "wd"
+    ],
+    "shared": {
+     "commit": "52e7879094cb8a2a1812623f9c93a3098f30c4ce",
+     "equals_72cfb5d": true,
+     "equals_pin_8108d8b": false
+    },
+    "dirty": false,
+    "PASS": true
+   },
+   "y2": {
+    "step0_equals_start": true,
+    "step0_equals_wd1_step0": true,
+    "split": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+    "split_ok": true,
+    "row0_equals_wd1_row0": true,
+    "data_equal": true,
+    "PASS": true
+   },
+   "y3": {
+    "init_age": 50000,
+    "resume": null,
+    "update10_rel": 2.0155911690795962e-16,
+    "rows": {
+     "rows": 1,
+     "rows_acc_equal": 1,
+     "rows_within": 1,
+     "worst_row_rel_early": 6.819971995599132e-16,
+     "worst_row_rel_late": 0.0,
+     "first_row_fail": null,
+     "checkpoints": {
+      "10": 2.0155911690795962e-16
+     },
+     "worst_checkpoint_rel": 2.0155911690795962e-16
+    },
+    "PASS": true
+   },
+   "y4": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 2.2030880534998705e-14,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "10": 2.0155911690795962e-16,
+     "30": 4.3450939842839176e-16,
+     "100": 1.1157795601789456e-15,
+     "300": 2.6287634571885817e-15
+    },
+    "worst_checkpoint_rel": 2.6287634571885817e-15,
+    "PASS": true
+   },
+   "y5": {
+    "checkpoints": 20,
+    "lane_rows": 20,
+    "same_steps": true,
+    "worst_abs": 0.0
+   },
+   "y6": {
+    "own_update0": 0.6072507552870091,
+    "lane_own_update0": 0.6072507552870091,
+    "update0": {
+     "peak_step": 120,
+     "peak": 0.879154078549849,
+     "T": 3000,
+     "recross": 0,
+     "E_at_T": 0.30001500100007505,
+     "lane": {
+      "peak_step": 120,
+      "T": "3000",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 4702.116446345392,
+      "r": 0.6380105712464178,
+      "verdict": "faster",
+      "lane_r": "0.6380105712464178",
+      "lane_verdict": "faster",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    },
+    "fixed010": {
+     "peak_step": 120,
+     "peak": 0.879154078549849,
+     "T": 14410,
+     "recross": 0,
+     "E_at_T": 1.4410720548036937,
+     "lane": {
+      "peak_step": 120,
+      "T": "14410",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 18008.10553919512,
+      "r": 0.8001952214593729,
+      "verdict": "exposure clock",
+      "lane_r": "0.8001952214593729",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    }
+   }
+  },
+  "e4-dy-filt-wd0p3-w128-i30002-a1": {
+   "wd": 0.3,
+   "seed": 30002,
+   "y1": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     20000
+    ],
+    "manifest_completed": 20000,
+    "init_hash_plan": true,
+    "init_weights_plan": true,
+    "wd_plan": true,
+    "checkpoint_steps_plan": true,
+    "config_differences_vs_wd1": [
+     "checkpoint_steps",
+     "diagnostic_schedule",
+     "out",
+     "run_id",
+     "runtime",
+     "session_label",
+     "wd"
+    ],
+    "shared": {
+     "commit": "52e7879094cb8a2a1812623f9c93a3098f30c4ce",
+     "equals_72cfb5d": true,
+     "equals_pin_8108d8b": false
+    },
+    "dirty": false,
+    "PASS": true
+   },
+   "y2": {
+    "step0_equals_start": true,
+    "step0_equals_wd1_step0": true,
+    "split": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+    "split_ok": true,
+    "row0_equals_wd1_row0": true,
+    "data_equal": true,
+    "PASS": true
+   },
+   "y3": {
+    "init_age": 50000,
+    "resume": null,
+    "update10_rel": 4.0573768682427154e-16,
+    "rows": {
+     "rows": 1,
+     "rows_acc_equal": 1,
+     "rows_within": 1,
+     "worst_row_rel_early": 1.025702957990852e-15,
+     "worst_row_rel_late": 0.0,
+     "first_row_fail": null,
+     "checkpoints": {
+      "10": 4.0573768682427154e-16
+     },
+     "worst_checkpoint_rel": 4.0573768682427154e-16
+    },
+    "PASS": true
+   },
+   "y5": {
+    "checkpoints": 20,
+    "lane_rows": 20,
+    "same_steps": true,
+    "worst_abs": 5.551115123125783e-17
+   },
+   "y6": {
+    "own_update0": 0.6072507552870091,
+    "lane_own_update0": 0.6072507552870091,
+    "update0": {
+     "peak_step": 80,
+     "peak": 0.877643504531722,
+     "T": 1290,
+     "recross": 0,
+     "E_at_T": 0.3870580616126128,
+     "lane": {
+      "peak_step": 80,
+      "T": "1290",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 1567.215393278168,
+      "r": 0.8231159581081497,
+      "verdict": "exposure clock",
+      "lane_r": "0.8231159581081497",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    },
+    "fixed010": {
+     "peak_step": 80,
+     "peak": 0.877643504531722,
+     "T": 5050,
+     "recross": 0,
+     "E_at_T": 1.5152272954602286,
+     "lane": {
+      "peak_step": 80,
+      "T": "5050",
+      "recross": 0
+     },
+     "equal": true,
+     "decision": {
+      "T_pred": 6002.101506171707,
+      "r": 0.8413719752668792,
+      "verdict": "exposure clock",
+      "lane_r": "0.8413719752668792",
+      "lane_verdict": "exposure clock",
+      "r_equal": "True",
+      "verdict_equal": true
+     }
+    }
+   }
+  },
+  "e3-me-filt-w128-i30002-a1": {
+   "wd": 1.0,
+   "seed": 30002,
+   "y5": {
+    "checkpoints": 11,
+    "lane_rows": 11,
+    "same_steps": true,
+    "worst_abs": 5.551115123125783e-17
+   },
+   "y6": {
+    "own_update0": 0.6072507552870091,
+    "lane_own_update0": 0.6072507552870091,
+    "update0": {
+     "peak_step": 70,
+     "peak": 0.877643504531722,
+     "T": 470,
+     "recross": 0,
+     "E_at_T": 0.47023515678426075,
+     "lane": {
+      "peak_step": 70,
+      "T": "470",
+      "recross": 0
+     },
+     "equal": true
+    },
+    "fixed010": {
+     "peak_step": 70,
+     "peak": 0.877643504531722,
+     "T": 1800,
+     "recross": 0,
+     "E_at_T": 1.8009006004503603,
+     "lane": {
+      "peak_step": 70,
+      "T": "1800",
+      "recross": 0
+     },
+     "equal": true
+    }
+   }
+  }
+ },
+ "y5_worst": 4.440892098500626e-16,
+ "y5_rows": 194,
+ "y7": {
+  "wd0.1": 2.2071233729548112e-13,
+  "wd0.3": 6.608047442568932e-13,
+  "wd1": 1.7763568394002505e-14
+ },
+ "PASS": {
+  "y1": true,
+  "y2": true,
+  "y3": true,
+  "y4": true,
+  "y5": true,
+  "y6": true
+ }
+}

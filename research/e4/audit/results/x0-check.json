@@ -1,0 +1,704 @@
+{
+ "runs": {
+  "e4-au-init-xref-w128-i30000-a1": {
+   "arm": "I",
+   "seed": 30000,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/audit/intervention/decay_projection_init_i30000.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/dynamics_check.py\n M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 1.9819067142077818e-15,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "100": 7.952753853555627e-16,
+     "240": 3.624420389293712e-15,
+     "300": 6.200484591594695e-15
+    },
+    "worst_checkpoint_rel": 6.200484591594695e-15,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.037267080745341616,
+    "5000": 0.9151138716356108
+   },
+   "label": "rescued"
+  },
+  "e4-au-rf-xref-w128-i30000-a1": {
+   "arm": "RF",
+   "seed": 30000,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/audit/intervention/decay_projection_init_i30000.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 2.0689436650530345e-15,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "100": 3.3362341209896817e-16,
+     "130": 3.973837802022532e-16,
+     "300": 7.374078865938193e-16
+    },
+    "worst_checkpoint_rel": 7.374078865938193e-16,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.9772256728778468,
+    "5000": 0.9958592132505176
+   },
+   "label": "rescued"
+  },
+  "e4-au-keep-xref-w128-i30000-a1": {
+   "arm": "A",
+   "seed": 30000,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/mechanisms/intervention/decay_projection_i30000.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 2.803625385488353e-10,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "100": 9.784934300781202e-12,
+     "300": 1.334719881911338e-11
+    },
+    "worst_checkpoint_rel": 1.334719881911338e-11,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.6956521739130435,
+    "5000": 0.9937888198757764
+   },
+   "label": "rescued"
+  },
+  "e4-au-filt-xrefsham-w128-i30000-a1": {
+   "arm": "S",
+   "seed": 30000,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/audit/intervention/decay_projection_sham_i30000.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 2.2256973461387558e-15,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "60": 1.9317911110361954e-16,
+     "100": 2.5126724191879435e-16,
+     "300": 6.085675135411649e-16
+    },
+    "worst_checkpoint_rel": 6.085675135411649e-16,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.18633540372670807,
+    "5000": 0.3250517598343685
+   },
+   "label": "intermediate"
+  },
+  "e4-au-init-xref-w128-i30001-a1": {
+   "arm": "I",
+   "seed": 30001,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/audit/intervention/decay_projection_init_i30001.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 1.8565364152204904e-15,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "100": 7.351421054790219e-16,
+     "240": 1.2301954337822788e-15,
+     "300": 1.4001410356874754e-15
+    },
+    "worst_checkpoint_rel": 1.4001410356874754e-15,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.043478260869565216,
+    "5000": 0.9544513457556936
+   },
+   "label": "rescued"
+  },
+  "e4-au-rf-xref-w128-i30001-a1": {
+   "arm": "RF",
+   "seed": 30001,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/audit/intervention/decay_projection_init_i30001.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 2.027103874834639e-15,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "100": 3.375426524439544e-16,
+     "130": 4.036573948191916e-16,
+     "300": 7.171930597197698e-16
+    },
+    "worst_checkpoint_rel": 7.171930597197698e-16,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.9875776397515528,
+    "5000": 1.0
+   },
+   "label": "rescued"
+  },
+  "e4-au-keep-xref-w128-i30001-a1": {
+   "arm": "A",
+   "seed": 30001,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/mechanisms/intervention/decay_projection_i30001.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/dynamics_check.py\n M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 4.6539973562339477e-10,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "100": 9.545409763367318e-12,
+     "300": 1.4350018193933262e-11
+    },
+    "worst_checkpoint_rel": 1.4350018193933262e-11,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.7846790890269151,
+    "5000": 0.9875776397515528
+   },
+   "label": "rescued"
+  },
+  "e4-au-filt-xrefsham-w128-i30001-a1": {
+   "arm": "S",
+   "seed": 30001,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/audit/intervention/decay_projection_sham_i30001.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 2.3697281470809164e-15,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "50": 2.0629999700500718e-16,
+     "100": 3.111335776630984e-16,
+     "300": 5.951477814796215e-16
+    },
+    "worst_checkpoint_rel": 5.951477814796215e-16,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.08695652173913043,
+    "5000": 0.14078674948240166
+   },
+   "label": "not rescued"
+  },
+  "e4-au-init-xref-w128-i30002-a1": {
+   "arm": "I",
+   "seed": 30002,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/audit/intervention/decay_projection_init_i30002.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/dynamics_check.py\n M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 1.9766600865706304e-15,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "100": 7.106881301678028e-16,
+     "250": 1.3619522641094957e-15,
+     "300": 1.6031792670478591e-15
+    },
+    "worst_checkpoint_rel": 1.6031792670478591e-15,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.08074534161490683,
+    "5000": 0.9233954451345756
+   },
+   "label": "rescued"
+  },
+  "e4-au-rf-xref-w128-i30002-a1": {
+   "arm": "RF",
+   "seed": 30002,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/audit/intervention/decay_projection_init_i30002.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/registry.jsonl",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 2.068152776212228e-15,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "100": 3.3624951554623947e-16,
+     "110": 3.594844414426413e-16,
+     "300": 6.78630502359862e-16
+    },
+    "worst_checkpoint_rel": 6.78630502359862e-16,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.989648033126294,
+    "5000": 0.9979296066252588
+   },
+   "label": "rescued"
+  },
+  "e4-au-keep-xref-w128-i30002-a1": {
+   "arm": "A",
+   "seed": 30002,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/mechanisms/intervention/decay_projection_i30002.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/dynamics_check.py\n M research/e4/audit/registry.jsonl\n?? research/e4/audit/results/dynamics-noflag.json",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 2.267759599351712e-10,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "100": 1.0413579198140106e-11,
+     "300": 1.484544155595352e-11
+    },
+    "worst_checkpoint_rel": 1.484544155595352e-11,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.7991718426501035,
+    "5000": 1.0
+   },
+   "label": "rescued"
+  },
+  "e4-au-filt-xrefsham-w128-i30002-a1": {
+   "arm": "S",
+   "seed": 30002,
+   "provenance": {
+    "registry": [
+     "running",
+     "complete"
+    ],
+    "completed": [
+     5000
+    ],
+    "decay_on": "rest",
+    "projection": "research/e4/audit/intervention/decay_projection_sham_i30002.npz",
+    "projection_sha": true,
+    "init_weights": true,
+    "init_sha": true,
+    "wd": 1.0,
+    "steps": 5000,
+    "shared": {
+     "commit": "63262e15e197653f2e0c8092681c8ed12c32b2ed",
+     "equals_72cfb5d": false,
+     "equals_pin_8108d8b": true
+    },
+    "git_status": "M research/e4/audit/registry.jsonl",
+    "PASS": true
+   },
+   "update0_equals_start": true,
+   "replay300": {
+    "rows": 30,
+    "rows_acc_equal": 30,
+    "rows_within": 30,
+    "worst_row_rel_early": 1.8232032952502167e-15,
+    "worst_row_rel_late": 0.0,
+    "first_row_fail": null,
+    "checkpoints": {
+     "40": 2.616458569798073e-16,
+     "100": 3.313889286989288e-16,
+     "300": 5.529841005673613e-16
+    },
+    "worst_checkpoint_rel": 5.529841005673613e-16,
+    "PASS": true
+   },
+   "acc": {
+    "2000": 0.12629399585921325,
+    "5000": 0.21739130434782608
+   },
+   "label": "not rescued"
+  }
+ },
+ "comparators": {
+  "B xref/30000": {
+   "2000": 0.9606625258799172,
+   "5000": 0.9979296066252588
+  },
+  "B wd 1/30000": {
+   "2000": 0.06625258799171843,
+   "5000": 0.024844720496894408
+  },
+  "B wd 0/30000": {
+   "2000": 0.660455486542443,
+   "5000": 0.6335403726708074
+  },
+  "A wd 1/30000": {
+   "2000": 0.0,
+   "5000": 0.0
+  },
+  "RF wd 1/30000": {
+   "2000": 0.10973084886128365,
+   "5000": 0.028985507246376812
+  },
+  "RF wd 0/30000": {
+   "2000": 0.6480331262939959,
+   "5000": 0.6231884057971014
+  },
+  "I wd 1 (e1)/30000": {
+   "2000": 0.0,
+   "5000": 0.0,
+   "own_5000": 0.0
+  },
+  "B xref/30001": {
+   "2000": 0.9668737060041408,
+   "5000": 1.0
+  },
+  "B wd 1/30001": {
+   "2000": 0.060041407867494824,
+   "5000": 0.020703933747412008
+  },
+  "B wd 0/30001": {
+   "2000": 0.7101449275362319,
+   "5000": 0.660455486542443
+  },
+  "A wd 1/30001": {
+   "2000": 0.0,
+   "5000": 0.0
+  },
+  "RF wd 1/30001": {
+   "2000": 0.15527950310559005,
+   "5000": 0.053830227743271224
+  },
+  "RF wd 0/30001": {
+   "2000": 0.7308488612836439,
+   "5000": 0.6997929606625258
+  },
+  "I wd 1 (e1)/30001": {
+   "2000": 0.0,
+   "5000": 0.0,
+   "own_5000": 0.0
+  },
+  "B xref/30002": {
+   "2000": 0.9875776397515528,
+   "5000": 1.0
+  },
+  "B wd 1/30002": {
+   "2000": 0.09316770186335403,
+   "5000": 0.026915113871635612
+  },
+  "B wd 0/30002": {
+   "2000": 0.7784679089026915,
+   "5000": 0.7370600414078675
+  },
+  "A wd 1/30002": {
+   "2000": 0.004140786749482402,
+   "5000": 0.004140786749482402
+  },
+  "RF wd 1/30002": {
+   "2000": 0.11180124223602485,
+   "5000": 0.035196687370600416
+  },
+  "RF wd 0/30002": {
+   "2000": 0.7163561076604554,
+   "5000": 0.6832298136645962
+  },
+  "I wd 1 (e1)/30002": {
+   "own_5000": 0.0
+  }
+ },
+ "labels": {
+  "I": {
+   "per_seed": [
+    "rescued",
+    "rescued",
+    "rescued"
+   ],
+   "arm": "rescued"
+  },
+  "RF": {
+   "per_seed": [
+    "rescued",
+    "rescued",
+    "rescued"
+   ],
+   "arm": "rescued"
+  },
+  "A": {
+   "per_seed": [
+    "rescued",
+    "rescued",
+    "rescued"
+   ],
+   "arm": "rescued"
+  },
+  "S": {
+   "per_seed": [
+    "intermediate",
+    "not rescued",
+    "not rescued"
+   ],
+   "arm": "mixed"
+  }
+ },
+ "reading": "built in: SUPPORTED LOCALLY",
+ "checks_PASS": {
+  "provenance": true,
+  "update0": true,
+  "replay300": true
+ }
+}

@@ -482,6 +482,7 @@ def d6(out_dir):
 
 def d13(out_dir):
     reg = registry(DY/'registry.jsonl')
+    lane = {r['run_id']: r for r in csv.DictReader(open(DY/'figures/offswitch/offswitch_readings.csv'))}
     res = dict(runs={})
     for s in (300, 1000):
         for seed in SEEDS:
@@ -508,7 +509,11 @@ def d13(out_dir):
                               and (y1['shared']['equals_72cfb5d'] or (y1['shared']['equals_pin_8108d8b'] and y1['decay_flags'] == [None, None]))
                               and not y1['dirty'])
             src = state(src1['ck'][s])
-            r['y2'] = dict(first_row=min(run['rows']), row_s_equals_source=metric_rows_equal(run['rows'][s], src1['rows'][s]),
+            a_, b_ = run['rows'][s], src1['rows'][s]
+            r['y2'] = dict(first_row=min(run['rows']), row_s_equals_source=metric_rows_equal(a_, b_),
+                           row_s_differing_fields=sorted(k for k in set(a_) | set(b_) if a_.get(k) != b_.get(k)),
+                           row_s_optimizer_update=a_.get('optimizer_update'),
+                           row_s_equal_except_optimizer_update=metric_rows_equal({**a_, 'optimizer_update': 0}, {**b_, 'optimizer_update': 0}),
                            checkpoint_at_s=s in run['ck'],
                            checkpoint_s_bitwise=(all(np.array_equal(state(run['ck'][s])[k], src[k]) for k in src) if s in run['ck'] else None),
                            data_equal=all(np.array_equal(run['d'][k], src1['d'][k]) for k in run['d']))
@@ -545,8 +550,17 @@ def d13(out_dir):
                            A_end=A(run, 20000), A1_end=A(src1, 20000), A0_end=A(src0, 20000),
                            T010_after_switch=below[0] if below else '>20000',
                            f_common=dict(step=near, W=near - s, f=f_common, acc=ca))
+            ln = lane[rid]
+            o = out[1000]
+            gaps = {q: abs(float(ln[q]) - v) for q, v in (('A1_s', o['A1_s']), ('Aoff_sW', o['Aoff_sW']), ('A1_sW', o['A1_sW']),
+                                                          ('A0_s', o['A0_s']), ('A0_sW', o['A0_sW']), ('f', f))}
+            r['y4']['lane'] = dict(row={q: ln[q] for q in ('f', 'reading', 'recovery', 'T_010_after', 'own_end', 'max_after', 'max_after_step')},
+                                   worst_gap=max(gaps.values()), gaps=gaps)
+            r['y4']['lane_equal'] = bool(max(gaps.values()) <= 1e-12)
             res['runs'][rid] = r
     res['PASS'] = {k: all(r[k]['PASS'] for r in res['runs'].values()) for k in ('y1', 'y2', 'y3')}
+    res['y2_state_and_measures_equal'] = all(r['y2']['row_s_equal_except_optimizer_update'] and r['y2']['checkpoint_s_bitwise']
+                                             for r in res['runs'].values())
     res['y3_controls_informative'] = all(r['y3']['control_informative'] for r in res['runs'].values())
     return res
 
@@ -596,9 +610,6 @@ def d15(out_dir):
             rp = replay(run, w0, zeros, zeros, 0, 5000, 1., D)
             r['x3'] = summarise(rp)
             late = max([rp['worst_row_rel_late']] + [e for t, e in rp['checkpoints'].items() if t > 300])
-            accs = {}
-            for t in sorted(run['ck']):
-                pass
             r['x3']['late_gap_vs_baseline'] = dict(arm=late, baseline=base_late, ratio=late/base_late if base_late else None)
             r['x3']['PASS_early'] = bool(rp['worst_row_rel_early'] <= TOL_REL and max(e for t, e in rp['checkpoints'].items() if t <= 300) <= TOL_W)
             # X5 values, and the training damage and size of the arm against the replay
@@ -616,7 +627,11 @@ def d15(out_dir):
                 a1 = sigma_margin_and_acc([state(rep1['ck'][t])[k] for k in 'UVW'], rep1['d'], sets)[0]
                 a0 = sigma_margin_and_acc([state(rep0['ck'][t])[k] for k in 'UVW'], rep0['d'], sets)[0]
                 fx[t] = dict(acc_arm=a_arm, acc_wd1=a1, acc_wd0=a0, f=(a_arm - a1)/(a0 - a1) if a_arm is not None else None)
-            r['x5'] = dict(f={str(t): v for t, v in fx.items()}, states={str(t): v for t, v in rows.items()})
+            ln = next(x for x in csv.DictReader(open(ME/'results/intervention.csv')) if x['arm'] == arm and int(x['init_seed']) == seed)
+            gaps = {f'{q}_{t}': abs(float(ln[f'{q}_{t}']) - fx[t][k]) for t in (2000, 5000)
+                    for q, k in (('acc', 'acc_arm'), ('acc_wd1', 'acc_wd1'), ('acc_wd0', 'acc_wd0'), ('f', 'f'))}
+            r['x5'] = dict(f={str(t): v for t, v in fx.items()}, states={str(t): v for t, v in rows.items()},
+                           lane_worst_gap=max(gaps.values()), lane_equal_to_6_decimals=bool(max(gaps.values()) <= 5e-7))
             res['runs'][rid] = r
     return res
 
