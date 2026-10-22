@@ -30,6 +30,7 @@ for d in runs/regimes/r1-route-*/; do id=$(basename $d); mkdir -p research/regim
   cp $d/{config.json,metrics.jsonl,runtime.json,final.npz} research/regimes/routes/runs/$id/; done
 (cd research/regimes/routes/runs && sha256sum */* > MANIFEST.sha256)
 uv run --locked python research/regimes/routes/figures.py          # initial-comparison figures
+uv run --locked python research/regimes/routes/figures.py --followup   # follow-up figure + bitwise checks
 ```
 
 ## Environment and calibration (this host)
@@ -53,13 +54,23 @@ uv run --locked python research/regimes/routes/figures.py          # initial-com
 | smoke test (200 updates) | `r1-route-smoke-rho7of8-s54300-a1` | 0.6 s |
 | calibration and positive controls, 2 concurrent | `r1-route-calib-*-s54300-a1` | 14.9 s |
 | initial comparison, 21 runs, 2 concurrent | `r1-route-{7 conditions}-s{54200,54201,54202}-a1` | 149.4 s |
-| **total** | | **165 s ≈ 2.8 of 25 min** |
+| smoke test of the diagnostics-logging `train.py` (300 updates) | `r1-route-smoke2-rho7of8-s54300-a1` | 0.6 s |
+| follow-up batch 1, 2 concurrent, ended by a container restart at about 03:00:01 UTC | `r1-route-long-*` (6 complete, 2 interrupted) | 473 s |
+| follow-up batch 2, 2 concurrent | `r1-route-long-rho15of16-s54202-a1`, `r1-route-long-{rho1,rho31of32}-s54202-a2` | 227.4 s |
+| **total** | | **866 s ≈ 14.4 of 25 min** |
 
 Figure rendering takes about 9 s and is not counted (PLAN §4).
 
 ## Run manifest
 
-There are 24 planned runs, and all 24 are complete. None failed, none was capped and none is missing (`registry.jsonl`). The initial comparison is 7 conditions × 3 paired init seeds (54200–54202), all at T = 20,000. Every condition shares the split seed 54100 and the exception seed 54101. The calibration and smoke runs use init seed 54300 and are not pooled.
+There are 36 planned runs: 34 complete, 2 failed, none capped and none missing (`registry.jsonl`).
+- **Initial comparison.** 7 conditions × 3 paired init seeds (54200–54202), all at T = 20,000, all complete. Every condition shares the split seed 54100 and the exception seed 54101.
+- **Calibration and smoke runs.** These use init seed 54300 and are not pooled.
+- **Follow-up.** ρ ∈ {1, 31/32, 15/16} × the same 3 seeds at 200,000 updates. All 9 (condition, seed) pairs have a complete run.
+  - `r1-route-long-rho1-s54202-a1` and `r1-route-long-rho31of32-s54202-a1` were killed at step 144,119 by a container restart. Their `failed` events were appended by hand, marked `logged_by: manual`, with the reason.
+  - Their partial files are published as they were left: `config.json`, `metrics.jsonl` and `step20000.npz`, with no `final.npz` or `runtime.json`.
+  - They were rerun as `-a2`. Each partial `metrics.jsonl` is identical to its a2 rerun on all 128 shared logged steps ([figures/followup_bitwise_check.json](figures/followup_bitwise_check.json)).
+- **Checkpoints.** Committed checkpoints total about 1.8 MB.
 
 ## First figure (M2)
 
@@ -82,3 +93,13 @@ Observations at T = 20,000, with each range covering the three seeds:
   - **Rule majority.** Reversed accuracy crosses 0.5 at 546–737 updates for ρ = 3/4, when train loss is 1–2·10⁻². For ρ = 7/8 it crosses at 2,989–3,651 updates, when train loss is 1–3·10⁻⁴. It has not crossed by T for 15/16 or 31/32.
   - **Still moving.** The rule's contribution is still rising at T for ρ = 31/32, 15/16 and 7/8, so the apparent reliability threshold at T depends on T.
 - **Flip-rate identity.** Whenever reliable accuracy is 1, shortcut flip = 1 − reversed accuracy and rule flip = reversed accuracy. The prediction-level flip rates then add nothing beyond the environment accuracies. The logit-level signed deltas are the more informative dependence measure.
+
+## Follow-up figure
+
+[figures/followup_long.png](figures/followup_long.png) (also `.svg`; data in `followup_long.csv`) is kept separate from the initial comparison. Its rows are ρ = 1, 31/32 and 15/16, trained to 200,000 updates. Its columns are:
+- accuracy;
+- the signed logit-margin changes;
+- the rule share Δrule / (|Δs| + |Δrule|), drawn only once |Δs| + |Δrule| > 0.5;
+- the numerics diagnostics: parameter displacement per update, median √v̂ against Adam's eps, and the saturated fraction of training rows.
+
+Every follow-up run's step-20,000 checkpoint is bitwise equal, in weights, Adam moments and t, to the initial run's `final.npz` ([figures/followup_bitwise_check.json](figures/followup_bitwise_check.json)). The added logging did not change training. Interpretation is in [NOTE.md](NOTE.md).
