@@ -12,6 +12,23 @@ Figures, observations, the explanations that survived or failed, confounds, run 
 
 | lane | initial experiment | status |
 |---|---|---|
-| dynamics | D6: six constant-decay runs at wd 0.1 and 0.3 from the filtered starts | claimed |
+| dynamics | D6: six constant-decay runs at wd 0.1 and 0.3 from the filtered starts | packet 1 integrated (PR #33), audit pending; follow-up direction approved (decay off from a mid-decline state) |
 | mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | claimed |
-| auditor | audit of the decomposition, the strongest cheap control, dynamics and intervention checks | dispatched |
+| auditor | audit of the decomposition, the strongest cheap control (random-feature starts, D11–D12), dynamics and intervention checks | control runs activated |
+
+## 1. Decay strength between the peak and the collapse (dynamics, packet 1, not yet audited)
+
+![exposure axis](../dynamics/figures/decay_exposure.png)
+
+Six new runs at wd 0.1 and 0.3 from the three filtered start files, with the e3 wd 0 and wd 1 runs as endpoints, on the decay-exposure axis E = −t·log(1 − lr·wd). The update-axis version is [decay_update.png](../dynamics/figures/decay_update.png), and the packet is [../dynamics/README.md](../dynamics/README.md).
+
+- **Observation.**
+  - Fit times (70/50/40) and peaks (within 0.004) do not depend on decay.
+  - Every decayed run collapses within 20,000 updates while training accuracy stays at 1. Common accuracy at 20k is 0.06–0.09 at wd 0.1, 0.03–0.05 at wd 0.3 and 0.01–0.03 at wd 1.
+  - wd 0 is censored at 0.56–0.62.
+  - The global weight norm grows through the decline at every decay value.
+- **Pre-stated rule: MIXED.**
+  - At the 0.10 threshold, all six runs are on the exposure clock (r 0.80–0.92).
+  - At the update-0 threshold, wd 0.3 is on the clock but two of the three wd 0.1 runs are faster.
+  - Outside the rule: all twelve ratios are below 1, and they are lower at lower decay.
+- **Explanation (lane, untested).** Within 20k, decay strength mainly sets when the decline happens. A decay-independent drift (the slow wd 0 decline) may add to it.
