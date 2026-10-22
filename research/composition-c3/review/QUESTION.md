@@ -176,3 +176,4 @@ Three things in the first pass need entries before the second pass.
   - CX-S2 held for the norm, but failed on which group shrinks most.
   - Output: [out/rev_scaf.txt](out/rev_scaf.txt).
 - **Next, before running it: `rev_scaf_note.py`** (reads only). It checks the NOTE's numbers O1–O8 and handoff item 2 as quoted, with ranges at the NOTE's rounding.
+- **`rev_scaf_note.py` run (0.6 s).** Three NOTE lines failed at the quoted rounding: the L4–6 Δ_D upper end, "keep reaches 1.0 by 20k", and D's CE "8.6 / 11". All three are small. REVIEW §3 (N-S1 to N-S3) records them.

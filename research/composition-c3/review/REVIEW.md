@@ -6,7 +6,8 @@ Questions and predictions, committed before each measurement: [QUESTION.md](QUES
 |---|---|---|
 | Pin `be41d16` (D3) | **PASS**. No defect in what a branch or a correction computes. Notes N1–N4. My finite-difference check P3 missed its own tolerance at `ckpt-10000` (see §1). | §1 |
 | Correction lane (PR #63, `c3f03cd`) | **PASS**. Every number in its tables, both figures and the NOTE recomputes exactly from my own code (B and C to 0 rows). Leak checks hold. CX-C1 held: the bins of gain recovered are stable across three other map and probe draws. CX-C2 failed narrowly: a val-tuned ridge decoder reads new prefixes up to 5/32 better, but recovers at most 6% of the gain, so the conclusion stands. C6: on adapter-held-out prefixes B is not purely decoder-plus-centroid. Wording notes W1–W3. | §2 |
-| Scaffolding lane | in progress (PR #65 at `4512bce`) | |
+| Scaffolding lane (PR #65, M2 at `4512bce`) | **PASS**. Every number in its six figure CSVs, its frozen L1–6 table and its checks recomputes from my own forward and oracle. That covers 317,262 trajectory values, 114 checkpoints exhaustively at L = 1–6, and 66 branch checkpoints rescored to their logged rows. The joins, schedules, exposure, manifests and registry hold. CX-S1 failed: length-3 retention at S = 10k does carry length 6 and the h1/h2 readout, so the lane's "persistence" stands. CX-S2 held for the total norm (4% below keep), but the shrinkage is in Ws, bs and bv, not V, and A grows. Three NOTE number nits (N-S1–N-S3) and a figure note. | §3 |
+| Follow-up plan entries (`84dc657`) and correction wording (`897fa97`) | **PASS** (short checks, §3 end and §2 end) | §2, §3 |
 | Re-pin `82cef77` (D10, `--reset-optimizer-at`) | **PASS**. Runs without the flag are bitwise unchanged; the reset is exactly a fresh Adam state on the carried weights; resumes after or at the reset continue bitwise; every wrong reset history is refused. CX-R1 held: a reset also gives 2.1–2.6× larger steps over the next 100 updates, which the follow-up's wording should name. Note N5. | §4 |
 
 ## 1. Pin check of `be41d16`
@@ -119,6 +120,76 @@ So the lane's single draws (71200, 71301) carry its per-base statements.
 - Rescue is kept apart from identification ("What they do not show").
 
 The specificity checks are CX-C1, CX-C2 and C6 above.
+
+**Addendum, the lane's wording fixes at `897fa97`: PASS.** Every new number recomputes from my `rev_corr.json`:
+- B recovers 100/100/100% (per-step) and 101/103/75% (tied/final) on main, and 79–100% in F2. D is exact.
+- "B above D on grouped held rows" holds in 3 of 14 bases, exactly the three it names.
+
+One nit, which the lane has since applied (`285b3dd`): the 13–33% on wrong-symbol rows holds in 8 of 14 bases, and the other six are 5–12.5%.
+
+## 3. Scaffolding lane (PR #65, M2 at `4512bce`)
+
+**PASS.** The checks S1–S7 and the counterexamples CX-S1 and CX-S2 were committed at `ad55463`, before any branch result existed. Implementation choices are at `d7a1613`.
+- **Evidence.** `rev_scaf.py` (run `c3-rev-scaf-a1`, 78 s), output [out/rev_scaf.txt](out/rev_scaf.txt). It reads the lane's files from `git archive 4512bce`. My forward and oracle are the c2 reviewer's.
+- **NOTE numbers.** `rev_scaf_note.py`, output [out/rev_scaf_note.txt](out/rev_scaf_note.txt).
+
+**Recomputation (all pass).**
+- **S0, rows and N.** My training and held-out rows equal `c2task.rows` in order. My N mask (the true label is among the one-slot training neighbours' labels) equals the pinned one, 86 / 42.
+- **S1, branch points.** All 12 configs resume r1 tied/inter `ckpt-S` at its RECOVERY.json hash, which equals the file and is manifest-listed. The source run ID, the branch's run ID and every explicit recipe flag are right. Each branch's first row equals r1's published row at S on every r1 key.
+- **S2, schedule.** `step_weights` equals my w(t) on all 10,692 logged branch rows, and the final weight is exactly 1. Under the taper, the intermediate weight is 0.9995 at S, 0.0005 at S + 1,998, and 0 from S + 1,999. Exposure in every config, this run and from init, equals my recount.
+- **S3, records.**
+  - Every committed file matches its MANIFEST.json hash.
+  - All 66 branch checkpoints rescore with my forward to their logged rows: train and held-out accuracy per step exactly, CE to 1e-9, and the prediction string. Count, meta step and run ID are right.
+  - The registry holds exactly one running and one complete event for each of the 14 plan entries: no failure, cap or retry.
+- **S4, frozen lengths.**
+  - All 114 × 9 values of `scaf_frozen.csv` equal my exhaustive evaluation (8·4^L rows per length, plus held-out, N and ¬N). The checkpoint set is exactly the declared fixed set.
+  - My values for keep and final-only at 10k and 50k equal both c2 generalization `length.csv` files (36 + 36).
+  - Every evaluated prediction string equals the logged one.
+- **S5, arithmetic.**
+  - All 462 rows of `scaf_retention.csv` recompute: Δ_branch, Δ_keep and Δ_D to 1e-12, and the labels. 84 of 84 endpoints are "retained", and the largest |Δ_keep| at 50k is 0.010, so the 0.05 rule and its tolerance are nowhere near decisive.
+  - All 36 rows of `scaf_threshold.csv` recompute from the joined trajectories. Every logged `held_subset` equals my split of its prediction string.
+- **S6, movement.** In every branch every parameter array changes over S → S + 2,000 and S + 2,000 → 50k (smallest max change 5.7e-3). The Adam count carries (S + 2,000; 50,000).
+- **S7, figure.**
+  - All 16,698 rows (317,262 values) of `scaf_main.csv` recompute from the logged rows.
+  - `scaf_optimizer.csv` and `scaf_compatibility.csv` recompute too, the latter with my own neighbour sets.
+  - I looked at `scaf_main.png`. It shows what the CSVs hold. One note: at 50k, A, B and C coincide at 1.0 in the length-curve panel and in the length-3 panels, and only C's green is visible. A caption line ("coincident arms overplot; C is drawn last") would stop a reader from thinking keep or drop is missing.
+
+**Counterexamples.**
+- **CX-S1 failed: length-3 retention does carry length transfer here.** At S = 10k, B and C are retained at length 3 in all three seeds.
+  - My L6 at `ckpt-50000` is at most 0.0023 below keep's.
+  - The shared readout reads h1 and h2 on the training rows at 1.0 at `ckpt-50000`, and at every logged row after S, in every seed.
+
+  So the lane's "persistence at S = 10k" is not an artifact of looking only at length 3. Its own prediction 3 also failed (NOTE), for the same reason.
+- **CX-S2 held for the total norm, not for where the shrinkage is.**
+  - At 50k, every S = 10k drop branch has 4.1–4.3% less parameter norm than keep, in all three seeds. Taper is the same.
+  - The groups that shrink are the start embedding Ws (0.68 of keep's norm), its bias bs (0.71–0.74) and the readout bias bv (0.55–0.78).
+  - The readout V shrinks only to 0.94–0.95. The shared transition A grows to 1.04–1.05.
+
+  This is a post-hoc reviewer observation, not a lane claim: without the step-1/2 loss, scale moves from the input embedding into the iterated transition. It does not change any of the lane's conclusions.
+
+**The NOTE's numbers.** O1–O8, the crossing table and handoff item 2 all recompute. There are three small inaccuracies, and none changes a conclusion.
+- **N-S1, O1.** The L4–6 range of Δ_D(50k) is +0.85 to +0.90, not +0.91 (the maximum is 0.9047).
+- **N-S2, O2.** "Keep reaches 1.0 by 20k" holds for s51200 and s51202. In s51201, keep's L6 is 0.986 at 20k and 1.0 from 30k (O4's own table says 0.99).
+- **N-S3, O5.**
+  - D's train CE at 50k is quoted as "8.6 / 11". Those are s51200's values (8.60 / 11.15). The three seeds span 8.6–10.2 on step 1 and 11.1–11.9 on step 2.
+  - The step-1 minimum after S (0.969) is at 17,200, not at 7,100; 7,100 is the step-2 minimum (0.922). Both are in drop at 1k, s51201.
+
+**Interpretation, under the lane's pre-registered rules.**
+- **Lasting benefit.** At both S and in all seeds, B and C end 0.30–0.44 above D on held-out L3.
+- **Persistence at S = 10k and further improvement at S = 1k.** Both hold as stated.
+- **Wording.**
+  - The NOTE keeps paths separate from endpoints.
+  - It says that a drop changes both the loss and the carried moments.
+  - It states "50k is not an asymptote".
+  - It names the scope (one draw, paired seeds).
+- **The threshold reading** was changed after the results (ADAPTIVE 06:00Z), to the c2 convention that QUESTION.md cites by name. It changes nothing at S = 1k. At S = 10k, prediction 1's "s51201 reaches the threshold" was already met at S on held-out (0.961). The informative test is ¬N, which crosses after S (11,300 / 11,150), and the NOTE reports that.
+
+**Follow-up plan entries (`84dc657`): PASS.**
+- All six reset runs resume the right seed's r1 tied/inter `ckpt-1000` at the file's hash. R = 1,000 equals the resume step.
+- Each drop-reset run's flags equal its carried drop branch's exactly, apart from the reset. Keep-reset differs from drop-reset only by having no switch.
+- Checkpoints are at 3k, 10k and 20k–50k, with `--diag`, 50k updates and unique IDs.
+- The four 1k → 3k verify runs, with no reset, are the right matched-control checks, and they give carried keep a 3k point.
+- The addendum's prediction 3 is consistent with my CX-R1 (§4).
 
 ## 4. Re-pin check of `82cef77` (D10, `--reset-optimizer-at`)
 
