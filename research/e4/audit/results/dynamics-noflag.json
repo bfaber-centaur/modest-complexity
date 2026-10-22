@@ -1,0 +1,38 @@
+{
+ "commit": "0c45b394a92f2edab39c2624633398ee8f5e5957",
+ "shared": {
+  "commit": "0c45b394a92f2edab39c2624633398ee8f5e5957",
+  "equals_72cfb5d": false,
+  "equals_pin_8108d8b": true
+ },
+ "decay_flags": [
+  null,
+  null,
+  null
+ ],
+ "checkpoints_compared": [
+  0,
+  50,
+  100,
+  300
+ ],
+ "checkpoints_bitwise": {
+  "0": true,
+  "50": true,
+  "100": true,
+  "300": true
+ },
+ "rows_compared": 31,
+ "rows_equal": 31,
+ "config_differences": [
+  "checkpoint_steps",
+  "diagnostic_schedule",
+  "out",
+  "purpose",
+  "run_id",
+  "runtime",
+  "session_label",
+  "steps"
+ ],
+ "PASS": true
+}

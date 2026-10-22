@@ -216,3 +216,151 @@ A lane that will exceed its budget stops and asks. No paid compute is used.
 3. QUESTION.md with the decision rule stated before any run.
 
 **Decision rule.** The rule uses the dynamics lane's declared decline thresholds (D5) for "collapse". A rise between 0.1 and half of B's rise is reported as inconclusive. The cost is about 2 min of the auditor's 25.
+
+## D12 (2026-10-22) Audit control activated
+
+The auditor pushed three things on `claude/project-thread-id1tmm`:
+- `QUESTION.md` (`33bf731`), with the decision rule stated before any run and the D11 edits included;
+- `rf_starts.py` (`c7ef7d0`);
+- the start files with their update-0 report (`aa09dd4`).
+
+The coordinator checked the start files as fetched from that branch:
+- **Hashes.** Each file matches its SHA-256 (i30000 `898a65f8…`, i30001 `3d52f618…`, i30002 `e15b1e44…`).
+- **Contents.** Each holds only float64 U, V and W of the expected shapes.
+- **Norms.** The joint (U, V) norm and the W norm equal those of the B start file for the same seed to the last digit or so.
+
+The six D11 IDs are moved from `reserved` to `runs` with these hashes. The start files reach `swarm/exploration` with the auditor's PR. Until then the auditor launches from its own branch merged with this commit.
+
+## D13 (2026-10-22) Dynamics follow-up: decay switched off mid-decline (endpoint intervention)
+
+**Review of the first figure.** The coordinator reviewed dynamics packet 1 (PR #33) and integrated it with the audit pending (`27214a1`). Under the pre-stated rule the verdict was MIXED. Every decayed run collapsed within 20k while training accuracy stayed at 1.
+
+**What is claimed.** The lane declared its follow-up in QUESTION.md Q2 (`3fd6723`) before any run. Six runs are claimed with purpose `endpoint-intervention`: `e4-dy-filt-wd1to0-u{300,1000}-w128-i{30000,30001,30002}-a1`.
+
+**How each run works.**
+- It runs `--resume` from the published e3 wd 1 checkpoint at update 300 or 1,000. That is the start of the D5 decline window, or mid-decline.
+- Weights, Adam moments and the update count carry over. Only wd changes, to 0.
+- It continues to 20,000 total updates.
+- The coordinator checked the resume-file hashes against the files.
+
+The queue is a seeded interleaving (`default_rng(20261025)`).
+
+**Comparators.** These are the existing wd 1 continuation and the wd 0 run from update 0.
+
+**Reading.** f = (Δ_off − Δ_0)/(Δ_1 − Δ_0) is computed on own held-out accuracy over the 1,000 updates after the switch.
+
+| f | reading |
+|---|---|
+| ≤ 1/3 | decay must stay on |
+| ≥ 2/3 | the decline sustains itself |
+| between | partial |
+
+Recovery is flagged if accuracy reaches A(s) + 0.05. Readings are reported per run.
+
+**Cost.** About 2.6 min elapsed, which brings the lane to about 5.5 of its 20 min. This is the lane's one follow-up.
+
+## D14 (2026-10-22) Mechanisms first figure reviewed; intervention approved in principle
+
+**Review.** The coordinator reviewed the mechanisms first figure (PR #35) and integrated it with the audit pending (`52f25d0`). The figure meets D8:
+- each decomposition states its object, its basis rule and its reconstruction error;
+- the replays equal the e3 runs at every shared checkpoint;
+- only the D5 fixed states are committed, together with the hashes of all checkpoints.
+
+**The intervention.** The lane's one intervention ([../mechanisms/INTERVENTION.md](../mechanisms/INTERVENTION.md), `203dc54`, written before any code or run) is approved in principle. It has two arms, three sources each, with everything else as the D7 wd 1 replays:
+- **exempt-reference** decay, `xref`;
+- **reference-only** decay, `onlyref`.
+
+It runs only when four conditions are met:
+
+1. **The shared-code patch comes first.** It adds `--decay-projection FILE` and `--decay-on {rest,reference}` to `experiment.py`, and the matching plan fields to `launch_runs.py`, on the lane branch. It has a test, and the coordinator reviews and pins it (D3).
+   - Without the flags, the update must stay bitwise unchanged. A replay of a D7 run at the patched code must equal the published states.
+   - The decay must sit at the same place in the step as the current decoupled decay.
+   - Adam moments must stay gradient-only.
+2. **The projection file is committed and hashed.** It records the per-unit k_j per source, chosen at update 0 without labels. The file states that P keeps both the cosine and sine components at ±k_j, and that DC belongs to "the rest". Its hash goes in the plan.
+3. **The pre-stated reading in INTERVENTION.md stands as written**, including the caveat about coupling through the loss.
+4. **The analysis of the random-feature control runs (D11–D12) goes to the auditor**, as part of its decomposition audit. The mechanisms lane stays on its intervention.
+
+## D15 (2026-10-22) Shared code re-pinned for restricted decay; mechanisms intervention claimed
+
+The mechanisms lane's patch is merged as PR #37 at `8108d8b`. Its shared-code commit is `e9cbc84`, which touches `experiment.py`, `launch_runs.py` and `test_exploration.py`.
+
+**What the patch adds**
+- `--decay-projection FILE`, `--decay-on {rest,reference}` and `--expect-decay-projection-sha256`.
+- Plan fields `decay_projection`, `decay_projection_sha256` and `decay_on`.
+- `decay_parts` computes P with a real FFT along the token axis of U and V and along the label axis of W. P keeps the cosine and sine at ±k_j for each live unit. DC and every other frequency are "the rest".
+- The restricted decay sits where the decoupled decay sat, before the Adam update, and the moments stay gradient-only.
+
+**The no-flag path**
+- Without the flags the step is still `w *= 1-lr*wd`. The only other effect is that `config.json` gains four null keys. That is metadata, not training.
+
+**Coordinator review at the PR head**
+- 18 tests pass (`test_exploration`, `test_instrumentation`).
+- A no-flag replay of `e4-me-filt-wd1-replay-w128-i30002-a1` to update 300 equals the e3 checkpoints bitwise at 10, 30, 100 and 300. The lane's own check covers i30000 to 5,000 (89 of 89 checkpoints, 501 of 501 metric rows).
+- On the i30002 start file, P is idempotent and P + (I − P) = I to 3e-16. P holds 97% of U and V's squared norm (the rest is DC) and all of W's.
+- The SHA-256 of all three projection files matches the lane's.
+
+**New pin.** The shared-code identity for e4 is now `8108d8b`. All earlier e4 runs are unaffected, because their path is bitwise unchanged.
+
+**Claimed runs.** Six runs: `e4-me-filt-wd1-{xref,onlyref}-w128-i{30000,30001,30002}-a1`.
+- Purpose `intervention`.
+- D7 wd 1 replay settings: the same start file, fresh Adam, wd 1, 5,000 updates, the D7 dense checkpoint list.
+- `decay_on` is `rest` for `xref` and `reference` for `onlyref`. The projection file and its hash are in plan.json.
+- The queue is a seeded interleaving (`default_rng(20261026)`).
+- They must be launched at `8108d8b` or later.
+- Storage is as D7: only the D5 states are committed, and every checkpoint is hashed.
+
+**At update 0.** The lane points out that P(W) = W and that the rest of U and V is their DC. So the reference-only arm starts by decaying almost everything except the U and V DC. The exempt arm starts by decaying only that DC, then the off-reference parts as they grow. The reading in INTERVENTION.md stands.
+
+## D16 (2026-10-22) Audit control X0 for the exempt-reference result
+
+The mechanisms intervention (PR #40, `34b89fd`, audit pending) showed two things. When the reference parts are exempt from decay (xref), B reaches 0.998–1.000 common accuracy at 5,000 updates. When only the reference parts decay (onlyref), B collapses faster than under uniform wd 1. The lane named its own strongest alternative: the exemption is task-informed, so the result may be built in.
+
+**The control.** The auditor proposed control X0 and stated its rule in QUESTION.md addendum 4 (`0c45b39`) before any run. The coordinator claims its 12 runs with purpose `control`. Each run uses xref (`decay_on` rest), wd 1, 5,000 updates and fresh Adam, at the D15 pin `8108d8b`. Checkpoints are every 1,000 plus 100, 300 and 500, all published. The queue is a seeded interleaving (`default_rng(20261027)`).
+
+| arm | run IDs | start | projection |
+|---|---|---|---|
+| I | `e4-au-init-xref-w128-i<s>-a1` | the untrained init, no start file | its own update-0 k_j |
+| RF | `e4-au-rf-xref-w128-i<s>-a1` | the C1 random-feature start files | the same files as I; gate: the RF dominant() equals the init k_j |
+| A | `e4-au-keep-xref-w128-i<s>-a1` | the unedited e3 keep start files | B's own projection files; gate: A's dominant() and live mask equal B's |
+| S | `e4-au-filt-xrefsham-w128-i<s>-a1` | the B start files | k_j permuted across units (seed 41100; 10% of units keep their own k) |
+
+**Checks.** The coordinator re-hashed the six new projection files as fetched from the auditor's branch, and each start file. The RF and A start hashes equal those recorded in the auditor's `decay_projection.json`.
+
+**Rule, per seed.**
+
+| common accuracy at 5,000 | verdict |
+|---|---|
+| ≥ 0.90 | rescued |
+| ≤ 0.30 | not rescued |
+| between | intermediate |
+
+- If I is rescued, "built in" is SUPPORTED LOCALLY.
+- If only B is rescued, "built in" is CONTRADICTED.
+
+**Cost.** About 2 min elapsed. That brings the auditor to about 7 of its 25 min.
+
+## D17 (2026-10-22) Close e4
+
+**What was integrated.** All lane packets are integrated into `swarm/exploration`:
+- dynamics: PRs #33 and #36;
+- mechanisms: PRs #35, #37 (the shared-code patch), #40 and #46;
+- audit: PRs #34, #38 and #47.
+
+**Audit coverage**
+- Everything is audited except the mechanisms analysis of the decay-off runs (PR #46). That is analysis only, and it is marked unaudited in INDEX.
+- One audit check failed as written, on a bookkeeping field only: Y2′, where `optimizer_update` is null at the resume row. The state is bitwise equal, so this changes nothing.
+
+**Run accounting.** All 42 claimed runs are complete. None failed or were capped, and no registry event has an unclaimed ID ([RUNS.md](RUNS.md), generated by [runs_table.py](runs_table.py)).
+
+**Disclosure.** The D9 calibration value is 0.38 audit-split accuracy at 2,000 updates for filt i30000 at wd 0.3.
+
+**Budgets used**
+
+| session | used | budget |
+|---|---|---|
+| dynamics | about 5.3 min | 20 min |
+| mechanisms | about 3 min | 20 min |
+| auditor | about 5.3 min | 25 min |
+| coordinator | under 1 min | 10 min |
+
+**Packet.** The review packet, with observations, explanations that survived or failed, confounds, run accounting and three next questions, is [INDEX.md](INDEX.md). No later round has started.

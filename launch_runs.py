@@ -41,6 +41,8 @@ def command(plan, run, out, session_label):
             ['--init-weights', c['init_weights'], '--expect-init-sha256', c['init_weights_sha256'],
              '--init-age', str(c['init_age'])] if 'init_weights' in c else []) + (
             ['--checkpoint-steps', c['checkpoint_steps']] if 'checkpoint_steps' in c else []) + (
+            ['--decay-projection', c['decay_projection'], '--expect-decay-projection-sha256', c['decay_projection_sha256'],
+             '--decay-on', c['decay_on']] if 'decay_projection' in c else []) + (
             ['--resume', c['resume'], '--expect-init-sha256', c['resume_sha256']] if 'resume' in c else [])
 
 

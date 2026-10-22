@@ -2,14 +2,14 @@
 
 ## Regime expedition r1 (branch `swarm/regimes`)
 
-Branch `swarm/regimes` hosts Bobby's four-regime expedition, opened 2026-10-22. It is separate from the e4 round, which runs on `swarm/exploration`. For r1 work, [research/regimes/PLAN.md](research/regimes/PLAN.md) and the role files in `research/regimes/coordinator/prompts/` supersede the swarm assignments below. r1 PRs target `swarm/regimes`, and nothing from r1 goes to `swarm/exploration`, either `main`, or upstream. The general rules below still apply: small implementation, figures, provenance.
+Branch `swarm/regimes` hosts Bobby's four-regime expedition, opened and completed on 2026-10-22, separately from the e4 round. Its synthesis is [research/regimes/coordinator/SYNTHESIS.md](research/regimes/coordinator/SYNTHESIS.md). For r1 work, [research/regimes/PLAN.md](research/regimes/PLAN.md) and the role files in `research/regimes/coordinator/prompts/` supersede the swarm assignments below. r1 PRs target `swarm/regimes`. Nothing from r1 is merged into `swarm/exploration`, either `main` or upstream without Bobby's review. The general rules below still apply: small implementation, figures, provenance.
 
 
 For this exploratory swarm, the coordinator integrates on `swarm/exploration` in `bfaber-centaur/modest-complexity`. Workers branch from the coordinator's pinned shared-code commit and open PRs in the same repository targeting `swarm/exploration`. Only the coordinator integrates worker changes after relevant checks. Do not push swarm work to either repository's main branch or merge upstream. Bobby's local work remains on main.
 
 The coordinator returns the integrated review packet and may prepare a curated PR for Bobby's review against `bubskee/modest-complexity` main. Refresh upstream first and exclude unrelated or already-merged work. No upstream merge is authorized.
 
-Round e4 is active. Its charter is `research/e4/coordinator/charter/` and its assignments (owners, base commit, windows, measures, budgets, run-ID claims in `research/e4/plan.json`) are in `research/e4/coordinator/DECISIONS.md`; for e4 they supersede earlier rounds' run assignments, budgets and cycle caps. Rounds e1 (`research/coordinator/INDEX.md`), e2 (`research/e2/coordinator/INDEX.md`) and e3 (`research/e3/coordinator/INDEX.md`, D17) are complete.
+Round e4 is complete (D17; `research/e4/coordinator/INDEX.md`); no later round has started. Its charter is `research/e4/coordinator/charter/` and its assignments (owners, base commit, windows, measures, budgets, run-ID claims in `research/e4/plan.json`) are in `research/e4/coordinator/DECISIONS.md`; for e4 they superseded earlier rounds' run assignments, budgets and cycle caps. Rounds e1 (`research/coordinator/INDEX.md`), e2 (`research/e2/coordinator/INDEX.md`) and e3 (`research/e3/coordinator/INDEX.md`, D17) are complete.
 
 Read `research/LAUNCH_PROMPTS.md`, `research/SWARM.md`, and `research/RED_TEAM.md`. The current launch instructions supersede older main-branch routing and skill-import recommendations. Use the locked uv environment. Keep calibration, exploratory, and confirmatory runs distinct; read PRE_RUN.md before scientific work.
 

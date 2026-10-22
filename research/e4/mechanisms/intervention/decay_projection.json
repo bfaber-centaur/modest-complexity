@@ -1,0 +1,74 @@
+{
+ "note": "P keeps, for each live unit j, both the cosine and sine components at +-k[j] (one rfft bin) along the token axis of U and V and the label axis of W; DC and all other frequencies belong to the rest. k[j] is the dominant input frequency of unit j in the filtered start file at update 0.",
+ "files": [
+  {
+   "source": 30000,
+   "file": "research/e4/mechanisms/intervention/decay_projection_i30000.npz",
+   "sha256": "94091ae52272f9024b8661c1a81ed5a6946e1ad9dd525b8072eb605aa0ee56be",
+   "live_units": 128,
+   "units_per_frequency": [
+    10,
+    8,
+    6,
+    12,
+    7,
+    10,
+    4,
+    9,
+    9,
+    11,
+    9,
+    8,
+    7,
+    11,
+    7
+   ]
+  },
+  {
+   "source": 30001,
+   "file": "research/e4/mechanisms/intervention/decay_projection_i30001.npz",
+   "sha256": "c486ea007b6683b9812559b326653c6be3773e4be9f2bf8125b0b2396d1bca4e",
+   "live_units": 128,
+   "units_per_frequency": [
+    8,
+    11,
+    5,
+    8,
+    8,
+    8,
+    10,
+    11,
+    11,
+    9,
+    11,
+    7,
+    6,
+    6,
+    9
+   ]
+  },
+  {
+   "source": 30002,
+   "file": "research/e4/mechanisms/intervention/decay_projection_i30002.npz",
+   "sha256": "4ae35c16c52a4978fbb7fdea99b8ffba7af26e25190e65becf98ea7199a9a3db",
+   "live_units": 128,
+   "units_per_frequency": [
+    5,
+    8,
+    7,
+    10,
+    9,
+    6,
+    6,
+    12,
+    8,
+    10,
+    15,
+    11,
+    5,
+    7,
+    9
+   ]
+  }
+ ]
+}
