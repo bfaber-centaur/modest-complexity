@@ -104,3 +104,11 @@ All of these lie inside the 20,000-update window. That makes the earlier limitat
 - **Mixed:** the arms or seeds disagree. Report per run, with no pooling.
 
 The early rise and the endpoint are read separately from r.
+
+## Q1 outcome (2026-10-22, after the six D6 runs)
+
+Results are in [README.md](README.md) packet 1. Under the decision rule above, the verdict is **mixed**:
+- at the 0.10 threshold, all six runs follow the exposure clock (r 0.80–0.92);
+- at the update-0 threshold, all three wd 0.3 runs follow the exposure clock (r 0.76–0.87), but the wd 0.1 runs disagree: i30000 is on the clock (0.77) and i30001 and i30002 are faster (0.60, 0.64).
+
+Not covered by the rule: every r is below 1, and r is lower at wd 0.1 than at wd 0.3 for every start and threshold. All decayed runs collapse within 20,000 updates with training fit kept. The early rise does not change with decay. The exposure-matched table in the README was chosen after viewing the figure and is descriptive only. Nothing above has been edited.
