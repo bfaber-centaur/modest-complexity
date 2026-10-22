@@ -1,0 +1,35 @@
+Continue modest-complexity as the e4 dynamics explorer.
+
+Repository: bfaber-centaur/modest-complexity
+Integration/PR target: swarm/exploration. Use the existing four Claude threads.
+Read AGENTS.md and the current research/e3/coordinator/INDEX.md, SYNTHESIS.md, DECISIONS.md, and relevant audit findings. Inspect current HEAD; do not assume an older commit. Preserve historical artifacts and unrelated walkthrough work. No upstream merge or paid compute.
+
+Purpose: exploratory science, checked for correctness and ready for human review. We have retired simplicity as the organizing hypothesis. The question is: between the post-filter accuracy peak and collapse, what changes in the computation, and which changes cause the loss of correct answers?
+
+Starting evidence (verify against the repo): at p=31, width 128, a single hidden ReLU layer, full-batch AdamW, lr .001, 299 training pairs, the dominant-frequency weight edit lifts three failed models from about 0% to 43–58% held-out accuracy. Further training raises this to 74–87% within roughly 100 updates, then original decay=1 brings accuracy near chance by 5k. With decay=0, accuracy remains 56–62% at 20k, though it declines from its peak. A rank trace remains after collapse; the collapsed network is not the original network. The early rise survives a smaller learning rate and a gradient-descent probe. These are local observations, not evidence of a universal mechanism.
+
+Competing explanations: useful components shrink/disappear; competing contributions overwhelm them; feature/readout alignment or ReLU gating changes; combinations or an alternative you identify. Do not force a winner.
+
+Important limitations: our filter changes weights and ReLU gates. It may supply useful structure rather than expose an untouched subnetwork. Random-feature controls showed PARTIAL gains (14–30%), not gains matching trained filtered models. Raw logit growth is not increasing relative preference. AdamW decay is decoupled: do not silently interpret it as ordinary gradient descent on cross-entropy plus an L2 penalty. Weight norm alone is not function complexity.
+
+Working rules: short QUESTION.md before new measurements, stating prior observations, alternatives, and distinguishing outcomes. Existing checkpoints first; one useful figure before expansion. Reuse the locked environment and existing code. Keep implementations small and inspectable. Unique run IDs and shared-code changes go through the coordinator. Report all seeds, missing/capped runs, and selection rules. Explorers get one grounded investigation and one adaptive follow-up, with new directions recorded before running. Treat repeated checkpoints and replays as dependent observations. Deliver concise figures-first findings with source tables, regeneration commands, and explicit limits.
+
+Own research/e4/dynamics/. Wait for the coordinator's pin and run claims before launching.
+
+Read Varma et al., https://arxiv.org/abs/2309.02390, particularly ungrokking, semi-grokking, and the role of dataset size/decay. Their full-data-to-subset intervention differs from our fixed-small-dataset weight edit. Their efficiency explanation remains a hypothesis for our model.
+
+Initial analysis
+First plot the existing matched filtered trajectories at decay=0 and 1. Separate the early accuracy rise from later decline. Identify a fixed, reproducible definition of decline (for example time below a declared accuracy threshold after the early rise, plus endpoint accuracy). Keep full trajectories visible so the threshold does not become the whole result. Noncrossing runs are censored, not assigned an invented time.
+
+Small experiment
+Propose the default six new runs: same three filtered e3 starting checkpoints × decay strengths 0.1 and 0.3, 20k updates, with all other settings held fixed. Reuse endpoints 0 and 1 only after verifying code/settings comparability. Reset moments and optimizer step count as in the original edited runs. Use identical data and evaluation pairs. Randomize/interleave run order within worker limits.
+
+Before running, record the question and alternative outcomes. Does lower decay mainly delay the collapse, change its extent within the measured window, or qualitatively change trajectories? Twenty thousand updates at weaker decay may be too short to separate delay from persistence. State that limitation before observing results.
+
+First figure
+Show all seeds on training-update axes. Also inspect cumulative multiplicative decay exposure, -sum(log(1-lr_t*wd_t)), where valid. This aligns the explicit shrinkage factor only; it does NOT equate complete AdamW dynamics across conditions. Report training fit, normalized margins/ranks, and accuracy alongside norms. Do not attribute loss of generalization to shrinking weights solely from norm correlations.
+
+Adaptive follow-up
+After review, choose one question supported by the curves: a longer weak-decay continuation; a declared on/off decay schedule from paired states; or a targeted prediction from the mechanisms lane. Keep continuation versus restart semantics explicit. Predeclare which trajectories are selected and why; no unreported cherry-picked seeds.
+
+Deliver reproducible figures/tables and a short interpretation separating decay's causal effect on trajectories from the unproven computational mechanism. Do not broaden into architecture/width sweeps this round.

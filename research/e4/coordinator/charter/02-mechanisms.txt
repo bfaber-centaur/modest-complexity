@@ -1,0 +1,35 @@
+Continue modest-complexity as the e4 mechanisms explorer.
+
+Repository: bfaber-centaur/modest-complexity
+Integration/PR target: swarm/exploration. Use the existing four Claude threads.
+Read AGENTS.md and the current research/e3/coordinator/INDEX.md, SYNTHESIS.md, DECISIONS.md, and relevant audit findings. Inspect current HEAD; do not assume an older commit. Preserve historical artifacts and unrelated walkthrough work. No upstream merge or paid compute.
+
+Purpose: exploratory science, checked for correctness and ready for human review. We have retired simplicity as the organizing hypothesis. The question is: between the post-filter accuracy peak and collapse, what changes in the computation, and which changes cause the loss of correct answers?
+
+Starting evidence (verify against the repo): at p=31, width 128, a single hidden ReLU layer, full-batch AdamW, lr .001, 299 training pairs, the dominant-frequency weight edit lifts three failed models from about 0% to 43–58% held-out accuracy. Further training raises this to 74–87% within roughly 100 updates, then original decay=1 brings accuracy near chance by 5k. With decay=0, accuracy remains 56–62% at 20k, though it declines from its peak. A rank trace remains after collapse; the collapsed network is not the original network. The early rise survives a smaller learning rate and a gradient-descent probe. These are local observations, not evidence of a universal mechanism.
+
+Competing explanations: useful components shrink/disappear; competing contributions overwhelm them; feature/readout alignment or ReLU gating changes; combinations or an alternative you identify. Do not force a winner.
+
+Important limitations: our filter changes weights and ReLU gates. It may supply useful structure rather than expose an untouched subnetwork. Random-feature controls showed PARTIAL gains (14–30%), not gains matching trained filtered models. Raw logit growth is not increasing relative preference. AdamW decay is decoupled: do not silently interpret it as ordinary gradient descent on cross-entropy plus an L2 penalty. Weight norm alone is not function complexity.
+
+Working rules: short QUESTION.md before new measurements, stating prior observations, alternatives, and distinguishing outcomes. Existing checkpoints first; one useful figure before expansion. Reuse the locked environment and existing code. Keep implementations small and inspectable. Unique run IDs and shared-code changes go through the coordinator. Report all seeds, missing/capped runs, and selection rules. Explorers get one grounded investigation and one adaptive follow-up, with new directions recorded before running. Treat repeated checkpoints and replays as dependent observations. Deliver concise figures-first findings with source tables, regeneration commands, and explicit limits.
+
+Own research/e4/mechanisms/. Wait for the coordinator's e4 pin and claims before new training. Analysis of already-published artifacts can begin after scope coordination.
+
+Read Janati et al., https://arxiv.org/abs/2608.07436, especially Fourier decomposition, filtering, and circuit failure versus masking. Compare their representation intervention with our gate-changing weight filter. Borrow the diagnostic question, not an unearned equivalence. Consult https://arxiv.org/abs/2602.16849 if phase alignment/cooperation is central; distinguish quadratic-activation results from ReLU extensions.
+
+Initial investigation
+Use all three filtered start files and matched decay=1/0 trajectories. Inspect available checkpoints around the early rise, peak, and fall to 2k–5k; include the 20k endpoint. Record exact times and selection rules. Request a minimal dense replay if a necessary state is unavailable.
+
+First figure should put behavior and proposed mechanism together: accuracy, normalized margins/ranks, and a small set of component-level measurements over time. Distinguish scale, phase/alignment, frequency concentration, gate changes, and output contribution. Avoid measuring everything by default; choose quantities because rival explanations predict different behavior.
+
+A decomposition must state its object (weights, activations, or output table), basis-selection rule, and reconstruction error. If components sum to the original logits, verify that identity numerically. A Fourier projection of the full input-output table is a descriptive, task-informed decomposition, not proof that a separable internal circuit exists. Editing pre-ReLU weights can change gates and create new computations. Report these distinctions explicitly.
+
+Ask: does a previously useful component cease to give correct margins, or do other contributions overtake it? Does the answer depend on how the component is defined? Track components across time with a fixed, declared reference where possible; rediscovering the best component independently at every checkpoint changes the question.
+
+Adaptive intervention
+After the first figure, propose ONE discriminating intervention to the coordinator. Candidates include freezing a parameter group, restoring a selected component from an earlier state, or changing a component's contribution with a matched sham. Choose from evidence, not this list. State what each possible outcome would mean. Keep intervention strengths/selection independent of held-out performance; any exploratory use of held-out feedback must be recorded.
+
+Where possible compare identical starting checkpoints and control optimizer-state treatment. Report immediate changes separately from subsequent training. Account for gate changes, training-fit damage, and perturbation magnitude. An intervention that improves accuracy can establish a causal effect of the edit without proving that it recovers a pre-existing computation.
+
+Deliver a compact evidence packet, the strongest alternative, and a specific claim the evidence does NOT support.
