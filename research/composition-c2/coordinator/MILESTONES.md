@@ -46,4 +46,4 @@
 | 05:14 | time | NOTE fixes T2–T5 (no new runs) | 4e24ebd, 1fd4ff6 |
 | 05:14 | coordinator | merged time PR #55; all c2 test files pass on the integrated head, each in its own process | 9092ed1 |
 | 05:15 | reviewer | time NOTE fixes confirmed; synthesis draft 3 PASS (§6); c2 review complete | PR #60 merged (f8d37eb) |
-| 05:17 | coordinator | synthesis final; c2 handoff: draft integration PR to `swarm/exploration` for Bobby | |
+| 05:17 | coordinator | synthesis final; c2 handoff: draft integration PR to `swarm/exploration` for Bobby, assigned to Bobby, not merged by the coordinator | PR #61 |

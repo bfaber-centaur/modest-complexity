@@ -14,6 +14,6 @@ Bobby's packet: [charter/](charter/) (verbatim). Decisions, assignments, budgets
 | mechanisms lane | `mechanisms/` | merged (PR #52); reviewer PASS on numbers and on the revised NOTE (M1 adopted) |
 | reviewer | `review/` | every lane and the synthesis reviewed ([REVIEW.md](../review/REVIEW.md)); PRs #50, #53, #56–#60 merged; 7.9 of 25 min |
 | synthesis | [SYNTHESIS.md](SYNTHESIS.md) | final for handoff; reviewer PASS (§6) |
-| final draft PR to `swarm/exploration` | see MILESTONES | opened as a draft for Bobby; not merged by the coordinator |
+| final draft PR to `swarm/exploration` | [PR #61](https://github.com/bfaber-centaur/modest-complexity/pull/61) | draft for Bobby; not merged by the coordinator |
 
 Pin commit: `b3e8132` (shared code `common/` as of that commit). Later coordinator commits change only `coordinator/` and add files to `recovered/` (D9) unless DECISIONS records a re-pin.
