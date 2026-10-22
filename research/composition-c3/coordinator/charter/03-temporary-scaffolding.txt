@@ -1,0 +1,42 @@
+COMPOSITION FOLLOW-UPS — c3
+Repository: bfaber-centaur/modest-complexity.
+This is a queued follow-up to composition round c2, not a replacement for it. Begin scientific execution only after the coordinator records c2's completed review packet and pins a usable c2 commit. Do not assume c2 is complete merely because this prompt exists. Do not merge c2's final integration PR without Bobby's authorization. You may branch from its reviewed integration head without merging it into its parent.
+
+Read AGENTS.md, research/composition-c2/coordinator/{INDEX,DECISIONS}.md, the final c2 synthesis if present, and the relevant lane NOTE and reviewer findings. Prior chat numbers are provisional; use reviewed repository evidence. Record anything revised or refuted by c2. Supersede old assignments/budgets only for this new round, preserving prior artifacts.
+
+New integration branch: swarm/composition-c3 (check for an existing round before creating). New directory: research/composition-c3/. Workers get isolated branches, assigned directories and unique run IDs; PRs target swarm/composition-c3. Final integration is a draft PR to the verified parent branch for Bobby. Do not merge that final PR, push to main/upstream, or rent compute.
+
+Common execution contract:
+- Exploratory work. Commit QUESTION.md before new results: exact task, interventions, alternatives, predictions, controls, evaluation and first figure. Adaptive decisions get dated entries before execution. This is not a confirmatory study.
+- Reuse reviewed code, frozen datasets, recovered checkpoints and the locked uv environment. Keep implementation small. Coordinator owns shared-code changes and publishes the pin. Use fully qualified or uniquely named imports; run old test suites in separate processes because their task/train module names collide.
+- Verify checkpoint hashes AND recipe: task/split, architecture, loss weights, learning rate, decay, optimizer moments and step. A c2 resume hash alone did not enforce recipe identity. All recipe changes must be explicit interventions. Test resume against uninterrupted execution.
+- Calibrate on the actual host. Coordinator assigns finite elapsed budgets and concurrency; one BLAS thread per process by default. Preserve failed/capped attempts and do not silently retry under the same ID. No broad optimizer/width/architecture grid.
+- Start with three paired original initialization seeds, explicitly conditional on the original task/split. Branches and repeated checkpoints are not independent replicates. Add new task draws only as a declared follow-up justified by the initial figure.
+- Define all training, validation and evaluation subsets before fitting. Tune only on training-derived validation, never the evaluation programs or longer-length test outcomes. Exhaustive evaluation is not permission to train on the evaluation labels.
+- One primary figure before expanding; at most one adaptive follow-up per investigator. Show each seed, train performance, failed/capped runs, source CSV and exact regeneration command. Export PNG plus SVG and inspect the PNG.
+- Deliver a concise NOTE.md separating observation from interpretation, checkpoint/config manifests and a reviewer handoff. No necessity, impossibility, hidden-algorithm or novelty claim from finite-budget results alone.
+- Starting literature: lookup-table composition, https://arxiv.org/abs/1802.06467. Read relevant methods when useful; cite actual source correspondence rather than treating our design as an exact reproduction.
+
+ROLE: TEMPORARY-SCAFFOLDING INVESTIGATOR
+Question: after learning with intermediate-state supervision, does composition persist when training continues with only final-answer supervision?
+
+Use the tied-transition/tied-readout architecture throughout. Architecture, task, split, width, batches, learning rate and decay stay fixed. Coordinator selects common fixed switch times from existing c2 trajectories before c3 results (suggest 1k and 10k). Do not choose per-seed switch points by held-out success. If an event-based switch is ever used, specify it as an adaptive policy and use training-only criteria.
+
+For each seed and switch time, branch from exactly the same full-state checkpoint:
+A. Keep weights on the three losses at [1,1,1].
+B. Drop intermediate losses immediately to [0,0,1].
+C. Linearly taper the two intermediate weights from 1 to 0 over a fixed declared duration (suggest 2k updates), keeping final weight at 1.
+D. Final-only from initialization, at the same TOTAL training horizon; reuse the exact c2 trajectory if compatible.
+Use one shared unchanged A trajectory per seed where possible rather than duplicate it for every switch. Also retain the no-training checkpoint evaluation at each switch.
+
+Carry optimizer moments and step in every main branch. A zero intermediate-loss weight does not freeze shared parameters: they still get final-loss gradients, decay and carried momentum. Explicitly test the weight schedule and gradient accounting. Hold the final loss coefficient at 1; report total loss scaling and effective label exposure. More labels are part of this intervention, not a confound that can be claimed away. Abrupt removal mixes loss-direction and loss-magnitude changes with optimizer-history effects.
+
+Use a fixed total endpoint suggested at 50k, calibrated before launch. Evaluate original unseen length-three programs, the non-neighbour subset and frozen lengths 4–6. At lengths 1–2 distinguish previously supervised states from novel generalization. Never select checkpoints by the best held-out score; show trajectories at fixed times. Mark near-perfect starting seeds and partial starting seeds individually.
+
+Define retention as changes relative to each branch point and the matched continued-supervision arm. Predeclare a descriptive degradation threshold (e.g. five percentage points at the endpoint), while reporting full curves so the threshold does not replace the data. For early switches also report acquisition, not just retention. Performance collapse, persistence and further improvement are all useful results.
+
+First figure: trajectories aligned at the switch plus performance at equal total updates, with length-three and longer-length panels. Plot the supervision schedule. Include per-seed values, train loss and practical optimizer diagnostics.
+
+One follow-up only if needed: matched reset-versus-carried moments in BOTH keep and drop arms, or one explicitly justified loss-scale control. Do not reset only the drop arm and attribute the difference to removal of supervision. Any changed loss scale can change the decay balance and Adam epsilon regime; report it.
+
+Interpretation: lasting benefit supports a training-history effect under this recipe. It does not show discovery without extra information, universal modularity, or a stable asymptote. Loss of longer-program performance with stable length-three accuracy is a meaningful separate outcome.

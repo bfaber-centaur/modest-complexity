@@ -1,0 +1,41 @@
+COMPOSITION FOLLOW-UPS — c3
+Repository: bfaber-centaur/modest-complexity.
+This is a queued follow-up to composition round c2, not a replacement for it. Begin scientific execution only after the coordinator records c2's completed review packet and pins a usable c2 commit. Do not assume c2 is complete merely because this prompt exists. Do not merge c2's final integration PR without Bobby's authorization. You may branch from its reviewed integration head without merging it into its parent.
+
+Read AGENTS.md, research/composition-c2/coordinator/{INDEX,DECISIONS}.md, the final c2 synthesis if present, and the relevant lane NOTE and reviewer findings. Prior chat numbers are provisional; use reviewed repository evidence. Record anything revised or refuted by c2. Supersede old assignments/budgets only for this new round, preserving prior artifacts.
+
+New integration branch: swarm/composition-c3 (check for an existing round before creating). New directory: research/composition-c3/. Workers get isolated branches, assigned directories and unique run IDs; PRs target swarm/composition-c3. Final integration is a draft PR to the verified parent branch for Bobby. Do not merge that final PR, push to main/upstream, or rent compute.
+
+Common execution contract:
+- Exploratory work. Commit QUESTION.md before new results: exact task, interventions, alternatives, predictions, controls, evaluation and first figure. Adaptive decisions get dated entries before execution. This is not a confirmatory study.
+- Reuse reviewed code, frozen datasets, recovered checkpoints and the locked uv environment. Keep implementation small. Coordinator owns shared-code changes and publishes the pin. Use fully qualified or uniquely named imports; run old test suites in separate processes because their task/train module names collide.
+- Verify checkpoint hashes AND recipe: task/split, architecture, loss weights, learning rate, decay, optimizer moments and step. A c2 resume hash alone did not enforce recipe identity. All recipe changes must be explicit interventions. Test resume against uninterrupted execution.
+- Calibrate on the actual host. Coordinator assigns finite elapsed budgets and concurrency; one BLAS thread per process by default. Preserve failed/capped attempts and do not silently retry under the same ID. No broad optimizer/width/architecture grid.
+- Start with three paired original initialization seeds, explicitly conditional on the original task/split. Branches and repeated checkpoints are not independent replicates. Add new task draws only as a declared follow-up justified by the initial figure.
+- Define all training, validation and evaluation subsets before fitting. Tune only on training-derived validation, never the evaluation programs or longer-length test outcomes. Exhaustive evaluation is not permission to train on the evaluation labels.
+- One primary figure before expanding; at most one adaptive follow-up per investigator. Show each seed, train performance, failed/capped runs, source CSV and exact regeneration command. Export PNG plus SVG and inspect the PNG.
+- Deliver a concise NOTE.md separating observation from interpretation, checkpoint/config manifests and a reviewer handoff. No necessity, impossibility, hidden-algorithm or novelty claim from finite-budget results alone.
+- Starting literature: lookup-table composition, https://arxiv.org/abs/1802.06467. Read relevant methods when useful; cite actual source correspondence rather than treating our design as an exact reproduction.
+
+ROLE: INDEPENDENT REVIEWER
+Review both c3 investigations, with your own implementations of key metric and intervention checks. Read their questions and commit at least one concrete counterexample prediction per lane before inspecting new result tables. No need for a broad new experiment suite.
+
+Shared checks: exact source checkpoints and recipes; frozen-base identity; no-change behavior; unique run IDs; complete failure records; test suites isolated; full-state resume; arbitrary-length oracle; maps for per-step readouts; every primary figure recomputable from raw predictions.
+
+Correction priorities:
+- True symbols enter training targets and oracle reference only, never the deployed correction or predicted-symbol arm at evaluation.
+- Centroids, map fitting and tuning do not use evaluation labels/states outside their stated fit split. Check duplication by identical prefix: original held-out programs have seen h2 states.
+- Grouped-prefix splits keep all copies together; separate adapter-held-out from base-model-held-out data.
+- Suffix and original weights remain unchanged. Check whether the result is fully accounted for by decoder-plus-centroid baseline.
+- Reconstruction is only a partial control; task-informed centroids may supply useful geometry. Nonnegative corrected states are not necessarily naturally reachable hidden states.
+- Attempt a specificity/control check that would weaken a causal story without requiring a huge grid. Distinguish rescue of a behavior from identification of a naturally used computation.
+
+Scaffolding priorities:
+- Branch points identical in weights, moments and step; explicit schedules and boundary arithmetic; final loss coefficient correct.
+- Shared parameters keep moving after intermediate supervision stops; no accidental head freezing or reset.
+- Comparisons at equal total updates as well as time since switch. Distinguish number of labels, optimizer history and loss scale.
+- Original c2 baselines reused only if exact recipes and trajectories match; no checkpoint cherry-picking.
+- Check longer-length evaluation independently. A favorable length-three result must not hide lost length generalization.
+- If optimizer-reset follow-up occurs, require resets in matched keep/drop controls.
+
+Report PASS/CONCERN/BLOCK/NOT CHECKED with exact affected claims, evidence and minimal remedies. Run cheap analyses first, and one targeted counterexample per lane. Keep exploratory branches and checkpoints out of independent-sample counts. Review figures visually and keep claims conditional on tested draws, seeds and finite budgets.

@@ -1,0 +1,33 @@
+COMPOSITION FOLLOW-UPS — c3
+Repository: bfaber-centaur/modest-complexity.
+This is a queued follow-up to composition round c2, not a replacement for it. Begin scientific execution only after the coordinator records c2's completed review packet and pins a usable c2 commit. Do not assume c2 is complete merely because this prompt exists. Do not merge c2's final integration PR without Bobby's authorization. You may branch from its reviewed integration head without merging it into its parent.
+
+Read AGENTS.md, research/composition-c2/coordinator/{INDEX,DECISIONS}.md, the final c2 synthesis if present, and the relevant lane NOTE and reviewer findings. Prior chat numbers are provisional; use reviewed repository evidence. Record anything revised or refuted by c2. Supersede old assignments/budgets only for this new round, preserving prior artifacts.
+
+New integration branch: swarm/composition-c3 (check for an existing round before creating). New directory: research/composition-c3/. Workers get isolated branches, assigned directories and unique run IDs; PRs target swarm/composition-c3. Final integration is a draft PR to the verified parent branch for Bobby. Do not merge that final PR, push to main/upstream, or rent compute.
+
+Common execution contract:
+- Exploratory work. Commit QUESTION.md before new results: exact task, interventions, alternatives, predictions, controls, evaluation and first figure. Adaptive decisions get dated entries before execution. This is not a confirmatory study.
+- Reuse reviewed code, frozen datasets, recovered checkpoints and the locked uv environment. Keep implementation small. Coordinator owns shared-code changes and publishes the pin. Use fully qualified or uniquely named imports; run old test suites in separate processes because their task/train module names collide.
+- Verify checkpoint hashes AND recipe: task/split, architecture, loss weights, learning rate, decay, optimizer moments and step. A c2 resume hash alone did not enforce recipe identity. All recipe changes must be explicit interventions. Test resume against uninterrupted execution.
+- Calibrate on the actual host. Coordinator assigns finite elapsed budgets and concurrency; one BLAS thread per process by default. Preserve failed/capped attempts and do not silently retry under the same ID. No broad optimizer/width/architecture grid.
+- Start with three paired original initialization seeds, explicitly conditional on the original task/split. Branches and repeated checkpoints are not independent replicates. Add new task draws only as a declared follow-up justified by the initial figure.
+- Define all training, validation and evaluation subsets before fitting. Tune only on training-derived validation, never the evaluation programs or longer-length test outcomes. Exhaustive evaluation is not permission to train on the evaluation labels.
+- One primary figure before expanding; at most one adaptive follow-up per investigator. Show each seed, train performance, failed/capped runs, source CSV and exact regeneration command. Export PNG plus SVG and inspect the PNG.
+- Deliver a concise NOTE.md separating observation from interpretation, checkpoint/config manifests and a reviewer handoff. No necessity, impossibility, hidden-algorithm or novelty claim from finite-budget results alone.
+- Starting literature: lookup-table composition, https://arxiv.org/abs/1802.06467. Read relevant methods when useful; cite actual source correspondence rather than treating our design as an exact reproduction.
+
+ROLE: COORDINATOR
+Queue two investigators (learned correction, temporary scaffolding) plus an independent reviewer. Reuse existing threads where useful. If you cannot dispatch agents, return the separate prompts and clear dependencies for Bobby rather than pretending workers exist.
+
+First finish the c2 review/handoff. Identify the reviewed findings that motivate these two experiments. If c2 refutes their premise, record the contradiction and narrow or retire the affected lane; do not force a result. Otherwise keep the agreed questions and avoid reopening unrelated choices.
+
+Create the c3 branch and commit this charter, a small decision log, run claims and INDEX. Pin c2 source commits and checkpoint hashes. Inventory original 1k/10k states and later states actually published. Do not select only models with attractive outcomes. For correction, use the original weaker arms at the prespecified 10k point unless c2 reveals a correctness defect. For scaffolding, select common fixed switch times from available trajectories (suggest 1k and 10k), documenting their known status as pilot-informed choices before collecting c3 results. Preserve an equal total update horizon (suggest 50k subject to calibration) and reuse exact unchanged continuations where possible.
+
+Before worker execution, review two subtleties:
+1. Every original held-out length-3 program shares its depth-two prefix with training. A correction at depth two therefore sees a hidden state already encountered in training; its success cannot establish unseen-prefix generalization. Require explicit overlap accounting and a separate grouped-prefix evaluation if claiming correction generalization.
+2. Removing intermediate losses changes gradient scale and direction, while Adam moments initially reflect the old objective. Preserve moments in all primary branches, state the loss weighting, and reserve a matched reset/scale sensitivity for a follow-up if needed.
+
+Shared work should be minimal: add only the correction wrapper and loss-weight scheduling needed for the two questions. Require a no-change identity check, frozen-base verification and schedule boundary checks. Pin after reviewer inspection. No mid-flight arithmetic changes without new attempt IDs.
+
+Calibrate and set explicit CPU budgets, not inherited percentages. Each lane returns one informative figure before its follow-up. The reviewer must independently recompute key results and try a counterexample. Integrate only reviewed worker changes. Final packet: what an oracle-free correction achieved, what temporary supervision left behind, limitations, and at most two next questions. Open a draft integration PR to the actual parent; do not merge it.
