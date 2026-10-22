@@ -150,6 +150,42 @@ class Training(unittest.TestCase):
                 self.assertNotEqual(r.returncode, 0); self.assertIn('recipe check failed', r.stderr)
 
 
+class Reset(unittest.TestCase):
+    """--reset-optimizer-at: a fresh Adam state before the update at R, weights carried."""
+    def test_reset_branch_continuation_and_recipe(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            flags = ['--init-seed', 65020, '--hidden', 32, '--updates', 300, '--switch-step', 120, '--switch-weights', 0, 0, 1,
+                     '--reset-optimizer-at', 120, '--diag']
+            run(HERE/'c3train.py', '--out', tmp/'whole', '--checkpoint-steps', 0, 120, 200, *flags)
+            p120, s120, m120 = nets.load(tmp/'whole'/'ckpt-120.npz')
+            self.assertEqual((s120['t'], m120['step']), (120, 120))  # saved before the reset
+            _, s200, m200 = nets.load(tmp/'whole'/'ckpt-200.npz')
+            self.assertEqual((s200['t'], m200['step']), (80, 200))
+            # the update at R starts from a fresh Adam state on the carried weights
+            T = c2task.load(); d = c2task.rows(T['P'], T['train']); y = [d['states'][:, t] for t in range(3)]
+            run(HERE/'c3train.py', '--out', tmp/'one', *flags[:4], '--updates', 121, *flags[6:],
+                '--resume', tmp/'whole'/'ckpt-120.npz', '--resume-sha256', nets.sha256_file(tmp/'whole'/'ckpt-120.npz'),
+                '--resume-config', tmp/'whole'/'config.json')
+            st = nets.adam_state(p120)
+            nets.adam_step(p120, c2rnn.loss_grad(p120, d['s'], d['ops'], y, [0., 0., 1.])[2], st, 1e-3, .1)
+            p1, s1, _ = nets.load(tmp/'one'/'ckpt-121.npz')
+            self.assertEqual(s1['t'], 1)
+            self.assertTrue(all(np.array_equal(p1[k], p120[k]) and np.array_equal(s1['m'][k], st['m'][k]) and np.array_equal(s1['v'][k], st['v'][k]) for k in p1))
+            # resuming at R, or after it, continues the uninterrupted run exactly
+            for src in ('ckpt-120.npz', 'ckpt-200.npz'):
+                f = tmp/'whole'/src
+                run(HERE/'c3train.py', '--out', tmp/f'cont{src}', *flags, '--resume', f, '--resume-sha256', nets.sha256_file(f),
+                    '--resume-config', tmp/'whole'/'config.json')
+                self.assertTrue(ckpt_equal(tmp/'whole'/'ckpt-300.npz', tmp/f'cont{src}'/'ckpt-300.npz'))
+            # a resume after R must declare the same reset
+            f = tmp/'whole'/'ckpt-200.npz'
+            for i, bad in enumerate((flags[:-3] + ['--diag'], flags[:-3] + ['--reset-optimizer-at', 150, '--diag'])):
+                r = run(HERE/'c3train.py', '--out', tmp/f'bad{i}', *bad, '--resume', f, '--resume-sha256', nets.sha256_file(f),
+                        '--resume-config', tmp/'whole'/'config.json', check=False)
+                self.assertNotEqual(r.returncode, 0); self.assertIn('recipe check failed', r.stderr)
+
+
 class Correction(unittest.TestCase):
     def test_identity_is_the_plain_forward_and_the_base_stays_frozen(self):
         r = np.random.default_rng(65011)

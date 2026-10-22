@@ -4,9 +4,9 @@ Coordinator-owned, pinned in [../coordinator/DECISIONS.md](../coordinator/DECISI
 
 | file | what it is |
 |---|---|
-| `c3train.py` | c2train.py with a step-weight schedule (`--switch-step`, `--switch-weights`, `--taper-updates`) and a recipe check on `--resume` (`--resume-config`). Without a switch it is c2train.py bitwise. |
+| `c3train.py` | c2train.py with a step-weight schedule (`--switch-step`, `--switch-weights`, `--taper-updates`), an optional optimizer reset (`--reset-optimizer-at`, D10), and a recipe check on `--resume` (`--resume-config`). Without a switch or reset it is c2train.py bitwise. |
 | `c3correct.py` | `corrected_forward(p, s, ops, depth, correct)`: the frozen base to depth d, a correction applied to h_d alone, then the unchanged remaining steps. Also `frozen(p)` and `params_sha256(p)`. |
-| `test_c3.py` | 8 checks; run in its own process. |
+| `test_c3.py` | 9 checks; run in its own process. |
 
 ## Commands
 
