@@ -216,3 +216,17 @@ A lane that will exceed its budget stops and asks. No paid compute is used.
 3. QUESTION.md with the decision rule stated before any run.
 
 **Decision rule.** The rule uses the dynamics lane's declared decline thresholds (D5) for "collapse". A rise between 0.1 and half of B's rise is reported as inconclusive. The cost is about 2 min of the auditor's 25.
+
+## D12 (2026-10-22) Audit control activated
+
+The auditor pushed three things on `claude/project-thread-id1tmm`:
+- `QUESTION.md` (`33bf731`), with the decision rule stated before any run and the D11 edits included;
+- `rf_starts.py` (`c7ef7d0`);
+- the start files with their update-0 report (`aa09dd4`).
+
+The coordinator checked the start files as fetched from that branch:
+- **Hashes.** Each file matches its SHA-256 (i30000 `898a65f8…`, i30001 `3d52f618…`, i30002 `e15b1e44…`).
+- **Contents.** Each holds only float64 U, V and W of the expected shapes.
+- **Norms.** The joint (U, V) norm and the W norm equal those of the B start file for the same seed to the last digit or so.
+
+The six D11 IDs are moved from `reserved` to `runs` with these hashes. The start files reach `swarm/exploration` with the auditor's PR. Until then the auditor launches from its own branch merged with this commit.
