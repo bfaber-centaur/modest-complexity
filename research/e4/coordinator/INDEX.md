@@ -12,7 +12,7 @@ Figures, observations, the explanations that survived or failed, confounds, run 
 
 | lane | initial experiment | status |
 |---|---|---|
-| dynamics | D6: six constant-decay runs at wd 0.1 and 0.3 from the filtered starts | packet 1 integrated (PR #33), audit pending; follow-up claimed (D13: decay off at update 300 or 1,000) |
+| dynamics | D6: six constant-decay runs at wd 0.1 and 0.3 from the filtered starts | packets 1 (PR #33) and 2 (PR #36, the D13 decay-off follow-up) integrated, audits pending; no further runs |
 | mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | first figure integrated (PR #35), audit pending; intervention approved in principle (D14), waiting for the shared-code patch |
 | auditor | audit of the decomposition, the strongest cheap control (random-feature starts, D11–D12), dynamics and intervention checks | control C1 integrated (PR #34); decomposition and dynamics checks pending |
 
@@ -81,3 +81,23 @@ States come from the six dense replays (bitwise equal to e3 at every shared chec
 **Explanation (lane, provisional).** The answers are outvoted, not erased. Decay stalls the reference part while a competing off-reference readout grows against a+b on the operand labels.
 
 **Strongest alternative (lane).** This is one integrated re-memorisation, cut into two channels by a task-informed basis.
+
+## 4. Does the decline need decay to continue? (dynamics packet 2, endpoint intervention, not yet audited)
+
+![decay off](../dynamics/figures/offswitch/offswitch_window.png)
+
+The published wd 1 states at update 300 or 1,000 are resumed with weights, Adam moments and the update count, and continued at wd 0 to 20,000 (D13). The comparators are wd 1 and wd 0 from the same start. The full figure is [offswitch.png](../dynamics/figures/offswitch/offswitch.png).
+
+- **Intervention (pre-stated reading).** "Decay must stay on" holds in all six runs. f = −0.01 to 0.14 against a cutoff of 1/3, with no recovery.
+- **Observation.** At 20,000 updates, common accuracy is ordered by how much decay a run received before the switch:
+
+  | run | common accuracy at 20k |
+  |---|---|
+  | wd 0 throughout | 0.56–0.62 |
+  | off from 300 | 0.44–0.47 |
+  | off from 1,000 | 0.19–0.23 |
+  | wd 1 throughout | 0.01–0.03 |
+
+  Train cross-entropy and the weight norm converge to the wd 0 run; accuracy and P(a+b over S) do not.
+- **Observation, not anticipated.** After the switch the decline continues at close to the wd 1 rate for about 50 updates, and the effect fades over about 200 updates.
+- **Explanation (lane).** The loss of correct answers accumulates with decay exposure. It starts, continues and stops with decay, and fitting without decay does not restore it. So it is not a global-norm effect. The mechanism is not shown.
