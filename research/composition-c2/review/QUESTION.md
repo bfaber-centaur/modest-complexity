@@ -74,6 +74,27 @@ The TU cell is my r1 arm (disclosure above). Checks, with code written here:
 
 (Dated, before the matching analysis or run.)
 
+- **After the F1 checks ran: the rest of the time NOTE (M4, `e44349b`)** (recorded in the commit that adds this entry, before its code). F1's checks, CX-T3 and CX-T4 have run (REVIEW.md §2), and I have read the NOTE. These recompute its remaining numbers, with no new prediction.
+  - N and ¬N for `tu-inter` at 30k, and N for `tt-final` at 50k.
+  - The held-out predictions that change in `tt-final` from 40k to 50k, and in the inter arms over 49k–50k.
+  - The held-out CE change in `tt-inter` from 40k to 50k.
+  - The parameter norms and the distances between checkpoints from 40k to 50k (from the committed checkpoints), plus the peak near 20k.
+  - From the logged `diag` at 49,950: the train final margin, gradient norm and train CE.
+
+- **Time F1, `tt-final` 50k → 100k** (recorded in the commit that adds this entry). Written after reading the lane's F1 proposal and predictions (QUESTION.md "Follow-up F1") and the file list of `e44349b`. I wrote it before opening any F1 record, the NOTE or the coordinator's relay of results; the relay names only the topics to check.
+  - **Checks.**
+    1. *Recipe against source (D9).* The three configs against the 50k runs: step weights `0 0 1`, tied/tied, task, lr, wd, width, 100,000 updates. `resume_sha256` must equal the 50k run's MANIFEST entry for `ckpt-50000`, and `resumed_from` must be that run at step 50,000.
+    2. *Joining.* Each extension's step-50,000 row equals the 50k run's last row. The joined steps run 0–100,000 every 50.
+    3. *Files.* Every MANIFEST hash.
+    4. *Rescoring.* `ckpt-75000` and `ckpt-100000` rescored with my forward: step count, held-out string, train, ¬N.
+    5. *Classification at 100k.* Recomputed with the lane's rules and tolerances over 90k–100k: five-in-a-row crossings, censoring, churn ≤ 2 of 128, the CE change, and no prediction change over the last 1,000 updates.
+    6. *Error compatibility.* The share of wrong held-out answers at 100k that equal a training neighbour's label. I compute it two ways: any one-op-slot neighbour, and the op-3 neighbour (same prefix). Then I compare with the lane's number.
+    7. *Figure CSV.*
+  - **CX-T3, against "the gap stands at 100k" (if no seed crosses).** On held-out rows wrong at 100k, take the median logit gap at 75k and at 100k, plus held-out CE over 75k–100k, as CX-T1 did for 40k–50k. *Prediction.* The gap shrinks by more than 10% in at least two seeds and CE falls. "Stands" would then mean "still moving below threshold". Low confidence.
+  - **CX-T4, against "the final-only gap is slower learning of the same solution".** If final-only training at 100k were converging to tied/inter's iterated solution, its shared readout would start to read h1 and h2, and lengths 4–6 would start to extend. tied/inter is exact through L = 6 by 20k.
+    - *Test.* At `ckpt-100000`, on exhaustive rows: V on h1 and h2 against the true intermediate symbols (L = 1 and L = 2 rows), and final accuracy at L = 4–6.
+    - *Prediction.* In every seed, V reads h1 and h2 below 0.5, and L = 4–6 stays below 0.3, even if held-out L = 3 has risen. The rise would then be length-3-specific, not the iterated step function. Low confidence.
+
 - **Mechanisms NOTE revision `0fe8624`** (recorded in the commit that adds this entry, before the code below exists). I have read its diff against `817a768`. Its new numbers are checked against my CX-M1 output (`out/rev_mech.txt`) and against its own O6 table. There is one new geometric claim in O6: "U is centered, so a pure scale residual (r ∝ c(x)) lies largely outside it".
   - *Check.* At depth 2, in each of the 9 runs, compute the share of ‖c(x)‖² outside U for each training centroid c(x). U is fit here, as in follow-up B.
   - *Prediction.* The share is above 0.5 for every symbol in every run. "Largely" then holds. If it is below 0.5 anywhere, the sentence should be bounded.

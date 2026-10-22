@@ -5,11 +5,11 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | item | verdict | evidence |
 |---|---|---|
 | Pin `b3e8132` (common/, recovered/, verify_resume) | **CONCERN** (C1). Training may start. | §1 |
-| Time | M2 (`543ed95`, PR #55): **PASS** on every number checked. **CONCERN T1**: the late dynamics are in Adam's eps regime. CX-T1 half failed; CX-T2 held narrowly. F1 follow-up NOT CHECKED. | §2 |
+| Time | M2 (`543ed95`) and F1 + NOTE (`e44349b`, PR #55): **PASS** on every check. **CONCERN T1** (eps regime; carried into the NOTE). **CONCERN T3**: the NOTE's 75k held-out column is wrong (0.781 / 0.797 / 0.844). **CONCERN T2** (CX-T4 held): at 100k tt-final still does not extend past length 3, so the supervision "speed" reading applies to held-out length-3 accuracy only. CX-T3 held. Notes T4, T5. **All four addressed** at `4e24ebd`/`1fd4ff6` (merged `9092ed1`), with the lane's `lengths` CSV equal to my CX-T4. | §2 |
 | Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd 0 follow-up (`501071c`): **PASS** on every number checked; note S1 (F4 lead is 0.05–0.13). CX-S2: "nearly flat" is a slow rise in every run while logits keep growing, not a plateau. wd 0 decode and group tables NOT CHECKED. | §5 |
 | Generalization | Parts A and B, A5 and the follow-up anatomy (NOTE `6fe1435`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1, G2, G5 and G6. CX-G3: drift predicts failures within a transition in every model, but only 1.2–3.3×, so it is a partial account (note G7). Note G8. | §3 |
 | Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. CONCERN M1 on the centroid/residual reading, from CX-M1, is **addressed** in NOTE `0fe8624`, as are notes M2 and M3; that revision PASSES, including O6's scale-outside-U claim (0.67–0.98). Note M4 on one README word. | §4 |
-| Synthesis draft `eac869e` | **CONCERN SY1**: the eps qualifier overreaches for the per-step readout, 61–87% of whose gain came before the switch. Notes SY2–SY6 (one false sentence about tied transitions, missing committed checkpoints, disclosure, unchecked inputs, minor). Every other quoted number matches. | §6 |
+| Synthesis drafts `eac869e`, `ef69e01`, `84b5175` | Draft 3 takes SY1–SY7 (**PASS**). Draft 1 had **CONCERN SY1**: the eps qualifier overreaches for the per-step readout, 61–87% of whose gain came before the switch. Notes SY2–SY6 (one false sentence about tied transitions, missing committed checkpoints, disclosure, unchecked inputs, minor). Every other quoted number matches. Draft 2 had **CONCERN SY7** (from T2). | §6 |
 
 ## 1. Pin check (`b3e8132`)
 
@@ -118,6 +118,62 @@ Evidence: [rev_time.py](rev_time.py) with `543ed95`; output in [out/rev_time.txt
 - At 50k, V3 read on h1 is 0.81 / 0.97 / 0.84, so below 0.9 in two of three seeds.
 - The readouts did move a long way toward each other. ‖V_k − V_3‖/‖V_3‖ fell from about 1.1 to 0.65–1.05. V3 on h2 reaches 0.95–1.00, and V2 on h1 0.94–1.00.
 - So the catch-up partly re-ties the readouts, fully in s51201. "Speed" here partly means time to converge toward a shared readout. That is worth one sentence in the NOTE.
+
+### F1 and the NOTE (`e44349b`, PR #55)
+
+Evidence: `rev_time.py 543ed95 e44349b`, functions `f1` and `note_m4`. Output in [out/rev_time.txt](out/rev_time.txt). The checks, CX-T3 and CX-T4 were committed at ff3e589, before I opened any F1 record or the NOTE. The NOTE-number list was committed at b7ddbfe, after F1's checks ran.
+
+**PASS on every F1 check.**
+- **Recipe (D9).** All three extensions are tied/tied with step weights `0 0 1`, the task, the seed, lr, wd, width and 100,000 updates. Each `resume_sha256` equals the 50k run's MANIFEST entry and the committed `ckpt-50000` bytes. Each `resumed_from` is that run at step 50,000.
+- **Joins.** Each extension's step-50,000 row equals its 50k run's last row, `held_subset` included. The joined steps run 0–100,000 every 50.
+- **Manifests and checkpoints.** Every MANIFEST hash matches. All six `ckpt-75000` and `ckpt-100000` rescore to their logged rows: step count, held-out string, train and ¬N.
+- **Classification at 100k (handoff 2).** Recomputed from the joined trajectories, every column of `time_followup_threshold.csv` matches, including `preds_differ_last_10k` (8 / 7 / 3), `pred_changes_last_1k` (1 / 1 / 0) and `held_ce_rel_change_last_10k` (−35% / −52% / −28%).
+  - s51201 crosses at 95,050 and stays above. s51200 and s51202 are censored. ¬N crosses in no seed.
+  - By the lane's rules this is "unresolved", and the NOTE says so.
+- **Error compatibility (handoff 5).** All 762 rows of both CSVs equal mine: wrong counts, any-neighbour and same-prefix shares, and both uniform baselines.
+  - The NOTE's ranges match at the checkpoint steps from 10k on: any-neighbour 100% (uniform 64–77%), same-prefix 86–100% (uniform 29–37%), and a lowest value of 75% at 1,000-step resolution.
+  - At 75k and 100k, same-prefix compatibility is 96–100%.
+- **Eps regime (handoff 4).** In `tt-final` every coordinate stays below eps from 29,650 to 99,950. Median √v̂ at 99,950 is 5.3–6.0e-10. 75–86% of the 10k→100k gain comes after the median crosses eps. These agree with T1.
+- **Function against parameters.** `time_followup_checkpoints.csv` norms and distances equal mine.
+  - The NOTE's 40k→50k distances (2.6–3.4, 5.4–6.1, 4.4–4.6) and the 20k peak (27.6 → 25.5) match.
+  - Its N/¬N values at 30k and 50k match, as do its 14–20 changed predictions and its CE falls of 19–56%.
+  - Its margins (19.8, 19.0, 18.2–18.3) and its gradient norms (3.5–19e-8) also match.
+
+**T3, CONCERN (a number in the NOTE's F1 table is wrong).** The held-out values at 75k read 0.766 / 0.750 / 0.797. The logged rows, `time_followup.csv` and my rescoring of `ckpt-75000` all give **0.781 / 0.797 / 0.844** (28, 26 and 20 rows wrong). The ¬N column at 75k (0.48 / 0.40 / 0.55) is right.
+
+**T2, CONCERN: the 100k rise is length-3-specific (CX-T4 held).** My prediction held in every seed.
+
+| tt-final at 100k | value | chance |
+|---|---|---|
+| shared readout on h1 and h2 | 0.00–0.19 | 0.125 |
+| accuracy at L = 4–6 | 0.06–0.14 | 0.125 |
+| accuracy at L = 3, all 512 rows | 0.975–0.990 | |
+
+- **What it means.** The final-only arm reaches 0.90–0.96 held-out, and 0.74–0.88 on ¬N, without the iterated step function that `tt-inter` has by 10k–20k (exact through L = 6).
+- **Length transfer shows no sign of closing.** It is 0.10–0.15 at 50k and 0.06–0.14 at 100k.
+- **For the NOTE.** "The supervision gap is a large speed difference within 100k" holds for held-out length-3 accuracy. The Reading should say so, and add that at 100k final-only still does not extend past length 3.
+- **For the synthesis.** The same applies to its "Extra labels" paragraph (§6 below).
+
+**CX-T3: held.** On the rows still wrong at 100k (13 / 5 / 11), the median logit gap shrank 59% / 63% / 31% from 75k to 100k. Held-out CE fell from 1.4 / 1.1 / 1.5 to 0.50 / 0.22 / 0.70. This agrees with "unresolved, still rising".
+
+**Notes.**
+- **T4.** "Fully so in s51201" (CX-T2 paragraph) is true functionally, since cross-readouts there are ≥ 0.92. It is not true in the weights: ‖V1 − V3‖/‖V3‖ = 0.92.
+- **T5.** The parameter norms at 40k–50k are 25.4–35.8, not "25–35".
+- **NOT CHECKED.** The path-length estimates (`path_est_prev`, "34–38%"). The NOTE calls them coarse.
+- **Scope (handoff 6).** Apart from T2, the wording stays within "this task, recipe and budget". It says "no plateau", "not an asymptote" and "untested" where it should. It discloses that the `tu-inter` sources are my r1 arm.
+
+### NOTE fixes (`4e24ebd`, `1fd4ff6`; merged in PR #55 at `9092ed1`)
+
+I read the diff of `time/` from `e44349b` to `9092ed1` and compared the new CSV with my committed `out/rev_time.txt`. This was a read only, with no new measurement.
+
+- **T2, addressed.** The Reading now scopes the claim to "held-out length-3 accuracy". It adds a bullet saying that at 100k, final-only still does not extend past length 3, and the "does not show" list now has "at length 3 or at any other length".
+  - The lane recomputed the numbers with `time_analyze.py lengths` from the committed `ckpt-100000`.
+  - Every value in `figures/time_followup_lengths.csv` equals my CX-T4 output to 3 decimals: h1 0.125 / 0.000 / 0.1875, h2 0.109 / 0.039 / 0.148, and L = 4–6 between 0.063 and 0.140.
+  - The lane reads h1 and h2 on the 128 held-out rows, and I read them on all 32,768 length-6 prefixes. They agree here.
+- **T3, addressed.** The 75k held-out column now reads 0.781 / 0.797 / 0.844.
+- **T4, addressed.** s51201's readouts are re-tied "in function", with every cross-readout ≥ 0.92. They are not re-tied in the weights: ‖V1 − V3‖/‖V3‖ is 0.92.
+- **T5, addressed.** The norms at 40k–50k are now given as 25.4–35.8.
+- No other text, number or checkpoint changed.
 
 ## 3. Generalization
 
@@ -382,4 +438,19 @@ Every quoted number was checked against the lane NOTEs, REVIEW.md and my script 
   - (d)'s "this fits the drift" could carry CX-G3's bound: within a transition, drift accounts for failures only partly (1.2–3.3×).
   - The reviewer row should read 7.4 / 25 min, PRs #50, #53 and #56–#59.
 - **Scope.** Apart from SY1, no claim reaches past the tested tasks, recipe and budgets. The short answers carry "under this recipe and these budgets", and (c) says "within what was tested".
+
+### Draft 2 (`ef69e01`): time rows
+
+- **SY1–SY6 are taken.** The eps qualifier now separates the per-step readout (61–87% of its gain before the switch) from tied/final.
+- **F1 numbers match.** The short answer and the (a) table and bullets quote F1 correctly: 95,050 in s51201 only; 0.898 / 0.961 / 0.914 and ¬N 0.74 / 0.88 / 0.74 at 100k; +0.02 to +0.06 and CE −28 to −52% over the last 10k. The committed-checkpoint count (42 in the time lane) is also right.
+- **SY7, CONCERN (from T2).** Two places need changing.
+  - "Extra labels" says that final-only "transfers nothing past length 3 at 50k (100k was not evaluated at longer lengths)". It has now been evaluated: at 100k, L = 4–6 is 0.06–0.14 and the readout reads h1 and h2 at chance (CX-T4).
+  - "The extra labels changed how fast composition came on the original table" should read "how fast held-out length-3 accuracy came". By 100k, final-only reaches that accuracy without length transfer.
+
+### Draft 3 (`84b5175`): SY7
+
+- **PASS.** SY7 is taken in all four places: the short answer (a), the final-only and length bullets in (a), the generalization bullet, and "Extra labels".
+- **Numbers.** Each new number matches §2 T2 and `out/rev_time.txt` (CX-T4): h1 and h2 read at 0.00–0.19, L = 4–6 at 0.06–0.14 at 100k. The pooled "0.06–0.15 beyond length 3" over 10k, 50k and 100k matches A4 (0.115–0.136 at 10k), A5 (0.095–0.15 at 50k) and CX-T4.
+- **Scope.** "Whether the model extended past length 3 at all" is bounded by the sentence's "within this budget", so it does not claim impossibility.
+- **Time NOTE.** The time NOTE corrections for T2–T5 are now checked (§2). The synthesis's open item for them can be closed.
 
