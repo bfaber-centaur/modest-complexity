@@ -8,3 +8,4 @@
 | 03:56 | coordinator | pin `b3e8132` pushed; time and reviewer launched in the reused r1 threads | DISPATCH |
 | 03:58 | coordinator | sharing, generalization, mechanisms threads started | DISPATCH |
 | 04:04 | time | M0 QUESTION.md | `claude/project-thread-xb3nfz` b7d1ab6; on-host continuation check and calibration running |
+| 04:05 | mechanisms | M0 QUESTION.md | `claude/project-thread-gqcd3n` 65f9245; flags that in shared-transition models whole-state interchange at a boundary equals evaluation on a recombined program of length i+3-j, so cross-length cells duplicate the generalization lane (cross-check only); non-equivalent tests are history consistency, semantic-centroid patches, random/magnitude controls |
