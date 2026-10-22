@@ -8,7 +8,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | Time | M0 read: two wording notes (T0.1, T0.2). Results NOT CHECKED. | §2 |
 | Sharing | NOT CHECKED | |
 | Generalization | Part A (`30c495f`, PR #51): **PASS** on every number. CX-G1 failed as predicted-against, which bounds the iteration claim (G1). Part B NOT CHECKED. | §3 |
-| Mechanisms | NOT CHECKED | |
+| Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. **CONCERN M1** on the centroid/residual reading, from CX-M1. NOTE wording notes M2, M3. | §4 |
 
 ## 1. Pin check (`b3e8132`)
 
@@ -121,3 +121,50 @@ Evidence: [rev_gen.py](rev_gen.py) with `30c495f`; output in [out/rev_gen.txt](o
 - This is an observation about the frozen networks, not a mechanism.
 
 **G2 (note on the figure).** At L = 3 the solid points are "all programs": 384 of the 512 rows are training rows. The like-for-like comparison with L = 4–6 is the open held-out markers. This matters most in the tied/final panel, where the solid L = 3 point (0.82) is mostly training fit. The open markers are there; the caption or NOTE should say which to read.
+
+## 4. Mechanisms
+
+### M1–M4 (`817a768`, PR #52; M1–M2 files unchanged since `0949fa0`)
+
+Evidence: `rev_mech.py 817a768 817a768`; output in [out/rev_mech.txt](out/rev_mech.txt). The per-step-readout condition is my r1 arm.
+
+**PASS.**
+- **M1.** At ckpt-0 and ckpt-1000, my forward pass gives r1's published 128-character held-out prediction string for all 9 runs. The 10k rows were checked in §1.
+- **Natural interchange.** I did actual patching: the donor h_i goes into recipient depth j, the recipient's remaining ops run through the shared transition, and the recipient's readout reads the result (V3 for per-step). The target is recomputed from the oracle. S(i, j) equals `cells.csv` exactly in all 16 cells × 9 runs. The per-step `S_V1` and `S_V2` columns match too.
+- **The lane's derivation holds.** S is constant along every diagonal, and the self-swap success equals unpatched accuracy. Interchange at a boundary is evaluation on recombined programs, as the lane's M0 said in advance. For tied runs, it repeats the generalization lane's lengths.
+- **Centroid patches.** Centroids fit here on the 384 training rows only give `S_cent` equal to `cells.csv` in all 144 cells.
+- **No held-out rows in any fit.** In the centroid and follow-up B code, centroids and U_i are fit on `~held` rows (`mech_interchange.py` lines 51–54, `mech_residual.py` line 67).
+
+- **Follow-up B (`c2-mech-residual-a1`).** I recomputed the residual dose (λ = 0, 0.25, 0.5, 0.75, 1) and the inside/outside-U split. Centroids and U were fit here on training rows. All 756 entries equal `residual.csv` exactly, at depth 2 → op 3 and at depth 3 → L = 4–6, for every subset.
+- **The post-hoc energy check.** `c2-mech-energy-a1` is labelled post hoc and descriptive in ADAPTIVE.md (04:23), and it chose nothing. NOTE O6 uses it only to argue "unresolved", which weakens the claim rather than strengthening it. NOTE O6 should still label it post hoc where it cites it.
+
+**NOT CHECKED.** Consistency C, the random controls and random subspaces, the held-out subspace swap, `energy.csv`, geometry, and the D5 decode values. `c2probe` itself was checked in §1.
+
+**Lane prediction for the record.** It predicted tied/inter at L = 0 (V reading h_0) would be ≤ 0.5. It is 1.000 in all seeds, so V reads the start embedding exactly.
+
+**M1, CONCERN: what the centroid advantage shows.** The README says centroid states do better than natural states where those fail, "so the history-specific part of the state goes with the failures".
+- **The test.** CX-M1 was committed at 2cfd1e1 before I opened results. It asks, in every cell where S_cent − S ≥ 0.05, how much of the gap two simple changes to the natural donors recover:
+  - (a) keep only donors whose h_i is nearest to their own symbol's training centroid;
+  - (b) rescale each donor to its centroid's norm.
+- **tied/inter at L = 4–6, 11 cells.**
+  - (a) recovers only 1–22% of the gap, so symbol injection does not explain the gain. All these donors are read correctly by V at their own depth.
+  - (b) recovers **25–63%**, against my prediction of under 25%. So a large part of the harmful "history" variation is the state's overall scale.
+- **Diagonal cells, per-step readout and tied/final.** At (3, 3), (a) recovers 64–86%. There the centroid mostly injects the right symbol into held-out states the network got wrong. The lane's own Limits note says as much. At (2, 2) it recovers 10–59%.
+- **Wording I would accept.** "Replacing a state by its training class mean fixes most cross-length failures in tied/inter. Matching only the norm recovers a quarter to two thirds of that. On held-out depth-3 states the gain is mostly the injected symbol."
+- **Wording that goes beyond the evidence.** "The history-specific part goes with the failures", stated without the scale component.
+
+**M1 applies to NOTE Interpretation 1.** It says the residual "goes with the errors at L = 5–6; shrinking it removes them". The dose numbers are right. But in tied/inter, about a quarter to two thirds of what the class mean fixes is fixed by matching the donor's norm alone. So "history residual" should not be read as purely a history-specific direction.
+
+**M2 (note): NOTE Interpretation 2 is close to tautological as worded.** It says these networks "contain, in their class-mean geometry, a state that the shared transition maps correctly".
+- At depth 2, every (symbol, op 3) pair occurs in training, as handoff item 3 says. The class mean is the average of training states that the network maps correctly.
+- At (2, 2), restricting natural donors to those nearest their own symbol's centroid recovers 10–59% of the gap. So part of the class-mean gain there is injecting the symbol.
+- The NOTE's own Limit, "an intervention the network cannot perform itself", should sit next to this sentence.
+
+**M3 (note): NOTE Interpretation 3 says "share of the symbol's causal effect".** The U-swap's 0.26–0.59, against ≤ 0.13 for random subspaces, is not energy-matched. O6 itself says so. "Swapping the U coordinates moves 0.26–0.59 of held-out answers to the donor's target, against ≤ 0.13 for dimension-matched random subspaces, which carry less energy" is the bounded form.
+
+**Handoff answers.**
+- Items 1 and 6: O2 is stated correctly and not overstated. My actual patching equals `cells.csv`, which in turn equals the generalization lane's lengths (§3).
+- Item 3: centroids are fit on training rows, and λ = 1 equals natural (my dose recomputation).
+- Item 5: the V3 recipient frame is declared and applied as declared. I wrote that arm; my checks used the same code path as for the other arms.
+
+**Design note for follow-up B (`c2-mech-residual-a1`), written before I opened its files (I had seen only the coordinator's summary).** U_i is the span of the *centered* centroids. A pure scale residual, r ∝ c_i(x), therefore lies largely outside U, in the mean-centroid direction. "The harmful residual is outside U" would then partly restate the norm effect above. Reporting the component of r along c_i(x), or along the mean centroid, separately would keep the two apart. I will check B's numbers when they land.

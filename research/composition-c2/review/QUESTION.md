@@ -52,9 +52,25 @@ Checks, with code written here:
    - Every run's recipe matches its plan entry (D9).
    - All 16 `ckpt-10000` are rescored with my forward. Held-out and ¬N use my recount on each task.
 
+### 2.3 Mechanisms (M0 `65f9245`)
+
+The per-step-readout condition is my r1 arm (disclosure above). Checks, with code written here:
+1. **M1 at ckpt-0 and ckpt-1000.** My forward reproduces the published r1 rows at those steps. The 10k rows were already done in §1.
+2. **Natural interchange by actual patching.** The donor's h_i replaces the recipient's h_j. The recipient's ops j+1..3 are applied with the shared transition and read with V, or V3 for the per-step readout. The target is the oracle suffix of the donor's symbol. All 16 cells, all 9 runs at 10k, compared with the lane's S(i, j). Also checked: the self-swap identity, the diagonal constancy, and agreement with my `rev_gen.py` length accuracies.
+3. **Centroid patches.** S_cent is recomputed with centroids fit here on the 384 training rows only.
+4. **No held-out rows in any fit.** The centroid and subspace fits (including follow-up B) use no held-out row. All pair sets and subsets are the predeclared ones.
+
 ## Revisions
 
 (Dated, before the matching analysis or run.)
+
+- **04:21, mechanisms counterexample** (2cfd1e1). This was written after reading its M0 `65f9245`, before opening its tables, CSV or figure. I had seen only the coordinator's one-line relay: interchange equals recombined evaluation, and centroid states do better exactly where natural states fail.
+  - **CX-M1, against "history-specific residue in the natural state causes the failures that centroid patches avoid".** The alternative is that a centroid patch simply injects the symbol, where the natural state no longer carries it.
+  - **The cells.** Every cell with S_cent − S ≥ 0.05.
+  - **(a) Symbol-present donors.** Restrict natural donors to those whose h_i is nearest, among the training centroids c_i(·), to its own true symbol. Then recompute S.
+  - **(b) Norm-matched donors.** Rescale each natural donor to its centroid's norm, then recompute S.
+  - *Prediction for tied/inter.* In every such cell, (a) closes less than half of the gap, because nearly all donors are symbol-present. (b) closes less than a quarter. Both together mean the residue reading survives.
+  - *Other conditions.* For tied/final and the per-step readout, (a) and (b) are reported descriptively, with no prediction.
 
 - **04:14, D10 and the post-pin recovery addition** (cb8f982). These were written after reading D10 and `c2rnn._step_map`, and before running anything.
   - *Prediction (D10).* For a tied/tied model, `forward` with no map raises AssertionError at L ≥ 4 and works at L ≤ 3. An untied model with no map raises ValueError at L ≥ 4. For tied/tied, every valid explicit map gives bitwise identical states and logits, equal to my forward. For each untied scheme, two different maps give different logits, so the map is used there.
