@@ -165,4 +165,4 @@ A lane that reaches 80% of a budget tells the coordinator before going further.
 - resuming at R or after it is bitwise equal to the uninterrupted run;
 - a resume after R that omits or moves the reset is refused.
 
-**Pin.** `common/*.py` at `REPIN`. The reviewer checks the re-pin before the follow-up launches. The 12 initial branches ran at `be41d16`, and their arithmetic is the same at the new pin.
+**Pin.** `common/*.py` at `82cef77`. The reviewer checks the re-pin before the follow-up launches. The 12 initial branches ran at `be41d16`, and their arithmetic is the same at the new pin.
