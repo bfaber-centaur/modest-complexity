@@ -34,6 +34,7 @@ Sources: c2 `coordinator/SYNTHESIS.md` and the lane NOTEs, with `review/REVIEW.m
   - The joins and recipes are exact (c2 reviewer §2).
 - **Optimizer regime** (c2 reviewer T1). In every c2 arm, median Adam √v̂ falls below eps at about 24–25k, and every coordinate by about 28–30k. Branches that run to 50k enter that regime. Dropping the intermediate losses changes the gradient scale, so it may move the onset. Branches log `--diag`.
 - **Length generalization was still forming at 10k** (c2 generalization, reviewer G6). tied/inter's length-6 accuracy is 0.56–0.86 at 10k, and the decline is gone by 20k. So a switch at 10k tests acquisition of length generalization without intermediate labels, as well as retention at length 3.
+- **High length-3 accuracy without length transfer is a known outcome** (c2 reviewer T2/CX-T4). Final-only from init reaches 0.90–0.96 held-out at length 3 by 100k, with lengths 4–6 at 0.06–0.14 and the readout reading h1 and h2 at chance. A branch can therefore keep its length-3 score and lose length transfer, so lengths 4–6 are evaluated at the same fixed times in every arm.
 
 ## D3. Shared code (coordinator-owned) and pin
 
