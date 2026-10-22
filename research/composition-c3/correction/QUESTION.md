@@ -148,3 +148,25 @@ Lookup-table composition: Liška, Kruszewski and Baroni (2018), arXiv:1802.06467
 ## Addenda (dated, appended after calibration or follow-up approval)
 
 **2026-10-22 05:32Z: map dimensions and optimizer fixed (D6).** Calibration `c3-corr-calib-s900200-a1` chose **k = 64, lr = 1e-3** by the declared rule. The mean arm-B validation errors were 0.254 for that cell against 0.258 for the next best (k = 32, lr = 1e-2), which is outside the 1% tie band. Every other part of the map is as declared: 128 → 64 → 128, ReLU, full-batch Adam (0.9, 0.999, 1e-8), no decay, 2,000 updates, init seed 71200. Calibration also logged output units that stay at zero while their target is positive somewhere: 3–10 for B and 8–17 for C. This was not used for selection, and the evaluation runs report the same count in `fits.csv`. Map updates took 0.25 ms on this host.
+
+**2026-10-22 05:40Z: follow-up F2, declared before running.** The coordinator approved F2 over F1 at 05:37Z. Their reason: c2 O4 already shows off-diagonal class means at chance, so F1 would mostly confirm a predicted failure.
+- **Bases.** The eight c2 generalization tied/final `ckpt-10000` runs `c2-gen-final-{task}-s{63200,63201}-a1`, for tasks `ops63000-ls63100`, `ops63000-ls63101`, `ops63001-ls63102` and `ops63001-ls63103` (two op draws, four splits).
+  - SHA-256 is checked against each run's MANIFEST.json, and the recipe through `c3train.check_source`: the task from its config, tied/tied, width 128, lr 1e-3, wd 0.1, r1's Adam constants, weights 0 0 1.
+  - Hashes are recorded before and after each fit.
+  - All eight already pass these checks (`test_corr.py`).
+  - Only tied/final exists on these draws.
+- **Recipe, fixed and not recalibrated.** k = 64, lr = 1e-3, 2,000 updates, map seed 71200, probe seed 71301. Centroids are unique-prefix weighted.
+- **Sets.**
+  - Main: all 128 prefixes of each task, evaluated on that task's own held-out programs.
+  - Grouped: the same rule (8/4/4 per symbol, symbols in order, one generator) with the same seed 71300, applied to each task's own prefix symbols. Every task has 16 prefixes per symbol (tested).
+- **Runs.** `c3-corr-f2-main-a1` and `c3-corr-f2-grouped-a1` (`corr_eval.py --bases f2`), within the 5-minute follow-up budget.
+- **Predictions (made before running).**
+  1. A's held accuracy equals each run's logged step-10000 value, and base hashes are unchanged.
+  2. Main: D = E in all eight. B recovers ≥ 60% of E − A in at least 6 of 8 bases, where E − A ≥ 0.1.
+  3. Grouped eval prefixes:
+     - E − A ≥ 0.1 on held rows in at least 6 of 8;
+     - B and D each recover < 20% of the gain in at least 6 of those;
+     - decoder accuracy ≤ 0.5 in at least 6 of 8;
+     - B and D lower training-program rows below 0.9 in all 8.
+- **Bound, fixed now.** Each grouped fit has 64 prefixes (8 per symbol) in a 128-dimensional state, with an unregularized decoder and map. A failure bounds this adapter under this exposure. It does not show whether the symbol is linearly available in h_2.
+

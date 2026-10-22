@@ -10,7 +10,7 @@
 Outputs accuracy.csv (final answer), states.csv (symbol and centroid error of the corrected h_2),
 fits.csv (map and decoder fit) and checks.json (hashes before/after, published reproductions).
 
-uv run --locked python research/composition-c3/correction/corr_eval.py --out DIR --split main --k K --lr LR
+uv run --locked python research/composition-c3/correction/corr_eval.py --out DIR --split main --k K --lr LR [--bases f2]
 """
 import argparse
 import csv
@@ -23,9 +23,14 @@ import c3correct
 import nets
 
 
-def published(c2):
-    """A's held-out accuracy (c2 mechanisms eval, matched to r1) and c2's class-mean (dose 0) accuracy."""
+def published(c2, f2_bases=()):
+    """A's held-out accuracy (c2 mechanisms eval, matched to r1) and c2's class-mean (dose 0) accuracy;
+    for the follow-up bases, A's held-out accuracy from each run's logged step-10000 row."""
     out = {}
+    for b in f2_bases:
+        row = [json.loads(line) for line in (b['config'].parent/'metrics.jsonl').open()][-1]
+        assert row['step'] == cc.STEP
+        out[(b['run_id'], 'A', 'held')] = row['held']['final']['acc']
     for r in csv.DictReader((c2/'c2-mech-eval-a1/eval.csv').open()):
         if r['step'] == str(cc.STEP):
             out[(r['run_id'], 'A', 'held')] = float(r['held_final_acc'])
@@ -46,16 +51,19 @@ def main():
     ap.add_argument('--split', choices=('main', 'grouped'), required=True)
     ap.add_argument('--k', type=int, required=True)
     ap.add_argument('--lr', type=float, required=True)
+    ap.add_argument('--bases', choices=('original', 'f2'), default='original')
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=False)
-    _, R, pre = cc.task()
-    sp = dict(fit=np.arange(len(pre['x']))) if args.split == 'main' else cc.split(pre)
     groups = ('fit',) if args.split == 'main' else ('fit', 'val', 'eval')
-    ref = published(cc.REPO/'research/composition-c2/mechanisms/runs')
-    acc_rows, state_rows, fit_rows, records, repro = [], [], [], [], []
-    for b in cc.bases():
+    bases = cc.bases(args.bases)
+    ref = published(cc.REPO/'research/composition-c2/mechanisms/runs', bases if args.bases == 'f2' else ())
+    acc_rows, state_rows, fit_rows, records, repro, prefixes = [], [], [], [], [], {}
+    for b in bases:
+        _, R, pre = cc.task(b['task_id'])  # the split follows each task's own prefix symbols
+        sp = dict(fit=np.arange(len(pre['x']))) if args.split == 'main' else cc.split(pre)
+        prefixes[b['task_id']] = {k: v.tolist() for k, v in sp.items()}
         p, rec = cc.load_base(b)
-        key = dict(condition=b['condition'], seed=b['seed'], run_id=b['run_id'], split=args.split)
+        key = dict(condition=b['condition'], task_id=b['task_id'], seed=b['seed'], run_id=b['run_id'], split=args.split)
         H, x = cc.states(p, pre), pre['x']
         mods, fits = cc.fit_arms(H[sp['fit']], x[sp['fit']], args.k, args.lr)
         rec['params_sha256_after_fit'] = c3correct.params_sha256(p)
@@ -88,8 +96,8 @@ def main():
         print(b['run_id'], args.split, groups[-1], 'held A-E', [round(v, 3) for v in heldA], flush=True)
     write(args.out/'accuracy.csv', acc_rows); write(args.out/'states.csv', state_rows); write(args.out/'fits.csv', fit_rows)
     (args.out/'checks.json').write_text(json.dumps(dict(
-        split=args.split, k=args.k, lr=args.lr, map_seed=cc.MAP_SEED, split_seed=cc.SPLIT_SEED, probe_seed=cc.PROBE_SEED,
-        updates=cc.UPDATES, prefixes={k: v.tolist() for k, v in sp.items()},
+        split=args.split, bases_set=args.bases, k=args.k, lr=args.lr, map_seed=cc.MAP_SEED, split_seed=cc.SPLIT_SEED,
+        probe_seed=cc.PROBE_SEED, updates=cc.UPDATES, prefixes_by_task=prefixes,
         reproductions=repro, all_reproduced=all(r['equal'] for r in repro) if repro else None, bases=records,
         provenance=nets.provenance(args.out, cc.__file__, __file__)), indent=1, default=str))
 

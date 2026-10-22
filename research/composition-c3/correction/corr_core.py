@@ -32,6 +32,8 @@ MAP_SEED, SPLIT_SEED, PROBE_SEED, CALIB_SEED = 71200, 71300, 71301, 900200
 UPDATES = 2000
 GROUPS = dict(fit=8, val=4, eval=4)  # prefixes per symbol in the grouped split
 ARMS = ('A', 'B', 'C', 'D', 'E')
+F2_TASKS = ('ops63000-ls63100', 'ops63000-ls63101', 'ops63001-ls63102', 'ops63001-ls63103')
+F2_SEEDS = (63200, 63201)
 # condition: (run-id template, published r1 runs directory, readout tying, r1 condition)
 BASES = {
     'per-step readout': ('r1-rev-comp-rnn-untied-s{seed}-a1', 'research/regimes/review/runs', 'untied', 'inter'),
@@ -39,21 +41,34 @@ BASES = {
 }
 
 
-def bases():
-    rec = {(f['run_id'], f['file']): f['sha256']
-           for f in json.loads((REPO/'research/composition-c2/recovered/RECOVERY.json').read_text())['files']}
+def bases(which='original'):
+    """'original': the six D4 bases (SHA-256 from c2 RECOVERY.json). 'f2': the follow-up's eight c2
+    generalization tied/final runs on new task draws (SHA-256 from each run's MANIFEST.json)."""
     out = []
-    for cond, (tmpl, published, readout, r1cond) in BASES.items():
-        for seed in SEEDS:
-            run = tmpl.format(seed=seed)
-            out.append(dict(condition=cond, seed=seed, run_id=run, readout=readout, r1_condition=r1cond,
-                            path=REPO/'research/composition-c2/recovered'/run/f'ckpt-{STEP}.npz',
-                            sha256=rec[(run, f'ckpt-{STEP}.npz')], config=REPO/published/run/'config.json'))
+    if which == 'original':
+        rec = {(f['run_id'], f['file']): f['sha256']
+               for f in json.loads((REPO/'research/composition-c2/recovered/RECOVERY.json').read_text())['files']}
+        for cond, (tmpl, published, readout, r1cond) in BASES.items():
+            for seed in SEEDS:
+                run = tmpl.format(seed=seed)
+                out.append(dict(condition=cond, seed=seed, run_id=run, readout=readout, r1_condition=r1cond,
+                                task_id=c2task.ORIGINAL, path=REPO/'research/composition-c2/recovered'/run/f'ckpt-{STEP}.npz',
+                                sha256=rec[(run, f'ckpt-{STEP}.npz')], config=REPO/published/run/'config.json'))
+    elif which == 'f2':
+        for tid in F2_TASKS:
+            for seed in F2_SEEDS:
+                run = f'c2-gen-final-{tid}-s{seed}-a1'
+                d = REPO/'research/composition-c2/generalization/runs'/run
+                sha = [e['sha256'] for e in json.loads((d/'MANIFEST.json').read_text()) if e['file'] == f'ckpt-{STEP}.npz']
+                out.append(dict(condition='tied/final', seed=seed, run_id=run, readout='tied', r1_condition='final',
+                                task_id=tid, path=d/f'ckpt-{STEP}.npz', sha256=sha[0], config=d/'config.json'))
+    else:
+        raise ValueError(which)
     return out
 
 
 def expected_recipe(b):
-    recipe = dict(task_id=c2task.ORIGINAL, transition='tied', readout=b['readout'], hidden=WIDTH,
+    recipe = dict(task_id=b['task_id'], transition='tied', readout=b['readout'], hidden=WIDTH,
                   lr=1e-3, wd=0.1, adam=[0.9, 0.999, 1e-8])
     sched = dict(before=c3train.R1_WEIGHTS[b['r1_condition']], switch_step=None, after=None, taper=1)
     return recipe, sched
@@ -76,9 +91,9 @@ def load_base(b):
     return p, rec
 
 
-def task():
+def task(tid=c2task.ORIGINAL):
     """Rows of all 512 length-3 programs with held/prefix flags, and the 128 prefixes with symbol x."""
-    T = c2task.load(c2task.ORIGINAL)
+    T = c2task.load(tid)
     R = c2task.rows(T['P'], c2task.programs(3))
     held = {tuple(q) for q in T['held']}
     R['held'] = np.array([tuple(int(o) for o in q) in held for q in R['ops']])

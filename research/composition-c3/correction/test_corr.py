@@ -59,6 +59,19 @@ class TestCorrection(unittest.TestCase):
         a = cc.accuracy(p, self.R, sel, None)
         self.assertEqual(a, float(np.mean(full.argmax(1) == self.R['states'][:, -1])))
 
+    def test_f2_bases_verify_and_balance(self):
+        """Follow-up F2: the eight bases pass the SHA-256 and recipe checks; every task has 16 prefixes
+        per depth-2 symbol, so the grouped split rule applies unchanged."""
+        bs = cc.bases('f2')
+        self.assertEqual(len(bs), 8)
+        for b in bs:
+            p, rec = cc.load_base(b)
+            self.assertEqual(rec['adam_step'], cc.STEP)
+            _, R, pre = cc.task(b['task_id'])
+            self.assertTrue(np.all(np.bincount(pre['x'], minlength=8) == 16))
+            self.assertEqual(int(R['held'].sum()), 128)
+            self.assertEqual({k: len(v) for k, v in cc.split(pre).items()}, dict(fit=64, val=32, eval=32))
+
     def test_map_gradient(self):
         rng = np.random.default_rng(0)
         H = np.maximum(rng.normal(0.5, 1, (20, cc.WIDTH)), 0)
