@@ -1,0 +1,16 @@
+PASS main held: B 1.00 per-step, 0.80-0.89 tied/final  [[1.0, 1.0, 1.0] 0.805-0.891]
+PASS main held: D = E, 1.00 per-step and 0.875-0.969 tied/final
+PASS main held: A 0.52-0.63 / 0.27-0.32  [0.516-0.633 0.273-0.320]
+PASS main held: C below A in all six
+INFO main gain recovered by B: 1.00, 1.00, 1.00, 1.01, 1.03, 0.75; by D: 1.00, 1.00, 1.00, 1.00, 1.00, 1.00
+PASS grouped eval held: E 0.84-1.00  [0.844-1.000]
+PASS grouped eval held: B never above A; gain -50% to 0%  [-0.50, 0.00, -0.43, -0.16, 0.00, -0.24]
+PASS grouped eval held: D above A only in per-step 51201 (0.625 vs 0.562)  [['r1-rev-comp-rnn-untied-s51201-a1']]
+PASS grouped eval held: C <= A in all six
+PASS grouped eval train rows: A 1.00; learned arms 0.17-0.64  [0.167-0.635]
+PASS decoder on eval prefixes 0.53-0.66 per-step, 0.22-0.31 tied/final; 1.00 on fit  [0.531-0.656 0.219-0.312]
+PASS F2 main: B recovers 79-100% of the gain; D = E; C below A  [0.91, 0.95, 0.79, 0.84, 0.98, 0.98, 1.00, 0.89]
+PASS F2 grouped eval held: every learned arm below A in all eight
+PASS F2 grouped: B -110% to -13%, D -90% to -7% of the gain  [B -1.100..-0.133, D -0.900..-0.067]
+PASS F2 grouped eval train rows 0.19-0.62; decoder 0.19-0.44; E 0.91-1.00  [train 0.188-0.615, decoder 0.188-0.438, E 0.906-1.000]
+ALL PASS
