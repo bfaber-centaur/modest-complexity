@@ -60,9 +60,24 @@ The per-step-readout condition is my r1 arm (disclosure above). Checks, with cod
 3. **Centroid patches.** S_cent is recomputed with centroids fit here on the 384 training rows only.
 4. **No held-out rows in any fit.** The centroid and subspace fits (including follow-up B) use no held-out row. All pair sets and subsets are the predeclared ones.
 
+### 2.4 Sharing (M0 `f84dbc3`)
+
+The TU cell is my r1 arm (disclosure above). Checks, with code written here:
+1. **Recipe.** Each run's recipe and scheme are read from `config.json` (D9).
+2. **Init identity.** The step-0 rows are identical across the four cells per seed and equal r1's.
+3. **Parameter counts.** They are read from the checkpoints. All parameters are decayed.
+4. **Gradient aggregation.** At init on seeds 51200–51202, with full training data, the untied copies' gradients sum to the tied gradient.
+5. **Replays.** Their metrics equal r1's published rows.
+6. **Endpoints.** All 12 `ckpt-10000` are rescored with my forward: held-out, N/¬N with my recount, and train.
+
 ## Revisions
 
 (Dated, before the matching analysis or run.)
+
+- **04:3x, sharing counterexample.** This was written after reading its M0 `f84dbc3` and its NOTE's Interpretation section (`d8735fc`). I had also seen the coordinator's relay of the 10k held-out and ¬N table. I had not seen any trajectory, CSV or figure.
+  - **CX-S1, against "tying the transition does worse under per-step readouts on every seed" and "the two tyings are non-additive" (NOTE Interpretation 2).** Both claims are read at exactly 10,000 updates, with cells still rising.
+  - *Test.* Is the sign stable over the last 2,000 updates? I check every logged evaluation from 8,000 to 10,000 (41 per run), per seed: UU − TU and the interaction (TT − TU) − (UT − UU).
+  - *Prediction.* UU − TU > 0 at every one of those evaluations in every seed, and the interaction > 0 at every one. If either flips sign at any evaluation in any seed, the "every seed" wording is fragile to the endpoint.
 
 - **04:21, mechanisms counterexample** (2cfd1e1). This was written after reading its M0 `65f9245`, before opening its tables, CSV or figure. I had seen only the coordinator's one-line relay: interchange equals recombined evaluation, and centroid states do better exactly where natural states fail.
   - **CX-M1, against "history-specific residue in the natural state causes the failures that centroid patches avoid".** The alternative is that a centroid patch simply injects the symbol, where the natural state no longer carries it.
