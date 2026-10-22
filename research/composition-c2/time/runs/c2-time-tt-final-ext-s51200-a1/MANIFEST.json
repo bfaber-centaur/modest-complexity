@@ -1,0 +1,38 @@
+[
+ {
+  "file": "ckpt-100000.npz",
+  "bytes": 445874,
+  "sha256": "671c0aa0ed68e343a675a6afb5130573d8e277a315ae854267efda9d659a6565",
+  "committed": true
+ },
+ {
+  "file": "ckpt-75000.npz",
+  "bytes": 445347,
+  "sha256": "3ffd235c1cea24bb3344048cc6511fb078995235e4bfaba2ad9850049ede8344",
+  "committed": true
+ },
+ {
+  "file": "config.json",
+  "bytes": 10219,
+  "sha256": "2a62c0a8a9f42f993dc441500a394c9296ecaeda68ca61d7457292cc41f41fd9",
+  "committed": true
+ },
+ {
+  "file": "metrics.jsonl",
+  "bytes": 867841,
+  "sha256": "56c61e57bea8789f9ac34e6923e2bc84b4f260e247fbf5c1abec7fa96fb7f3c0",
+  "committed": true
+ },
+ {
+  "file": "runtime.json",
+  "bytes": 360,
+  "sha256": "b30536817c1c4bf45febc547925e3045e239c3385a8a358f199fbf0c68c0ee2c",
+  "committed": true
+ },
+ {
+  "file": "stdout.log",
+  "bytes": 205,
+  "sha256": "55df2c583a4d58f4ead1ad913fc3ffbbf033958599e150890d46ee9d03745979",
+  "committed": true
+ }
+]

@@ -3,7 +3,7 @@
   uv run --locked python research/composition-c2/time/time_analyze.py publish --root runs/c2 --ids ID... [--commit-checkpoints ID/FILE...]
   uv run --locked python research/composition-c2/time/time_analyze.py check     # verify runs and joins -> checks.json
   uv run --locked python research/composition-c2/time/time_analyze.py measure   # CSVs in figures/
-  uv run --locked python research/composition-c2/time/time_analyze.py figure    # figures/time_main.{png,svg} from those CSVs
+  uv run --locked python research/composition-c2/time/time_analyze.py figure    # figures/time_main and time_followup .{png,svg} from those CSVs
 
 Everything reads the committed records: this lane's runs/, r1's published metrics of the
 source runs, and the committed checkpoints (../recovered/ for 10k, runs/ for 20k-50k).
@@ -170,29 +170,54 @@ def first_sustained(steps, acc, threshold=THRESHOLD, k=SUSTAIN, every=EVERY):
     return None
 
 
-def trajectory(arm, seed):
-    """r1's published 0-10,000 record joined to the continuation's 10,050-50,000 record (or None if absent)."""
+def ext_id(arm, seed, attempt=1):
+    return f'c2-time-{arm}-ext-s{seed}-a{attempt}'
+
+
+def trajectory(arm, seed, ext=False):
+    """r1's published 0-10,000 record joined to the continuation's 10,050-50,000 record and, with ext, the F1
+    extension's 50,050-100,000 record. Returns (rows, joined); joined is False when a part is absent."""
     r1 = read_jsonl(source_dir(arm, seed)/'metrics.jsonl')
     cont = read_jsonl(RUNS/run_id(arm, seed)/'metrics.jsonl')
     if cont is None:
         return r1, False
     assert not same_r1_keys(cont[:1], r1), f'{run_id(arm, seed)}: step-10000 row differs from r1; not joined'
-    return r1 + cont[1:], True
+    rows = r1 + cont[1:]
+    if not ext:
+        return rows, True
+    more = read_jsonl(RUNS/ext_id(arm, seed)/'metrics.jsonl')
+    if more is None:
+        return rows, False
+    assert not same_r1_keys(more[:1], cont[-1:]) and more[0]['held_subset'] == cont[-1]['held_subset'], \
+        f'{ext_id(arm, seed)}: step-50000 row differs from its 50k run; not joined'
+    return rows + more[1:], True
+
+
+def label(arm, seed, step):
+    if step <= 10000:
+        return SOURCE[arm].format(s=seed).rsplit('/', 1)[1]
+    return run_id(arm, seed) if step <= 50000 else ext_id(arm, seed)
 
 
 def measure():
     FIGS.mkdir(exist_ok=True)
+    measure_set(ARMS, False, 'time', (10000, 20000, 30000, 40000, 50000))
+    if any((RUNS/ext_id('tt-final', s)).exists() for s in SEEDS):
+        measure_set(('tt-final',), True, 'time_followup', (50000, 75000, 100000))
+
+
+def measure_set(arms, ext, prefix, ckpt_steps):
     traj_rows, thr_rows, comp_rows = [], [], []
-    for arm in ARMS:
+    for arm in arms:
         for s in SEEDS:
-            rows, joined = trajectory(arm, s)
+            rows, joined = trajectory(arm, s, ext)
             prev = None
             for r in rows:
                 sub = r.get('held_subset') or subsets(r['held_final_pred'])
                 p = preds(r['held_final_pred'])
                 d = r.get('diag', {})
                 traj_rows.append(dict(
-                    arm=arm, seed=s, run_id=run_id(arm, s) if r['step'] > 10000 else SOURCE[arm].format(s=s).rsplit('/', 1)[1],
+                    arm=arm, seed=s, run_id=label(arm, s, r['step']),
                     step=r['step'], train_final_acc=r['train']['final']['acc'], train_final_ce=r['train']['final']['ce'],
                     held_final_acc=r['held']['final']['acc'], held_final_ce=r['held']['final']['ce'],
                     train_step1_acc=r['train']['step1']['acc'], train_step2_acc=r['train']['step2']['acc'],
@@ -213,16 +238,23 @@ def measure():
                               ('held_notN', [(r.get('held_subset') or subsets(r['held_final_pred']))['notN'] for r in rows])):
                 t = first_sustained(steps, acc)
                 after = [a for st, a in zip(steps, acc) if t is not None and st >= t]
-                last10k = [a for st, a in zip(steps, acc) if st >= last - 10000]
+                at = {st: r for st, r in zip(steps, rows)}
+                start = at[last - 10000]
                 thr_rows.append(dict(arm=arm, seed=s, measure=name, joined=joined, last_step=last,
                                      crossing_step=t if t is not None else '', censored=t is None,
                                      min_after_crossing=min(after) if after else '', stays_above=bool(after) and min(after) >= THRESHOLD - 1e-12,
                                      value_at_10k=acc[steps.index(10000)], value_at_end=acc[-1],
-                                     change_last_10k=acc[-1] - last10k[0]))
-    write_csv(FIGS/'time_main.csv', traj_rows)
-    write_csv(FIGS/'time_threshold.csv', thr_rows)
-    write_csv(FIGS/'time_error_compatibility.csv', comp_rows)
-    write_csv(FIGS/'time_checkpoints.csv', checkpoint_rows(traj_rows))
+                                     change_last_10k=acc[-1] - acc[steps.index(last - 10000)],
+                                     # the "gap persists" tolerances (QUESTION.md R1, R2), over the last 10,000 / 1,000 updates
+                                     preds_differ_last_10k=int(np.sum(preds(rows[-1]['held_final_pred']) != preds(start['held_final_pred']))),
+                                     pred_changes_last_1k=int(sum(np.sum(preds(at[st]['held_final_pred']) != preds(at[st - EVERY]['held_final_pred']))
+                                                                  for st in range(last - 1000 + EVERY, last + 1, EVERY))),
+                                     held_ce_rel_change_last_10k=rows[-1]['held']['final']['ce']/start['held']['final']['ce'] - 1))
+    main = prefix == 'time'
+    write_csv(FIGS/f'{prefix}_main.csv' if main else FIGS/f'{prefix}.csv', traj_rows)
+    write_csv(FIGS/f'{prefix}_threshold.csv', thr_rows)
+    write_csv(FIGS/f'{prefix}_error_compatibility.csv', comp_rows)
+    write_csv(FIGS/f'{prefix}_checkpoints.csv', checkpoint_rows(traj_rows, arms, ckpt_steps))
 
 
 def load_ckpt(arm, seed, step):
@@ -230,19 +262,19 @@ def load_ckpt(arm, seed, step):
         src = SOURCE[arm].format(s=seed).rsplit('/', 1)[1]
         path = RECOVERED/src/'ckpt-10000.npz'
     else:
-        path = RUNS/run_id(arm, seed)/f'ckpt-{step}.npz'
+        path = RUNS/(run_id(arm, seed) if step <= 50000 else ext_id(arm, seed))/f'ckpt-{step}.npz'
     return nets.load(path)[0] if path.exists() else None
 
 
-def checkpoint_rows(traj_rows):
+def checkpoint_rows(traj_rows, arms=ARMS, ckpt_steps=CKPT_STEPS):
     """Parameter norm per checkpoint, distance to the previous one, and the logged update norms between them
     scaled by the logging interval (an estimate of path length: only every 50th update is logged)."""
     out = []
-    for arm in ARMS:
+    for arm in arms:
         for s in SEEDS:
             upd = {r['step']: r['update_norm'] for r in traj_rows if r['arm'] == arm and r['seed'] == s and r['update_norm'] != ''}
             prev, prev_step = None, None
-            for step in CKPT_STEPS:
+            for step in ckpt_steps:
                 p = load_ckpt(arm, s, step)
                 if p is None:
                     continue
@@ -278,11 +310,20 @@ def read_csv(path):
 
 
 def figure():
+    draw('time_main', 'time_threshold', ARMS, END,
+         'c2 time lane: three RNN arms continued from r1 ckpt-10000 to 50,000 updates, unchanged recipe; logged every 50 updates')
+    if (FIGS/'time_followup.csv').exists():
+        draw('time_followup', 'time_followup_threshold', ('tt-final',), 100000,
+             'c2 time lane follow-up F1: tt-final continued from ckpt-50000 to 100,000 updates, unchanged recipe; logged every 50 updates',
+             marks=(10000, 50000))
+
+
+def draw(name, thr_name, arms, end_x, title, marks=(10000,)):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
-    traj, thr = read_csv(FIGS/'time_main.csv'), read_csv(FIGS/'time_threshold.csv')
+    traj, thr = read_csv(FIGS/f'{name}.csv'), read_csv(FIGS/f'{thr_name}.csv')
     series = lambda arm, s, key: [(r['step'], r[key]) for r in traj if r['arm'] == arm and r['seed'] == s and r[key] != '']
     fig = plt.figure(figsize=(12.5, 14.5))
     gs = fig.add_gridspec(4, 2, height_ratios=[1.25, 1, 1, 1], hspace=.42, wspace=.2, top=.9)
@@ -297,8 +338,8 @@ def figure():
             a.plot(x, y, color=COLOR[arm], marker=MARKER[s], markevery=max(1, len(x)//10), ms=4, **kw)
         return xy
 
-    missing = sorted({run_id(r['arm'], int(r['seed'])) for r in thr if r['joined'] != 'True'})
-    for arm in ARMS:
+    missing = sorted({f"{r['arm']} s{int(r['seed'])}" for r in thr if r['joined'] != 'True'})
+    for arm in arms:
         for s in SEEDS:
             lines(top, 'held_final_acc', arm, s, lw=1.4)
             lines(top, 'train_final_acc', arm, s, lw=.8, ls=':', alpha=.8)
@@ -325,7 +366,7 @@ def figure():
         a.set_ylim(-.02, 1.04)
     def first_below(key):
         out = []
-        for arm in ARMS:
+        for arm in arms:
             for s in SEEDS:
                 t = next((int(x) for x, y in series(arm, s, key) if y < 1e-8), None)
                 if t is not None:
@@ -334,17 +375,21 @@ def figure():
     med, mx = first_below('sqrt_vhat_median'), first_below('sqrt_vhat_max')
     ax['vhat'].axhline(1e-8, color='0.3', lw=1, ls=(0, (4, 3)))
     ax['vhat'].text(.99, .96, 'eps = 1e-8 (dashed)' + (f'\nmedian √v̂ < eps from {min(med):,}–{max(med):,}' if med else '') +
-                    (f'\nevery coordinate < eps from {min(mx):,}–{max(mx):,}\n({len(mx)} of 9 runs; first logged update)' if mx else ''),
+                    (f'\nevery coordinate < eps from {min(mx):,}–{max(mx):,}\n({len(mx)} of {len(arms)*len(SEEDS)} runs; first logged update)' if mx else ''),
                     transform=ax['vhat'].transAxes, ha='right', va='top', fontsize=8, color='0.25')
     for k in ('ce', 'norms', 'vhat'):
         ax[k].set_yscale('log')
     for a in (top, *ax.values()):
-        a.axvline(10000, color='0.55', lw=.9)
-        a.set_xlim(0, max(END, end)); a.grid(alpha=.25, lw=.5)
-    for x, ha, t in ((9700, 'right', 'r1 record'), (10300, 'left', 'continuation (this lane)')):
-        top.text(x, .03, t, ha=ha, fontsize=8, color='0.35', transform=top.get_xaxis_transform())
+        for m in marks:
+            a.axvline(m, color='0.55', lw=.9)
+        a.set_xlim(0, max(end_x, end)); a.grid(alpha=.25, lw=.5)
+    names = ['r1 record', 'continuation to 50k', 'F1 extension to 100k']
+    for k, m in enumerate(marks):
+        if k == 0:
+            top.text(m - .006*end_x, .03, names[0], ha='right', fontsize=8, color='0.35', transform=top.get_xaxis_transform())
+        top.text(m + .006*end_x, .03, names[k+1], ha='left', fontsize=8, color='0.35', transform=top.get_xaxis_transform())
     if missing:
-        top.text(.995, .1, 'continuation not run: ' + ', '.join(missing), transform=top.transAxes, ha='right', fontsize=7, color='crimson', wrap=True)
+        top.text(.995, .1, 'not run or not joined: ' + ', '.join(missing), transform=top.transAxes, ha='right', fontsize=7, color='crimson', wrap=True)
     top.set_title('Held-out final accuracy (solid) and train final accuracy (dotted), 128 held-out / 384 train rows', loc='left', fontsize=10)
     top.set_ylabel('accuracy')
     ax['notN'].set_title('Held-out ¬N: 42 rows no one-op-slot neighbour copy answers', loc='left', fontsize=10)
@@ -355,17 +400,17 @@ def figure():
     ax['vhat'].set_title('Adam √v̂: median (solid), max (dotted); from 10k', loc='left', fontsize=10)
     for k in ('norms', 'vhat'):
         ax[k].set_xlabel('update')
-    handles = [Line2D([], [], color=COLOR[a], lw=2, label=LABEL[a]) for a in ARMS]
+    handles = [Line2D([], [], color=COLOR[a], lw=2, label=LABEL[a]) for a in arms]
     handles += [Line2D([], [], color='0.3', marker=MARKER[s], lw=0, label=f'init seed {s}') for s in SEEDS]
     handles += [Line2D([], [], color='0.3', marker='v', lw=0, label='first of 5 logged evals ≥ 0.95'),
                 Line2D([], [], color='0.3', marker='>', markerfacecolor='white', lw=0, label='censored (never sustained ≥ 0.95)'),
                 Line2D([], [], color='0.45', ls=(0, (4, 3)), label='0.95 threshold'), Line2D([], [], color='0.65', ls=':', label='chance 1/8')]
     fig.legend(handles=handles, loc='upper center', ncol=3, fontsize=8, frameon=False, bbox_to_anchor=(.5, .975))
-    fig.suptitle('c2 time lane: three RNN arms continued from r1 ckpt-10000 to 50,000 updates, unchanged recipe; logged every 50 updates',
-                 y=.99, fontsize=11)
+    fig.suptitle(title, y=.99, fontsize=11)
     for ext in ('png', 'svg'):
-        fig.savefig(FIGS/f'time_main.{ext}', dpi=130, bbox_inches='tight')
-    print('wrote', (FIGS/'time_main.png').relative_to(REPO))
+        fig.savefig(FIGS/f'{name}.{ext}', dpi=130, bbox_inches='tight')
+    plt.close(fig)
+    print('wrote', (FIGS/f'{name}.png').relative_to(REPO))
 
 
 def main():
