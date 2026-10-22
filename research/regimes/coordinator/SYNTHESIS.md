@@ -31,7 +31,7 @@ Timing therefore does not compare across regimes.
 
 ### R1, composing small programs
 
-- **Setup.** 4 random permutations of 8 symbols; 48 of 64 length-3 programs trained, 16 held out by a Latin square. Every non-compositional baseline scores ≤ 0.125.
+- **Setup.** 4 random permutations of 8 symbols; 48 of 64 length-3 programs trained, 16 held out by a Latin square. The tested single-op/drop-one heuristics and proper-subset lookups score ≤ 0.125; this is not a bound on all non-compositional strategies.
 - **Initial comparison.** A 20→128→128 MLP fits every training row by about 250 updates. Held-out final accuracy at 10k updates:
 
   | condition | held-out final accuracy |
@@ -126,11 +126,11 @@ Timing therefore does not compare across regimes.
   | 15/16 | mixed (reversed accuracy 0.25–0.42); which route wins varies by individual held-out base, more with its context than its rule pattern (reviewer C4.1) |
   | 31/32 and 1 | shortcut |
 
-- **Follow-up.** 10× longer training moves 15/16 only to an even split (0.40–0.63; 1 of 3 seeds crosses 0.5). By then the displacement per update has fallen about 150×, and √v̂ is 1e-14 to 2e-13, far below Adam's eps of 1e-8. The reviewer confirmed that at 200k no coordinate has √v̂ ≥ eps, so each step is exactly (lr/eps)·m̂: fixed-step gradient descent on a shrinking gradient. Float64 saturation is immaterial (C4.3).
+- **Follow-up.** 10× longer training moves 15/16 only to an even split (0.40–0.63; 1 of 3 seeds crosses 0.5). By then the displacement per update has fallen about 150×, and √v̂ is 1e-14 to 2e-13, far below Adam's eps of 1e-8. The reviewer confirmed that at 200k no coordinate has √v̂ ≥ eps, so the update is approximately (lr/eps)·m̂: a momentum-based update whose magnitude falls with the gradient. Float64 saturation is immaterial (C4.3).
 
 **Established**
 - Under this recipe the shortcut is acquired first at every ρ > 1/2.
-- Which route the network ends on is decided after the training set is fit. That happens in a late phase where Adam's steps shrink by orders of magnitude, ending as plain small-step gradient descent.
+- Which route the network ends on is decided after the training set is fit. That happens in a late phase where Adam's steps shrink by orders of magnitude, ending in an epsilon-dominated, momentum-based regime with shrinking updates.
 - No reliability threshold exists independent of training length.
 
 **Not established**
@@ -163,19 +163,19 @@ Timing therefore does not compare across regimes.
    - *Design.* Branch ρ = 15/16 and 7/8 from the identical step-20k checkpoints under two changes:
      - (a) an optimizer that does not stall at tiny gradients: normalized GD, or Adam with eps far below the gradient scale;
      - (b) small weight decay.
-   - *Reading.* A rule share that keeps growing under (a) means the T-dependent threshold reflects optimizer slowdown. A rule share that stalls anyway reflects what the data support.
+   - *Reading.* Further growth under (a) would show that the original endpoint depended on the update rule. A plateau under another optimizer would still be a finite-budget observation, not a demonstration of what the data support or an asymptotic preference.
    - *Cost.* A few CPU minutes.
 2. **R1: are the partial RNN arms slower or different?**
    - *Why.* The reviewer's untied-readout arm (0.52–0.63) and rnn-final (0.27–0.32) both sit between the MLP and rnn-inter and were still rising at 10k. rnn-inter itself rose from 0.34 to about 1.0 after the fit.
    - *Design.* Continue both arms with an exact resume from their 10k states to about 50k updates. The lane checks the resume bitwise against an uninterrupted short trajectory first.
-   - *Reading.* If they reach rnn-inter's level, the shared readout and intermediate labels set the *speed* of composition. If they plateau, those components are needed for the solution itself.
+   - *Reading.* If they reach rnn-inter's level, those components were not necessary for high accuracy on this evaluation; compare time-to-accuracy under the stated recipes. If they plateau within the budget, report a persistent finite-time gap, not necessity or impossibility.
    - *Cost.* A few CPU minutes.
 3. **R3 (with R2 as a second instance if cheap): ablate the decodable subspace and measure the downstream behaviour.**
    - *Why.* Across-regimes observation 1. In R3 the end-of-B trunk carries A-specific linearly decodable structure and gives trunk-borne savings, but neither has been shown to cause the other.
    - *Design.* Project the A-readout subspace (fit on the frozen end-of-B trunk) out of the trunk's output. Then relearn A with a reset head.
    - *Reading.*
-     - If the savings over a B-only trunk vanish while a matched random-subspace ablation leaves them, the decodable structure is what is reused.
-     - If the savings survive, something other than the readout direction carries them.
+     - If the savings over a B-only trunk vanish while appropriate matched ablations preserve them, that supports a causal contribution from the removed directions. Check disruption of other information and off-distribution effects before identifying a specific reused computation.
+     - If savings survive, the tested readout direction is not necessary under this intervention; redundant coding and relearning remain alternatives.
      - The R2 analogue: ablate the z direction against the x1⊕x3 direction from frozen y1 features, and refit the y2 readout.
    - *Cost.* Under a minute of CPU on published checkpoints.
 
@@ -185,3 +185,7 @@ Timing therefore does not compare across regimes.
 - **What was merged.** Lane PRs #41 (R2), #45 (R3), #44 (R1) and #43 (R4), each after the reviewer's final review and the lane's wording fixes, plus the reviewer's branch. Each lane changed only its own directory. `common/` is unchanged since `0c7bd19`, and its tests pass on the integrated head.
 - **What was left alone.** `swarm/exploration`, e4, both main branches and upstream.
 - **Size.** The four lane directories hold about 29 MB in Git, and the review holds 2.7 MB. Most of it is figures and per-step CSVs. Published checkpoints come to about 5.6 MB across the lanes, and the largest single file is 1.7 MB.
+
+## Integration review note
+
+PR #49 review tightened the scope of baseline, optimizer, and proposed-intervention claims; no measurements changed. Run the five lane/common unittest files in separate Python processes: the research scripts use local modules named `task` and `train`, which collide when suites are loaded together. This is a test-discovery limitation, not a failed numerical check in the isolated experiment entry points. RNN checkpoints from r1 were not published; follow-ups must recover and verify them or explicitly replay the original runs before claiming exact continuation.
