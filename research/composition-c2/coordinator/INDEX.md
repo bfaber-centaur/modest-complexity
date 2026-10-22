@@ -15,4 +15,4 @@ Bobby's packet: [charter/](charter/) (verbatim). Decisions, assignments, budgets
 | reviewer | `review/` | pin checked (PR #50) |
 | final draft PR to `swarm/exploration` | | not opened |
 
-Pin commit: `b3e8132` (shared code `common/` as of that commit). Later coordinator commits touch only `coordinator/` unless DECISIONS records a re-pin.
+Pin commit: `b3e8132` (shared code `common/` as of that commit). Later coordinator commits change only `coordinator/` and add files to `recovered/` (D9) unless DECISIONS records a re-pin.
