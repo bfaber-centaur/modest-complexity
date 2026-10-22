@@ -57,6 +57,405 @@
     "calibration"
    ],
    "timeout": 300
+  },
+  {
+   "run_id": "r1-route-rho1-s54200-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho1-s54200-a1",
+    "--condition",
+    "rho1",
+    "--init-seed",
+    "54200",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho31of32-s54200-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho31of32-s54200-a1",
+    "--condition",
+    "rho31of32",
+    "--init-seed",
+    "54200",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho15of16-s54200-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho15of16-s54200-a1",
+    "--condition",
+    "rho15of16",
+    "--init-seed",
+    "54200",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho7of8-s54200-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho7of8-s54200-a1",
+    "--condition",
+    "rho7of8",
+    "--init-seed",
+    "54200",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho3of4-s54200-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho3of4-s54200-a1",
+    "--condition",
+    "rho3of4",
+    "--init-seed",
+    "54200",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho1of2-s54200-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho1of2-s54200-a1",
+    "--condition",
+    "rho1of2",
+    "--init-seed",
+    "54200",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-shortcut_only-s54200-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-shortcut_only-s54200-a1",
+    "--condition",
+    "shortcut_only",
+    "--init-seed",
+    "54200",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho1-s54201-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho1-s54201-a1",
+    "--condition",
+    "rho1",
+    "--init-seed",
+    "54201",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho31of32-s54201-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho31of32-s54201-a1",
+    "--condition",
+    "rho31of32",
+    "--init-seed",
+    "54201",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho15of16-s54201-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho15of16-s54201-a1",
+    "--condition",
+    "rho15of16",
+    "--init-seed",
+    "54201",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho7of8-s54201-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho7of8-s54201-a1",
+    "--condition",
+    "rho7of8",
+    "--init-seed",
+    "54201",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho3of4-s54201-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho3of4-s54201-a1",
+    "--condition",
+    "rho3of4",
+    "--init-seed",
+    "54201",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho1of2-s54201-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho1of2-s54201-a1",
+    "--condition",
+    "rho1of2",
+    "--init-seed",
+    "54201",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-shortcut_only-s54201-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-shortcut_only-s54201-a1",
+    "--condition",
+    "shortcut_only",
+    "--init-seed",
+    "54201",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho1-s54202-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho1-s54202-a1",
+    "--condition",
+    "rho1",
+    "--init-seed",
+    "54202",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho31of32-s54202-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho31of32-s54202-a1",
+    "--condition",
+    "rho31of32",
+    "--init-seed",
+    "54202",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho15of16-s54202-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho15of16-s54202-a1",
+    "--condition",
+    "rho15of16",
+    "--init-seed",
+    "54202",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho7of8-s54202-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho7of8-s54202-a1",
+    "--condition",
+    "rho7of8",
+    "--init-seed",
+    "54202",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho3of4-s54202-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho3of4-s54202-a1",
+    "--condition",
+    "rho3of4",
+    "--init-seed",
+    "54202",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-rho1of2-s54202-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-rho1of2-s54202-a1",
+    "--condition",
+    "rho1of2",
+    "--init-seed",
+    "54202",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
+  },
+  {
+   "run_id": "r1-route-shortcut_only-s54202-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-shortcut_only-s54202-a1",
+    "--condition",
+    "shortcut_only",
+    "--init-seed",
+    "54202",
+    "--updates",
+    "20000",
+    "--purpose",
+    "exploratory"
+   ],
+   "timeout": 60
   }
  ]
 }
