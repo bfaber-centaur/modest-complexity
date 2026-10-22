@@ -48,6 +48,7 @@ Sources: c2 `coordinator/SYNTHESIS.md` and the lane NOTEs, with `review/REVIEW.m
 
 - **Verification.** `c3-co-verify-keep-s51200-a1` resumes r1's tied/inter `ckpt-1000` to 3,000 in no-change mode. Every r1 key equals r1's published row at all 41 logged steps.
 - **Pin.** `be41d16`: `common/*.py` as of that commit, unchanged on the branch head. The reviewer checks it before any worker training or fitting. Later coordinator commits change only `coordinator/` and docs unless this log records a re-pin.
+- **Review.** PASS (c3 `review/REVIEW.md` §1, PR #62). Note N1: `check_source` binds the r1 per-step-readout checkpoints to their config by run ID only, because their hashes sit in r1's shared `review/runs/MANIFEST.sha256`. No c3 lane resumes them; the correction lane checks their SHA-256 against `RECOVERY.json` itself.
 - **Not in the pin.**
   - An optimizer reset. A follow-up that needs one gets a coordinator re-pin and new attempt IDs.
   - The correction module and its fitting, which are lane code.
