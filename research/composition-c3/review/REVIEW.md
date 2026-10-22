@@ -10,6 +10,7 @@ Questions and predictions, committed before each measurement: [QUESTION.md](QUES
 | Follow-up plan entries (`84dc657`) and correction wording (`897fa97`) | **PASS** (short checks, §3 end and §2 end) | §2, §3 |
 | Scaffolding follow-up (PR #65 at `5317c54`): Adam reset against carried at S = 1k | **PASS**. Every number in NOTE §F and the seven follow-up CSVs recomputes from my own forward. The logged first update after the reset equals my fresh-state Adam update exactly. The matched controls hold bitwise, and the M2 nits and caption are applied. CX-F1 held: the reset does not slow early acquisition in either arm. Two wording points, W-F1 and W-F2: scope "carrying slows acquisition" to this switch and reset time, and note that up to 3k the reset speeds keep about as much as drop. One figure note. | §5 |
 | Re-pin `82cef77` (D10, `--reset-optimizer-at`) | **PASS**. Runs without the flag are bitwise unchanged; the reset is exactly a fresh Adam state on the carried weights; resumes after or at the reset continue bitwise; every wrong reset history is refused. CX-R1 held: a reset also gives 2.1–2.6× larger steps over the next 100 updates, which the follow-up's wording should name. Note N5. | §4 |
+| Synthesis (`coordinator/SYNTHESIS.md`, draft PR #70 at `05515a2`) | **PASS, with nits**. Every number traces to a reviewed output and recomputes. W-F1, W-F2, CX-R1, CX-F1 and the correction and M2 points are carried. Claim scope holds, and run counts and compute equal the registries. CX-SY1 failed: no predicted over-compression. The draft at `f2c7c63` misstated the scope of the A′ − A range, and `05515a2` already fixes it. The "Not independently checked" items (`511a381`, `285b3dd`, `5b92e1b`) are now checked and pass. Two misses of mine are recorded: my re-pin review did not catch the `corr_core` call-site break, and §5 passed NOTE §F2's range wording. Nits N-Y1–N-Y5. | §6 |
 
 ## 1. Pin check of `be41d16`
 
@@ -280,3 +281,82 @@ So, as committed: "weights at S suffice" (B′ ≈ B at 50k) cannot exclude a mo
 **Figure note.**
 - **The problem.** In `scaf_followup.png`'s 900–6,000 zoom, the frozen L4/L6 panel draws straight lines between fixed checkpoints: 1k → 3k → 10k, and 1k → 10k for keep, which has no 3k checkpoint. Inside the window they look like data at 4k–6k, and keep's line sits below A′'s there only because of the interpolation.
 - **Remedy.** In the zoom, draw markers only, or say "lines interpolate between checkpoints".
+
+## 6. Synthesis (`coordinator/SYNTHESIS.md`, draft PR #70 at `05515a2`)
+
+**PASS, with nits.**
+- **Order of work.** The checks SY1–SY6 and CX-SY1 were committed at `696edf3`, before I read the synthesis. I read the draft at `f2c7c63`, and then its revision at `05515a2`. The post-hoc parts of `rev_synth.py` were committed at `42210be`, before their run.
+- **Evidence.**
+  - [out/rev_synth.txt](out/rev_synth.txt): the registries, the keep control on logged rows, and the correction call site at the head.
+  - My earlier outputs: `out/rev_corr*.txt`, `out/rev_scaf*.txt`, `out/rev_scaf_fu*.txt` and `out/rev_repin.txt`.
+
+**SY1, numbers: PASS.**
+- **Correction (§1).** Every value in the table and the bullets equals `out/rev_corr_note.txt`. For example, B recovers 75–103% (79–100% in F2), D is above A in 1 of 6 bases (2 of 32 rows), and the learned arms fall to 0.17–0.64 on training-program rows.
+- **Scaffolding (§2).** The following all equal `out/rev_scaf_note.txt` and the threshold CSV:
+  - the 50k table, and the 84 of 84 measures within 5 pp;
+  - Δ_D, which uses my N-S1 rounding (+0.85 to +0.90);
+  - the crossings (drop 14,600–20,450; taper 12,050 / 21,400 / 15,300; keep 7,700–9,150);
+  - the lags behind keep (drop 6,900–12,250; taper 4,350–12,250);
+  - −0.39 / −0.86 for drop s51202 at 10k;
+  - the S = 10k lag in L6 of up to 0.34;
+  - the readout minimum of 0.92 and frozen L1–2 ≥ 0.95;
+  - the eps onset of about 29k.
+- **"D reads h1 and h2 near chance."** This holds. D's step-1/2 training accuracy at 50k is 0.03–0.16 against a chance level of 1/8.
+- **Follow-up.** The crossing table, the 2,350–5,900 gap, and the third-to-a-half of the lag (2,350 / 6,900, 5,900 / 10,850 and 4,100 / 12,250) all recompute. So do B′ − B on L6 at 20k, the transient ratios and the predictions.
+- **Updates.** The update counts (534k + 294k + 8k) recompute.
+
+**SY2, review points carried: PASS at `05515a2`.**
+- **Correction.** W1 ("D recovers the full gain, and B 75–103%"), W2 and W3 are respected. C6 and the 13–33% scope at `285b3dd` (8 of 14 bases, 5–12.5% in the other 6) equal my per-base values.
+- **Scaffolding.** CX-S1 and CX-S2 are reported, and N-S1–N-S3 are carried.
+- **Follow-up.** W-F1 is quoted as the remedy proposed it. W-F2 is a bullet of its own. CX-R1 and CX-F1 are stated ("the effect belongs to the reset as a whole"; "weights at S suffice" cannot exclude a moments effect that the burst offsets).
+- **At `f2c7c63`.** The draft said A′ − A "stays between −0.06 and +0.09 on every measure and time" and that the reset "barely moves keep". The range covers only the fixed times from 10k on, where keep is at its ceiling. On logged rows up to 3k, A′ − A on held-out L3 reaches +0.08, against +0.09 for B′ − B. From 3k to 10k, A′ − A on ¬N spans −0.19 to +0.17. The revision at `05515a2` replaced both statements with the W-F2 bullet, so this is resolved.
+
+**SY3, claim scope: PASS.**
+- No statement of necessity or impossibility appears. D, A and E are named as tested baselines, not bounds.
+- Every comparison gives its seed count. The follow-up is scoped to S = R = 1k and this recipe.
+
+**SY4, runs and compute: PASS** (`rev_synth.py`).
+- **Correction.** 6 runs, 0 failed. The union of their wall times is 1.16 min; the synthesis says "about 1.1".
+- **Scaffolding.** 24 runs, 0 failed, with a union of 43.99 min, against the synthesis's 27.2 + 16.8.
+- **Coordinator.** 3 runs, with a union of 0.52 min.
+- **Reviewer.** 16 registered runs, of which 1 failed (`c3-rev-corr-a1`), with a union of 10.09 min. My tally of 11.5 min in the README also counts the reads-only checks that ran outside `run_jobs`. This check adds about 2 s, so the total stays at 11.5 of 20 min.
+- **Observations and interpretation** are kept apart: each section ends in its own "Reading".
+
+**SY5, packet shape: PASS.** It covers the correction, the scaffolding and the limitations, and asks two next questions.
+
+**SY6, disclosure: partial.** The synthesis links REVIEW.md, whose first lines disclose that the per-step bases are my r1 arm, but it does not say so itself (N-Y2).
+
+**CX-SY1 failed, at both versions.** I found none of the three forms I predicted:
+- The follow-up's slowing is scoped: S = 1k in the setting, one reset time in the limitations, and S = R = 1k at `05515a2`.
+- It is not attributed to the moments: "whether the history or the step size is responsible is open".
+- CX-S2 is not reported as a uniform shrinkage.
+
+The one over-compression I did find, in the keep-control range at `f2c7c63`, was a form I had not predicted, and `05515a2` already fixes it.
+
+**The "Not independently checked" items, now checked.**
+- **`511a381`** (scaffolding NOTE W-F1 and W-F2, and the follow-up figure zoom).
+  - The NOTE text matches my remedies, and its numbers match §5.
+  - The diff from `f2c7c63` changes no CSV.
+  - The zoom now draws the frozen L4/L6 at the 1k and 3k checkpoints as markers only.
+- **`285b3dd`** (the correction NOTE's 13–33% scope). Its counts equal my C6 values: 8 bases at 13–33% and 6 at 5–12.5%.
+- **`5b92e1b`** (the `corr_core.load_base` call site).
+  - At the head, the pre-fix call fails with a TypeError, which reproduces the break.
+  - The fixed call passes the meta step and the Adam count, which are equal for these bases since they have no reset. With it, `load_base` reproduces every recorded field of `checks.json` (hashes, steps, recipe, schedule, source, params hash) for all 14 bases.
+  - `test_corr.py` passes.
+
+**Two misses of mine.**
+- **The re-pin review.** My §4 ran `test_c3.py` and `test_c2.py` but not `test_corr.py`, and it did not look for other callers of `check_source`. So I did not catch the break that `5b92e1b` fixes. The coordinator found it.
+- **The follow-up review.** In §5 I passed NOTE §F2's "A′ − A is between −0.06 and +0.09 on every measure and time". My own output showed that the range was computed from 10k on, and I did not flag the wording. The line is still in the NOTE at `05515a2` (N-Y5).
+
+**Nits (minimal remedies), none blocking.**
+- **N-Y1.** "The reused carried runs reproduce A and B row for row" should say "A in all three seeds, and B in s51200 (including `ckpt-3000`, bitwise)". Only one carried-drop check was run.
+- **N-Y2.** In §1 *Setting*, add "(the per-step bases are the reviewer's r1 arm; REVIEW.md)".
+- **N-Y3.** In the CX-S2 bullet:
+  - Ws is at 0.68–0.69 of keep's norm.
+  - The group ratios were part of the pre-registered CX-S2 (its "V shrinks most" half failed), so "a reviewer counterexample, not a mechanism" is more accurate than "a post-hoc reviewer observation".
+- **N-Y4.** Replace *Not independently checked* with a pointer to REVIEW §6. Set the reviewer row to "16 (1 failed) · 11.5 min (20)", and add that the tally includes reads-only checks run outside `run_jobs`.
+- **N-Y5** (lane NOTE §F2). Scope "on every measure and time" to "at the fixed times from 10k on (keep has no 3k checkpoint)".
+- **Optional.**
+  - The zoom panel's title says "lines join checkpoints", but the zoom draws none.
+  - CX-C2 was run on the 11 tied/final bases.
+  - The correction wall time from its registry rounds to 1.2 min.
