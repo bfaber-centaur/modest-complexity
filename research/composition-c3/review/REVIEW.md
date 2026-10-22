@@ -6,7 +6,8 @@ Questions and predictions, committed before each measurement: [QUESTION.md](QUES
 |---|---|---|
 | Pin `be41d16` (D3) | **PASS**. No defect in what a branch or a correction computes. Notes N1–N4. My finite-difference check P3 missed its own tolerance at `ckpt-10000` (see §1). | §1 |
 | Correction lane (PR #63, `c3f03cd`) | **PASS**. Every number in its tables, both figures and the NOTE recomputes exactly from my own code (B and C to 0 rows). Leak checks hold. CX-C1 held: the bins of gain recovered are stable across three other map and probe draws. CX-C2 failed narrowly: a val-tuned ridge decoder reads new prefixes up to 5/32 better, but recovers at most 6% of the gain, so the conclusion stands. C6: on adapter-held-out prefixes B is not purely decoder-plus-centroid. Wording notes W1–W3. | §2 |
-| Scaffolding lane | not started | |
+| Scaffolding lane | in progress (PR #65 at `4512bce`) | |
+| Re-pin `82cef77` (D10, `--reset-optimizer-at`) | **PASS**. Runs without the flag are bitwise unchanged; the reset is exactly a fresh Adam state on the carried weights; resumes after or at the reset continue bitwise; every wrong reset history is refused. CX-R1 held: a reset also gives 2.1–2.6× larger steps over the next 100 updates, which the follow-up's wording should name. Note N5. | §4 |
 
 ## 1. Pin check of `be41d16`
 
@@ -119,3 +120,33 @@ So the lane's single draws (71200, 71301) carry its per-base statements.
 
 The specificity checks are CX-C1, CX-C2 and C6 above.
 
+## 4. Re-pin check of `82cef77` (D10, `--reset-optimizer-at`)
+
+**PASS.** Checks RP0–RP7 and CX-R1 were committed before any run at the new pin (QUESTION.md §4, `5ce9d97`; continuation entries `55cf081`; script `f3abedc`). Evidence: `rev_repin.py` (run `c3-rev-repin-a1`, 39 s), output [out/rev_repin.txt](out/rev_repin.txt). Every line passed.
+
+- **RP0, scope.** `be41d16..82cef77` changes only `c3train.py`, `test_c3.py` and the README in c3's `common/`. `c3correct.py`, c2's `common/` (`b3e8132`) and `research/regimes/common/` are unchanged, and HEAD's `common/` equals `82cef77`.
+- **RP1, tests.** `test_c3.py` (9 tests, 15.5 s) and `test_c2.py` (10 tests, 13.4 s) pass, each in its own process.
+- **RP2, runs without the flag.** My `be41d16` drop branch (10,000 → 10,300) and whole taper run (1,000 → 2,600), re-run at `82cef77`, are bitwise equal: every checkpoint (weights, both moments, count) and every metrics row, including `--diag`.
+- **RP3, old sources.** My pin check's 41 resume pairings give the same outcomes under the new `check_source` (27 accepted, 14 refused). A `be41d16` c3 checkpoint, whose config has no `reset_at`, is accepted with its own flags and refused with a reset declared before its step.
+- **RP4, the reset.**
+  - The reset branch's `ckpt-1000` equals the r1 source in weights, moments and count, so it is saved before the reset.
+  - At 1,000 + k (k = 1, 2, 3) the saved Adam count is k and meta `step` is 1,000 + k.
+  - Weights and both moments equal my own Adam from zero moments on the carried weights, bitwise, in drop (s51200) and keep (s51201).
+  - In the update at 1,000, every coordinate with \|g\| > 1e-4 (69–70% of them) moves by lr to within 1e-4 relative, after removing decay. That is the fresh-state sign step.
+- **RP5, continuation.** Resuming the reset branch from its `ckpt-1200` (after the reset), or from its `ckpt-1000` (at the reset, pre-reset state), with the same flags, gives its `ckpt-1400` and every row bitwise.
+- **RP6, refusals.** From the reset branch's `ckpt-1200`:
+  - Refused: no reset declared, a reset at 1,100, a reset at 1,300, and an Adam count forged to 1,200.
+  - Accepted: a reset at 1,000.
+
+  Elsewhere:
+  - Accepted: its `ckpt-1000` without a reset (a legitimate branch from the pre-reset state), and r1 `ckpt-10000` with a reset at 10,000 or 20,000.
+  - Refused: r1 `ckpt-1000` with a reset at 500, and r1 `ckpt-10000` with a reset at 1,000.
+- **RP7, records.** Both reset configs record `schedule.reset_at = 1000`. The drop branch's exposure equals a drop at 1,000 without a reset: [1,000, 1,000, 1,400] updates from init.
+
+**CX-R1 held: a reset is more than removing memory.** In-process, I ran 100 updates from each r1 tied/inter `ckpt-1000`, carried against reset, for keep and drop, with my Adam (equal bitwise to c3train per RP4).
+- The reset branch's mean RMS per-coordinate move (decay removed) over 1,000–1,099 is 2.14–2.64× the carried one in all six seed × arm pairs. It is 1.1–1.3e-4 against 4.3–6.2e-5.
+- The ratio is 15–19× on the first update. It is still 1.4–1.8× over updates 1,090–1,099.
+
+The carried second moment holds about 1,000 updates of history from larger early gradients. A fresh state re-estimates it from the current, smaller gradients, and its bias correction makes the first updates sign steps of size lr. So the reset arms differ from the carried arms in two ways: Adam's memory of earlier gradients is gone, and the effective step size is larger for at least the first hundred updates (β2 = 0.999 suggests several hundred). This is a design fact, not a defect. **Suggested wording for the follow-up:** "a reset removes the optimizer's history and also enlarges the next few hundred steps." Do not write "the reset removes only the moments' memory." A difference between reset and carried arms can come from either.
+
+**N5, a note, not a defect.** A reset step outside the run's own range, such as `--reset-optimizer-at` beyond `--updates` or before a resume's start, is not rejected by argument parsing. The second case is refused by `check_source` when the source had no reset there (RP6, r1 `ckpt-1000` with a reset at 500). The first case runs without a reset, while its config still records `reset_at`. The planned follow-up resumes at R = 1,000 with R = 1,000, which is inside the range, so this does not affect it. I will check the six plan entries when they are pushed.
