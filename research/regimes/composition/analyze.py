@@ -177,7 +177,7 @@ def figure():
                 a.plot(st, [r['held'][h]['acc'] for r in m], color=COLOR[c], lw=1.4, ls=ls, marker=MARKER[s],
                        markevery=20, ms=4, label=f'{c} {h}' if s == SEEDS[0] else None)
     a.axhline(base['chance'], color='0.45', lw=1, ls=(0, (4, 3)))
-    a.set(title='held-out intermediate heads (true labels)', xlabel='full-batch updates', ylabel='accuracy',
+    a.set(title='intermediate heads, held-out rows (true labels)\nall prefixes seen in training: tests an unseen op-3 pairing', xlabel='full-batch updates', ylabel='accuracy',
           ylim=(0, 1.04), xlim=(0, 10000))
     a.legend(fontsize=8, loc='center right', title='markers = init seed', title_fontsize=8)
 
@@ -299,7 +299,7 @@ def followup_figure(plt, base):
             for h, ls in (('step1', ':'), ('step2', '-')):
                 a.plot(st, [r['held'][h]['acc'] for r in m], color=color[c], lw=1.4, ls=ls, marker=MARKER[s], markevery=20, ms=4,
                        label=f'rnn-{c}, readout on {"h1 vs step1" if h == "step1" else "h2 vs step2"}' if s == SEEDS[0] else None)
-    a.set(title='shared readout applied to h1 and h2, held-out programs\n(rnn-final never trains the readout there)',
+    a.set(title='shared readout applied to h1 and h2\n(prefix-only states, so = training rows)',
           xlabel='full-batch updates', ylabel='accuracy', ylim=(0, 1.04), xlim=(0, 10000))
     a.legend(fontsize=8, loc='center right', title='markers = init seed', title_fontsize=8)
     fig.suptitle('R1 adaptive follow-up (separate from the initial comparison): ReLU RNN, one shared transition per op and one '

@@ -34,7 +34,7 @@ Design, predictions and the follow-up's pre-registration are in [QUESTION.md](QU
 
 Primary figure: [figures/heldout.png](figures/heldout.png).
 
-**Every run fits.** Training accuracy is 1.0 in all nine runs by about 250 updates, so the low held-out numbers are failed generalization, not failed optimization.
+**Every run fits.** Training accuracy is 1.0 in all nine runs by 200–300 updates, so the low held-out numbers are failed generalization, not failed optimization.
 
 | held-out final accuracy at 10,000 updates | 51200 | 51201 | 51202 |
 |---|---|---|---|
@@ -48,16 +48,19 @@ Primary figure: [figures/heldout.png](figures/heldout.png).
 
 **Trajectories.** In two of the three `final` runs, held-out accuracy starts below chance (0.06–0.09 around updates 100–500, near the neighbour-vote level) and then drifts upward. `final` and `inter` were still drifting upward at 10,000 updates.
 
-**Intermediate heads generalize; the final answer does not.** In `inter`, held-out step1 accuracy is 1.0 and step2 is 0.98–1.0, yet held-out final accuracy stays at 0.20–0.25. Outcome 5 of QUESTION.md is the closest description.
+**The intermediate heads are unaffected by an unseen op 3; the final answer does not compose.** In `inter`, held-out step1 accuracy is 1.0 and step2 is 0.98–1.0, yet held-out final accuracy stays at 0.20–0.25. Outcome 5 of QUESTION.md is the closest description.
+
+These high step accuracies do not show the intermediate computation generalizing to anything unseen (reviewer C1.1). Step1 depends only on (s, a) and step2 only on (s, a, b), and all 128 held-out prefixes occur in training rows with the same labels. Held-out step-k accuracy therefore measures only that the heads ignore a new pairing of a seen prefix with op 3. An earlier version of this note, and the Follow-up motivation in QUESTION.md (kept as written), said the heads "generalize"; that overstated it.
 
 **What the errors are** (`heldout_error_types.csv`).
 - 97–100% of wrong held-out answers equal the label of a training row that differs in exactly one op slot. If wrong answers were uniform, that would be about 73%.
-- In `inter`, 80–86% equal the label of a row with the same prefix and a different op 3, against about 35% if uniform. In `final` the figure is 66–70%.
+- In `inter`, 80–86% equal the label of a row with the same prefix and a different op 3, against about 35% if uniform. In `final` the figure is 65–70%.
 - So the networks answer an unseen program with an answer that belongs to a seen neighbour. In `inter`, that neighbour typically shares the correctly computed state after op 2.
+- The reviewer split the held-out rows by whether *any* one-slot training neighbour carries the true answer (86 rows) or none does (42 rows; REVIEW.md §1, counterexample 1). Every MLP run gets at most 1 of the 42 right. So all of the MLP's above-chance accuracy, including `inter`'s +0.03 to +0.11 over `final`, is on rows a neighbour copy can answer; none of it is partial composition.
 
 ### Decoding (descriptive, `r1-comp-probe-a1`)
 
-Supporting figure: [figures/decoding.png](figures/decoding.png).
+Supporting figure: [figures/decoding.png](figures/decoding.png). "Held-out" probe rows have prefixes that all occur in training (C1.1), so held-out probe accuracy measures how much the unseen op 3 perturbs the code, not decoding of an unseen state.
 
 **Step1.**
 - Step1 is ≥ 0.96 decodable on held-out rows from hidden layer 1 even at initialization, because random ReLU features of (s, a) suffice.
@@ -80,9 +83,10 @@ The intervention swaps the probe's 7-dimensional step2 subspace into a base row 
 | swap site | output follows the counterfactual | random 7-d subspaces | base answer kept |
 |---|---|---|---|
 | hidden 1 | 1–3% (`final`), 4–7% (`inter`) | ≤ 1% | 77–93% |
-| hidden 2 | up to 12–16% (`inter`) | ≤ 1% | 42–48% |
+| hidden 2 | 2–4% (`final`), 12–16% (`inter`) | ≤ 1% | 42–48% (`inter`) |
+| hidden 2, `shuf` (never sees true intermediate labels) | 8–10% | ≤ 1% | 55–61% |
 
-At hidden 2 in `inter`, 35–38% of outputs become the *source* row's answer, against 14–15% for random subspaces. The decoded step2 subspace has some causal effect beyond a random subspace. But the networks mostly do not compute the final answer by applying op 3 to the decoded step2.
+At hidden 2 in `inter`, 35–38% of outputs become the *source* row's answer, against 14–15% for random subspaces; `shuf` gives 33–36%. The source-answer effect, and most of `inter`'s counterfactual-following, therefore do not need true intermediate labels (reviewer C1.2). The decoded step2 subspace has some causal effect beyond a random subspace. But the networks mostly do not compute the final answer by applying op 3 to the decoded step2.
 
 ### Adaptive follow-up: a shared-transition RNN, kept separate
 
@@ -97,19 +101,21 @@ Figure: [figures/followup_rnn.png](figures/followup_rnn.png). It was pre-registe
 
 **`rnn-inter`.**
 - Training accuracy reached 1.0 by about 500 updates. Held-out accuracy rose gradually *after* that: 0.34–0.36 at 1,000 updates, 0.48–0.66 at 4,000, 0.83–0.93 at 7,000.
+- The rise has two phases (reviewer, counterexample 1). On the 42 held-out rows no neighbour copy answers, accuracy is 0.00–0.05 at 1,000–2,000 updates while the other rows are at 0.50–0.65. It reaches 0.05–0.36 at 4,000, 0.55–0.81 at 7,000 and 0.88–1.00 at 10,000. So the early above-chance accuracy is neighbour-like, and composition on rows a neighbour cannot answer comes later.
 - The prediction of ≥ 0.8 for all seeds held.
 
 **`rnn-final`.**
 - It sits above every MLP condition and was still rising at 10,000 updates. It reached 0.27–0.32, at the low edge of the predicted 0.3–0.9.
 - The descriptive prediction failed. The shared readout applied to h1 and h2 decodes step1 and step2 at about chance (0.06–0.15 at 10,000 updates), so without intermediate supervision the RNN did not form a state code shared across positions.
+- In the RNN, h1 and h2 depend only on the prefix, so their "held-out" readout accuracies equal the training-row accuracies by construction (C1.1). The right panel of `followup_rnn.png` therefore shows training states.
 
 ## Reading
 
-**In this architecture, the information is not enough.** Final-answer and intermediate-state supervision both left the MLP well short of composing. The training labels determine every primitive, the MLP represents the intermediate state of held-out programs (decodable, and correct at the intermediate heads), and still it mostly answers with a seen neighbour's answer.
+**In this architecture, the information is not enough.** Final-answer and intermediate-state supervision both left the MLP well short of composing. The training labels determine every primitive. The MLP's intermediate-state code is largely unaffected by the unseen op 3: it stays decodable, and the intermediate heads stay correct. Still it answers held-out programs only where a seen neighbour's answer happens to be right.
 
-**The two structural conditions that made it compose.** One transition shared across positions, plus intermediate states supervised through one shared readout. Together they gave near-perfect zero-shot composition, which emerged slowly after the training set was fit. Sharing the transition alone helped modestly over the MLP within 10,000 updates.
+**The two structural conditions that made it compose.** One transition shared across positions, plus intermediate states supervised through one shared readout. Together they gave near-perfect zero-shot composition, which emerged slowly after the training set was fit, and later on rows no neighbour copy answers. Sharing the transition alone helped modestly over the MLP within 10,000 updates.
 
-**This does not show** that the shared transition is the component that matters as distinct from the shared readout. These runs do not separate the two.
+**This lane's runs do not separate** the shared transition from the shared readout. The reviewer's untied-readout arm partly does (`r1-rev-comp-rnn-untied-s5120{0,1,2}-a1`, REVIEW.md §1, counterexample 2). It starts from the same init as `rnn-inter` and gives h1, h2 and h3 their own readouts. It reaches 0.63, 0.52 and 0.52 held-out at 10,000 updates, against 1.00, 0.96 and 1.00 tied, and its readout for h3 reads step2 off h2 at only 0.52–0.58. That is reviewer evidence that the shared readout carries much of the effect. It has 2,064 more parameters and was still rising at 10,000 updates.
 
 ## Limitations
 
@@ -124,6 +130,6 @@ Figure: [figures/followup_rnn.png](figures/followup_rnn.png). It was pre-registe
 
 Two candidates:
 - Does `rnn-final` reach `rnn-inter`'s level with longer training? It was still rising at 10,000 updates, as `rnn-inter` itself did between 1,000 and 10,000.
-- Does an RNN with per-step readouts that are *not* shared still compose under intermediate supervision?
+- Does an RNN with per-step readouts that are *not* shared still compose under intermediate supervision? The reviewer's arm gives a partial answer: within 10,000 updates, mostly not (0.52–0.63).
 
-The first separates "slower" from "different". The second separates the shared transition from the shared readout. Either costs a few minutes of CPU.
+The first separates "slower" from "different", and the same question now applies to the untied arm. A longer run of `rnn-final` and the untied arm together would cost a few minutes of CPU.
