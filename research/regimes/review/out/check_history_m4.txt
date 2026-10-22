@@ -1,0 +1,14 @@
+PASS follow-up prediction commit 58cb3e3 (2026-10-22T02:54:40+00:00) precedes the first follow-up launch (2026-10-22T02:54:47+00:00); all 27 follow-up IDs already in its plan
+INFO registry terminal states: {'complete': 75}
+PASS all 66 checkpoint-started runs record the MANIFEST SHA-256 of their source file, from their own seed (66 ok; 42 start from ckA, the rest are follow-ups from end-of-B or scratch-B checkpoints)
+INFO fresh-A updates to held-out A >= 0.95 (phase A): {'53200': 690, '53201': 700, '53202': 540}
+INFO rel d=1000: return-phase updates to criterion, head kept [66, 210, 62]
+INFO rel d=10000: return-phase updates to criterion, head kept [120, 330, 320]
+INFO unrel d=1000: return-phase updates to criterion, head kept [300, 37, 54]
+INFO unrel d=10000: return-phase updates to criterion, head kept [560, 96, 160]
+ALL PASS
+INFO head reset, end-of-B trunk, rel: {1000: [230, 360, 300], 10000: [310, 370, 410]}
+INFO head reset, end-of-B trunk, unrel: {1000: [270, 190, 210], 10000: [310, 200, 250]}
+INFO head at init, B-only trunk, rel: {1000: [590, 640, 540], 10000: [620, 520, 460]}
+INFO head at init, B-only trunk, unrel: {1000: [740, 1100, 1100], 10000: [850, 950, 950]}
+INFO head reset, end-of-A trunk (ckA): [110, 180, 120]
