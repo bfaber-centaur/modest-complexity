@@ -218,6 +218,8 @@ def main():
     ap.add_argument('--local', type=Path, default=ROOT/'runs/e4', help='Local root of the replay run directories')
     ap.add_argument('--out', type=Path, default=HERE/'results')
     args = ap.parse_args()
+    git = lambda *a: subprocess.run(['git', *a], capture_output=True, text=True, cwd=ROOT).stdout.strip()
+    commit, status = git('rev-parse', 'HEAD'), git('status', '--porcelain')  # before any output is written
     rows, inputs = analyse(sources(args.local))
     worst = max(max(r['channel_identity_rel_err'], r['alignment_identity_rel_err'], r['weight_parts_identity_rel_err'])
                 for r in rows)
@@ -225,11 +227,9 @@ def main():
         raise AssertionError(f'decomposition identity off by {worst:g}')
     args.out.mkdir(parents=True, exist_ok=True)
     e3.write_csv(args.out/'channels.csv', rows)
-    git = lambda *a: subprocess.run(['git', *a], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     (args.out/'channels_inputs.json').write_text(json.dumps(dict(
         runs=inputs, local_root=str(args.local), reference_step=REFERENCE_STEP,
-        max_identity_rel_err=worst, analysis_code_commit=git('rev-parse', 'HEAD'),
-        analysis_tree_status=git('status', '--porcelain'),
+        max_identity_rel_err=worst, analysis_code_commit=commit, analysis_tree_status=status,
         analysis_script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         command=' '.join(['python', *sys.argv])), indent=1) + '\n')
     print(len(rows), 'rows; max identity error', worst)
