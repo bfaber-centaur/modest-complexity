@@ -1,6 +1,6 @@
 # Composition follow-ups c3: synthesis
 
-**Status.** DRAFT, complete; every lane result it cites is reviewed (REVIEW §1–§5). The reviewer's check of this synthesis itself is pending.
+**Status.** Final draft for Bobby. Every lane result it cites is reviewed (REVIEW §1–§5). The reviewer has not read this synthesis itself; see *Not independently checked* at the end.
 
 **Scope of every claim.**
 - **Task.** The original task and split (`ops51000-ls51100`), with three paired init seeds (51200–51202). The correction follow-up adds eight tied/final bases from four new task draws.
@@ -113,3 +113,10 @@ All runs are CPU only, on the lanes' own hosts, with no rented compute. Wall tim
 | coordinator | 3 (1 verification, 2 calibration) | 0 | about 1 min (10) |
 
 Every run is in its lane's `plan.json` and append-only `registry.jsonl`, including the failed one. Training updates: 534k in the 12 scaffolding branches, 294k in the reset runs, plus 8k in the checks.
+
+## Not independently checked
+
+- **This synthesis text.** The coordinator wrote it from the reviewed lane notes and REVIEW §1–§5. The reviewer was ready to read it, but the coordinator's thread reached its daily cross-thread message limit before the request could be sent.
+- **Wording applied after review.** The reviewer's own remedies were applied without a second read: the scaffolding lane's PR #69 (W-F1, W-F2, and the follow-up figure's zoom showing frozen checkpoints without joining lines; no numbers changed) and the coordinator's scope fix to the correction NOTE's 13–33% sentence.
+- **A call-site fix.** Re-pin `82cef77` added an argument to `c3train.check_source`, which broke the correction lane's `corr_core.load_base` at the integrated head. The correction runs were made at `be41d16` and are unaffected. The coordinator fixed the call (`5b92e1b`). At the integrated head `test_corr.py` passes, and `load_base` reproduces every recorded base-check field for all 14 bases. The reviewer's `rev_c3pin.py` uses the `be41d16` signature and runs at that commit.
+
