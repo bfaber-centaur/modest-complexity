@@ -99,12 +99,15 @@ These were written after reading the published 0–10,000 r1 trajectories. Examp
 
 ## Interpretation rules, fixed in advance
 
-These apply per arm and seed, at the calibrated endpoint of 50,000 updates under this recipe.
-- **Speed within 50k.** All three seeds meet the threshold, and ¬N reaches ≥ 0.90.
-- **Gap persists within 50k.**
-  - No seed meets the threshold.
-  - Held-out final changes by < 0.02 over the last 10,000 updates in every seed.
-  - Churn is ≈ 0, so the function has stopped changing.
+These apply per arm, at the calibrated endpoint of 50,000 updates under this recipe. Revised as R1 below.
+- **Speed within 50k.**
+  - All three seeds meet the threshold.
+  - In every seed, ¬N accuracy is ≥ 0.90 at each of the last five logged evaluations, 49,800–50,000.
+- **Gap persists within 50k.** In every seed, all four of the following hold. Together the last three are measure 5's stable function, with tolerances.
+  - The seed does not meet the threshold.
+  - Held-out final accuracy changes by < 0.02 between 40,000 and 50,000.
+  - The held-out predictions at 50,000 differ from those at 40,000 in at most 2 of 128 rows.
+  - Held-out final CE changes by less than 10% of its 40,000 value between 40,000 and 50,000.
 - **Unresolved.** Anything else, for example still rising at 50,000, or mixed outcomes across seeds.
 
 Neither endpoint proves an asymptote. A plateau at 50,000 is a finite-budget observation under one optimizer, not a necessity result. Reaching the threshold shows that this recipe can get there, not that it must.
@@ -147,3 +150,10 @@ There is one follow-up, chosen after the nine continuations and the first figure
 - `runs/<ID>/`, holding the small run files, `MANIFEST.json`, and the committed `ckpt-50000` of all nine runs (the 10k states are already in `../recovered/`), plus the 20k–40k checkpoints for the mechanisms lane;
 - the primary figure as PNG, SVG and CSV;
 - README.md, NOTE.md and a reviewer handoff list.
+
+## Revisions
+
+**R1. Written 2026-10-22 04:13Z, while the nine continuations were running and before any of their records had been read.** These are the reviewer's wording notes T0.1 and T0.2 on b7d1ab6, relayed by the coordinator.
+- **T0.1.** The "gap persists" rule gets tolerances. "Churn ≈ 0" becomes at most 2 of 128 held-out predictions differing between 40,000 and 50,000. The rule also requires flat held-out CE: a change of less than 10% over the same interval. Both match measure 5.
+- **T0.2.** The ¬N ≥ 0.90 condition of the "speed" rule now has a time: each of the last five logged evaluations.
+- **Checkpoints.** `ckpt-40000` is committed with `ckpt-50000`, as the reviewer's pre-committed counterexamples use both. The 20k and 30k checkpoints are committed too, as already planned.
