@@ -684,6 +684,52 @@
     "20000"
    ],
    "timeout": 450
+  },
+  {
+   "run_id": "r1-route-long-rho1-s54202-a2",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-long-rho1-s54202-a2",
+    "--condition",
+    "rho1",
+    "--init-seed",
+    "54202",
+    "--updates",
+    "200000",
+    "--purpose",
+    "follow-up",
+    "--log-points",
+    "150",
+    "--save-at",
+    "20000"
+   ],
+   "timeout": 450
+  },
+  {
+   "run_id": "r1-route-long-rho31of32-s54202-a2",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-long-rho31of32-s54202-a2",
+    "--condition",
+    "rho31of32",
+    "--init-seed",
+    "54202",
+    "--updates",
+    "200000",
+    "--purpose",
+    "follow-up",
+    "--log-points",
+    "150",
+    "--save-at",
+    "20000"
+   ],
+   "timeout": 450
   }
  ]
 }
