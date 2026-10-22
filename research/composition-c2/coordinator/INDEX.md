@@ -8,7 +8,7 @@ Bobby's packet: [charter/](charter/) (verbatim). Decisions, assignments, budgets
 | shared code pin | [`common/`](../common/) at the pin commit below | reviewer: CONCERN C1, no BLOCK (D9) |
 | recovered r1 checkpoints | [`recovered/`](../recovered/) (27 original files, hashes matched) | done (D2) |
 | resume and no-change verification | [verify_resume.out](verify_resume.out), runs in [runs/](runs/) | identical (D2) |
-| time lane | `time/` | M1 |
+| time lane | `time/` | M2 (PR #55), follow-up F1 pending approval |
 | sharing lane | `sharing/` | M2 (PR #54), follow-up approved |
 | generalization lane | `generalization/` | Part A+B done, follow-up approved (draft PR #51) |
 | mechanisms lane | `mechanisms/` | M4 (PR #52), awaiting review |
