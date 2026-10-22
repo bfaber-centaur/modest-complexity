@@ -1,0 +1,29 @@
+--- gradients
+PASS preactivations off the kink for finite differences  [min |preact| = 2.07e-03]
+PASS loss value equals independent rewrite  [2.867902838281573 vs 2.867902838281573]
+PASS fully unlabeled head is absent from per-head losses  [['final', 'step1']]
+PASS every gradient entry matches central differences of the rewrite  [197 entries, worst relative error 2.1e-06]
+PASS fully unlabeled head gets exactly zero gradient
+PASS a row unlabeled for every head has no effect on any gradient
+PASS no-hidden-layer network gradient
+--- adam
+PASS Adam + decoupled decay + freeze/unfreeze schedule matches a separate loop  [max |diff| 1.1e-16]
+PASS A head (frozen after step 3): weights and moments bitwise unchanged, no decay
+PASS adam_state is a full reset (t=0, zero moments, no aliasing of weights or old state)
+PASS reset state continues bitwise like a state built on the copied weights
+INFO head absent from targets, optimizer carried, wd=0: W_A moves 3.38e-02 in 5 steps
+PASS head absent from targets after a reset with wd=0 stays bitwise fixed
+INFO step sizes / lr after unfreezing at t=0: first 1.00, max of 20 1.00
+INFO step sizes / lr after unfreezing at t=1000: first 2.52, max of 20 5.24
+--- checkpoints
+PASS save/load round-trips weights, both moments, t, dtypes and nested metadata
+PASS loaded state continues bitwise
+PASS identical contents saved 2 s apart give the same file SHA-256 (zip entries carry a fixed date)
+--- runner
+PASS runner: complete / failed (exit code) / capped (timeout) recorded once each  [runner wall 1.1 s]
+PASS runner: capped job keeps its log
+PASS runner refuses a reused run ID (registry entry)
+PASS runner refuses a reused run ID (existing output directory)
+PASS runner refuses an ID not in the plan
+PASS refused invocations append nothing to the registry
+ALL PASS
