@@ -16,3 +16,6 @@
 | 04:09 | reviewer | pin check: CONCERN C1 (resume does not check recipe), no BLOCK; training may start | PR #50, `claude/project-thread-wvait2` 39a88c4; D9 |
 | 04:10 | coordinator | training opened in all lanes; C1 remedy relayed | D9 |
 | 04:11 | generalization | M1+M2 frozen length 1–6 (Part A), figures/length.png, draft PR #51 | 30c495f; length 3 reproduces r1 exactly; found pin defect D10 (run a1 failed, kept); Part B calibration and draws started |
+| 04:12 | sharing | M1 oracle/init checks PASS; calibration 6.1/6.3/7.2/7.1 ms/update (TT/TU/UT/UU); 12 research runs launched (6 new UT/UU + 6 labelled TT/TU replays) | 0b65db5; 0.5 of 20 min |
+| 04:17 | mechanisms | M1+M2, PR #52 | d7e6aee; 27 recovered checkpoints reproduce r1; interchange = recombined-program evaluation (bitwise); centroid states outperform natural states where natural fail; ~1.2 of 15 min |
+| 04:19 | coordinator | mechanisms follow-up approved: candidate B (residual dose, inside/outside centroid span, held-out subspace interchange vs random subspaces), `c2-mech-residual-a1`; alternative A not run | QUESTION.md "Follow-up" |
