@@ -56,10 +56,10 @@ Checks, with code written here:
 
 (Dated, before the matching analysis or run.)
 
-- **04:1y, D10 and the post-pin recovery addition.** These were written after reading D10 and `c2rnn._step_map`, and before running anything.
+- **04:14, D10 and the post-pin recovery addition** (cb8f982). These were written after reading D10 and `c2rnn._step_map`, and before running anything.
   - *Prediction (D10).* For a tied/tied model, `forward` with no map raises AssertionError at L ≥ 4 and works at L ≤ 3. An untied model with no map raises ValueError at L ≥ 4. For tied/tied, every valid explicit map gives bitwise identical states and logits, equal to my forward. For each untied scheme, two different maps give different logits, so the map is used there.
   - *Prediction (recovery).* The 28th `RECOVERY.json` entry (`r1-comp-interp-s51200-a1` `ckpt-10000`, r1's P2) has committed bytes equal to its recorded SHA-256 and to r1's published manifest.
-- **04:1y, generalization counterexamples.** These were written after reading its M0 `e5a4415` and the coordinator's one-line relay ("length 3 reproduces r1 exactly"), and before opening its tables, CSV or figure.
+- **04:14, generalization counterexamples** (cb8f982). These were written after reading its M0 `e5a4415` and the coordinator's one-line relay ("length 3 reproduces r1 exactly"), and before opening its tables, CSV or figure.
   - **CX-G1, against "reusable iteration" (Part A).**
     - *If tied/inter succeeds at L = 4–6.* I split rows by whether *any* 3-op window of the program, not only the prefix, is a held-out length-3 program. *Prediction:* in every seed with L = 4 accuracy ≥ 0.5, the two groups differ by less than 0.05 at each L. The alternative is success that is partly window-specific.
     - *If it fails.* I decode h_t at t = 4–6 by the nearest training-row centroid of h1–h3 for each symbol, and compare that with the readout. *Prediction:* centroid decoding is within 0.1 of the readout, so the failure is in the state, not only in reading it.
