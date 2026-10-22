@@ -1,4 +1,4 @@
-# e4 mechanisms: first figure (peak to collapse) and the intervention (where decay acts)
+# e4 mechanisms: first figure (peak to collapse), the intervention (where decay acts) and the decay-off runs
 
 Lane: mechanisms explorer, session label `e4-me-cloud-1`, branch `claude/project-thread-psralm`. Question and definitions: [QUESTION.md](QUESTION.md) (`d584af7`, addendum `73d45be`), written before any measurement. This packet speaks to the D5 **peak** and **decline** windows at wd 1, with wd 0 as the contrast, and in passing to the **rise**. Not audited yet.
 
@@ -149,12 +149,81 @@ Decay steps of about the same size give opposite outcomes depending on where the
 - that uniform decay of any strength would behave like either arm;
 - that the shrinkage of the reference weights is, by itself, the cause. Shrinkage and competitor growth are coupled through the loss, as stated.
 
+## Decay switched off mid-decline: channels of the dynamics runs (analysis only; not audited)
+
+The dynamics lane's six D13 runs, `e4-dy-filt-wd1to0-u{300,1000}-w128-i{30000,30001,30002}-a1`, resume the e3 wd 1 runs of B at update 300 or 1,000 and continue at wd 0 to 20,000. The coordinator approved this analysis after D15 as analysis only, in lane code, with no new runs. The question is the dynamics lane's: which channels and weight parts are lost between updates 300 and 1,000 at wd 1, and do they stay absent while the decay-off runs regrow to the wd 0 norm? No reading was stated beforehand, so everything below is descriptive. One derived quantity, the competitor ratio, was chosen after seeing the table and is marked post hoc.
+
+![decay off](figures/decay_off.png)
+
+**Checks.**
+- `channels.py` reads the runs with `check_resume`. For each run it checks four things:
+  - the config matches the plan (resume path and hash, wd 0, 20,000 steps, width, lr);
+  - the resume file is the parent run's published checkpoint, verified against the parent's manifest and the plan hash;
+  - the run's first checkpoint equals that file and replays its logged metrics;
+  - its data equal the parent's.
+- **Basis.** The reference frequencies and the update-100 gates are those of the parent run. This is the same object and the same basis rule as the first figure.
+- **States.** The analysis adds 144 states: every published checkpoint, which for these runs is every checkpoint written. The maximum reconstruction error over all 1,315 states is 1.6e-15.
+- **Nothing else changed.** The 1,171 earlier rows are unchanged; this was checked against the previous table. The intervention tables and the two earlier PNGs are byte-identical.
+- **Basis dependence.** With each checkpoint's own dominant frequencies (the `*_cur` columns), the off-run margins are identical, and the wd 1 margins differ by at most 0.08.
+- **Provenance.** The analysis ran from the clean commit `0107249`. Table: [results/decay_off.csv](results/decay_off.csv).
+
+**Observations.** Ranges are over the three sources. "wd 0" is the same start file trained at wd 0 from update 0.
+
+1. **What wd 1 loses between 300 and 1,000. Nothing is removed outright.**
+   - **Margin over S.** It falls 1.08–1.27 logits. The reference channel accounts for −0.49 to −0.62, which is 17–20% of its value at 300. The off-reference channel accounts for −0.59 to −0.66, so its margin roughly doubles (from −0.59…−0.64 to −1.17…−1.30). The label offset contributes ≤ 0.002.
+   - **Weights.** The reference U and V hold (−0.4% to −1.9%). W at the reference frequencies shrinks 4.6–6.8%. The off-reference parts grow by 65–70% (U, V) and 80–83% (W). W at DC roughly doubles (+94–104%).
+   - **wd 0 over the same updates.** The reference parts grow 9–10% and the reference S-margin grows 0.70–0.77. The off-reference parts grow 39–44% and the off-reference S-margin falls 0.34–0.37.
+   - **Alignment.** R stays ≥ 0.99 throughout.
+2. **After the switch the reference parts regrow. They do not stay absent.** At 20,000, as a fraction of wd 0's value:
+
+   | measure | off from 300 | off from 1,000 | wd 1 throughout |
+   |---|---|---|---|
+   | U and V at reference frequencies | 0.98 | 0.94–0.95 | 0.61–0.63 |
+   | W at reference frequencies | 0.95–0.96 | 0.89 | 0.59–0.60 |
+   | reference S-margin | 0.92–0.93 | 0.75–0.78 | 0.29–0.32 |
+
+   - The reference channel alone scores 0.78–0.87 (off from 300) and 0.65–0.76 (off from 1,000), against 0.82–0.88 at wd 0 and 0.49–0.52 at wd 1.
+   - The reference margin rises from the first checkpoint after the switch.
+   - The total norm reaches 74.2–74.7 (wd 0: 75.5–75.9).
+3. **The competitor stays, and ends above the wd 0 run's.**
+   - **Weights at 20,000.** The off-reference parts of U and V are 1.05–1.10× wd 0's (off from 300) and 1.25–1.29× (off from 1,000). For W they are 1.06–1.08× and 1.27–1.31×.
+   - **Margin at 20,000.** The off-reference S-margin is 1.15–1.16× and 1.47–1.54× wd 0's.
+   - **Just after the switch,** for 200–300 updates, the competitor grows faster than with decay kept on:
+     - at 500, the off run is at −0.88 to −0.96 against wd 1's −0.79 to −0.87 (off-reference S-margin);
+     - at 1,300, the off run is at −1.61 to −1.78 against −1.36 to −1.51.
+
+     This overlaps the dynamics lane's 50–200-update lag. Later the competitor grows more slowly than at wd 1, but faster than at wd 0.
+   - **The off-reference channel's cost.** Adding the off-reference channel and offset to the reference channel costs 0.33–0.40 of common accuracy (off from 300) and 0.44–0.53 (off from 1,000), against 0.26–0.29 at wd 0 and 0.46–0.51 at wd 1.
+   - **Gates** changed since update 100, at 20,000: 0.13 (off from 300), 0.16–0.17 (off from 1,000), 0.12 (wd 0) and 0.26–0.27 (wd 1).
+4. **Post hoc: the competitor ratio −(off-reference S-margin)/(reference S-margin) carries over the switch.**
+   - **Off from 300.** It is 0.20–0.21 at the switch and rises about 0.08 by update 1,000. It then drifts by 0.07–0.09 to 0.36–0.39 at 20,000, about as wd 0 drifts over the same updates (+0.11–0.13, to 0.29–0.31).
+   - **Off from 1,000.** It is 0.49–0.54 at the switch and rises 0.04 by 1,300. It is 0.55–0.61 at 20,000.
+   - **wd 1** reaches 1.19–1.35.
+   - Accuracy at 20,000 has the same order in every source. Both are functions of the same logits, so this order is a summary, not a test.
+
+**Reading (provisional).**
+- **Answer to the dynamics lane's question.** Between 300 and 1,000 at wd 1, the reference channel stops growing and loses a fifth of its margin, and the off-reference competitor doubles its margin.
+- **Decay off.** The reference parts regrow with the norm, to 89–98% of the wd 0 run's.
+- **What is missing at 20,000.** Not the reference parts. What persists is the competitor built under decay: it ends larger than at wd 0, and it keeps roughly its proportion to the reference margin.
+- **Why the answers stay lost.** On this reading, the lost answers do not come back because the competitor keeps pace with the regrowing reference channel. A missing reference computation is not the reason.
+
+**Strongest alternative.** Nothing here is specific to what decay built. At wd 0 the competitor grows from any state: its S-margin grows about fivefold from 300 to 20,000 in the wd 0 run itself. The decay-off runs may simply be wd 0 training continued from a state with a larger competitor, with no force that would shrink it. This analysis cannot separate "held in place by what decay built" from "kept growing by the training loss from that state". Both predict these curves.
+
+**Not supported by this evidence:**
+- **That removing the competitor would restore the answers.** The reference-alone accuracy is a readout ablation, not a trained state.
+- **That regrown reference parts are the same computation as before.** Norms, margins, R and coherence return, but unit identity was not tracked.
+- **Why the competitor accelerates just after the switch.** Adam's second moment is a candidate and was not tested.
+- **Anything beyond 20,000 updates, other switch points, or switching decay back on.**
+
+**Compute.** This was analysis only, with no training. `channels.py` ran twice (a dry run and the final run, about 37 s each) and the plots took a few seconds.
+
 ## Files
 
 - [channels.py](channels.py): measures. [plot_channels.py](plot_channels.py): the figure. [replay_check.py](replay_check.py): replay equality.
 - [results/channels.csv](results/channels.csv): one row per state. [results/channels_inputs.json](results/channels_inputs.json): provenance. [results/replay_check.json](results/replay_check.json).
 - [figures/channels.png](figures/channels.png), [figures/channels.svg](figures/channels.svg).
 - Intervention: [INTERVENTION.md](INTERVENTION.md) (design and reading, written first), [projection.py](projection.py) and [intervention/](intervention/) (projection files), [patch_check.py](patch_check.py), [intervention.py](intervention.py), [results/intervention.csv](results/intervention.csv), [results/decay_magnitude.csv](results/decay_magnitude.csv), [figures/intervention.png](figures/intervention.png).
+- Decay-off runs (dynamics D13, read from [../dynamics/runs/](../dynamics/runs/)): [decay_off.py](decay_off.py), [results/decay_off.csv](results/decay_off.csv), [figures/decay_off.png](figures/decay_off.png).
 
 Reproduce: launch the twelve IDs (six D7 replays, six D15 intervention runs) with the registry commands, then run
 
@@ -163,5 +232,6 @@ uv run --locked --group analysis python research/e4/mechanisms/replay_check.py -
 uv run --locked --group analysis python research/e4/mechanisms/channels.py --local runs/e4
 uv run --locked --group analysis python research/e4/mechanisms/plot_channels.py
 uv run --locked --group analysis python research/e4/mechanisms/intervention.py
+uv run --locked --group analysis python research/e4/mechanisms/decay_off.py
 uv run --locked --group analysis python -m unittest discover -s research/e4/mechanisms
 ```

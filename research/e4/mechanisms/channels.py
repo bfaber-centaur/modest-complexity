@@ -7,8 +7,10 @@ research/e3/mechanisms/continuation.py); and the six D7 dense replays of B (upda
 every checkpoint, read from the local run directory after each file matches its published manifest
 hash (`source` column: e3 or replay); and the six D15 intervention runs (`source` intervention,
 `decay_on` rest or reference: decoupled decay restricted away from, or onto, the reference parts),
-checked against their claimed decay settings and against this analysis's reference frequencies.
-Per checkpoint:
+checked against their claimed decay settings and against this analysis's reference frequencies;
+and the dynamics lane's six D13 decay-off runs (`source` offswitch, `switch_step` 300 or 1,000):
+resumed from the e3 wd 1 runs of B and continued at wd 0, on their published checkpoints, with the
+reference frequencies and the update-100 gates of the run they resume. Per checkpoint:
 
 - behaviour on the 483 common never-trained pairs: accuracy and the D6 pairwise measures;
 - an exact split of the logits z = h W (h = relu(U[a] + V[b]), no biases) into three channels:
@@ -56,6 +58,7 @@ RUNS = {('filt', 1): 'e3-me-filt-w128-i{s}-a1', ('filt', 0): 'e3-me-filt-wd0-w12
         ('keep', 1): 'e3-me-keep-w128-i{s}-a1'}
 REPLAYS = {('filt', 1): 'e4-me-filt-wd1-replay-w128-i{s}-a1', ('filt', 0): 'e4-me-filt-wd0-replay-w128-i{s}-a1'}
 INTERVENTION = ('e4-me-filt-wd1-xref-w128-i{s}-a1', 'e4-me-filt-wd1-onlyref-w128-i{s}-a1')  # D15, decay_on rest / reference
+OFFSWITCH = 'e4-dy-filt-wd1to0-u{u}-w128-i{s}-a1'  # dynamics D13: wd 1 to update u, then wd 0 (resumed)
 
 
 def hidden(w, a, b):
@@ -184,11 +187,40 @@ def load(path):
         return [z[k] for k in 'UVW']
 
 
+def check_resume(run_dir, r):
+    """A --resume run (dynamics D13): config as claimed; the resume file is the parent run's
+    published checkpoint at the switch update, with the claimed hash; the run's own first checkpoint
+    equals it and replays its logged metrics. Returns (meta, data, the parent's start weights, the
+    parent's checkpoints), so that the reference frequencies and gates are the parent's."""
+    config = json.loads((run_dir/'config.json').read_text())
+    for key, want in (('resume', r['resume']), ('expect_init_sha256', r['resume_sha256']), ('init_weights', None),
+                      ('steps', r['steps']), ('wd', r['wd']), ('hidden', r['width']), ('lr', .001)):
+        if config.get(key) != want:
+            raise ValueError(f'{run_dir.name}: config {key} = {config.get(key)!r}, plan {want!r}')
+    parent_dir = ROOT/'research/e3/mechanisms/runs'/r['resume_of']
+    _, d0, ws = e3.check_run(parent_dir, next(x for x in e3.entries() if x['run_id'] == r['resume_of']))
+    _, parent_paths = checkpoints(parent_dir, None)
+    resume, step = ROOT/r['resume'], r['resume_step']
+    if parent_paths.get(step) != resume or e3.sha256(resume) != r['resume_sha256']:
+        raise ValueError(f'{run_dir.name}: resume file is not the claimed parent checkpoint')
+    w, d, meta = e3.load_run(run_dir, step)
+    if meta['split_sha256'] != r['split_sha256'] or meta['max_abs_diff_vs_logged_metrics'] > 1e-12:
+        raise ValueError(f'{run_dir.name}: split or switch-update replay mismatch {meta}')
+    if not all(np.array_equal(x, y) for x, y in zip(w, load(resume))):
+        raise ValueError(f'{run_dir.name}: first checkpoint differs from the resume file')
+    if not all(np.array_equal(d[k], d0[k]) for k in d):
+        raise ValueError(f'{run_dir.name}: data differ from the parent run')
+    return meta, d, ws, parent_paths
+
+
 def analyse(sources):
     """sources: (source label, run directory with manifest, local directory or None, plan entry)."""
     rows, inputs = [], []
     for source, run_dir, local_dir, r in sources:
-        meta, d, ws = e3.check_run(run_dir, r)
+        if 'resume' in r:  # decay switched off mid-decline: reference and gates from the resumed run
+            meta, d, ws, ref_paths = check_resume(run_dir, r)
+        else:
+            meta, d, ws = e3.check_run(run_dir, r)
         sets = e3.ladder_sets(d['a'], d['b'], e3.tr30, e3.tr50, e3.COMMON, P)
         k_ref, _, live = e3.dominant(ws)
         if 'decay_on' in r:  # restricted decay: config as claimed, projection = this analysis's reference
@@ -199,12 +231,14 @@ def analyse(sources):
                 if not (np.array_equal(z['k'], k_ref) and np.array_equal(z['live'], live)):
                     raise ValueError(f'{run_dir.name}: projection file differs from the update-0 reference')
         manifest, paths = checkpoints(run_dir, local_dir)
-        gates100 = e3.gates(load(paths[REFERENCE_STEP]), d)[:, live]
+        gates100 = e3.gates(load((ref_paths if 'resume' in r else paths)[REFERENCE_STEP]), d)[:, live]
         arm = 'keep' if '-keep-' in r['run_id'] else 'filt'
         for step, path in paths.items():
             rows.append(dict(source=source, run_id=r['run_id'], arm=arm, wd=r['wd'], decay_on=r.get('decay_on', ''),
-                             init_seed=r['init_seed'], step=step, **measures(load(path), d, k_ref, live, sets, gates100)))
-        inputs.append(dict(source=source, run_id=r['run_id'], checkpoints=list(paths), live_units=int(live.sum()),
+                             switch_step=r.get('resume_step', ''), init_seed=r['init_seed'], step=step,
+                             **measures(load(path), d, k_ref, live, sets, gates100)))
+        inputs.append(dict(source=source, run_id=r['run_id'], resume_of=r.get('resume_of', ''),
+                           checkpoints=list(paths), live_units=int(live.sum()),
                            producing_code_commit=manifest['producing_code_commit'],
                            producing_tree_dirty=manifest['producing_tree_dirty']))
     return rows, inputs
@@ -222,6 +256,10 @@ def sources(local):
                 run_id = pattern.format(s=s)
                 if (HERE/'runs'/run_id).exists():
                     out.append((source, HERE/'runs'/run_id, local/run_id, e4_plan[run_id]))
+    for u in (300, 1000):  # every checkpoint of these runs is published
+        for s in SOURCES:
+            run_id = OFFSWITCH.format(u=u, s=s)
+            out.append(('offswitch', ROOT/'research/e4/dynamics/runs'/run_id, None, e4_plan[run_id]))
     return out
 
 
