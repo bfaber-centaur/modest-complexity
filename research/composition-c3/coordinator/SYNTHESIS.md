@@ -117,6 +117,6 @@ Every run is in its lane's `plan.json` and append-only `registry.jsonl`, includi
 ## Not independently checked
 
 - **This synthesis text.** The coordinator wrote it from the reviewed lane notes and REVIEW §1–§5. The reviewer was ready to read it, but the coordinator's thread reached its daily cross-thread message limit before the request could be sent.
-- **Wording applied after review.** The reviewer's own remedies were applied without a second read: the scaffolding lane's PR #69 (W-F1, W-F2, and the follow-up figure's zoom showing frozen checkpoints without joining lines; no numbers changed) and the coordinator's scope fix to the correction NOTE's 13–33% sentence.
+- **Wording applied after review.** The reviewer's own remedies were applied without a second read: the scaffolding lane's commit `511a381` (W-F1, W-F2, and the follow-up figure's zoom showing frozen checkpoints without joining lines; no numbers changed; merged by the coordinator from PR #69, which the lane then closed as superseded) and the coordinator's scope fix to the correction NOTE's 13–33% sentence.
 - **A call-site fix.** Re-pin `82cef77` added an argument to `c3train.check_source`, which broke the correction lane's `corr_core.load_base` at the integrated head. The correction runs were made at `be41d16` and are unaffected. The coordinator fixed the call (`5b92e1b`). At the integrated head `test_corr.py` passes, and `load_base` reproduces every recorded base-check field for all 14 bases. The reviewer's `rev_c3pin.py` uses the `be41d16` signature and runs at that commit.
 
