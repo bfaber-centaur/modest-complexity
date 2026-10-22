@@ -13,7 +13,11 @@ Per run (definitions declared in QUESTION.md Q1, before measuring):
     S, D, N from the e1 30% and e1f2 50% training sets, research/e3/audit/pairwise.py);
   summary: peak (max own held-out accuracy over updates 0-1,000), first update after the peak below
     theta for theta = the run's update-0 own held-out accuracy and theta = 0.10 (censored at the last
-    update if never), re-crossings above theta, and endpoints.
+    update if never), re-crossings above theta, and endpoints;
+  decision (QUESTION.md Q1 addendum, fixed before the new runs): for each run at 0 < wd < 1 and each
+    threshold, r = observed crossing update / the update at which it would reach the exposure at which
+    the wd 1 run from the same start crossed; within a factor 1.5 = "exposure clock", above = "slower"
+    (censored runs: slower, with r a lower bound), below = "faster".
 
 uv run --locked --group analysis python research/e4/dynamics/decay.py RUN_DIR ... --out DIR
 """
@@ -125,6 +129,26 @@ def summary(run, rows, cks):
     return out
 
 
+def decision(summ, lr=1e-3, band=1.5):
+    """QUESTION.md Q1 addendum rule: r = observed T / T predicted from the wd 1 run of the same start at equal exposure."""
+    ref = {s['init_seed']: s for s in summ if s['wd'] == 1.0}
+    out = []
+    for s in summ:
+        if s['wd'] in (0.0, 1.0) or s['init_seed'] not in ref:
+            continue
+        per = -np.log1p(-lr*s['wd'])
+        for name in ('update0', 'fixed010'):
+            e_ref = ref[s['init_seed']][f'E_at_T_{name}']
+            pred = e_ref/per
+            t = s[f'T_{name}']
+            censored = not isinstance(t, int)
+            r = (s['last_step'] if censored else t)/pred
+            verdict = ('slower (censored)' if censored else 'slower' if r > band else 'faster' if r < 1/band else 'exposure clock')
+            out.append(dict(run_id=s['run_id'], wd=s['wd'], init_seed=s['init_seed'], threshold=name, E_ref=e_ref,
+                            T_predicted=pred, T_observed=t, r=(f'>{r:.3f}' if censored else r), verdict=verdict))
+    return out
+
+
 def write_csv(path, rows):
     fields = list(dict.fromkeys(k for r in rows for k in r))
     with path.open('w', newline='') as f:
@@ -204,10 +228,13 @@ def main():
     write_csv(args.out/'decay_dense.csv', dense_rows)
     write_csv(args.out/'decay_checkpoints.csv', ck_rows)
     write_csv(args.out/'decay_summary.csv', summ)
+    rule = decision(summ)
+    if rule:
+        write_csv(args.out/'decay_decision.csv', rule)
     figure(runs, dense_rows, ck_rows, summ, args.out, 'update')
     if any(r['wd'] > 0 for r in runs):
         figure(runs, dense_rows, ck_rows, summ, args.out, 'exposure')
-    for s in summ:
+    for s in summ + rule:
         print(' '.join(f'{k}={v:.4g}' if isinstance(v, float) else f'{k}={v}' for k, v in s.items()))
 
 
