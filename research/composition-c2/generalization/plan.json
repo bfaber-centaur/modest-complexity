@@ -725,6 +725,25 @@
    ],
    "timeout": 300,
    "purpose": "Follow-up (QUESTION.md, approved at 99c83c8): frozen anatomy of first errors at steps 4-6 of the 11 tied/inter models; no training"
+  },
+  {
+   "run_id": "c2-gen-frozen-50k-a1",
+   "argv": [
+    "research/composition-c2/generalization/gen_eval.py",
+    "--out",
+    "{out}",
+    "--run-dirs",
+    "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-inter-s51200-a1",
+    "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-inter-s51201-a1",
+    "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-inter-s51202-a1",
+    "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-final-s51200-a1",
+    "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-final-s51201-a1",
+    "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-final-s51202-a1",
+    "--step",
+    "50000"
+   ],
+   "timeout": 300,
+   "purpose": "A5: frozen length 1-6 evaluation of the time lane tied/inter and tied/final ckpt-50000 (time branch claude/project-thread-xb3nfz at 543ed95, extracted with git archive into runs/c2-inputs/); no training"
   }
  ]
 }
