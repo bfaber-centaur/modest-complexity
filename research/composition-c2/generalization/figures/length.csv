@@ -41,6 +41,48 @@ r1-comp-rnn-inter-s51202-a1,10000,inter,51202,3,held-out programs,128,16,1.0,run
 r1-comp-rnn-inter-s51202-a1,10000,inter,51202,4,all,2048,256,0.98291015625,runs/c2-gen-frozen-orig-a2/length.csv
 r1-comp-rnn-inter-s51202-a1,10000,inter,51202,5,all,8192,1024,0.875244140625,runs/c2-gen-frozen-orig-a2/length.csv
 r1-comp-rnn-inter-s51202-a1,10000,inter,51202,6,all,32768,4096,0.717926025390625,runs/c2-gen-frozen-orig-a2/length.csv
+c2-time-tt-inter-s51200-a1,50000,inter,51200,1,all,32,4,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51200-a1,50000,inter,51200,2,all,128,16,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51200-a1,50000,inter,51200,3,all,512,64,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51200-a1,50000,inter,51200,3,held-out programs,128,16,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51200-a1,50000,inter,51200,4,all,2048,256,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51200-a1,50000,inter,51200,5,all,8192,1024,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51200-a1,50000,inter,51200,6,all,32768,4096,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51201-a1,50000,inter,51201,1,all,32,4,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51201-a1,50000,inter,51201,2,all,128,16,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51201-a1,50000,inter,51201,3,all,512,64,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51201-a1,50000,inter,51201,3,held-out programs,128,16,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51201-a1,50000,inter,51201,4,all,2048,256,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51201-a1,50000,inter,51201,5,all,8192,1024,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51201-a1,50000,inter,51201,6,all,32768,4096,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51202-a1,50000,inter,51202,1,all,32,4,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51202-a1,50000,inter,51202,2,all,128,16,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51202-a1,50000,inter,51202,3,all,512,64,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51202-a1,50000,inter,51202,3,held-out programs,128,16,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51202-a1,50000,inter,51202,4,all,2048,256,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51202-a1,50000,inter,51202,5,all,8192,1024,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-inter-s51202-a1,50000,inter,51202,6,all,32768,4096,1.0,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51200-a1,50000,final,51200,1,all,32,4,0.15625,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51200-a1,50000,final,51200,2,all,128,16,0.109375,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51200-a1,50000,final,51200,3,all,512,64,0.890625,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51200-a1,50000,final,51200,3,held-out programs,128,16,0.5625,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51200-a1,50000,final,51200,4,all,2048,256,0.13232421875,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51200-a1,50000,final,51200,5,all,8192,1024,0.121826171875,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51200-a1,50000,final,51200,6,all,32768,4096,0.129730224609375,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51201-a1,50000,final,51201,1,all,32,4,0.03125,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51201-a1,50000,final,51201,2,all,128,16,0.09375,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51201-a1,50000,final,51201,3,all,512,64,0.923828125,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51201-a1,50000,final,51201,3,held-out programs,128,16,0.6953125,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51201-a1,50000,final,51201,4,all,2048,256,0.12158203125,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51201-a1,50000,final,51201,5,all,8192,1024,0.0953369140625,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51201-a1,50000,final,51201,6,all,32768,4096,0.1226806640625,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51202-a1,50000,final,51202,1,all,32,4,0.0625,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51202-a1,50000,final,51202,2,all,128,16,0.1328125,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51202-a1,50000,final,51202,3,all,512,64,0.9140625,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51202-a1,50000,final,51202,3,held-out programs,128,16,0.65625,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51202-a1,50000,final,51202,4,all,2048,256,0.150390625,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51202-a1,50000,final,51202,5,all,8192,1024,0.1143798828125,runs/c2-gen-frozen-50k-a1/length.csv
+c2-time-tt-final-s51202-a1,50000,final,51202,6,all,32768,4096,0.126983642578125,runs/c2-gen-frozen-50k-a1/length.csv
 oracle (per-row loop),,reference,,1,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
 P2 iterated (r1-comp-interp-s51200-a1),,reference,,1,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
 own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),,reference,,1,all,,,0.125,runs/c2-gen-frozen-orig-a2/references.csv

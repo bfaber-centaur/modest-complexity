@@ -35,8 +35,12 @@ def read(path):
         return list(csv.DictReader(f))
 
 
+FROZEN_50K = HERE/'runs'/'c2-gen-frozen-50k-a1'  # time lane's continuations of the same six runs
+
+
 def length_figure():
-    rows = read(FROZEN/'length.csv')
+    from matplotlib.lines import Line2D
+    rows = read(FROZEN/'length.csv') + read(FROZEN_50K/'length.csv')
     refs = read(FROZEN/'references.csv')
     keep = [r for r in rows if r['subset'] in ('all', 'held-out programs')]
     FIGS.mkdir(exist_ok=True)
@@ -44,56 +48,57 @@ def length_figure():
     with open(FIGS/'length.csv', 'w', newline='') as f:
         w = csv.writer(f); w.writerow(cols + ('source',))
         for r in keep:
-            w.writerow([r[c] for c in cols] + [f'runs/{FROZEN.name}/length.csv'])
+            src = FROZEN if r['ckpt_step'] == '10000' else FROZEN_50K
+            w.writerow([r[c] for c in cols] + [f'runs/{src.name}/length.csv'])
         for r in refs:
             w.writerow([r['system'], '', 'reference', '', r['length'], 'all', '', '', r['accuracy'], f'runs/{FROZEN.name}/references.csv'])
 
-    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.4), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.6), sharey=True)
     lengths = range(1, 7)
-    titles = dict(inter='tied/inter: shared transition and readout,\nreadout trained on h1, h2, h3',
+    titles = dict(inter='tied/inter: shared transition and readout,\nreadout trained on h1, h2, h3 (50k: 1.000 at every length)',
                   final='tied/final: shared transition and readout,\nreadout trained on h3 only')
     for ax, cond in zip(axes, ('inter', 'final')):
         ax.axvspan(2.6, 3.4, color='#ecebe6', zorder=0)
         y = 0.30 if cond == 'inter' else 0.42  # clear of every plotted mark in that panel
-        band = 'trained length\n48 of 64\nprograms' if cond == 'inter' else 'trained\nlength'  # final: fits under the peak
-        ax.text(3, y if cond == 'inter' else 0.39, band, ha='center', va='bottom', fontsize=7.5, color=INK)
+        band = 'trained length\n48 of 64\nprograms' if cond == 'inter' else 'trained\nlength'
+        ax.text(3, y if cond == 'inter' else 0.395, band, ha='center', va='bottom', fontsize=7.5, color=INK)
         note = 'prefixes labelled\nthrough the\nshared readout' if cond == 'inter' else 'readout never\ntrained at h1, h2'
         ax.text(1.5, y, note, ha='center', va='bottom', fontsize=7.5, color=INK)
         ax.text(5, y, 'never trained:\nnew syntax,\nnew functions', ha='center', va='bottom', fontsize=7.5, color=INK)
         ax.axhline(CHANCE, color=GREY, lw=1, ls=(0, (4, 3)), zorder=1)
         ax.text(6.15, CHANCE, 'chance', va='center', fontsize=7.5, color=INK)
-        ref_one = [float(r['accuracy']) for r in refs if r['system'].startswith(('oracle', 'P2'))]
-        assert all(a == 1.0 for a in ref_one)
-        ax.plot(lengths, [1.0]*6, color=GREY, lw=1.2, ls=(0, (1, 2)), zorder=1,
-                label='references at 1.0: oracle, P2 iterated\n(left panel also: own one-step map re-encoded)')
+        assert all(float(r['accuracy']) == 1.0 for r in refs if r['system'].startswith(('oracle', 'P2')))
+        ax.plot(lengths, [1.0]*6, color=GREY, lw=1.2, ls=(0, (1, 2)), zorder=1)
         if cond == 'final':
-            for i, seed in enumerate(SEED_STYLE):
+            for seed in SEED_STYLE:
                 own = [float(r['accuracy']) for r in refs if r['system'] == f'own one-step map re-encoded (r1-comp-rnn-final-s{seed}-a1)']
-                ax.plot(lengths, own, color=GREY, lw=0.8, alpha=0.8, zorder=1,
-                        label='own one-step map re-encoded (per seed)' if i == 0 else None)
-        for seed, (c, m) in SEED_STYLE.items():
-            sel = [r for r in keep if r['condition'] == cond and int(r['init_seed']) == seed]
-            acc = [float(next(r for r in sel if int(r['length']) == L and r['subset'] == 'all')['accuracy']) for L in lengths]
-            held = float(next(r for r in sel if r['subset'] == 'held-out programs')['accuracy'])
-            ax.plot(lengths, acc, color=c, marker=m, ms=6, lw=2, label=f'init {seed}, all programs', zorder=3)
-            ax.plot([3], [held], marker=m, ms=9, mfc='white', mec=c, mew=1.6, ls='none', zorder=4,
-                    label=f'init {seed}, length 3 held-out only (like-for-like with 4-6)')
-        ax.set_title(titles[cond], fontsize=9.5, color=INK, loc='left')
+                ax.plot(lengths, own, color=GREY, lw=0.8, alpha=0.8, zorder=1)
+        for step, ls, lw, ms, z in (('10000', '-', 2, 6, 3), ('50000', (0, (4, 2)), 1.4, 4.5, 4)):
+            for seed, (c, m) in SEED_STYLE.items():
+                sel = [r for r in keep if r['condition'] == cond and int(r['init_seed']) == seed and r['ckpt_step'] == step]
+                acc = [float(next(r for r in sel if int(r['length']) == L and r['subset'] == 'all')['accuracy']) for L in lengths]
+                held = float(next(r for r in sel if r['subset'] == 'held-out programs')['accuracy'])
+                ax.plot(lengths, acc, color=c, marker=m, ms=ms, lw=lw, ls=ls, zorder=z)
+                ax.plot([3], [held], marker=m, ms=ms+3, mfc='white', mec=c, mew=1.4, ls='none', zorder=z+1)
+        ax.set_title(titles[cond], fontsize=9, color=INK, loc='left')
         ax.set_xticks(list(lengths)); ax.set_xlim(0.7, 6.6); ax.set_ylim(0, 1.04)
         ax.set_xlabel('program length (ops applied)', fontsize=9)
         ax.grid(axis='y', color='#e4e3dd', lw=0.6); ax.set_axisbelow(True)
-        for s in ('top', 'right'):
-            ax.spines[s].set_visible(False)
+        for sp in ('top', 'right'):
+            ax.spines[sp].set_visible(False)
         ax.tick_params(labelsize=8.5)
     axes[0].set_ylabel('final-answer accuracy, all 8·4^L rows', fontsize=9)
-    h, l = axes[1].get_legend_handles_labels()
-    order = [l.index(x) for x in l if x.startswith('init')] + [l.index(x) for x in l if not x.startswith('init')]
-    fig.legend([h[i] for i in order], [l[i] for i in order], loc='lower center', ncol=3, fontsize=7.5, frameon=False,
-               bbox_to_anchor=(0.5, -0.01))
-    fig.suptitle('Frozen r1 RNNs (ckpt-10000, original task ops51000-ls51100) on programs of lengths 1-6; exhaustive rows, no fitting.\n'
+    handles = [Line2D([], [], color=c, marker=m, lw=2, label=f'init {seed}') for seed, (c, m) in SEED_STYLE.items()]
+    handles += [Line2D([], [], color=INK, lw=2, label='ckpt-10000 (r1, recovered)'),
+                Line2D([], [], color=INK, lw=1.4, ls=(0, (4, 2)), label='ckpt-50000 (time-lane continuation)'),
+                Line2D([], [], color=INK, marker='o', mfc='white', ls='none', ms=8, label='length 3, held-out programs only\n(like-for-like with lengths 4-6)'),
+                Line2D([], [], color=GREY, lw=1.2, ls=(0, (1, 2)), label='references at 1.0: oracle, P2 iterated;\nleft panel also own one-step map re-encoded'),
+                Line2D([], [], color=GREY, lw=0.8, label='right panel: own one-step map re-encoded')]
+    fig.legend(handles=handles, loc='lower center', ncol=4, fontsize=7.5, frameon=False, bbox_to_anchor=(0.5, -0.01))
+    fig.suptitle('Frozen RNNs on the original task (ops51000-ls51100), programs of lengths 1-6; exhaustive rows, no fitting.\n'
                  'Filled points at length 3 cover all 64 programs, 75% of them training rows; the open held-out-only point is the '
                  'like-for-like comparison with lengths 4-6.', fontsize=9, color=INK, x=0.01, ha='left')
-    fig.tight_layout(rect=(0, 0.13, 1, 0.95))
+    fig.tight_layout(rect=(0, 0.14, 1, 0.94))
     for ext in ('png', 'svg'):
         fig.savefig(FIGS/f'length.{ext}', dpi=150)
     plt.close(fig)

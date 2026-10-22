@@ -73,6 +73,18 @@ uv run --locked python research/composition-c2/generalization/gen_figures.py fol
 
 `c2-gen-followup-anatomy-a1` complete, 11.5 s: frozen forward passes of the 11 tied/inter `ckpt-10000` (hashes checked), outputs `anatomy.csv`, `windows.csv`, `summary.json`. Figure: [figures/followup.png](figures/followup.png) (`.svg`, `figures/followup.csv`).
 
+## A5: the time lane's 50k states
+
+```bash
+C=543ed95   # time lane branch claude/project-thread-xb3nfz when evaluated
+mkdir -p runs/c2-inputs/time-$C && git archive $C $(git ls-tree -d --name-only $C research/composition-c2/time/runs/ | grep -E 'c2-time-tt-(inter|final)-s5120[0-2]-a1$') | tar -x -C runs/c2-inputs/time-$C
+$R --workers 1 --ids c2-gen-frozen-50k-a1
+cp runs/c2/c2-gen-frozen-50k-a1/* research/composition-c2/generalization/runs/c2-gen-frozen-50k-a1/
+uv run --locked python research/composition-c2/generalization/gen_figures.py length
+```
+
+`c2-gen-frozen-50k-a1` complete, 6.7 s. All six `ckpt-50000` hashes match the time lane's MANIFEST.json; every check against their own logged step-50000 rows holds. Drawn as dashed lines in `figures/length.png`.
+
 ## Budget (25 min elapsed, D6)
 
 Elapsed wall time with at least one job running, from the registry (union of run intervals):
@@ -85,6 +97,7 @@ Elapsed wall time with at least one job running, from the registry (union of run
 | 16 Part B runs, two workers | all complete | 337.6 |
 | c2-gen-frozen-rep-a1 | complete | 14.2 |
 | c2-gen-followup-anatomy-a1 | complete | 11.5 |
-| **total** | | **379.1 s (6.3 min) of 1,500 s** |
+| c2-gen-frozen-50k-a1 | complete | 6.7 |
+| **total** | | **385.8 s (6.4 min) of 1,500 s** |
 
 No run was capped. The one failure (frozen a1) is kept with its log.

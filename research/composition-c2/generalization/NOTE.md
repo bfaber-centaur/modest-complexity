@@ -45,6 +45,11 @@ Chance is 0.125. The "all" column at L = 3 is 75% training rows; the held-out va
 
 **tied/final does not extend.** Accuracy is 0.11–0.14 at every length ≥ 4, near chance, and its untrained readout at h1, h2 is near chance at L = 1–2. Its states drift further: at step 6 the norm is 1.4–1.6× and the centroid distance 1.5–1.7× their training-h3 medians.
 
+**At 50k updates the length decline is gone for tied/inter (A5, `runs/c2-gen-frozen-50k-a1`).** These are the time lane's exact continuations of the same three runs: same recipe, length-3 training only, full Adam state, ckpt-10000 → 50,000. Their `ckpt-50000` came from branch `claude/project-thread-xb3nfz` at 543ed95; hashes match the time lane's manifests, and every check holds against their own logs.
+- tied/inter answers **every row of every length 1–6 correctly in all three seeds** (1.000 on 32,768 rows at L = 6). At step 6 the hidden-state norm and centroid distance are 0.99–1.00× their training-h3 medians, against 1.02–1.19× at 10k.
+- tied/final's length-3 held-out accuracy rose to 0.56 / 0.70 / 0.66 (¬N 0.12 / 0.26 / 0.14), but lengths 4–6 stay at 0.10–0.15.
+- So the 10k decline, the held-out-window effect and the follow-up's error anatomy describe the 10k models. They are finite-time properties of this recipe, not limits on these architectures.
+
 **Reference systems** (labelled references, not evidence of discovery).
 - The hard-coded oracle and r1's P2 are 1.0 at every length. P2 is an MLP trained on the 32 transitions and iterated with argmax feedback.
 - Each tied/inter network's own one-step map, re-encoded through a discrete symbol between steps, gets all 32 transitions right and is therefore 1.0 at every length. tied/final's own map gets 2–4 of 32 right.
@@ -100,10 +105,11 @@ Figure: [figures/followup.png](figures/followup.png) (`figures/followup.csv`; pe
 
 **Length.**
 - Under r1's recipe at 10k updates, the shared-transition, shared-readout model trained with intermediate labels keeps executing programs one to three ops longer than any it was trained on. Its accuracy declines with each added op; no length shows a cliff.
+- Continued training on length-3 programs alone removed that decline on the original task: at 50k updates all three seeds are exact through length 6. Length generalization kept improving after held-out length-3 accuracy had reached 0.96–1.00, as held-out length-3 accuracy itself kept improving after the training set was fit. This is tested only on the original task and only through length 6; the new-task runs were not continued.
 - The decline is broad. First errors spread over many transitions (top four of 32 carry 20–29%), the same transitions keep failing as length grows, and the per-step error rate rises with depth. This matches gradual degradation of the iterated continuous state more than a few broken transitions. It does not identify the cause. The drift measures are descriptive, and the mechanisms lane owns whether the state is reusable under intervention.
-- "A reusable step function" overstates the result (reviewer G1). What the data support is narrower: the model extends past depth 3, with lower accuracy on programs that contain a held-out 3-op window. The whole decline is not explained by those windows, though: programs without one also fall to 0.64–0.93 at L = 6.
+- At 10k, "a reusable step function" overstates the result (reviewer G1). What the 10k data support is narrower: the model extends past depth 3, with lower accuracy on programs that contain a held-out 3-op window. The whole decline is not explained by those windows, though: programs without one also fall to 0.64–0.93 at L = 6. At 50k the window effect has no room to appear (every row is correct through L = 6).
 - Every tied/inter model maps each (symbol, op) correctly when its state is re-encoded between steps, and P2 iterates perfectly. Those references show that the length decline is a property of the continuous iteration these networks learned, not of the one-step knowledge. They are references, not evidence of what the network discovered.
-- tied/final shows no transfer beyond length 3 under this recipe. Its readout was trained on h3 only, and the states it reaches beyond step 3 are further from the trained region.
+- tied/final shows no transfer beyond length 3 under this recipe, at 10k or at 50k, even as its length-3 held-out accuracy rises. Its readout was trained on h3 only, and the states it reaches beyond step 3 are further from the trained region. This is a finite-budget observation, not a demonstration that final-only training cannot produce it.
 
 **Task robustness.**
 - tied/inter's length-3 success, including the ¬N rows a one-slot neighbour copy cannot answer, reproduced on both new draws and all four splits. The contrast with tied/final held in every pair. So the original result survives task-draw and split changes, not only initialization changes, for these 2 draws and 4 splits.
@@ -120,7 +126,7 @@ Figure: [figures/followup.png](figures/followup.png) (`figures/followup.csv`; pe
 | A2 tied/inter non-increasing from L=3 to 6 | held |
 | A3 tied/inter L=6 ≥ 0.6 in ≥ 2 of 3 | held (0.86, 0.72; 51201 0.56) |
 | A4 tied/final L=4–6 in [0.05, 0.25] | held (0.11–0.14) |
-| A5 50k states | not yet evaluated: the time lane's ckpt-50000 files were not committed when this note was written |
+| A5 tied/inter 50k ≥ 10k at every L ≥ 4; tied/final 50k ≤ 0.3 at L ≥ 4 | held (inter 1.000 at every length; final 0.10–0.15) |
 | B1 all 16 fit | held |
 | B2 inter > final in 8 of 8 pairs | held |
 | B3 inter ≥ 0.8 in ≥ 6 of 8; final ≤ 0.5 in 8 of 8 | inter part held (8 of 8); final part failed in 3 of 8 (0.547, 0.555, 0.547, all draw 63001) |
@@ -132,9 +138,9 @@ Figure: [figures/followup.png](figures/followup.png) (`figures/followup.csv`; pe
 
 ## Limitations
 
-- **One recipe, one budget.** Every number is a 10k-update number under r1's recipe. The time lane's continuations may change the length curves. A finite-budget decline does not show that longer programs are out of reach, and a plateau would not show necessity.
+- **One recipe, two budgets.** Part B and the follow-up are 10k-update numbers under r1's recipe; only the original task's six runs were also evaluated at 50k, where tied/inter's length decline disappeared. A decline at one budget does not show that longer programs are out of reach, and a plateau would not show necessity.
 - **Small task sample.** There are 2 new draws and 4 splits, with 2 inits per split, and the 3 original seeds are on one task. This is exploratory coverage, not statistical power. Draw 63001 has an unusual shared transition.
-- **Lengths 4–6 only.** Errors were still rising at L = 6; no claim is made beyond it.
+- **Lengths 4–6 only.** At 10k, errors were still rising at L = 6; at 50k there were none through L = 6. No claim is made beyond L = 6.
 - **Function classes.** Almost every longer program on the original draw computes a new function, so "new syntax, seen function" is untested here (10 programs). The new draws have more such programs at L = 6 (up to 209); they were counted, not analysed.
 - **Drift measures** are medians of distances to training-h3 centroids. They describe where states go; they do not show why errors occur.
 - **The untied-readout arm** was not evaluated at longer lengths. It is not this lane's assignment, and it needs a declared step map.
@@ -146,8 +152,9 @@ Figure: [figures/followup.png](figures/followup.png) (`figures/followup.csv`; pe
 3. Part B registry and plan: plan entries committed (3bc4f20) before launch (04:12Z), with explicit recipe flags (C1). Every run is complete; the calibration checkpoint is listed by hash and not committed.
 4. The follow-up's at-risk definition and window indexing in `gen_followup.py` (`held_window`, `first`). The F1–F3 verdicts are in `runs/c2-gen-followup-anatomy-a1/summary.json`.
 5. The replication figure's ¬N trajectories for the original task, recomputed here from r1's logged prediction strings (`gen_figures.py trajectories`).
-6. Wording: "extends past depth 3", not "reusable step function" (G1). The draw-63001 caveat on B3.
+6. A5 inputs: the time lane's `ckpt-50000` taken from `claude/project-thread-xb3nfz` at 543ed95 by `git archive` into `runs/c2-inputs/` (outside Git). Hashes are in `runs/c2-gen-frozen-50k-a1/checks.json` and match the time lane's MANIFEST.json. Re-run from `research/composition-c2/time/runs/` once that lane is merged.
+7. Wording: "extends past depth 3" at 10k, not "reusable step function" (G1); the 50k result is scoped to the original task and L ≤ 6. The draw-63001 caveat on B3.
 
 ## Next question
 
-Do the time lane's 50k states extend the length curves (A5)? Training has already shown that held-out accuracy keeps changing after the fit, so the 10k length curve may not be the endpoint.
+How far past length 6 do the 50k tied/inter models stay exact, and do the new-task runs reach the same state with continued training? Both are frozen or continuation measurements under the same recipe; neither was run here.

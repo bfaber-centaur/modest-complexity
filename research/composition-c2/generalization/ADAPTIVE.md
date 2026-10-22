@@ -12,3 +12,5 @@ Every choice made after seeing an outcome, in order, with the time and what it w
 | 04:22 | Follow-up amended with the held-out-window measure and F3 before it ran | reviewer G1 on Part A (programs with held-out 3-op windows are less accurate) |
 | 04:23 | Both figures labelled so the held-out-only length-3 point is the like-for-like comparison | reviewer G2 |
 | 04:26 | Original-task ¬N trajectories in the replication figure scored from r1's logged prediction strings | r1's metrics do not log N/¬N; the strings determine it exactly |
+| 04:28 | A5 evaluated from the time lane's branch (543ed95) rather than waiting for its merge | DECISIONS D7 says to add the 50k states once committed; they were committed on that branch, with manifests |
+| 04:30 | 50k lines added to `figures/length.png` (planned in QUESTION.md's figure plan) | A5 result |
