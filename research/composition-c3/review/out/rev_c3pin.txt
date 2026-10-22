@@ -1,0 +1,69 @@
+warning: The `UV_NATIVE_TLS` environment variable is deprecated and will be removed in a future release. Use `UV_SYSTEM_CERTS` instead.
+PASS P0 common/*.py at HEAD equals the pin be41d16
+PASS P0 c2's common/ at HEAD equals its pin b3e8132
+PASS P1 research/composition-c3/common/test_c3.py in its own process  [Ran 8 tests in 14.623s OK; 14.8 s]
+PASS P1 research/composition-c2/common/test_c2.py in its own process  [Ran 10 tests in 15.153s OK; 15.3 s]
+PASS P2 weights_at equals D5 at every t < 50000, S=1000 D=1  [first mismatch []]
+PASS P2 exposure of the planned branch S=1000 D=1 (this run)  [[0, 0, 49000] [0.0, 0.0, 18816000.0]]
+PASS P2 weights_at equals D5 at every t < 50000, S=1000 D=2000  [first mismatch []]
+PASS P2 S=1000 D=2000: inter weight at S is 1 - 1/D, at S+D-2 is 1/D, 0 from S+D-1; final exactly 1
+PASS P2 exposure of the planned branch S=1000 D=2000 (this run)  [[1999, 1999, 49000] [383808.0, 383808.0, 18816000.0]]
+PASS P2 weights_at equals D5 at every t < 50000, S=10000 D=1  [first mismatch []]
+PASS P2 exposure of the planned branch S=10000 D=1 (this run)  [[0, 0, 40000] [0.0, 0.0, 15360000.0]]
+PASS P2 weights_at equals D5 at every t < 50000, S=10000 D=2000  [first mismatch []]
+PASS P2 S=10000 D=2000: inter weight at S is 1 - 1/D, at S+D-2 is 1/D, 0 from S+D-1; final exactly 1
+PASS P2 exposure of the planned branch S=10000 D=2000 (this run)  [[1999, 1999, 40000] [383808.0, 383808.0, 15360000.0]]
+PASS P2 the 12 planned branches total 534,000 updates  [534000]
+PASS P3 c2rnn.loss_grad total equals my loss at w = 001, .5 .5 1, 111 (6 tied/inter states)  [max |diff| 5.6e-16]
+FAIL P3 its gradient matches a central finite difference of my loss along a random direction  [max rel diff 3.8e-02]
+PASS P4 accepted: inter s51200 ckpt-1000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-1000, own config, drop at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-1000, own config, taper at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-1000, own config, drop at 1500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-10000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-10000, own config, drop at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-10000, own config, taper at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51200 ckpt-10000, own config, drop at 10500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51200-a1]
+PASS P4 accepted: inter s51201 ckpt-1000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-1000, own config, drop at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-1000, own config, taper at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-1000, own config, drop at 1500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-10000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-10000, own config, drop at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-10000, own config, taper at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51201 ckpt-10000, own config, drop at 10500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51201-a1]
+PASS P4 accepted: inter s51202 ckpt-1000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-1000, own config, drop at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-1000, own config, taper at 1000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-1000, own config, drop at 1500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-10000, own config, keep  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-10000, own config, drop at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-10000, own config, taper at 10000  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: inter s51202 ckpt-10000, own config, drop at 10500  [manifest_listed=True, meta run_id=r1-comp-rnn-inter-s51202-a1]
+PASS P4 accepted: c2 time tt-inter s51200 ckpt-20000, own config, keep  [manifest_listed=True, meta run_id=c2-time-tt-inter-s51200-a1]
+PASS P4 accepted: c2 time tt-inter s51200 ckpt-20000, own config, drop at 20000  [manifest_listed=True, meta run_id=c2-time-tt-inter-s51200-a1]
+PASS P4 accepted: per-step-readout s51200 ckpt-10000, own config  [manifest_listed=False, meta run_id=r1-rev-comp-rnn-untied-s51200-a1]
+PASS P4 refused: (a) inter s51200 ckpt-10000, s51201 config  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-inter-s51201-a1/MANIFEST.json lists ['d83221c12ff2c2a7d41a7b39218978fedd0f68c78a09936]
+PASS P4 refused: (a) inter s51202 ckpt-1000, s51200 config  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/MANIFEST.json lists ['bc7cb3c42dae6b9e1e7557ff05b0346ffabde6f47693066]
+PASS P4 refused: (b) inter s51200 ckpt-10000, final config, weights 0 0 1  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-final-s51200-a1/MANIFEST.json lists ['e035a2e4312f722c645d88578304ea68fbb6ea66954d07e]
+PASS P4 refused: (b) final s51201 ckpt-10000, inter config, weights 1 1 1  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-inter-s51201-a1/MANIFEST.json lists ['d83221c12ff2c2a7d41a7b39218978fedd0f68c78a09936]
+PASS P4 refused: (c) inter s51200 ckpt-10000, switch at 1000  [step weights differ from the source at 9000 updates before 10000, first at 1000]
+PASS P4 refused: (c) inter s51200 ckpt-10000, taper from 9999  [step weights differ from the source at 1 updates before 10000, first at 9999]
+PASS P4 refused: (d) lr 2e-3  [lr: 0.002 here, 0.001 in the source]
+PASS P4 refused: (d) wd 0  [wd: 0.0 here, 0.1 in the source]
+PASS P4 refused: (d) task ops51010-ls51110  [task_id: ops51010-ls51110 here, ops51000-ls51100 in the source]
+PASS P4 refused: (d) width 64  [hidden: 64 here, 128 in the source]
+PASS P4 refused: (d) Adam eps 1e-7  [adam: [0.9, 0.999, 1e-07] here, [0.9, 0.999, 1e-08] in the source]
+PASS P4 refused: (e) c2 time ckpt-20000, switch at 10000  [step weights differ from the source at 10000 updates before 20000, first at 10000]
+PASS P4 refused: (f) per-step-readout s51200 ckpt-10000, tied/inter s51200 config  [/home/user/modest-complexity/research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/MANIFEST.json lists ['046f4c250d8c7aacc9999437f0223fc029cee6e2cbae6c1]
+PASS P4 refused: (f) per-step-readout s51200 ckpt-10000, s51201 per-step config  [checkpoint run ID r1-rev-comp-rnn-untied-s51200-a1 != config run ID r1-rev-comp-rnn-untied-s51201-a1]
+PASS CX-P1 every recovered ckpt-10000 carries its own run ID in its meta (the binding when no MANIFEST.json lists it)  [{}]
+FAIL CX-P1 the per-step-readout run directories have no MANIFEST.json (only MANIFEST.sha256), so the run ID is their only binding
+PASS P5 r1-rev-comp-rnn-untied s51200: identity equals my forward; class-mean logits equal my V3 continuation; steps 1-2 untouched  [identity 0.0e+00, class mean 0.0e+00, held-out class-mean acc 1.000]
+Traceback (most recent call last):
+  File "/home/user/modest-complexity/research/composition-c3/review/rev_c3pin.py", line 310, in <module>
+    main(sys.argv[1])
+  File "/home/user/modest-complexity/research/composition-c3/review/rev_c3pin.py", line 210, in main
+    q = {k: v.copy() for k, v in p.items()}; q['bv'] = q['bv'].copy(); q['bv'][0] = np.nextafter(q['bv'][0], np.inf)
+                                                       ~^^^^^^
+KeyError: 'bv'

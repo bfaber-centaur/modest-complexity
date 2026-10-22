@@ -38,3 +38,11 @@ Verdict rule: BLOCK if any of P1–P3, P5 or P9 fails in a way that changes what
   - In the drop branch, every parameter moves over 10,000–10,300, so no head is frozen. The Adam step count carries (10,300), and the first moments are nonzero. Prediction: true.
   - The taper run's row at 1,000 equals r1's published row, so the branch point is untouched. Prediction: true.
 - P5 also checks that a per-step-readout model run at length 5 without a step map is refused.
+
+### d3717f9, first pass of `rev_c3pin.py` (05:26–05:27)
+
+Three things in the first pass need entries before the second pass.
+- **P3 failed my own tolerance, at `ckpt-10000` only.** At `ckpt-1000` the finite difference agrees to ≤ 1.5e-7 relative in all 9 cases. At `ckpt-10000` the worst relative difference is 3.8e-2. There, the analytic directional derivative is only 2.6e-7 to 1.5e-6, because the state is near-stationary. A one-off scan of step sizes (1e-4 to 1e-7) shows no e² convergence there, which fits round-off and curvature dominating a near-zero derivative better than a gradient error. The P3 line stays in the output as it is.
+  - **P3b, new.** The same check at `ckpt-10000` plus N(0, 0.01²) per element, 3 seeds × 3 weightings. Prediction: ≤ 1e-6 relative.
+- **CX-P1, second line failed because my assumption about the file layout was wrong.** The per-step-readout runs have neither a `MANIFEST.json` nor their own `MANIFEST.sha256`. Their hashes are in the shared `research/regimes/review/runs/MANIFEST.sha256`, which `check_source` does not read. The check now tests that and that the recovered files match it. Prediction: true.
+- **P5 crashed** on a key name of mine (`bv` does not exist in the untied-readout scheme). The changed element is now in `bs`.

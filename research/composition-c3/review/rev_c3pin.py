@@ -135,6 +135,21 @@ def main(run_root):
                 worst_d = max(worst_d, abs(fd - an) / max(abs(an), 1e-12))
     check('P3 c2rnn.loss_grad total equals my loss at w = 001, .5 .5 1, 111 (6 tied/inter states)', worst_l < 1e-12, f'max |diff| {worst_l:.1e}')
     check('P3 its gradient matches a central finite difference of my loss along a random direction', worst_d < 1e-6, f'max rel diff {worst_d:.1e}')
+    # P3b (revision after P3 failed at ckpt-10000 only): the same check at ckpt-10000 + N(0, 0.01^2), away from the near-stationary point.
+    worst_b = 0.
+    for s in SEEDS:
+        p = nets.load(REC/f'r1-comp-rnn-inter-s{s}-a1'/'ckpt-10000.npz')[0]
+        p = {k: v + rng.normal(0, .01, v.shape) for k, v in p.items()}
+        u = {k: rng.normal(size=v.shape) for k, v in p.items()}
+        nu = np.sqrt(sum(float(np.sum(x*x)) for x in u.values())); u = {k: x/nu for k, x in u.items()}
+        for w in ([0., 0., 1.], [.5, .5, 1.], [1., 1., 1.]):
+            g = c2rnn.loss_grad(p, tr['s'], tr['ops'], ys, w)[2]
+            e = 1e-5
+            fd = (my_loss({k: p[k] + e*u[k] for k in p}, tr['s'], tr['ops'], ys, w)
+                  - my_loss({k: p[k] - e*u[k] for k in p}, tr['s'], tr['ops'], ys, w)) / (2*e)
+            an = sum(float(np.sum(g[k]*u[k])) for k in p)
+            worst_b = max(worst_b, abs(fd - an) / abs(an))
+    check('P3b the same at ckpt-10000 + N(0, 0.01^2) per element, 3 seeds x 3 weightings', worst_b < 1e-6, f'max rel diff {worst_b:.1e}')
 
     # P4 / CX-P1. The resume recipe check, called directly (no training).
     inter = lambda s: R1/'composition'/'runs'/f'r1-comp-rnn-inter-s{s}-a1'/'config.json'
@@ -172,8 +187,10 @@ def main(run_root):
     metas = {d.name: nets.load(d/f)[2].get('run_id') for d in REC.iterdir() if d.is_dir() for f in ('ckpt-10000.npz',) if (d/f).exists()}
     check('CX-P1 every recovered ckpt-10000 carries its own run ID in its meta (the binding when no MANIFEST.json lists it)',
           all(v == k for k, v in metas.items()), str({k: v for k, v in metas.items() if v != k}))
-    check('CX-P1 the per-step-readout run directories have no MANIFEST.json (only MANIFEST.sha256), so the run ID is their only binding',
-          all(not (untied(s).parent/'MANIFEST.json').exists() and (untied(s).parent/'MANIFEST.sha256').exists() for s in SEEDS))
+    man = {ln.split()[1]: ln.split()[0] for ln in (R1/'review'/'runs'/'MANIFEST.sha256').read_text().splitlines() if ln.strip()}
+    check('CX-P1 the per-step-readout run directories have no MANIFEST.json; their checkpoints are listed in review/runs/MANIFEST.sha256 (which check_source does not read), and the recovered files match it',
+          all(not (untied(s).parent/'MANIFEST.json').exists() for s in SEEDS)
+          and all(man.get(f'r1-rev-comp-rnn-untied-s{s}-a1/ckpt-10000.npz') == nets.sha256_file(REC/f'r1-rev-comp-rnn-untied-s{s}-a1'/'ckpt-10000.npz') for s in SEEDS))
 
     # P5. c3correct on the six correction bases, all 512 length-3 rows, depth 2.
     al = oracle_rows(list(product(range(4), repeat=3)))
@@ -207,7 +224,7 @@ def main(run_root):
                 nets.adam_step(p, {k: np.ones_like(v) for k, v in p.items()}, nets.adam_state(p), 1e-3, .1); stepped = True
             except ValueError:
                 stepped = False
-            q = {k: v.copy() for k, v in p.items()}; q['bv'] = q['bv'].copy(); q['bv'][0] = np.nextafter(q['bv'][0], np.inf)
+            q = {k: v.copy() for k, v in p.items()}; q['bs'][0] = np.nextafter(q['bs'][0], np.inf)
             check(f'P5 {arm} s{s}: frozen refuses a write and an Adam step; hash unchanged by the forwards, changed by one ulp',
                   not wrote and not stepped and c3correct.params_sha256(p) == h0 and c3correct.params_sha256(q) != h0)
     u = [acc[('r1-rev-comp-rnn-untied', s)] for s in SEEDS]; f = [acc[('r1-comp-rnn-final', s)] for s in SEEDS]
