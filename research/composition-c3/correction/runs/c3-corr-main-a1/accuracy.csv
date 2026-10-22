@@ -1,0 +1,61 @@
+condition,seed,run_id,split,arm,prefixes,rows,n,accuracy
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,A,fit,held,128,0.6328125
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,A,fit,train,384,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,B,fit,held,128,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,B,fit,train,384,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,C,fit,held,128,0.4921875
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,C,fit,train,384,0.9479166666666666
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,D,fit,held,128,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,D,fit,train,384,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,E,fit,held,128,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,E,fit,train,384,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,A,fit,held,128,0.5234375
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,A,fit,train,384,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,B,fit,held,128,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,B,fit,train,384,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,C,fit,held,128,0.375
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,C,fit,train,384,0.8359375
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,D,fit,held,128,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,D,fit,train,384,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,E,fit,held,128,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,E,fit,train,384,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,A,fit,held,128,0.515625
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,A,fit,train,384,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,B,fit,held,128,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,B,fit,train,384,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,C,fit,held,128,0.453125
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,C,fit,train,384,0.9401041666666666
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,D,fit,held,128,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,D,fit,train,384,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,E,fit,held,128,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,E,fit,train,384,1.0
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,A,fit,held,128,0.2734375
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,A,fit,train,384,1.0
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,B,fit,held,128,0.8828125
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,B,fit,train,384,0.9036458333333334
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,C,fit,held,128,0.2109375
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,C,fit,train,384,0.8854166666666666
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,D,fit,held,128,0.875
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,D,fit,train,384,0.875
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,E,fit,held,128,0.875
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,E,fit,train,384,0.875
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,A,fit,held,128,0.3125
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,A,fit,train,384,1.0
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,B,fit,held,128,0.890625
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,B,fit,train,384,0.8828125
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,C,fit,held,128,0.2578125
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,C,fit,train,384,0.8645833333333334
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,D,fit,held,128,0.875
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,D,fit,train,384,0.875
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,E,fit,held,128,0.875
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,E,fit,train,384,0.875
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,A,fit,held,128,0.3203125
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,A,fit,train,384,1.0
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,B,fit,held,128,0.8046875
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,B,fit,train,384,0.8229166666666666
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,C,fit,held,128,0.2421875
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,C,fit,train,384,0.859375
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,D,fit,held,128,0.96875
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,D,fit,train,384,0.96875
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,E,fit,held,128,0.96875
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,E,fit,train,384,0.96875

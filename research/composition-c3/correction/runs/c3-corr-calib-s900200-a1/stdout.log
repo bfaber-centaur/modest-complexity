@@ -1,0 +1,15 @@
+r1-rev-comp-rnn-untied-s51200-a1 calibrated
+r1-rev-comp-rnn-untied-s51201-a1 calibrated
+r1-rev-comp-rnn-untied-s51202-a1 calibrated
+r1-comp-rnn-final-s51200-a1 calibrated
+r1-comp-rnn-final-s51201-a1 calibrated
+r1-comp-rnn-final-s51202-a1 calibrated
+k= 16 lr=0.001 mean B val mse 0.30648 
+k= 16 lr=0.01 mean B val mse 0.29402 
+k= 32 lr=0.001 mean B val mse 0.26377 
+k= 32 lr=0.01 mean B val mse 0.25766 
+k= 64 lr=0.001 mean B val mse 0.25389 <- chosen
+k= 64 lr=0.01 mean B val mse 0.27024 
+map update: 0.251 ms on this host (144000 updates)
+/home/user/modest-complexity/.venv/lib/python3.12/site-packages/numpy/__config__.py:155: UserWarning: Install `pyyaml` for better output
+  warnings.warn("Install `pyyaml` for better output", stacklevel=1)

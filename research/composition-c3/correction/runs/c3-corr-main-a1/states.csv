@@ -1,0 +1,31 @@
+condition,seed,run_id,split,arm,prefixes,n,symbol_acc,centroid_err,decoder_acc
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,A,fit,128,0.515625,3.2118883135060003,
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,B,fit,128,1.0,0.0494208104772332,
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,C,fit,128,0.4609375,3.1531924097253192,
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,D,fit,128,1.0,0.0,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,main,E,fit,128,1.0,0.0,
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,A,fit,128,0.46875,3.534689523126379,
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,B,fit,128,1.0,0.129570932270115,
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,C,fit,128,0.4375,3.410972833783773,
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,D,fit,128,1.0,0.0,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,main,E,fit,128,1.0,0.0,
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,A,fit,128,0.5,3.6161109096490383,
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,B,fit,128,1.0,0.2125529059195258,
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,C,fit,128,0.4765625,3.546289235750156,
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,D,fit,128,1.0,0.0,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,main,E,fit,128,1.0,0.0,
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,A,fit,128,0.421875,7.648266908217799,
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,B,fit,128,1.0,0.10623445299845129,
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,C,fit,128,0.3984375,7.412199975723904,
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,D,fit,128,1.0,0.0,1.0
+tied/final,51200,r1-comp-rnn-final-s51200-a1,main,E,fit,128,1.0,0.0,
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,A,fit,128,0.4140625,6.433358627192329,
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,B,fit,128,1.0,0.030933512201023385,
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,C,fit,128,0.421875,6.135918820668605,
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,D,fit,128,1.0,0.0,1.0
+tied/final,51201,r1-comp-rnn-final-s51201-a1,main,E,fit,128,1.0,0.0,
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,A,fit,128,0.3671875,7.385641429756686,
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,B,fit,128,1.0,0.08873717806316432,
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,C,fit,128,0.34375,7.148816134856552,
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,D,fit,128,1.0,0.0,1.0
+tied/final,51202,r1-comp-rnn-final-s51202-a1,main,E,fit,128,1.0,0.0,

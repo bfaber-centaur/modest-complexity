@@ -1,0 +1,19 @@
+condition,seed,run_id,split,arm,k,lr,updates,loss_first,loss_last,dead_output_units,probe_seed,train_acc
+per-step readout,71200,r1-rev-comp-rnn-untied-s51200-a1,grouped,B,64,0.001,2000,1.607898549403454,0.040506446501852825,6,,
+per-step readout,71200,r1-rev-comp-rnn-untied-s51200-a1,grouped,C,64,0.001,2000,2.804273673060923,0.3049799084506095,13,,
+per-step readout,,r1-rev-comp-rnn-untied-s51200-a1,grouped,D,,,,,,,71301,1.0
+per-step readout,71200,r1-rev-comp-rnn-untied-s51201-a1,grouped,B,64,0.001,2000,2.1825084768750957,0.05041047130825168,7,,
+per-step readout,71200,r1-rev-comp-rnn-untied-s51201-a1,grouped,C,64,0.001,2000,3.7473626262576554,0.3054906152357748,16,,
+per-step readout,,r1-rev-comp-rnn-untied-s51201-a1,grouped,D,,,,,,,71301,1.0
+per-step readout,71200,r1-rev-comp-rnn-untied-s51202-a1,grouped,B,64,0.001,2000,1.9225769392282943,0.07940601605940766,7,,
+per-step readout,71200,r1-rev-comp-rnn-untied-s51202-a1,grouped,C,64,0.001,2000,3.1000582521000957,0.3545047990363502,14,,
+per-step readout,,r1-rev-comp-rnn-untied-s51202-a1,grouped,D,,,,,,,71301,1.0
+tied/final,71200,r1-comp-rnn-final-s51200-a1,grouped,B,64,0.001,2000,1.8449569169776368,0.03308671828203312,8,,
+tied/final,71200,r1-comp-rnn-final-s51200-a1,grouped,C,64,0.001,2000,3.2359951256114803,0.2335615128716959,12,,
+tied/final,,r1-comp-rnn-final-s51200-a1,grouped,D,,,,,,,71301,1.0
+tied/final,71200,r1-comp-rnn-final-s51201-a1,grouped,B,64,0.001,2000,1.4339912342986672,0.00664531637021921,3,,
+tied/final,71200,r1-comp-rnn-final-s51201-a1,grouped,C,64,0.001,2000,2.500893950251881,0.24220552431437417,12,,
+tied/final,,r1-comp-rnn-final-s51201-a1,grouped,D,,,,,,,71301,1.0
+tied/final,71200,r1-comp-rnn-final-s51202-a1,grouped,B,64,0.001,2000,1.3926177127629602,0.016805273339677927,10,,
+tied/final,71200,r1-comp-rnn-final-s51202-a1,grouped,C,64,0.001,2000,2.5032554072503252,0.1407552249238935,9,,
+tied/final,,r1-comp-rnn-final-s51202-a1,grouped,D,,,,,,,71301,1.0

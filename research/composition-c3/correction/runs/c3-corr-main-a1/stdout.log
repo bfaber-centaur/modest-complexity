@@ -1,0 +1,8 @@
+r1-rev-comp-rnn-untied-s51200-a1 main fit held A-E [0.633, 1.0, 0.492, 1.0, 1.0]
+r1-rev-comp-rnn-untied-s51201-a1 main fit held A-E [0.523, 1.0, 0.375, 1.0, 1.0]
+r1-rev-comp-rnn-untied-s51202-a1 main fit held A-E [0.516, 1.0, 0.453, 1.0, 1.0]
+r1-comp-rnn-final-s51200-a1 main fit held A-E [0.273, 0.883, 0.211, 0.875, 0.875]
+r1-comp-rnn-final-s51201-a1 main fit held A-E [0.312, 0.891, 0.258, 0.875, 0.875]
+r1-comp-rnn-final-s51202-a1 main fit held A-E [0.32, 0.805, 0.242, 0.969, 0.969]
+/home/user/modest-complexity/.venv/lib/python3.12/site-packages/numpy/__config__.py:155: UserWarning: Install `pyyaml` for better output
+  warnings.warn("Install `pyyaml` for better output", stacklevel=1)
