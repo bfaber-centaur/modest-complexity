@@ -1,0 +1,38 @@
+PASS S0 my train rows equal c2task.rows in order (s, ops, states)
+PASS S0 my held rows equal c2task.rows in order (s, ops, states)
+PASS S0 my N mask (true label among one-slot training neighbours) equals c2task.neighbour_answerable: 86 N, 42 notN
+PASS S1 all 12 configs resume r1 tied/inter ckpt-S at its RECOVERY.json hash (manifest-listed, source run ID) with the right run ID and explicit recipe flags  [[]]
+PASS S1 each branch's first row (step S) equals r1's published row on every r1 key  [[]]
+PASS S2 step_weights equal my w(t) on every logged row of the 12 branches (10692 rows); final weight exactly 1  [[]]
+PASS S2 config exposure (this run and from init) equals my recount in all 12  [[]]
+     S2 my intermediate weight at S-1, S, S+1, S+1998, S+1999, S+2000: {'S=1000 D=1': [1.0, 0.0, 0.0, 0.0, 0.0, 0.0], 'S=1000 D=2000': [1.0, 0.9995, 0.999, 0.0004999999999999449, 0.0, 0.0], 'S=10000 D=1': [1.0, 0.0, 0.0, 0.0, 0.0, 0.0], 'S=10000 D=2000': [1.0, 0.9995, 0.999, 0.0004999999999999449, 0.0, 0.0]}
+PASS S3 every committed file of the 12 branches matches its MANIFEST.json hash  [[]]
+PASS S3 every committed branch checkpoint (66) rescores with my forward to its logged row (train and held acc exact, CE 1e-9, held_final_pred); count, meta step and run ID  [66 checkpoints; []]
+PASS S3 registry: every plan entry has exactly one running and one complete event (no failure, cap or silent retry)  [14 plan entries; {}]
+PASS S4 every value of scaf_frozen.csv (114 rows x 9) equals my exhaustive evaluation; same set of checkpoints  [[]; mine 114]
+PASS S4 my frozen L1-6 equals c2 generalization c2-gen-frozen-orig-a2/length.csv for keep and final-only (36 values)  [[]]
+PASS S4 my frozen L1-6 equals c2 generalization c2-gen-frozen-50k-a1/length.csv for keep and final-only (36 values)  [[]]
+PASS S4 at every evaluated checkpoint with a logged row, my held-out prediction string equals the logged one  [[]]
+PASS S5 every row of scaf_retention.csv (462) recomputes from my frozen values: deltas to 1e-12 and the endpoint labels  [0 differ]
+PASS S5 endpoint labels: 84 of 84 retained; nearest |d_keep| to the 0.05 boundary is 0.0399 away (the 1e-12 tolerance never matters)
+PASS S5 every row of scaf_threshold.csv (36) recomputes from the joined trajectories (crossing, censoring, before-switch, values)  [[]]
+PASS S5 every logged held_subset equals my N / notN split of its prediction string  [[]]
+PASS S6 in every branch every parameter array changes over S -> S+2000 and S+2000 -> 50000; the count is S+2000 and 50000  [smallest max|change| 5.7e-03; []]
+PASS S7 every value of scaf_main.csv (16698 rows, 317262 values) recomputes from the logged rows  [[]; mine 16698 rows]
+PASS S7 every value of scaf_optimizer.csv (18 rows) recomputes from the logged diag  [[]]
+PASS S7 every value of scaf_compatibility.csv (114 rows) recomputes with my own neighbour sets  [[]]
+     CX-S1 at S=10k, ckpt-50000 (mine):
+       drop: L3 retained [True, True, True]; keep L6 - branch L6 [0.0023, 0.0022, 0.0001]; train min(step1, step2) acc [1.0, 1.0, 1.0]; lowest logged after S [1.0, 1.0, 1.0]
+       taper: L3 retained [True, True, True]; keep L6 - branch L6 [0.0023, 0.0005, 0.0005]; train min(step1, step2) acc [1.0, 1.0, 1.0]; lowest logged after S [1.0, 1.0, 1.0]
+FAIL CX-S1 (prediction) if B or C is retained at L3 at S=10k, its L6 at 50k is >= 0.05 below keep in >= 1 seed  [{'drop': (True, 0, 0), 'taper': (True, 0, 0)}]
+FAIL CX-S1 (prediction) ... and its train step-1 or step-2 accuracy is < 0.9 in >= 2 seeds  [{'drop': (True, 0, 0), 'taper': (True, 0, 0)}]
+     CX-S2 parameter norms at ckpt-50000, branch / keep, S=10k:
+       drop s51200: total 24.4259 / 25.4982 = 0.9579; Ws 0.682, bs 0.726, A 1.051, B 0.994, bh 0.994, V 0.944, bv 0.781
+       drop s51201: total 24.5811 / 25.6899 = 0.9568; Ws 0.684, bs 0.742, A 1.042, B 0.994, bh 0.928, V 0.944, bv 0.615
+       drop s51202: total 24.3605 / 25.4055 = 0.9589; Ws 0.676, bs 0.724, A 1.051, B 0.997, bh 0.956, V 0.946, bv 0.768
+       taper s51200: total 24.4209 / 25.4982 = 0.9578; Ws 0.682, bs 0.724, A 1.049, B 0.994, bh 1.009, V 0.944, bv 0.776
+       taper s51201: total 24.6022 / 25.6899 = 0.9577; Ws 0.687, bs 0.742, A 1.044, B 0.994, bh 0.906, V 0.945, bv 0.598
+       taper s51202: total 24.3173 / 25.4055 = 0.9572; Ws 0.676, bs 0.712, A 1.048, B 0.996, bh 0.754, V 0.945, bv 0.554
+PASS CX-S2 (prediction) every drop branch at S=10k has a smaller parameter norm than keep at 50k, in all three seeds
+FAIL CX-S2 (prediction) ... and V has the smallest branch/keep norm ratio of any parameter group
+3 FAILED: ['CX-S1 (prediction) if B or C is retained at L3 at S=10k, its L6 at 50k is >= 0.05 below keep in >= 1 seed', 'CX-S1 (prediction) ... and its train step-1 or step-2 accuracy is < 0.9 in >= 2 seeds', 'CX-S2 (prediction) ... and V has the smallest branch/keep norm ratio of any parameter group']

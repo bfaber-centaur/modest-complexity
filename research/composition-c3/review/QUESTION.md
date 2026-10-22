@@ -157,3 +157,23 @@ Three things in the first pass need entries before the second pass.
 
 - The four c3train runs finished. The two continuation entries (RP5) are now in the plan with the hashes of `c3-rev-reset-drop-s51200-a1`'s `ckpt-1200` and `ckpt-1000`. Same predictions.
 - The two continuations finished (2.7 s). `rev_repin.py` is committed with this entry, before its run `c3-rev-repin-a1`. It adds no prediction. RP0 also confirms that HEAD's `common/` equals `82cef77`, and RP4 also prints the fraction of coordinates with \|g\| > 1e-4.
+
+### Scaffolding lane at `4512bce` (PR #65), with `rev_scaf.py`, before its run `c3-rev-scaf-a1`
+
+- **Files read since `ad55463`.** Every file of the lane at `4512bce`: README, NOTE, ADAPTIVE, `scaf_analyze.py`, `checks.json`, the CSV headers and the first rows. The predictions in §3 (`ad55463`) were committed before any of these existed, and they are unchanged. The NOTE already reports L6 ≥ 0.99 and step-1/2 accuracy of 1.0 at 50k, so I expect CX-S1 to fail. My own evaluation decides it.
+- **Implementation choices, with no new prediction.**
+  - S1 also requires `manifest_listed` and the explicit flags in each plan argv.
+  - S3's rescoring covers every committed branch checkpoint (66): train and held-out accuracy exact, CE to 1e-9 relative, and the prediction string.
+  - S4 includes every checkpoint in `scaf_frozen.csv`, the reused arms included, and both c2 generalization `length.csv` files.
+  - S5 also recomputes `scaf_threshold.csv`, every logged `held_subset`, and the distance of the nearest |Δ_keep| to the 0.05 boundary.
+  - S7 covers `scaf_main.csv`, `scaf_optimizer.csv` and `scaf_compatibility.csv`, with my own neighbour sets.
+  - CX-S1 reads h1/h2 from my rescoring of `ckpt-50000`, and also prints the lowest logged value after S. CX-S2 prints taper too, for information.
+  - My N mask and row order are checked against `c2task` (S0).
+- **NOTE numbers next.** A separate read-only pass, `rev_scaf_note.py`, checks them after this run, against `rev_scaf.json` and the lane's CSVs that S4–S7 verify.
+- **`c3-rev-scaf-a1` complete (78 s).**
+  - Every recomputation check S0–S7 passes.
+  - CX-S1 failed in both parts.
+  - CX-S2 held for the norm, but failed on which group shrinks most.
+  - Output: [out/rev_scaf.txt](out/rev_scaf.txt).
+- **Next, before running it: `rev_scaf_note.py`** (reads only). It checks the NOTE's numbers O1–O8 and handoff item 2 as quoted, with ranges at the NOTE's rounding.
+- **`rev_scaf_note.py` run (0.6 s).** Three NOTE lines failed at the quoted rounding: the L4–6 Δ_D upper end, "keep reaches 1.0 by 20k", and D's CE "8.6 / 11". All three are small. REVIEW §3 (N-S1 to N-S3) records them.
