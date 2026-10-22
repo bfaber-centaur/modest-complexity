@@ -250,3 +250,25 @@ PR #23 was integrated. It contains audit investigations 2 and 3: the gate, the d
 - The probe uses the auditor's own code, takes a few seconds per replay, and counts against the audit budget (D7).
 - These are diagnostic replays, not plan runs, so they get no run IDs. Their outputs and the decision rule, stated before running, go under `research/e3/audit/`.
 - They are listed in the run accounting as audit probes.
+
+## D14 (2026-10-22) Dynamics first figure reviewed
+
+PR #28 was integrated. All 24 runs completed in 28 min elapsed, from a clean worktree containing the pin. The coordinator spot-checked three runs with separate forward code and matched Table 1. Split hashes and counts equal the plan. Not yet audited.
+
+**Reviewed figures:** `research/e3/dynamics/figures/ladders_accuracy.png`, `ladders_trajectories.png` and `ladders_measures.png`.
+
+**Observations:**
+- In all 8 ladder × init sequences, every measure improves with each larger nested set.
+- Accuracy falls in the same bands as on the 31000 ladder: 0.000–0.004 at 30%, 0.010–0.092 at 40%, 0.40–0.54 at 45% and 0.88–0.91 at 50%.
+- The interpolated accuracy-0.5 crossings at 50k are 417–434 pairs.
+- At 45%, the spread between ladders (0.076) is smaller than the largest init difference within a ladder (0.142).
+- At 40%, 41002 leads on the σ-margin for both inits, but not on accuracy.
+- The 45% runs are still rising at 50k.
+
+These observations fit the lane's pre-stated pattern "ordering and location both travel", at four rungs, two inits, one width and one horizon.
+
+**Follow-up.** Per the charter, if the ladders agree the follow-up is a small, explicitly selected continuation of intermediate runs. The lane proposes the selection and what it distinguishes. Two implementations are possible:
+- An uninterrupted continuation past 50k needs a resume with the saved Adam moments and update count. That is a shared-code change, which requires a test and a new pin first (D3).
+- A longer run from initialization needs no code change, and its first 50k replays the claimed run.
+
+Either must fit the lane's remaining budget, about 41 min, with the follow-up limited to 25 min (D7).
