@@ -74,6 +74,10 @@ The TU cell is my r1 arm (disclosure above). Checks, with code written here:
 
 (Dated, before the matching analysis or run.)
 
+- **Mechanisms NOTE revision `0fe8624`** (recorded in the commit that adds this entry, before the code below exists). I have read its diff against `817a768`. Its new numbers are checked against my CX-M1 output (`out/rev_mech.txt`) and against its own O6 table. There is one new geometric claim in O6: "U is centered, so a pure scale residual (r ∝ c(x)) lies largely outside it".
+  - *Check.* At depth 2, in each of the 9 runs, compute the share of ‖c(x)‖² outside U for each training centroid c(x). U is fit here, as in follow-up B.
+  - *Prediction.* The share is above 0.5 for every symbol in every run. "Largely" then holds. If it is below 0.5 anywhere, the sentence should be bounded.
+
 - **Generalization follow-up anatomy and drift** (recorded in the commit that adds this entry, before the code below exists). This was written after reading the merged NOTE (`6fe1435`), its follow-up section, `gen_followup.py` and the head of `summary.json`. So the checks below are recomputations of numbers I have seen. Only CX-G3 is a new measurement.
   - **Checks (11 tied/inter `ckpt-10000`; my oracle, my forward, my draws and splits from `partb`).**
     - On exhaustive length-6 rows: first wrong step and the transition (true state before, op) at steps 4–6. Also the at-risk counts. Together these give all of `anatomy.csv`.
