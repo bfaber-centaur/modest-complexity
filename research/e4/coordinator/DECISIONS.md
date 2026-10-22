@@ -230,3 +230,31 @@ The coordinator checked the start files as fetched from that branch:
 - **Norms.** The joint (U, V) norm and the W norm equal those of the B start file for the same seed to the last digit or so.
 
 The six D11 IDs are moved from `reserved` to `runs` with these hashes. The start files reach `swarm/exploration` with the auditor's PR. Until then the auditor launches from its own branch merged with this commit.
+
+## D13 (2026-10-22) Dynamics follow-up: decay switched off mid-decline (endpoint intervention)
+
+**Review of the first figure.** The coordinator reviewed dynamics packet 1 (PR #33) and integrated it with the audit pending (`27214a1`). Under the pre-stated rule the verdict was MIXED. Every decayed run collapsed within 20k while training accuracy stayed at 1.
+
+**What is claimed.** The lane declared its follow-up in QUESTION.md Q2 (`3fd6723`) before any run. Six runs are claimed with purpose `endpoint-intervention`: `e4-dy-filt-wd1to0-u{300,1000}-w128-i{30000,30001,30002}-a1`.
+
+**How each run works.**
+- It runs `--resume` from the published e3 wd 1 checkpoint at update 300 or 1,000. That is the start of the D5 decline window, or mid-decline.
+- Weights, Adam moments and the update count carry over. Only wd changes, to 0.
+- It continues to 20,000 total updates.
+- The coordinator checked the resume-file hashes against the files.
+
+The queue is a seeded interleaving (`default_rng(20261025)`).
+
+**Comparators.** These are the existing wd 1 continuation and the wd 0 run from update 0.
+
+**Reading.** f = (Δ_off − Δ_0)/(Δ_1 − Δ_0) is computed on own held-out accuracy over the 1,000 updates after the switch.
+
+| f | reading |
+|---|---|
+| ≤ 1/3 | decay must stay on |
+| ≥ 2/3 | the decline sustains itself |
+| between | partial |
+
+Recovery is flagged if accuracy reaches A(s) + 0.05. Readings are reported per run.
+
+**Cost.** About 2.6 min elapsed, which brings the lane to about 5.5 of its 20 min. This is the lane's one follow-up.
