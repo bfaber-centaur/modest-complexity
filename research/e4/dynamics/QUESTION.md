@@ -112,3 +112,94 @@ Results are in [README.md](README.md) packet 1. Under the decision rule above, t
 - at the update-0 threshold, all three wd 0.3 runs follow the exposure clock (r 0.76–0.87), but the wd 0.1 runs disagree: i30000 is on the clock (0.77) and i30001 and i30002 are faster (0.60, 0.64).
 
 Not covered by the rule: every r is below 1, and r is lower at wd 0.1 than at wd 0.3 for every start and threshold. All decayed runs collapse within 20,000 updates with training fit kept. The early rise does not change with decay. The exposure-matched table in the README was chosen after viewing the figure and is descriptive only. Nothing above has been edited.
+
+## Q2 (2026-10-22, before any run): decay switched off mid-decline, an endpoint intervention
+
+The swarm coordinator reviewed packet 1 (PR #33, merged with the audit pending) and approved this direction for the lane's one follow-up (D8). It is an **endpoint intervention**, labelled separately from the constant-wd runs (D6/D8).
+
+### Question
+
+Once the wd 1 decline has started, does it need decay to continue?
+
+### Design
+
+- **Resume states.** The published e3 wd 1 checkpoints of `e3-me-filt-w128-i3000{0,1,2}-a1` at update 300 (the start of the D5 decline window) and update 1,000 (mid-decline). Each holds the weights, the Adam moments and the update count. SHA-256, all equal to the source manifests:
+
+  | start | update 300 | update 1,000 |
+  |---|---|---|
+  | i30000 | `cff32a48a326452ec89eb8e1cda6feffb4d7c039fab7e9067fdc6dd7d2ac44da` | `25d37665914b9780973b64d3e2e6ccfe8546852f149fd1f59ed697a6d2579c04` |
+  | i30001 | `21473ae3e1d20090113ae8ce0254c243b598e2a8b8ed86b7813f77bb95ceae21` | `138ed4d19e366518d80b2bb01e67a20c0614211db6cdd627158b9d9b81eff00f` |
+  | i30002 | `ab0ddcde018ee69ce18e10b49823cf1fe85ab4433f3a8425e9addb5d9e550519` | `107c23b54b3a9c6119215e3d95a41f977572996dd3ea8ef654af2090e3d18809` |
+
+- **What carries over.** `--resume` carries the weights, both Adam moments and the update count, so update numbers continue the source run's. Only wd changes, from 1 to 0, starting with update s + 1.
+  - The decay is decoupled. In `experiment.py` `adam()`, the weights are multiplied by (1 − lr·wd) and the moments see only the gradient, so the carried moments are equally valid at wd 0.
+- **Everything else** equals the source: the same data, evaluation pairs and lr 1e-3, with the total update count 20,000 (19,700 and 19,000 new updates).
+- **Comparators.**
+  - The e3 wd 1 run from the same start: decay stays on, from the identical state at s.
+  - The e3 wd 0 run from the same start: decay-free from update 0.
+- **Diagnostic, unclaimed and unpublished** (D3 allows this). Resuming i30000's update-300 checkpoint at wd 1 for 300 updates, from the pin, reproduced all 31 source metric rows (300–600) exactly, wall-clock fields aside. The checkpoint it wrote at 300 equals the source arrays. So in the intervention runs the only difference from the wd 1 comparator is wd.
+
+### Measure, declared now
+
+The measure is own held-out accuracy A (662 pairs, every 10 updates), as in Q1. The window is W = 1,000 updates after the switch at s.
+- Δ_off = A_off(s + W) − A_1(s). A_off(s) = A_1(s), because it is the same state.
+- Δ_1 = A_1(s + W) − A_1(s).
+- Δ_0 = A_0(s + W) − A_0(s).
+- f = (Δ_off − Δ_0) / (Δ_1 − Δ_0). Here 0 means the decline falls to the wd 0 drift, and 1 means it continues at the wd 1 rate.
+
+**Reference values from the existing runs**, measured now:
+
+| start | s | A_1(s) | A_1(s+W) | Δ_1 | A_0(s) | A_0(s+W) | Δ_0 | Δ_1 − Δ_0 |
+|---|---|---|---|---|---|---|---|---|
+| i30000 | 300 | 0.622 | 0.169 | −0.453 | 0.751 | 0.683 | −0.068 | −0.385 |
+| i30001 | 300 | 0.680 | 0.131 | −0.548 | 0.789 | 0.736 | −0.053 | −0.495 |
+| i30002 | 300 | 0.737 | 0.169 | −0.568 | 0.855 | 0.802 | −0.053 | −0.515 |
+| i30000 | 1,000 | 0.240 | 0.065 | −0.175 | 0.690 | 0.660 | −0.030 | −0.145 |
+| i30001 | 1,000 | 0.221 | 0.057 | −0.163 | 0.745 | 0.710 | −0.035 | −0.128 |
+| i30002 | 1,000 | 0.261 | 0.085 | −0.177 | 0.811 | 0.782 | −0.029 | −0.148 |
+
+### Readings, per run, no pooling
+
+- **(i) Decay must stay on:** f ≤ 1/3.
+- **(ii) The decline sustains itself once started:** f ≥ 2/3.
+- **Partial:** 1/3 < f < 2/3.
+- **(iii) Recovery:** A_off at any logged update after s reaches A_1(s) + 0.05. This is an additional label and can occur together with (i).
+- **Mixed:** the seeds or the two switch points disagree.
+
+**Secondary, reported but not part of the readings:**
+- A at 20,000 against the wd 0 and wd 1 endpoints;
+- T(0.10) after the switch, censored at 20,000;
+- train cross-entropy, weight norm, P(a+b over S) and the σ-margin at checkpoints.
+
+### Prediction
+
+I expect (i) at both switch points, and no recovery. The reasoning comes from packet 1.
+- Decline timing followed decay exposure from wd 0.1 to 1, so the decline rate per update scales with wd.
+- If the decline sustained itself once started, a lower-decay run would gain on the clock after its decline began. Its r at 0.10 would then be below its r at the update-0 level.
+- In all six runs it was the other way round.
+
+### What could make the reading fragile
+
+- **Δ_0 comes from a different state.** It is measured on the wd 0 run, which is at a higher accuracy (0.69–0.86) than the switched states (0.22–0.74), and the drift may depend on the state. If f lands near a cutoff, this is the first reason to doubt it.
+- **At s = 1,000 the reference gap is only 0.13–0.15.** Run-to-run fluctuation of about 0.01 in a single logged value moves f by about 0.07 there.
+- **The design is narrow.** There is one switch time per state, and only wd 1 → 0. It does not test partial decay, switching decay back on, or other switch times.
+
+### Runs proposed (claimed only after the coordinator lists them in the plan)
+
+- **IDs.** `e4-dy-filt-wd1to0-u300-w128-i3000{0,1,2}-a1` and `e4-dy-filt-wd1to0-u1000-w128-i3000{0,1,2}-a1`, with purpose `endpoint-intervention`.
+- **Settings.** `--resume <e3 run>/checkpoint_000{300,1000}.npz --expect-init-sha256 <above> --wd 0 --steps 20000 --lr 0.001 --data-seed 31000 --init-seed <seed> --control-seed 32000 --diagnostic-seed 33000 --log-every 10 --checkpoint-every 1000 --diagnostics none --expect-split-sha256 aa8f7504…`.
+- **Checkpoints.**
+  - Every 1,000, plus the resume update (written automatically).
+  - Extras: `500,1300,1500,2500` for u300 and `1300,1500,2500` for u1000.
+  - That is at most 5 off the every-1,000 grid, about 7 MB per run.
+- **Cost.** About 50 s per run on this host. About 2.6 min elapsed on 2 workers, about 5.5 of the lane's 20 min in total.
+
+## Q2 outcome (2026-10-22, after the six D13 runs)
+
+Results are in [README.md](README.md) packet 2. Under the Q2 reading, all six runs read **(i) decay must stay on**, at both switch points: f is between −0.01 and 0.14. No run recovers; the maximum after the switch is below A(s) in every run. This matches the Q2 prediction.
+
+Two things Q2 did not anticipate, reported as observations:
+- For about 50 updates after the switch, the decline continues at close to the wd 1 rate, and it fades over about 200 updates. That lag accounts for most of f at s = 300.
+- The off-from-1,000 runs do not drift down at all after the window, while the wd 0 run does.
+
+Nothing above has been edited.
