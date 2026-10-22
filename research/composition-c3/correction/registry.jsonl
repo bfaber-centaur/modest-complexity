@@ -1,0 +1,2 @@
+{"time": "2026-10-22T05:31:05+00:00", "host": "vm", "session_label": "c3-corr-cloud-1", "run_id": "c3-corr-calib-s900200-a1", "status": "running", "command": ["/home/user/modest-complexity/.venv/bin/python", "research/composition-c3/correction/corr_calib.py", "--out", "runs/c3/c3-corr-calib-s900200-a1"], "timeout": 300}
+{"time": "2026-10-22T05:31:42+00:00", "host": "vm", "session_label": "c3-corr-cloud-1", "run_id": "c3-corr-calib-s900200-a1", "status": "complete", "reason": null, "returncode": 0, "wall_seconds_including_startup": 37.172}

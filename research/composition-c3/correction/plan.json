@@ -10,6 +10,38 @@
    ],
    "timeout": 300,
    "purpose": "training-only calibration of the map (k x lr on grouped fit -> val, init seed 900200) and host timing"
+  },
+  {
+   "run_id": "c3-corr-main-a1",
+   "argv": [
+    "research/composition-c3/correction/corr_eval.py",
+    "--out",
+    "{out}",
+    "--split",
+    "main",
+    "--k",
+    "64",
+    "--lr",
+    "1e-3"
+   ],
+   "timeout": 600,
+   "purpose": "arms A-E on the six frozen bases, main evaluation (k and lr from c3-corr-calib-s900200-a1)"
+  },
+  {
+   "run_id": "c3-corr-grouped-a1",
+   "argv": [
+    "research/composition-c3/correction/corr_eval.py",
+    "--out",
+    "{out}",
+    "--split",
+    "grouped",
+    "--k",
+    "64",
+    "--lr",
+    "1e-3"
+   ],
+   "timeout": 600,
+   "purpose": "arms A-E on the six frozen bases, grouped evaluation (k and lr from c3-corr-calib-s900200-a1)"
   }
  ]
 }

@@ -147,4 +147,4 @@ Lookup-table composition: Liška, Kruszewski and Baroni (2018), arXiv:1802.06467
 
 ## Addenda (dated, appended after calibration or follow-up approval)
 
-None yet.
+**2026-10-22 05:32Z: map dimensions and optimizer fixed (D6).** Calibration `c3-corr-calib-s900200-a1` chose **k = 64, lr = 1e-3** by the declared rule. The mean arm-B validation errors were 0.254 for that cell against 0.258 for the next best (k = 32, lr = 1e-2), which is outside the 1% tie band. Every other part of the map is as declared: 128 → 64 → 128, ReLU, full-batch Adam (0.9, 0.999, 1e-8), no decay, 2,000 updates, init seed 71200. Calibration also logged output units that stay at zero while their target is positive somewhere: 3–10 for B and 8–17 for C. This was not used for selection, and the evaluation runs report the same count in `fits.csv`. Map updates took 0.25 ms on this host.
