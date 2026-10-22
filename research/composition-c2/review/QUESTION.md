@@ -74,7 +74,7 @@ The TU cell is my r1 arm (disclosure above). Checks, with code written here:
 
 (Dated, before the matching analysis or run.)
 
-- **04:3x, sharing counterexample.** This was written after reading its M0 `f84dbc3` and its NOTE's Interpretation section (`d8735fc`). I had also seen the coordinator's relay of the 10k held-out and ¬N table. I had not seen any trajectory, CSV or figure.
+- **04:28, sharing counterexample** (f966c73). This was written after reading its M0 `f84dbc3` and its NOTE's Interpretation section (`d8735fc`). I had also seen the coordinator's relay of the 10k held-out and ¬N table. I had not seen any trajectory, CSV or figure.
   - **CX-S1, against "tying the transition does worse under per-step readouts on every seed" and "the two tyings are non-additive" (NOTE Interpretation 2).** Both claims are read at exactly 10,000 updates, with cells still rising.
   - *Test.* Is the sign stable over the last 2,000 updates? I check every logged evaluation from 8,000 to 10,000 (41 per run), per seed: UU − TU and the interaction (TT − TU) − (UT − UU).
   - *Prediction.* UU − TU > 0 at every one of those evaluations in every seed, and the interaction > 0 at every one. If either flips sign at any evaluation in any seed, the "every seed" wording is fragile to the endpoint.

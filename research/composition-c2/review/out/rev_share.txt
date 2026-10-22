@@ -1,0 +1,16 @@
+PASS recipe: all 12 lane runs (UT, UU, TT and TU replays) have step weights 1 1 1, their cell's scheme, lr 1e-3, wd 0.1, the original task, the init seed in their ID, 10,000 updates, width 128, no resume
+PASS init identity: per seed, the step-0 rows (train, held, held_final_pred) of TT, TU, UT and UU are identical
+PASS replays: every logged row (201 per run) of the 6 TT/TU replays equals r1's published row in step, train, held, held_final_pred
+PASS parameter counts from the checkpoints: {'tt': {19208}, 'tu': {21272}, 'ut': {53256}, 'uu': {55320}}; every parameter is decayed (decoupled wd on all)
+PASS gradient aggregation at init (seeds 51200-51202, all 384 training rows, weights 1 1 1): untied copies sum to the tied gradient  [worst relative diff 1.7e-16]
+PASS 12 ckpt-10000 rescored: held-out, train and the prediction string equal the last logged row; N/notN equal held_subset where logged
+INFO TT held | N | notN | train at 10k: [(1.0, 1.0, 1.0, 1.0), (0.961, 1.0, 0.881, 1.0), (1.0, 1.0, 1.0, 1.0)]
+INFO TU held | N | notN | train at 10k: [(0.633, 0.826, 0.238, 1.0), (0.523, 0.744, 0.071, 1.0), (0.516, 0.744, 0.048, 1.0)]
+INFO UT held | N | notN | train at 10k: [(0.836, 0.953, 0.595, 1.0), (0.68, 0.849, 0.333, 1.0), (0.625, 0.837, 0.19, 1.0)]
+INFO UU held | N | notN | train at 10k: [(0.766, 0.953, 0.381, 1.0), (0.609, 0.814, 0.19, 1.0), (0.703, 0.919, 0.262, 1.0)]
+INFO s51200, 41 evaluations 8,000-10,000: UU - TU min +0.109 max +0.156, negative at 0; interaction min +0.289 max +0.398; held-out change 8k->10k TT +0.031, TU +0.102, UT +0.141, UU +0.109
+INFO s51201, 41 evaluations 8,000-10,000: UU - TU min +0.055 max +0.117, negative at 0; interaction min +0.344 max +0.430; held-out change 8k->10k TT +0.078, TU +0.094, UT +0.102, UU +0.070
+INFO s51202, 41 evaluations 8,000-10,000: UU - TU min +0.164 max +0.203, negative at 0; interaction min +0.547 max +0.609; held-out change 8k->10k TT +0.055, TU +0.070, UT +0.078, UU +0.094
+PASS CX-S1 prediction: UU - TU > 0 at every logged evaluation 8,000-10,000 in every seed
+PASS CX-S1 prediction: interaction (TT - TU) - (UT - UU) > 0 at every logged evaluation 8,000-10,000 in every seed
+ALL PASS

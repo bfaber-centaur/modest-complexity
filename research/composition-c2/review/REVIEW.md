@@ -6,8 +6,8 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 |---|---|---|
 | Pin `b3e8132` (common/, recovered/, verify_resume) | **CONCERN** (C1). Training may start. | §1 |
 | Time | M0 read: two wording notes (T0.1, T0.2). Results NOT CHECKED. | §2 |
-| Sharing | NOT CHECKED | |
-| Generalization | Part A (`30c495f`, PR #51): **PASS** on every number. CX-G1 failed as predicted-against, which bounds the iteration claim (G1). Part B NOT CHECKED. | §3 |
+| Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd-0 follow-up NOT CHECKED. | §5 |
+| Generalization | Part A (`30c495f`) and Part B (`99c83c8`), PR #51: **PASS** on every number. Draws are real (CX-G2). CONCERN G1 bounds the iteration claim. Follow-up and NOTE NOT CHECKED. | §3 |
 | Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. **CONCERN M1** on the centroid/residual reading, from CX-M1. NOTE wording notes M2, M3. | §4 |
 
 ## 1. Pin check (`b3e8132`)
@@ -122,6 +122,34 @@ Evidence: [rev_gen.py](rev_gen.py) with `30c495f`; output in [out/rev_gen.txt](o
 
 **G2 (note on the figure).** At L = 3 the solid points are "all programs": 384 of the 512 rows are training rows. The like-for-like comparison with L = 4–6 is the open held-out markers. This matters most in the tied/final panel, where the solid L = 3 point (0.82) is mostly training fit. The open markers are there; the caption or NOTE should say which to read.
 
+### Part B: replication on new tasks (`99c83c8`)
+
+Evidence: `rev_gen.py 30c495f 99c83c8`, `partb()`. Output in [out/rev_gen.txt](out/rev_gen.txt).
+
+**PASS.**
+- **Draws and splits.** I recomputed both from their seeds. Each draw is r1's permutation draw with r1's acceptance, plus all 84 products distinct. Each split is r1's `split`, checked Latin, with distinct squares per draw.
+  - The decision log, with seeds 63000 and 63001 and 63100–63103 all accepted and none rejected, equals `tasks.json`.
+  - The accepted tasks, permutations, squares and held-out programs equal `tasks.json` and `c2task.load`.
+- **Recipes.** All 16 runs are tied/tied, with inter `1 1 1` and final `0 0 1`. Task and init seed match the ID; lr 1e-3, wd 0.1, 10,000 updates, no resume.
+- **Init seeds are not task replication.** Within each (task, init seed), inter and final have identical step-0 rows, so they start from one function. The same seeds 63200 and 63201 meet every task. `ckpt-0` is local-only, so this is checked through the logged rows.
+- **Rescoring.** All 16 `ckpt-10000`, rescored on their own task with my forward and my ¬N recount, equal the last logged row. That covers the held-out string, held-out, train and ¬N.
+- **CX-G2: the new draws are real new tasks.** My prediction held.
+  - No pair among the original and the two new draws is a relabelling of another, under any symbol permutation (S8) with any op permutation (S4).
+  - Each draw's only automorphism is the identity. So the two splits of one draw, having distinct squares, are not relabellings of each other either.
+
+**Notes.**
+- **G3 (note): draw 63001 has a sink.** All four ops send symbol 2 to symbol 1, which the lane found and reports. Independently confirmed. Draw 63000 has no such symbol. It plausibly explains part of tied/final's higher held-out on that draw (0.49–0.56), and it is a property of the draw, not a defect.
+- **G4 (note): ¬N denominators differ by task.**
+
+  | task | ¬N rows |
+  |---|---|
+  | `ops63000-ls63100` | 33 |
+  | `ops63000-ls63101` | 32 |
+  | `ops63001-*` | 24 |
+  | original | 42 |
+
+  So ¬N accuracies are per-task fractions of different sizes. With 24 rows, one row is 0.042.
+
 ## 4. Mechanisms
 
 ### M1–M4 (`817a768`, PR #52; M1–M2 files unchanged since `0949fa0`)
@@ -168,3 +196,25 @@ Evidence: `rev_mech.py 817a768 817a768`; output in [out/rev_mech.txt](out/rev_me
 - Item 5: the V3 recipient frame is declared and applied as declared. I wrote that arm; my checks used the same code path as for the other arms.
 
 **Design note for follow-up B (`c2-mech-residual-a1`), written before I opened its files (I had seen only the coordinator's summary).** U_i is the span of the *centered* centroids. A pure scale residual, r ∝ c_i(x), therefore lies largely outside U, in the mean-centroid direction. "The harmful residual is outside U" would then partly restate the norm effect above. Reporting the component of r along c_i(x), or along the mean centroid, separately would keep the two apart. I will check B's numbers when they land.
+
+## 5. Sharing
+
+### M2 (`83b3303`, PR #54)
+
+Evidence: [rev_share.py](rev_share.py) with `83b3303`; output in [out/rev_share.txt](out/rev_share.txt). The TU cell is my r1 arm, so every contrast involving TU rests on my runs. The replays below reproduce them on the lane's host.
+
+**PASS.** These cover the charter's sharing checks.
+- **Recipe (D9).** All 12 lane runs (UT, UU, and the TT/TU replays) have step weights `1 1 1` and their cell's scheme, plus lr 1e-3, wd 0.1, the original task, the ID's init seed, 10,000 updates, width 128 and no resume.
+- **Identical initial functions.** Per seed, the step-0 rows of TT, TU, UT and UU are identical, including `held_final_pred`. `c2rnn.init` was also checked in §1: bitwise r1 draw, one function across schemes, independent copies.
+- **Gradient aggregation.** At init on seeds 51200–51202, with all 384 training rows and weights `1 1 1`, the untied copies' gradients sum to the tied gradient (relative difference 1.7e-16).
+- **Parameter and decay counts.** Read from the checkpoints: 19,208 / 21,272 / 53,256 / 55,320. Decay applies to every parameter. The lane makes no factorial parameter-control claim (NOTE Interpretation 4, Limitations).
+- **Replays.** All 201 logged rows of each of the 6 TT/TU replays equal r1's published rows. The replay checkpoints are local-only, so their arrays are NOT CHECKED.
+- **Endpoints.** All 12 `ckpt-10000`, rescored with my forward and recount, equal the last logged rows. NOTE's contrasts recompute from them: TT − UT +0.16 to +0.38, TU − UU −0.09 to −0.19, TT − TU +0.37 to +0.48, UT − UU −0.08 to +0.07.
+
+**CX-S1, the robustness of NOTE Interpretation 2: the claim survives.** My counterexample was committed at f966c73 before results.
+- UU − TU is positive at every one of the 41 logged evaluations from 8,000 to 10,000, in every seed (minimum +0.055).
+- The interaction (TT − TU) − (UT − UU) is positive at every one too (minimum +0.289).
+- So the "every seed" wording does not depend on the exact endpoint.
+- All four cells, TT included, were still rising from 8k to 10k (+0.03 to +0.14), as the NOTE says.
+
+**NOT CHECKED.** The decode and readout tables, the per-group optimizer tables, and the wd-0 follow-up.

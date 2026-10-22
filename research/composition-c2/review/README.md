@@ -4,6 +4,7 @@
 - [REVIEW.md](REVIEW.md): verdicts with exact artifact references.
 - [rev_pin.py](rev_pin.py): pin check of `b3e8132`, plus D10. Its output is [out/rev_pin.txt](out/rev_pin.txt).
 - [rev_gen.py](rev_gen.py): generalization lane checks at a lane commit, and CX-G1. Its output is [out/rev_gen.txt](out/rev_gen.txt).
+- [rev_share.py](rev_share.py): sharing lane checks at a lane commit, and CX-S1. Its output is [out/rev_share.txt](out/rev_share.txt).
 - [rev_mech.py](rev_mech.py): mechanisms lane checks at a lane commit, and CX-M1. Its output is [out/rev_mech.txt](out/rev_mech.txt).
 - [plan.json](plan.json), [registry.jsonl](registry.jsonl): reviewer runs (IDs `c2-rev-`, seeds 65000–65999). Outputs are local in `runs/c2/` (gitignored). [runs/](runs/MANIFEST.sha256) holds their small files and a manifest.
 
@@ -16,8 +17,9 @@ uv run --locked python research/regimes/common/run_jobs.py --plan research/compo
     --registry research/composition-c2/review/registry.jsonl --session-label c2-rev-cloud-1 --workers 1 \
     --ids c2-rev-verify-final-s51200-a1
 uv run --locked python research/composition-c2/review/rev_pin.py runs/c2 > research/composition-c2/review/out/rev_pin.txt
-uv run --locked python research/composition-c2/review/rev_gen.py 30c495f > research/composition-c2/review/out/rev_gen.txt
+uv run --locked python research/composition-c2/review/rev_gen.py 30c495f 99c83c8 > research/composition-c2/review/out/rev_gen.txt
 uv run --locked python research/composition-c2/review/rev_mech.py 817a768 817a768 > research/composition-c2/review/out/rev_mech.txt
+uv run --locked python research/composition-c2/review/rev_share.py 83b3303 > research/composition-c2/review/out/rev_share.txt
 ```
 
 `rev_pin.py` §7 reads the run's `ckpt-10000.npz`, which is local-only.
@@ -33,3 +35,5 @@ uv run --locked python research/composition-c2/review/rev_mech.py 817a768 817a76
 | 04:17–04:20 | `rev_gen.py` (generalization Part A): one crash on the `steps.csv` summary row, then two complete passes | 3.4 + 15.6 + 16.3 s | 2.4 min |
 | 04:25–04:27 | `rev_mech.py` (mechanisms M1–M2, CX-M1), two passes | 13.4 + 13.5 s | 2.9 min |
 | 04:29 | `rev_mech.py` at `817a768` with follow-up B | 25.3 s | 3.3 min |
+| 04:31 | `rev_share.py` (sharing M2, CX-S1) | 0.6 s | 3.3 min |
+| 04:33 | `rev_gen.py` with Part B and CX-G2 | 20.4 s | 3.7 min |
