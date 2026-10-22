@@ -258,3 +258,24 @@ The queue is a seeded interleaving (`default_rng(20261025)`).
 Recovery is flagged if accuracy reaches A(s) + 0.05. Readings are reported per run.
 
 **Cost.** About 2.6 min elapsed, which brings the lane to about 5.5 of its 20 min. This is the lane's one follow-up.
+
+## D14 (2026-10-22) Mechanisms first figure reviewed; intervention approved in principle
+
+**Review.** The coordinator reviewed the mechanisms first figure (PR #35) and integrated it with the audit pending (`52f25d0`). The figure meets D8:
+- each decomposition states its object, its basis rule and its reconstruction error;
+- the replays equal the e3 runs at every shared checkpoint;
+- only the D5 fixed states are committed, together with the hashes of all checkpoints.
+
+**The intervention.** The lane's one intervention ([../mechanisms/INTERVENTION.md](../mechanisms/INTERVENTION.md), `203dc54`, written before any code or run) is approved in principle. It has two arms, three sources each, with everything else as the D7 wd 1 replays:
+- **exempt-reference** decay, `xref`;
+- **reference-only** decay, `onlyref`.
+
+It runs only when four conditions are met:
+
+1. **The shared-code patch comes first.** It adds `--decay-projection FILE` and `--decay-on {rest,reference}` to `experiment.py`, and the matching plan fields to `launch_runs.py`, on the lane branch. It has a test, and the coordinator reviews and pins it (D3).
+   - Without the flags, the update must stay bitwise unchanged. A replay of a D7 run at the patched code must equal the published states.
+   - The decay must sit at the same place in the step as the current decoupled decay.
+   - Adam moments must stay gradient-only.
+2. **The projection file is committed and hashed.** It records the per-unit k_j per source, chosen at update 0 without labels. The file states that P keeps both the cosine and sine components at ±k_j, and that DC belongs to "the rest". Its hash goes in the plan.
+3. **The pre-stated reading in INTERVENTION.md stands as written**, including the caveat about coupling through the loss.
+4. **The analysis of the random-feature control runs (D11–D12) goes to the auditor**, as part of its decomposition audit. The mechanisms lane stays on its intervention.
