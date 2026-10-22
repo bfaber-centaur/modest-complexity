@@ -222,3 +222,9 @@ Three things in the first pass need entries before the second pass.
 - **`c3-rev-scaf-fu-a1` complete (72 s): every line passes, and CX-F1 held.**
   - **Post-hoc, after reading the NOTE.** `rev_scaf_fu_posthoc.py` (reads logged rows only) tabulates A′ − A and B′ − B on held-out L3 and ¬N at 1,100–9,000, with A's own value. This was not pre-registered, and REVIEW §5 labels it that way.
   - **Figures.** I have also looked at `scaf_followup.png`.
+
+### Synthesis at `05515a2` (draft PR #70), with `rev_synth.py`, before its run
+
+I read the draft synthesis at `f2c7c63`, and then its revision at `05515a2`, which is the head of PR #70. The revision applies W-F1, W-F2 and CX-F1 itself, and it adds a section called "Not independently checked". After reading it, I added two post-hoc parts to `rev_synth.py`. They read records only and train or fit nothing.
+- **Keep control.** The A′ − A and B′ − B ranges over all logged rows. The `f2c7c63` draft said A′ − A stays "between −0.06 and +0.09 on every measure and time". That range covers only the fixed times from 10k on (my §5 output says "A from 10k on").
+- **Correction call site.** The pre-fix `check_source` call fails at the head. After `5b92e1b`, `corr_core.load_base` reproduces every recorded base field for all 14 bases, and `test_corr.py` passes.
