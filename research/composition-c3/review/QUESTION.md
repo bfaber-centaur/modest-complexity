@@ -193,3 +193,11 @@ Three things in the first pass need entries before the second pass.
   - Output: [out/rev_scaf.txt](out/rev_scaf.txt).
 - **Next, before running it: `rev_scaf_note.py`** (reads only). It checks the NOTE's numbers O1–O8 and handoff item 2 as quoted, with ranges at the NOTE's rounding.
 - **`rev_scaf_note.py` run (0.6 s).** Three NOTE lines failed at the quoted rounding: the L4–6 Δ_D upper end, "keep reaches 1.0 by 20k", and D's CE "8.6 / 11". All three are small. REVIEW §3 (N-S1 to N-S3) records them.
+
+### Follow-up at `5317c54` (PR #65), with `rev_scaf_fu.py`, before its run `c3-rev-scaf-fu-a1`
+
+- **Files read since `8340a69`.** NOTE §F, ADAPTIVE, `followup_checks.json`, the follow-up code in `scaf_analyze.py`, and the follow-up CSV headers and first rows. The predictions in §5 are unchanged.
+- **One adjustment to CX-F1, from the file layout.** The carried-keep verify runs commit no `ckpt-3000`, so A at 3k is r1's logged held-out accuracy at 3,000. S4 showed that logged and frozen held-out accuracy agree wherever both exist, and F2 checks that the verify runs equal r1's rows.
+- **Additions, with no prediction beyond "equal to the NOTE".**
+  - The script also checks the NOTE's §F numbers: F1–F5, the crossing table, handoff item 6, prediction 3's 7-of-12 count, and the O7 ratio used in the interpretation.
+  - Afterwards I check by hand that the M2 nits N-S1–N-S3 and the overplot caption were applied.
