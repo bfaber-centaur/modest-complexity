@@ -1,0 +1,12 @@
+{
+ "note": "Coordinator calibration jobs only; each lane keeps its own plan.json. Calibration seeds 900000+. a1 = before the backward-pass copy fix and malloc settings (wide-mlp 2000 updates); a2 = after (wide-mlp 400 updates).",
+ "runs": [
+  {"run_id": "r1-co-calib-serial-a1", "argv": ["research/regimes/coordinator/calibrate.py", "--out", "{out}", "--updates", "2000"], "timeout": 300},
+  {"run_id": "r1-co-calib-pairA-a1", "argv": ["research/regimes/coordinator/calibrate.py", "--out", "{out}", "--updates", "2000"], "timeout": 300},
+  {"run_id": "r1-co-calib-pairB-a1", "argv": ["research/regimes/coordinator/calibrate.py", "--out", "{out}", "--updates", "2000"], "timeout": 300}
+,
+  {"run_id": "r1-co-calib-serial-a2", "argv": ["research/regimes/coordinator/calibrate.py", "--out", "{out}", "--updates", "2000"], "timeout": 300},
+  {"run_id": "r1-co-calib-pairA-a2", "argv": ["research/regimes/coordinator/calibrate.py", "--out", "{out}", "--updates", "2000"], "timeout": 300},
+  {"run_id": "r1-co-calib-pairB-a2", "argv": ["research/regimes/coordinator/calibrate.py", "--out", "{out}", "--updates", "2000"], "timeout": 300}
+ ]
+}

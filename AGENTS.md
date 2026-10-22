@@ -1,5 +1,10 @@
 # Repository workflow
 
+## Regime expedition r1 (branch `swarm/regimes`)
+
+Branch `swarm/regimes` hosts Bobby's four-regime expedition, opened and completed on 2026-10-22, separately from the e4 round. Its synthesis is [research/regimes/coordinator/SYNTHESIS.md](research/regimes/coordinator/SYNTHESIS.md). For r1 work, [research/regimes/PLAN.md](research/regimes/PLAN.md) and the role files in `research/regimes/coordinator/prompts/` supersede the swarm assignments below. r1 PRs target `swarm/regimes`. Nothing from r1 is merged into `swarm/exploration`, either `main` or upstream without Bobby's review. The general rules below still apply: small implementation, figures, provenance.
+
+
 For this exploratory swarm, the coordinator integrates on `swarm/exploration` in `bfaber-centaur/modest-complexity`. Workers branch from the coordinator's pinned shared-code commit and open PRs in the same repository targeting `swarm/exploration`. Only the coordinator integrates worker changes after relevant checks. Do not push swarm work to either repository's main branch or merge upstream. Bobby's local work remains on main.
 
 The coordinator returns the integrated review packet and may prepare a curated PR for Bobby's review against `bubskee/modest-complexity` main. Refresh upstream first and exclude unrelated or already-merged work. No upstream merge is authorized.

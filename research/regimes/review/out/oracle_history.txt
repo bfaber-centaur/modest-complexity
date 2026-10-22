@@ -1,0 +1,19 @@
+PASS domain row i has x_k = (i >> k) & 1 for all 1024 x 10 entries
+PASS lane labels A equal the string-bit rewrite; balance 512/1024
+PASS lane labels Brel equal the string-bit rewrite; balance 512/1024
+PASS lane labels Bunrel equal the string-bit rewrite; balance 512/1024
+PASS lane labels notA equal the string-bit rewrite; balance 512/1024
+PASS A vs Brel: label agreement over the domain is exactly 1/2
+PASS A vs Bunrel: label agreement over the domain is exactly 1/2
+PASS Brel vs Bunrel: label agreement over the domain is exactly 1/2
+PASS split: 256/768, disjoint, covers the domain, equals choice(1024, 256) at seed 53100
+INFO train A: positives 132/256, per-pattern counts of its 3 bits [24, 32, 37, 35, 38, 33, 32, 25]
+PASS train A: all 8 patterns of its relevant bits present
+INFO train Brel: positives 132/256, per-pattern counts of its 3 bits [28, 33, 32, 27, 34, 32, 37, 33]
+PASS train Brel: all 8 patterns of its relevant bits present
+INFO train Bunrel: positives 121/256, per-pattern counts of its 3 bits [31, 28, 36, 31, 30, 38, 35, 27]
+PASS train Bunrel: all 8 patterns of its relevant bits present
+PASS ce_acc equals a per-row loop
+PASS every checkpoint-started plan entry passes --from-sha256 (39/39)
+PASS each source checkpoint path is named with exactly one hash across all its branches  [3 source files]
+ALL PASS

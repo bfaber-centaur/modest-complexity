@@ -1,0 +1,276 @@
+{
+ "out": "runs/regimes/r1-rev-comp-rnn-untied-s51200-a1",
+ "condition": "inter",
+ "init_seed": 51200,
+ "task_seed": 51000,
+ "split_seed": 51100,
+ "shuffle_seed": 51300,
+ "model": "rnn",
+ "hidden": [
+  128,
+  128
+ ],
+ "updates": 10000,
+ "lr": 0.001,
+ "wd": 0.1,
+ "eval_every": 50,
+ "checkpoint_steps": [
+  0,
+  1000
+ ],
+ "run_id": "r1-rev-comp-rnn-untied-s51200-a1",
+ "purpose": "review",
+ "task_seed_used": 51000,
+ "seeds_by_role": {
+  "task": 51000,
+  "split": 51100,
+  "init": 51200,
+  "label_shuffle": null
+ },
+ "ops": [
+  [
+   7,
+   0,
+   1,
+   2,
+   4,
+   6,
+   5,
+   3
+  ],
+  [
+   5,
+   0,
+   7,
+   2,
+   6,
+   1,
+   3,
+   4
+  ],
+  [
+   6,
+   3,
+   0,
+   5,
+   1,
+   2,
+   7,
+   4
+  ],
+  [
+   6,
+   1,
+   4,
+   3,
+   0,
+   5,
+   7,
+   2
+  ]
+ ],
+ "latin_square": [
+  [
+   0,
+   1,
+   3,
+   2
+  ],
+  [
+   3,
+   2,
+   0,
+   1
+  ],
+  [
+   2,
+   0,
+   1,
+   3
+  ],
+  [
+   1,
+   3,
+   2,
+   0
+  ]
+ ],
+ "held_out_programs": [
+  [
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   1,
+   1
+  ],
+  [
+   0,
+   2,
+   3
+  ],
+  [
+   0,
+   3,
+   2
+  ],
+  [
+   1,
+   0,
+   3
+  ],
+  [
+   1,
+   1,
+   2
+  ],
+  [
+   1,
+   2,
+   0
+  ],
+  [
+   1,
+   3,
+   1
+  ],
+  [
+   2,
+   0,
+   2
+  ],
+  [
+   2,
+   1,
+   0
+  ],
+  [
+   2,
+   2,
+   1
+  ],
+  [
+   2,
+   3,
+   3
+  ],
+  [
+   3,
+   0,
+   1
+  ],
+  [
+   3,
+   1,
+   3
+  ],
+  [
+   3,
+   2,
+   2
+  ],
+  [
+   3,
+   3,
+   0
+  ]
+ ],
+ "heldout_is_trained": false,
+ "exposure": {
+  "fit_rows": 384,
+  "updates": 10000,
+  "row_presentations": 3840000,
+  "labels_per_row": 3,
+  "heads": {
+   "step1": 8,
+   "step2": 8,
+   "final": 8
+  },
+  "parameters": {
+   "Ws": 1024,
+   "bs": 128,
+   "A": 16384,
+   "B": 512,
+   "bh": 128,
+   "V1": 1024,
+   "bv1": 8,
+   "V2": 1024,
+   "bv2": 8,
+   "V3": 1024,
+   "bv3": 8
+  },
+  "total_parameters": 21272
+ },
+ "sha256": {
+  "ops": "dd6d868c83feafa402ae10ed54148979a58c804d90e10690ee39dbd83bdab808",
+  "fit_inputs": "6529a287b6f0640e80294c2fcc705cb169179d22b9370835221519e91d113f53",
+  "fit_targets": "b5b8c0bc8e1c380a9f9f9bec552be2897075eb3e93472d9143b91baec90ed990",
+  "train_rows": "f68ac37c221d9100757ad5291baa4ca74f062962bc0b733f001d9b056ec38342",
+  "held_rows": "cf4926f892015073d28c3d7630deba3589a3237a8f42e8429d3bdaed8a06392b"
+ },
+ "provenance": {
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "visible_cpus": 4,
+  "affinity": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "thread_environment": {
+   "OPENBLAS_NUM_THREADS": "1",
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "BLIS_NUM_THREADS": "1"
+  },
+  "numpy_config": "{\n  \"Compilers\": {\n    \"c\": {\n      \"name\": \"gcc\",\n      \"linker\": \"ld.bfd\",\n      \"version\": \"14.2.1\",\n      \"commands\": \"cc\"\n    },\n    \"cython\": {\n      \"name\": \"cython\",\n      \"linker\": \"cython\",\n      \"version\": \"3.2.1\",\n      \"commands\": \"cython\"\n    },\n    \"c++\": {\n      \"name\": \"gcc\",\n      \"linker\": \"ld.bfd\",\n      \"version\": \"14.2.1\",\n      \"commands\": \"c++\"\n    }\n  },\n  \"Machine Information\": {\n    \"host\": {\n      \"cpu\": \"x86_64\",\n      \"family\": \"x86_64\",\n      \"endian\": \"little\",\n      \"system\": \"linux\"\n    },\n    \"build\": {\n      \"cpu\": \"x86_64\",\n      \"family\": \"x86_64\",\n      \"endian\": \"little\",\n      \"system\": \"linux\"\n    }\n  },\n  \"Build Dependencies\": {\n    \"blas\": {\n      \"name\": \"scipy-openblas\",\n      \"found\": true,\n      \"version\": \"0.3.30\",\n      \"detection method\": \"pkgconfig\",\n      \"include directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/include\",\n      \"lib directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/lib\",\n      \"openblas configuration\": \"OpenBLAS 0.3.30  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=64\",\n      \"pc file directory\": \"/project/.openblas\"\n    },\n    \"lapack\": {\n      \"name\": \"scipy-openblas\",\n      \"found\": true,\n      \"version\": \"0.3.30\",\n      \"detection method\": \"pkgconfig\",\n      \"include directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/include\",\n      \"lib directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/lib\",\n      \"openblas configuration\": \"OpenBLAS 0.3.30  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=64\",\n      \"pc file directory\": \"/project/.openblas\"\n    }\n  },\n  \"Python Information\": {\n    \"path\": \"/tmp/build-env-aw1mwcap/bin/python\",\n    \"version\": \"3.12\"\n  },\n  \"SIMD Extensions\": {\n    \"baseline\": [\n      \"SSE\",\n      \"SSE2\",\n      \"SSE3\"\n    ],\n    \"found\": [\n      \"SSSE3\",\n      \"SSE41\",\n      \"POPCNT\",\n      \"SSE42\",\n      \"AVX\",\n      \"F16C\",\n      \"FMA3\",\n      \"AVX2\",\n      \"AVX512F\",\n      \"AVX512CD\",\n      \"AVX512_SKX\",\n      \"AVX512_CLX\",\n      \"AVX512_CNL\",\n      \"AVX512_ICL\",\n      \"AVX512_SPR\"\n    ],\n    \"not found\": [\n      \"AVX512_KNL\",\n      \"AVX512_KNM\"\n    ]\n  }\n}\n",
+  "cgroup": {
+   "/proc/self/cgroup": "9:name=systemd:/\n8:pids:/\n7:blkio:/\n6:freezer:/\n5:devices:/\n4:memory:/process_api/01a16175-8473-7383-bd55-a292699bf637/claude-code-bash\n3:cpuset:/\n2:cpuacct:/process_api/01a16175-8473-7383-bd55-a292699bf637/cc-shell\n1:cpu:/\n0::/\n",
+   "/proc/self/mountinfo": "38 37 0:30 / /sys/fs/cgroup/cpu rw,relatime - cgroup cgroup rw,cpu\n39 37 0:31 / /sys/fs/cgroup/cpuacct rw,relatime - cgroup cgroup rw,cpuacct\n40 37 0:32 / /sys/fs/cgroup/cpuset rw,relatime - cgroup cgroup rw,cpuset\n41 37 0:33 / /sys/fs/cgroup/memory rw,relatime - cgroup cgroup rw,memory\n42 37 0:34 / /sys/fs/cgroup/devices rw,relatime - cgroup cgroup rw,devices\n43 37 0:35 / /sys/fs/cgroup/freezer rw,relatime - cgroup cgroup rw,freezer\n44 37 0:36 / /sys/fs/cgroup/blkio rw,relatime - cgroup cgroup rw,blkio\n45 37 0:37 / /sys/fs/cgroup/pids rw,relatime - cgroup cgroup rw,pids\n46 37 0:38 / /sys/fs/cgroup/systemd rw,relatime - cgroup cgroup rw,name=systemd\n47 37 0:39 / /sys/fs/cgroup/unified rw,relatime - cgroup2 cgroup2 rw",
+   "/sys/fs/cgroup/memory/process_api/01a16175-8473-7383-bd55-a292699bf637/claude-code-bash/memory.limit_in_bytes": "14343688192",
+   "/sys/fs/cgroup/memory/process_api/01a16175-8473-7383-bd55-a292699bf637/claude-code-bash/memory.usage_in_bytes": "1773801472",
+   "/sys/fs/cgroup/memory/process_api/01a16175-8473-7383-bd55-a292699bf637/memory.limit_in_bytes": "9223372036854771712",
+   "/sys/fs/cgroup/memory/process_api/01a16175-8473-7383-bd55-a292699bf637/memory.usage_in_bytes": "2361204736",
+   "/sys/fs/cgroup/memory/process_api/memory.limit_in_bytes": "9223372036854771712",
+   "/sys/fs/cgroup/memory/process_api/memory.usage_in_bytes": "2361536512",
+   "/sys/fs/cgroup/memory/memory.limit_in_bytes": "9223372036854771712",
+   "/sys/fs/cgroup/memory/memory.usage_in_bytes": "2330947584",
+   "/sys/fs/cgroup/cpu/cpu.stat": "nr_periods 0\nnr_throttled 0\nthrottled_time 0\nnr_bursts 0\nburst_time 0",
+   "/sys/fs/cgroup/cpu/cpu.cfs_quota_us": "-1",
+   "/sys/fs/cgroup/cpu/cpu.cfs_period_us": "100000",
+   "/sys/fs/cgroup/unified/cpu.stat": "usage_usec 260259292\nuser_usec 215424315\nsystem_usec 44834977\nnice_usec 0"
+  },
+  "disk_free_bytes": 30725148672,
+  "git_commit": null,
+  "git_status": null,
+  "source_sha256": {
+   "experiment.py": "1c7e6cbfc847d17b2cc478751e0d75d8f045cd8025394dfba9889e9a167f4c98",
+   "instrumentation.py": "fea99e7be8d53c5a5df4302311b14479060fa946a776e53674670394c307571a"
+  },
+  "environment_sha256": {},
+  "peak_rss_scope": "current process lifetime; excludes children",
+  "cgroup_note": "Raw process membership and visible ancestor limits; unavailable on macOS.",
+  "lane_source_sha256": {
+   "research/regimes/composition/task.py": "753af8752e1ec21e4f89a9e1b7da8b0308c7a7fb45735098b449259e2e174c21",
+   "research/regimes/composition/train.py": "3e09b94c910f5fe41d50611313d1bba4e72f036571e1449abed7bd4d5e3338e6",
+   "research/regimes/common/nets.py": "1a1e3ef27af63fc7b0f540f100fe165c48076b035230b186aa065a56a981689a"
+  }
+ },
+ "reviewer": {
+  "lane_commit": "de0ef92",
+  "mode": "untied",
+  "wrapper_sha256": "fbdcc1528102f0815f7ef766cd057b65c30ce53ac25ada3c8207562641d8d183",
+  "checks": {
+   "identical_to_lane_at_init": true,
+   "finite_difference_worst_abs_error": 7.43435077388277e-10,
+   "finite_difference_entries": 288
+  },
+  "note": "seeds reused from the lane runs on purpose, to pair this arm with theirs"
+ }
+}

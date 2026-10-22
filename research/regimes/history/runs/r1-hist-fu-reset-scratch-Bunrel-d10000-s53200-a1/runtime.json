@@ -1,0 +1,27 @@
+{
+ "status": "complete",
+ "updates": 4000,
+ "train_rows": 256,
+ "updates_per_second": 1755.2,
+ "finished": "2026-10-22T02:55:07Z",
+ "wall_seconds": 4.782235754999874,
+ "cpu_seconds": 4.7202901310000005,
+ "peak_rss_bytes": 46993408,
+ "phases": {
+  "snapshots": {
+   "calls": 2,
+   "wall_seconds": 2.102146857000207,
+   "cpu_seconds": 2.081791355
+  },
+  "updates": {
+   "calls": 4000,
+   "wall_seconds": 2.2788920669970594,
+   "cpu_seconds": 2.2631012640000017
+  },
+  "evaluation": {
+   "calls": 220,
+   "wall_seconds": 0.3072339639988968,
+   "cpu_seconds": 0.30278941799999837
+  }
+ }
+}

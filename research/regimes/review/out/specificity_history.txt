@@ -1,0 +1,21 @@
+PASS every replayed end-of-B snapshot equals the lane snapshot (metrics, readout, null: exact float equality)
+held-out readout accuracy (lane recipe, 2,000 updates), targets A | C1 = x7^x8^x9 | C2 = x0^x1^x7
+  seed 53200  untrained              A 0.583   C1 0.599   C2 0.600   A-C1 -0.016
+  seed 53200  end of A (ckA)         A 0.992   C1 0.566   C2 0.688   A-C1 +0.426
+  seed 53200  end of Brel d=1000     A 1.000   C1 0.615   C2 0.863   A-C1 +0.385
+  seed 53200  end of Brel d=10000    A 1.000   C1 0.633   C2 0.900   A-C1 +0.367
+  seed 53200  end of Bunrel d=1000   A 0.932   C1 0.499   C2 0.658   A-C1 +0.434
+  seed 53200  end of Bunrel d=10000  A 0.910   C1 0.510   C2 0.667   A-C1 +0.400
+  seed 53201  untrained              A 0.612   C1 0.600   C2 0.566   A-C1 +0.012
+  seed 53201  end of A (ckA)         A 0.997   C1 0.530   C2 0.659   A-C1 +0.467
+  seed 53201  end of Brel d=1000     A 0.997   C1 0.516   C2 0.779   A-C1 +0.482
+  seed 53201  end of Brel d=10000    A 0.988   C1 0.556   C2 0.746   A-C1 +0.432
+  seed 53201  end of Bunrel d=1000   A 1.000   C1 0.525   C2 0.613   A-C1 +0.475
+  seed 53201  end of Bunrel d=10000  A 1.000   C1 0.547   C2 0.603   A-C1 +0.453
+  seed 53202  untrained              A 0.633   C1 0.582   C2 0.611   A-C1 +0.051
+  seed 53202  end of A (ckA)         A 0.993   C1 0.526   C2 0.656   A-C1 +0.467
+  seed 53202  end of Brel d=1000     A 0.975   C1 0.540   C2 0.836   A-C1 +0.435
+  seed 53202  end of Brel d=10000    A 0.977   C1 0.542   C2 0.805   A-C1 +0.435
+  seed 53202  end of Bunrel d=1000   A 0.995   C1 0.501   C2 0.602   A-C1 +0.493
+  seed 53202  end of Bunrel d=10000  A 0.992   C1 0.505   C2 0.579   A-C1 +0.487
+ALL PASS
