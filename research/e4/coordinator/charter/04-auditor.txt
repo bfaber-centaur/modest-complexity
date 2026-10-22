@@ -1,0 +1,35 @@
+Continue modest-complexity as the e4 independent auditor.
+
+Repository: bfaber-centaur/modest-complexity
+Integration/PR target: swarm/exploration. Use the existing four Claude threads.
+Read AGENTS.md and the current research/e3/coordinator/INDEX.md, SYNTHESIS.md, DECISIONS.md, and relevant audit findings. Inspect current HEAD; do not assume an older commit. Preserve historical artifacts and unrelated walkthrough work. No upstream merge or paid compute.
+
+Purpose: exploratory science, checked for correctness and ready for human review. We have retired simplicity as the organizing hypothesis. The question is: between the post-filter accuracy peak and collapse, what changes in the computation, and which changes cause the loss of correct answers?
+
+Starting evidence (verify against the repo): at p=31, width 128, a single hidden ReLU layer, full-batch AdamW, lr .001, 299 training pairs, the dominant-frequency weight edit lifts three failed models from about 0% to 43–58% held-out accuracy. Further training raises this to 74–87% within roughly 100 updates, then original decay=1 brings accuracy near chance by 5k. With decay=0, accuracy remains 56–62% at 20k, though it declines from its peak. A rank trace remains after collapse; the collapsed network is not the original network. The early rise survives a smaller learning rate and a gradient-descent probe. These are local observations, not evidence of a universal mechanism.
+
+Competing explanations: useful components shrink/disappear; competing contributions overwhelm them; feature/readout alignment or ReLU gating changes; combinations or an alternative you identify. Do not force a winner.
+
+Important limitations: our filter changes weights and ReLU gates. It may supply useful structure rather than expose an untouched subnetwork. Random-feature controls showed PARTIAL gains (14–30%), not gains matching trained filtered models. Raw logit growth is not increasing relative preference. AdamW decay is decoupled: do not silently interpret it as ordinary gradient descent on cross-entropy plus an L2 penalty. Weight norm alone is not function complexity.
+
+Working rules: short QUESTION.md before new measurements, stating prior observations, alternatives, and distinguishing outcomes. Existing checkpoints first; one useful figure before expansion. Reuse the locked environment and existing code. Keep implementations small and inspectable. Unique run IDs and shared-code changes go through the coordinator. Report all seeds, missing/capped runs, and selection rules. Explorers get one grounded investigation and one adaptive follow-up, with new directions recorded before running. Treat repeated checkpoints and replays as dependent observations. Deliver concise figures-first findings with source tables, regeneration commands, and explicit limits.
+
+Own research/e4/audit/. Read e3 audit investigations 3–6 and the current synthesis. Coordinate checks with the e4 pin. You may independently analyze existing artifacts; new scientific training requires central claims. Label diagnostic replays as such.
+
+Read the intervention definitions in Varma et al. https://arxiv.org/abs/2309.02390 and Janati et al. https://arxiv.org/abs/2608.07436. Your main question: are we measuring a computation already present, or supplying structure through a decomposition/intervention?
+
+First investigation
+Audit the mechanisms lane's proposed decomposition before trusting a compelling figure. Check exact reconstruction where claimed, basis selection, label dependence, gate changes, time alignment, and which quantities are invariant to positive score scaling/common shifts. Distinguish weight-based filtering, activation intervention, and descriptive Fourier projection of the whole input-output table.
+
+Construct the strongest cheap control relevant to the favored explanation. Examples: frozen random features with a fitted readout; a phase/frequency sham; a scale-only change; a decomposition that preserves spectral energy but alters phase. Use the control that tests the actual inference. Do not mechanically run every null. A null that destroys the answer relation cannot alone prove that training discovered a particular mechanism.
+
+Check that apparent disappearance of a component is not a changed basis/threshold, and that apparent masking is supported by additive logit accounting rather than two nonlinear edited networks being treated as summands. Consider alternative decompositions when the conclusion depends on the chosen one.
+
+Dynamics checks
+Verify identical start weights, original data/evaluation identities, moments/step reset semantics, decay-only config differences, run accounting, checkpoint scores, and a meaningful independent short replay. Verify formulas and censoring for collapse timing. Cumulative decay exposure matches the explicit shrinkage factor, not the optimizer trajectory; challenge claims that overinterpret aligned curves.
+
+Intervention checks
+Compare immediate effects and recovery separately. Confirm that intervention selection/amplitude does not silently use held-out performance. Measure and disclose unmatched training damage or perturbation size. Frozen-parameter experiments must say whether both decay and gradient updates are disabled for those parameters.
+
+Output
+A short pre-computation question and decision rule; one independently generated figure when informative; numerical verdicts with meaningful tolerances; strongest surviving alternative; and the cheapest discriminating next check. Scope objections to affected claims. Do not demand exact late-trajectory identity when known floating-point sensitivity leaves functional results intact; investigate discrepancies before dismissing them.
