@@ -38,3 +38,5 @@
 | 04:47 | coordinator | relays sent after the hourly cap cleared: time F1 approved + T1/CX-T2/CX-T1 for NOTE; mechanisms M1–M3/O6 | |
 | 04:48 | coordinator | merged generalization PR #51 (6fe1435, NOTE with G1/G2/G5/G6) and sharing PR #54 (f1b0f93, NOTE with S1/CX-S2) into `swarm/composition-c2`; reviewer's unchecked items stay listed in INDEX | 344f8e2, 52e4f7d |
 | 04:50 | coordinator | merged mechanisms PR #52 (0fe8624: NOTE takes review §4 M1–M3/O6, no numbers changed) | 31f0fcc |
+| 04:57 | coordinator | Bobby uploaded the c3 follow-up packet (learned correction, temporary scaffolding, reviewer); queued until c2's review is complete and its handoff is pinned; copy at `/mnt/project-files/composition-c3/` | cmsg_01APdvkRg6kVtZy2e9JoDcdTYZspzxZdnEueRqJCsDp7Qd |
+| 05:00 | time | M3: F1 done, tt-final 50k→100k ×3, joins and recipes exact, ckpt-75000/100000 committed; held-out at 100k 0.898 / 0.961 / 0.914, ¬N 0.74 / 0.88 / 0.74; only s51201 crosses (95,050); still rising +0.02 to +0.06 over the last 10k, held-out CE down 28–52%; all in the √v̂ < eps regime; 22.4 of 40 min (6 ms/update on this run); NOTE next | PR #55 at ec28b28 |
