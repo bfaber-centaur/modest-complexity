@@ -73,6 +73,29 @@ I have read its QUESTION.md (`b1928fe`) and nothing else from the lane. Its bran
 - **CX-S1, length 3 hiding length transfer.** At S = 10k, if B or C is "retained" at length 3 (within 0.05 of keep at 50k), my own exhaustive evaluation of its `ckpt-50000` at L = 6 is ≥ 0.05 below keep's `ckpt-50000` in at least one seed. The shared readout reads h1 or h2 (train step-1 or step-2 accuracy) below 0.9 in at least two seeds. If neither holds, "retention at length 3" also carries length transfer here, and I say so.
 - **CX-S2, decay without the intermediate loss.** Decoupled decay alone shrinks a parameter that no remaining loss supports by (1 − 1e-4)^40,000 ≈ e^−4 over 10k → 50k. Prediction: at S = 10k, every B branch's parameter norm at `ckpt-50000` is below keep's at 50k in all three seeds. The h1/h2 readout directions shrink most, measured by ‖V‖ against keep. If the norms are equal or larger, the final-only loss alone sustains the whole solution's scale.
 
+## 4. Re-pin check of `82cef77` (DECISIONS D10, `--reset-optimizer-at`)
+
+Read so far: the diff `fa02bf7..82cef77` of `common/` and D10. No run at the new pin exists yet. Script to come: `rev_repin.py`, with my own Adam update written from the recipe (m, v, bias correction by the count, decoupled decay `p·(1 − lr·wd)`), and the pinned `c2rnn.loss_grad`, which my pin check found bitwise r1's.
+
+**Runs** (plan entries in this commit; the continuation's entry, which needs a checkpoint hash, follows after the first stage):
+- `c3-rev-repin-drop-s51200-a1` and `c3-rev-repin-taper-s51201-a1`: the argv of my `be41d16` runs `c3-rev-drop-s51200-a1` and `c3-rev-taper-whole-s51201-a1`, now at `82cef77`.
+- `c3-rev-reset-drop-s51200-a1`: r1 tied/inter s51200 `ckpt-1000`, drop at 1,000, reset at 1,000, to 1,400, checkpoints at 1,000–1,003 and 1,200.
+- `c3-rev-reset-keep-s51201-a1`: r1 tied/inter s51201 `ckpt-1000`, keep, reset at 1,000, to 1,003, checkpoints at 1,001–1,003.
+- `c3-rev-repin-a1`: `rev_repin.py`, reading the runs above.
+
+| # | check | prediction |
+|---|---|---|
+| RP0 | **Scope.** `be41d16..82cef77` changes only `c3train.py`, `test_c3.py` and the README in `common/`. `c3correct.py`, c2's `common/` (`b3e8132`) and `research/regimes/common/` are byte-identical | true |
+| RP1 | **Tests.** `test_c3.py` (9 tests) and `test_c2.py`, each in its own process | pass |
+| RP2 | **Runs without the flag are unchanged.** The two re-runs equal my `be41d16` runs bitwise: every checkpoint (weights, both moments, count) and every metrics row, including `--diag` | bitwise |
+| RP3 | **Old sources.** My pin check's 41 pairings, called with the new signature, give the same outcomes (27 accepted, 14 refused). My `be41d16` taper run's `ckpt-1800`, whose config has no `reset_at`, is accepted with its own flags and refused with a reset at 1,500 | same |
+| RP4 | **The reset itself.** The reset branch's `ckpt-1000` equals the r1 source in weights, moments and count (1,000). At 1,000 + k (k = 1, 2, 3) the count is k, meta `step` is 1,000 + k, and weights and moments equal my Adam from zero moments on the carried weights (≤ 1e-15 absolute; I also report whether bitwise). The same for keep. In the update at 1,000, every coordinate with \|g\| > 1e-4 moves by lr within 1e-4 relative, after removing decay | all |
+| RP5 | **Continuation.** Resuming the reset branch from its `ckpt-1200` (after R), and from its `ckpt-1000` (at R, pre-reset), with the same flags, gives its `ckpt-1400` and rows bitwise | bitwise |
+| RP6 | **Refusals**, by calling `check_source` directly. Reset branch `ckpt-1200`: no reset → refused; reset at 1,100 → refused; reset at 1,300 → refused; reset at 1,000 → accepted; its count forged to 1,200 → refused. Its `ckpt-1000`, no reset → accepted. r1 s51200 `ckpt-1000` with a reset at 500 → refused. r1 s51200 `ckpt-10000`: reset at 1,000 → refused; at 10,000 or 20,000 → accepted | as listed |
+| RP7 | **Records.** The reset branch's `config.json` holds `schedule.reset_at = 1000`, and its exposure equals the drop branch's without a reset | true |
+
+**Counterexample CX-R1, a reset is more than removing memory.** With a fresh state, Adam's bias correction makes the first updates close to sign steps of size lr per coordinate. The carried state at 1,000 holds ~1,000 updates of second-moment history, from when gradients were larger. So a reset also changes the step size for a while, not only the direction memory. Prediction: over updates 1,000–1,099, the reset branch's RMS per-coordinate move (decay removed) is at least 1.5× the carried branch's. This holds in all six seed × {keep, drop} pairs, in-process from the r1 tied/inter `ckpt-1000` states. If the ratio is near 1, "weights versus moments" is a clean attribution. If it is large, the reset arms also carry a burst of larger steps, and the follow-up's wording should say so.
+
 ## Revisions
 
 ### 05aac5a + runs (05:23–05:24), before any analysis of them
