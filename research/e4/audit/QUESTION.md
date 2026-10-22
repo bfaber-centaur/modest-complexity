@@ -141,3 +141,35 @@ Written before any channel, coherence or projection value was computed. Nothing 
   - It is computed over all 961 pairs, the 483 common pairs, and the 299 training pairs.
   - The full-table projection is g(d) = mean over a pair set of z(a, b, a+b−d). It gives common accuracy 1 if argmax_d g = 0 and 0 otherwise, and is computed over the same three pair sets.
   - Both are computed for A and B at updates 0, 100, 2,000 and 20,000.
+
+## Addendum 2 (2026-10-22, about 02:35 UTC): the coordinator's requests on the mechanisms packet (D14 item 4), before computing them
+
+**What had been seen when this was written.**
+- My own implementation of the channels had been run on the published e3 states and the C1 runs. `channels_check.py` was not yet committed. It gave M1–M4 PASS. It also showed that the reference set K covers all 15 bins in every run, which makes R3's pre-stated split degenerate.
+- I had read the lane's README (PR #35) and `channels.py`.
+- I had not run the lane's code, any basis sham, or any start-content measure.
+
+**(a) M1 against the lane's code.**
+- `channels.py` `channels()` is compared with mine on every published e3 state of B (wd 1 and 0) and A, and on every published C1 state.
+- PASS if each label-centred channel agrees to ≤ 1e-10 × max |centred z|.
+- The lane puts units that were not live at update 0 wholly into the off-reference channel; if there are any, they are reported separately.
+
+**(b) The lane's `analyse()` on the six C1 runs**, at the published updates. "Same channels, same order" is judged per seed at wd 1, against B from the lane's own rows, using the S-margin change from 300 to 2,000. That window is after the C1 runs' peaks (200–250) and is the D5 decline window.
+- **SUPPORTED LOCALLY** if, in every seed:
+  - both the reference and the off-reference channel fall;
+  - the reference channel's share of the total fall is within ±0.15 of B's;
+  - the label offset carries under 5%;
+  - and at wd 0 the reference channel's S-margin rises over the same window.
+- **CONTRADICTED** if, in every seed, one channel carries ≥ 90% of the fall, or the reference channel rises at wd 1.
+- Otherwise **AMBIGUOUS**.
+
+**(c) Is "outvoted, not erased" forced by the basis?**
+- **Floor.** A's reference-only accuracy is 0.16–0.27, and B's late value must exceed it by ≥ 0.10 per seed. This is C2's accuracy part, applied at 5,000 and 20,000.
+- **Basis sham.** The reference-only accuracy of B and the C1 runs at wd 1, at 5,000 and 20,000, is recomputed with k_j permuted across the live units. That keeps the frequency histogram. There are 8 draws, numpy seed 41100.
+  - If the median sham is within 0.10 of the true basis in every seed, the half-correct reference channel is a property of any one-frequency-per-unit projection. The reading is then CONTRADICTED as a statement about the reference frequencies.
+  - If the sham is at most A's floor + 0.05 in every seed, the reference frequencies carry it.
+- **Start content (readout side).** By M4, W_t = ρ_t W_0 + ΔW_t exactly. At 2,000, 5,000 and 20,000 I report:
+  - s_t = ρ_t ‖W_ref,0‖ / ‖W_ref,t‖, the largest share of the reference readout that the decayed start can be;
+  - the projection coefficient c_t = ⟨W_ref,t, W_ref,0⟩ / ‖W_ref,0‖² against ρ_t.
+  - If s_t < 0.05 at 5,000 in every seed, "not erased" describes the frequency slot, not the edited weights. Those decay on schedule, and the reference content is rebuilt by the gradient.
+  - c_t ≫ ρ_t would mean the rebuilt content points along the start's direction.
