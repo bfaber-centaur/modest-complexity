@@ -445,8 +445,9 @@ def figure():
                 Line2D([], [], color='0.45', ls=(0, (4, 3)), label='0.95'), Line2D([], [], color='0.65', ls=':', label='chance 1/8')]
     fig.legend(handles=handles, loc='upper center', ncol=5, fontsize=8, frameon=False, bbox_to_anchor=(.5, .935))
     fig.suptitle('c3 scaffolding: tied/tied RNN, intermediate supervision removed at S (drop) or tapered, against keep and final-only;\n'
-                 'original task, three init seeds, unchanged recipe, logged every 50 updates; frozen lengths at fixed checkpoints',
-                 y=.965, fontsize=11)
+                 'original task, three init seeds, unchanged recipe, logged every 50 updates; frozen lengths at fixed checkpoints\n'
+                 'where A, B and C all reach 1.0 their lines overplot (the last drawn, C taper, shows on top)',
+                 y=.97, fontsize=11)
     for ext in ('png', 'svg'):
         fig.savefig(FIGS/f'scaf_main.{ext}', dpi=120, bbox_inches='tight')
     print('wrote', FIGS/'scaf_main.png')
@@ -581,17 +582,20 @@ def followup_figure():
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
     traj, fro, thr = (read_csv(FIGS/f'scaf_followup{x}.csv') for x in ('', '_frozen', '_threshold'))
-    rows_k = ['sched', 'held', 'notN', 'L6', 'train', 'readout', 'diag', 'vhat']
+    tra = read_csv(FIGS/'scaf_followup_transient.csv') if (FIGS/'scaf_followup_transient.csv').exists() else []
+    rows_k = ['sched', 'held', 'notN', 'L6', 'train', 'readout', 'diag', 'vhat', 'transient']
     titles = dict(sched='intermediate-loss weight; Adam reset at 1k in A′, B′', held='held-out length-3 final accuracy (128 rows)',
                   notN='held-out ¬N accuracy (42 rows)', L6='frozen: L = 6 (solid marker), L = 4 (open marker), all programs',
                   train='train final CE', readout='shared readout on training h1 and h2: the lower of the two accuracies',
-                  diag='global L2 of the update', vhat='Adam √v̂, median; eps dashed')
-    heights = [.45, 1, 1, 1, .9, .8, .9, .9]
-    fig, axes = plt.subplots(len(rows_k), 2, figsize=(13, 24), gridspec_kw=dict(height_ratios=heights, hspace=.36, wspace=.14, top=.9))
+                  diag='global L2 of the update', vhat='Adam √v̂, median; eps dashed',
+                  transient=['update L2 over 1,000–1,500 (logged every 50): reset dashed, carried solid',
+                             'update L2 of the reset run ÷ its carried match, same step'])
+    heights = [.45, 1, 1, 1, .9, .8, .9, .9, .9]
+    fig, axes = plt.subplots(len(rows_k), 2, figsize=(13, 27), gridspec_kw=dict(height_ratios=heights, hspace=.46, wspace=.14, top=.905))
     xlim = [(0, END), (900, 6000)]
     for j in range(2):
-        for a in axes[:-1, j]:
-            a.sharex(axes[-1, j]); a.tick_params(labelbottom=False)
+        for a in axes[:-2, j]:
+            a.sharex(axes[-2, j]); a.tick_params(labelbottom=False)
         ax = dict(zip(rows_k, axes[:, j]))
         for arm, (c, ls) in FU_STYLE.items():
             for seed in SEEDS:
@@ -623,14 +627,32 @@ def followup_figure():
         for k in ('train', 'diag', 'vhat'):
             ax[k].set_yscale('log')
         for k, a in ax.items():
+            if k == 'transient':
+                continue
             a.axvline(RESET_AT, color='0.3', lw=1.1); a.set_xlim(*xlim[j]); a.grid(alpha=.25, lw=.5)
             a.set_title(titles[k], loc='left', fontsize=9)
         ax['sched'].set_title(('all updates · ' if j == 0 else 'zoom 900–6,000 · ') + titles['sched'], loc='left', fontsize=10, fontweight='bold')
         ax['vhat'].set_xlabel('total updates from init (switch and reset at 1,000 marked)', fontsize=9)
+        a = ax['transient']; a.set_title(titles['transient'][j], loc='left', fontsize=9)
+        for arm, match in RESET.items():
+            for seed in SEEDS:
+                xs = [r for r in tra if r['arm'] == arm and int(r['seed']) == seed]
+                if not xs:
+                    continue
+                c = FU_STYLE[arm][0]
+                if j == 0:
+                    a.plot([r['step'] for r in xs], [r['update_norm'] for r in xs], color=c, ls=(0, (5, 2)), marker=MARKER[seed], ms=3.5)
+                    a.plot([r['step'] for r in xs], [r['carried'] for r in xs], color=c, ls='-', marker=MARKER[seed], ms=3.5, lw=.9)
+                else:
+                    a.plot([r['step'] for r in xs], [r['ratio'] for r in xs], color=c, ls=(0, (5, 2)), marker=MARKER[seed], ms=3.5)
+        a.set_yscale('log'); a.set_xlim(990, 1510); a.grid(alpha=.25, lw=.5)
+        if j == 1:
+            a.axhline(1, color='0.3', lw=.9)
+        a.set_xlabel('update step (the reset precedes the update at 1,000)', fontsize=9)
     handles = [Line2D([], [], color=c, ls=ls, lw=2, label=FU_LABEL[a]) for a, (c, ls) in FU_STYLE.items()]
     handles += [Line2D([], [], color='0.3', marker=MARKER[s], lw=0, label=f'init seed {s}') for s in SEEDS]
     handles += [Line2D([], [], color='0.3', marker='v', lw=0, label='first of 5 logged evals ≥ 0.95')]
-    fig.legend(handles=handles, loc='upper center', ncol=5, fontsize=8, frameon=False, bbox_to_anchor=(.5, .948))
+    fig.legend(handles=handles, loc='upper center', ncol=5, fontsize=8, frameon=False, bbox_to_anchor=(.5, .95))
     fig.suptitle('c3 scaffolding follow-up: Adam state reset vs carried at S = 1,000, in keep and in drop; tied/tied RNN, original task,\n'
                  'three init seeds, unchanged recipe; keep\'s 1k–3k diagnostics from the no-reset check runs, r1 logged none before 10k',
                  y=.972, fontsize=11)

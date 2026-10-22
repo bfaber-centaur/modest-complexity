@@ -72,6 +72,20 @@ class FollowupPlan(unittest.TestCase):
             self.assertEqual([flag(a, '--updates'), flag(a, '--checkpoint-steps')], ['3000', '3000'])
 
 
+class Followup(unittest.TestCase):
+    def test_reset_schedules_and_effects(self):
+        self.assertEqual(sa.schedule('keep-reset', 1000), dict(before=[1., 1., 1.], switch_step=None, after=None, taper=1, reset_at=1000))
+        self.assertEqual(sa.schedule('drop-reset', 1000), dict(sa.schedule('drop', 1000), reset_at=1000))
+        fro = [dict(arm=a, seed=51200, step=t, held_L3=v, held_notN=v, L4=v, L5=v, L6=v)
+               for a, v in (('keep', .9), ('keep-reset', .84), ('drop', .7), ('drop-reset', .76), ('final', .2)) for t in sa.FIXED[1:]]
+        out = {(r['measure'], r['step']): r for r in sa.reset_effects(fro)}
+        r = out[('L6', 50000)]
+        self.assertAlmostEqual(r['d_reset_keep'], -.06); self.assertAlmostEqual(r['d_reset_drop'], .06)
+        self.assertAlmostEqual(r['difference'], .12); self.assertAlmostEqual(r['B_reset_minus_D'], .56)
+        self.assertEqual((r['d_reset_keep_status'], r['d_reset_drop_status']), ('below carried', 'above carried'))
+        self.assertEqual(out[('L6', 20000)]['d_reset_keep_status'], '')
+
+
 class Schedule(unittest.TestCase):
     def test_restatement_equals_c3train(self):
         for S in sa.SWITCH:

@@ -34,5 +34,114 @@
    "ckpt_3000_equals_branch": true
   }
  },
- "reset_runs": {}
+ "reset_runs": {
+  "c3-scaf-keep-reset-at1k-s51200-a1": {
+   "join_equals_r1": true,
+   "recorded_reset_at": 1000,
+   "n_step_weights_differ": 0,
+   "exposure_matches": true,
+   "adam_count_at_3000": 2000,
+   "adam_count_expected": 2000,
+   "recipe": {
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "source_run": "r1-comp-rnn-inter-s51200-a1"
+   }
+  },
+  "c3-scaf-keep-reset-at1k-s51201-a1": {
+   "join_equals_r1": true,
+   "recorded_reset_at": 1000,
+   "n_step_weights_differ": 0,
+   "exposure_matches": true,
+   "adam_count_at_3000": 2000,
+   "adam_count_expected": 2000,
+   "recipe": {
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "source_run": "r1-comp-rnn-inter-s51201-a1"
+   }
+  },
+  "c3-scaf-keep-reset-at1k-s51202-a1": {
+   "join_equals_r1": true,
+   "recorded_reset_at": 1000,
+   "n_step_weights_differ": 0,
+   "exposure_matches": true,
+   "adam_count_at_3000": 2000,
+   "adam_count_expected": 2000,
+   "recipe": {
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "source_run": "r1-comp-rnn-inter-s51202-a1"
+   }
+  },
+  "c3-scaf-drop-reset-at1k-s51200-a1": {
+   "join_equals_r1": true,
+   "recorded_reset_at": 1000,
+   "n_step_weights_differ": 0,
+   "exposure_matches": true,
+   "adam_count_at_3000": 2000,
+   "adam_count_expected": 2000,
+   "recipe": {
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "source_run": "r1-comp-rnn-inter-s51200-a1"
+   }
+  },
+  "c3-scaf-drop-reset-at1k-s51201-a1": {
+   "join_equals_r1": true,
+   "recorded_reset_at": 1000,
+   "n_step_weights_differ": 0,
+   "exposure_matches": true,
+   "adam_count_at_3000": 2000,
+   "adam_count_expected": 2000,
+   "recipe": {
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "source_run": "r1-comp-rnn-inter-s51201-a1"
+   }
+  },
+  "c3-scaf-drop-reset-at1k-s51202-a1": {
+   "join_equals_r1": true,
+   "recorded_reset_at": 1000,
+   "n_step_weights_differ": 0,
+   "exposure_matches": true,
+   "adam_count_at_3000": 2000,
+   "adam_count_expected": 2000,
+   "recipe": {
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "source_run": "r1-comp-rnn-inter-s51202-a1"
+   }
+  }
+ }
 }
