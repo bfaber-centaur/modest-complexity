@@ -484,7 +484,11 @@ def followup_check():
     if rows:
         ref = {r['step']: r for r in rows_of('drop', 51200, RESET_AT)}
         out['carried_checks'][verify_id('drop', 51200)] = dict(
-            logged=len(rows), steps=[rows[0]['step'], rows[-1]['step']], equals_branch_rows=all(r == ref[r['step']] for r in rows),
+            # Every key of every row, diag included; a run's last row has no diag (no update follows it), so the
+            # check's row at 3,000 is compared without it.
+            logged=len(rows), steps=[rows[0]['step'], rows[-1]['step']],
+            equals_branch_rows=all(r == ref[r['step']] for r in rows[:-1]) and 'diag' not in rows[-1]
+            and rows[-1] == {k: v for k, v in ref[rows[-1]['step']].items() if k != 'diag'},
             ckpt_3000_equals_branch=arrays_equal(RUNS/verify_id('drop', 51200)/'ckpt-3000.npz', ckpt_path('drop', 51200, 3000, RESET_AT)))
     for arm, match in RESET.items():
         for seed in SEEDS:

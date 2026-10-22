@@ -1,0 +1,38 @@
+{
+ "carried_checks": {
+  "c3-scaf-verify-carried-keep-at1k-s51200-a1": {
+   "logged": 41,
+   "steps": [
+    1000,
+    3000
+   ],
+   "equals_r1_rows": true
+  },
+  "c3-scaf-verify-carried-keep-at1k-s51201-a1": {
+   "logged": 41,
+   "steps": [
+    1000,
+    3000
+   ],
+   "equals_r1_rows": true
+  },
+  "c3-scaf-verify-carried-keep-at1k-s51202-a1": {
+   "logged": 41,
+   "steps": [
+    1000,
+    3000
+   ],
+   "equals_r1_rows": true
+  },
+  "c3-scaf-verify-carried-drop-at1k-s51200-a1": {
+   "logged": 41,
+   "steps": [
+    1000,
+    3000
+   ],
+   "equals_branch_rows": true,
+   "ckpt_3000_equals_branch": true
+  }
+ },
+ "reset_runs": {}
+}
