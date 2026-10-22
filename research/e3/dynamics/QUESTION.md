@@ -71,3 +71,11 @@ The same `ladder.py` measures on the same eval sets. Checkpoints are kept every 
 - Two inits per ladder.
 - Rising margins at 40% may need far longer than 100,000 updates to show in accuracy.
 - A continuation from saved Adam moments must equal an uninterrupted run. That needs a test before it is trusted.
+
+## Q2 outcome (2026-10-22, after the 10 follow-up runs)
+
+Pointer only; the evidence is in [README.md](README.md), packet 2.
+
+The pattern "45% flattens clearly below that level" matched. Nothing moves between 50,000 and 150,000 updates: 45% accuracy changes by −0.013 to +0.012. The 41001 init gap stays at 0.14. 41002's 40% lead stays graded.
+
+The Q1 outcome's "the 45% runs are still rising at 50,000 updates" was wrong. Every-100-update metrics show the runs within 0.01 of their 50,000 value from 37,000–47,000 updates on. Not yet audited.

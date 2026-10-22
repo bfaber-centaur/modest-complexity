@@ -1,8 +1,94 @@
-# e3 dynamics: the data-size ladder across data seeds (packet 1, first figure)
+# e3 dynamics: the data-size ladder across data seeds (packets 1 and 2)
 
-Status: initial experiment complete; **not audited**; submitted for coordinator review. No follow-up has been proposed or run yet (D8: propose only after review). Question and expectations were written before any e3 computation: [QUESTION.md](QUESTION.md) (`b800339`).
+Status: the initial experiment (packet 1, reviewed in D14) and the one adaptive follow-up (packet 2, D15) are complete. Neither is audited. Questions and expectations were written before computing: [QUESTION.md](QUESTION.md) Q1 (`b800339`) and Q2 (`cd12d03`). Packet 2 corrects one packet-1 observation (item 6, marked below).
 
 Session label `e3-dy-cloud-1`, branch `claude/project-thread-j8mgkm`. Measures are the shared e3 definitions (DECISIONS D6, `research/e3/audit/pairwise.py`).
+
+# Packet 2: intermediate runs continued past 50,000 updates (follow-up, D15)
+
+## Question
+
+Packet 1 left two things open at 50,000 updates (Q2):
+- Whether the 45% runs, which looked as though they were still rising, would approach the 50% level, and whether their init gaps would close.
+- Whether 41002's graded lead at 40% would turn into an accuracy lead.
+
+The selection was fixed before running:
+- **45%:** all six e3 45% runs, continued from 50,000 to 150,000 updates.
+- **40%:** the 40% runs of the ladders with the highest and the lowest mean σ-margin (41002 and 41001), both inits, continued to 100,000.
+
+Each continuation resumed from the run's published update-50,000 checkpoint with its Adam moments and update count, so it is the same training run carried on uninterrupted.
+
+## Figure 4: continuation, ladder measures
+
+![continuation](figures/continuation.png)
+
+Published checkpoints of the packet-1 runs (to 50,000) and their continuations, on the same per-ladder eval pairs and measures as packet 1. The dotted line marks the resume point. The blue points are each ladder's 50% runs at 50,000 updates, which were not continued.
+
+## Figure 5: every logged update
+
+![every logged update](figures/continuation_dense.png)
+
+Columns are own held-out accuracy, train cross-entropy and weight norm, every 100 updates from 20,000, from `metrics.jsonl`. Own held-out accuracy pools the run's own cal and audit splits, so its pairs are not the ladder eval pairs.
+
+## Observations
+
+**Table 4.** Ladder eval pairs, at updates 50,000 / 100,000 / 150,000 (40% runs: 50,000 / 100,000).
+
+| data seed | nominal | train pairs | init | accuracy | P(a+b over S) | P(S over N) | margin over N (σ) | rank among own-absent |
+|---|---|---|---|---|---|---|---|---|
+| 41001 | 40% | 363 | 30000 | 0.010 / 0.013 | 0.406 / 0.405 | 0.923 / 0.922 | 0.29 / 0.27 | 0.122 / 0.121 |
+| 41001 | 40% | 363 | 30001 | 0.021 / 0.019 | 0.358 / 0.356 | 0.917 / 0.918 | 0.05 / 0.06 | 0.180 / 0.181 |
+| 41002 | 40% | 363 | 30000 | 0.025 / 0.027 | 0.473 / 0.491 | 0.920 / 0.918 | 0.51 / 0.55 | 0.085 / 0.080 |
+| 41002 | 40% | 363 | 30001 | 0.092 / 0.085 | 0.601 / 0.600 | 0.910 / 0.910 | 0.78 / 0.78 | 0.065 / 0.063 |
+| 41001 | 45% | 422 | 30000 | 0.399 / 0.401 / 0.399 | 0.826 / 0.824 / 0.823 | 0.896 / 0.896 / 0.896 | 1.72 / 1.65 / 1.65 | 0.023 / 0.024 / 0.024 |
+| 41001 | 45% | 422 | 30001 | 0.541 / 0.545 / 0.543 | 0.887 / 0.887 / 0.887 | 0.900 / 0.900 / 0.900 | 1.98 / 1.97 / 1.98 | 0.011 / 0.011 / 0.011 |
+| 41002 | 45% | 420 | 30000 | 0.496 / 0.504 / 0.502 | 0.869 / 0.871 / 0.871 | 0.891 / 0.892 / 0.892 | 1.80 / 1.83 / 1.83 | 0.015 / 0.014 / 0.014 |
+| 41002 | 45% | 420 | 30001 | 0.515 / 0.527 / 0.527 | 0.874 / 0.877 / 0.878 | 0.902 / 0.901 / 0.901 | 2.00 / 2.01 / 2.02 | 0.009 / 0.009 / 0.009 |
+| 41003 | 45% | 421 | 30000 | 0.422 / 0.426 / 0.426 | 0.847 / 0.846 / 0.846 | 0.895 / 0.895 / 0.895 | 1.71 / 1.68 / 1.68 | 0.019 / 0.019 / 0.019 |
+| 41003 | 45% | 421 | 30001 | 0.437 / 0.424 / 0.424 | 0.860 / 0.859 / 0.859 | 0.890 / 0.891 / 0.891 | 1.70 / 1.72 / 1.72 | 0.009 / 0.009 / 0.009 |
+
+1. **45% does not move after 50,000 updates.** Between 50,000 and 150,000, accuracy changes by −0.013 to +0.012 in all six runs. Between 100,000 and 150,000 it changes by at most 0.002. All six stay at 0.40–0.55, far below the 50% runs' 0.88–0.91 at 50,000.
+2. **The 45% init gaps persist.** At 150,000 the gaps are 0.144 for 41001 (0.399 against 0.543), 0.025 for 41002 and 0.002 for 41003. At 50,000 they were 0.142, 0.019 and 0.015.
+3. **40% does not move either.** Between 50,000 and 100,000, accuracy changes by −0.007 to +0.003 and the σ-margin by −0.01 to +0.04. 41002 keeps its margin lead (0.55 / 0.78 against 0.27 / 0.06 for 41001) with no accuracy lead.
+4. **P(S over N) changes by at most 0.002, and the own-absent rank by at most 0.005, in any continued run.**
+5. **The runs are stationary.** Train accuracy stays at 1 throughout. Train cross-entropy stays at 4.0–4.7e-6, changing by less than 1% over the continuation. Weight norms change by at most 0.09 (on about 62–64) over the continuation, and in eight of the ten runs by at most 0.02 (Figure 5).
+6. **Correction to packet 1, item 6.** Every-100-update metrics show that the rise packet 1 reported between 30,000 and 50,000 mostly happened before about 40,000. Own held-out accuracy stays within 0.01 of its update-50,000 value from 37,000–47,000 updates onward in the six 45% runs, and from 34,000–47,000 in the six 50% runs ([packet1_settle.csv](figures/packet1_settle.csv), all 24 runs). Packet 1's "not at a plateau" rested on the published 30,000 and 50,000 checkpoints alone. The 31000 runs' published 40,000 checkpoints already showed only +0.006 and +0.016 between 40,000 and 50,000 at 45%. The update-50,000 values in packet 1 are therefore close to these runs' stationary values, not snapshots of a moving front.
+
+## Reading (interpretation, not observation)
+
+- **This is the "45% flattens clearly below that level" pattern of Q2.** At this recipe (lr 1e-3, weight decay 1), the 45% and 40% runs settle by about 40,000–50,000 updates into a state that 100,000 more updates do not change. So the ladder's location at 50,000 is a property of where these runs settle, not of when they were stopped. The training-set size, not the horizon, limits the accuracy reached up to 150,000 updates.
+- **Init changes the outcome at 45%, not only its timing.** 41001's 0.14 gap does not close. Together with packet 1, init matters at least as much as which training examples are drawn, in this sample of two inits and three ladders.
+- **41002's lead at 40% stays a graded difference.** Its σ-margin and P(a+b over S) are higher on both inits, but neither run converts that into accuracy.
+- **The stationarity has a candidate explanation, untested here.** Weight decay balancing the adaptive update would fix the solution once train cross-entropy settles. Whether weaker decay, a different learning rate, or a different optimizer would move the settled point is not tested by these runs. The mechanisms lane's weight-decay-0 runs (D12) concern edited networks, not these.
+- **Updated answer to the e3 question.** In these four ladders the ordering travels. The settled location of the step varies between data seeds no more than between inits. No critical data fraction is claimed: one width, one recipe, two inits, and four rungs with 60-pair gaps.
+
+## Unresolved alternatives
+
+- **A much later change.** A change after 150,000 updates is not excluded, although every logged quantity is flat for the last 100,000 updates.
+- **Init spread.** With two inits per ladder, 41001's 0.14 gap may be one draw from a wider init distribution. Three ladders cannot rank "data seed" against "init" beyond this sample.
+- **Recipe dependence.** The settled state belongs to this recipe. A recipe whose runs keep moving would make the location horizon-dependent again.
+- **Ladders not continued.** The 31000 ladder and the 41003 40% runs were not continued.
+
+## Runs and provenance (packet 2)
+
+- **Runs.** Ten D15 runs, `e3-dy-add-w128-i<init>-tf45-d<seed>-c150k-a1` (six) and `e3-dy-add-w128-i<init>-tf40-d<41001|41002>-c100k-a1` (four), queue positions 25–34, 2 workers, 1 BLAS thread each. All complete.
+- **Timing.** 2026-10-22, 01:00:52 to 01:19:57 UTC: 19 min 5 s elapsed. Walls were 284.7–296.6 s for the 45% runs and 132.7–135.6 s for the 40% runs. Events are in [registry.jsonl](registry.jsonl).
+- **Launch deviation, accepted by the coordinator.** My environment script changed into the main checkout, so the runs launched from `/home/user/modest-complexity` instead of the clean worktree at the pin `72cfb5d`. Every run records `git_commit` `2f0aa7a`. That commit is this branch's merge of `72cfb5d` and differs from it only in `research/e3/dynamics/QUESTION.md`: `experiment.py`, `launch_runs.py`, `plan.json` and the lock files are byte-identical to the pin. Every run also records `git_status` `M research/e3/dynamics/registry.jsonl`, the launcher's own append to the registry, and nothing else. So the published manifests say `producing_tree_dirty: true`.
+- **Checks in `continuation.py`.** For each run, before scoring, `continuation.py` asserts three things. The resume file's SHA-256 equals the config's `resume_sha256` and the source manifest's hash. The data arrays equal the source's. The resumed update-50,000 metrics row equals the source's, except wall-clock fields and the optimizer-update diagnostic that a resumed row does not log. All ten pass. `ladder.py`'s per-checkpoint manifest and audit-accuracy checks also apply.
+- **Published files.** Checkpoints at 50k, 60k, 70k, 80k and 100k, plus 120k and 150k for the 45% runs, in [runs/](runs/), published with `publish_run.py RUN research/e3/dynamics/runs --steps ...`. Every-1,000 checkpoints stay on the run host.
+- **Budget.** The initial runs took 28.0 min, the follow-up 19.1 min, and analysis about 2 min, about 49 of the lane's 70 min. The follow-up used 19.1 of its 25 min (D7).
+
+Regenerate packet 2 (about 10 s):
+
+```bash
+R=research/e3/dynamics/runs
+uv run --locked --group analysis python research/e3/dynamics/continuation.py $R/e3-dy-*-c1*-a1 \
+  --ladder $R/e3-dy-*-d4100?-a1 --out research/e3/dynamics/figures
+```
+
+It writes `continuation.csv`, `continuation_table.csv`, `packet1_settle.csv` and Figures 4 and 5. The figures and tables here were produced by `continuation.py` at `97bb40d`.
+
+# Packet 1: the ladders at 50,000 updates (first figure, reviewed in D14)
 
 ## Question
 
@@ -55,10 +141,10 @@ No measure is undefined for any pair in any run (N and S are never empty on thes
 
 1. **Ordering.** In all 8 ladder × init sequences, accuracy, P(a+b over N), P(a+b over S), the σ-margin and the own-absent rank all improve strictly with each larger nested set.
 2. **Levels.** At 30% every run is at 0.000–0.004 accuracy. At 40% runs are at 0.010–0.092. At 45% they are at 0.399–0.541. At 50% they are at 0.878–0.913. These are the same bands as the e2 ladder (Table 1, bottom rows).
-3. **Location of the accuracy step.** Linear interpolation in training-pair count between neighbouring rungs puts the 0.5 accuracy crossing at 50,000 updates at 417–434 pairs (Table 2). Between-rung behaviour was not measured, and the 45% runs are still rising (item 6), so these are rough places, not thresholds.
+3. **Location of the accuracy step.** Linear interpolation in training-pair count between neighbouring rungs puts the 0.5 accuracy crossing at 50,000 updates at 417–434 pairs (Table 2). Between-rung behaviour was not measured, ~~and the 45% runs are still rising (item 6)~~ [Correction, packet 2: they are close to stationary by 50,000], so these are rough places, not thresholds.
 4. **Ladder against init.** For accuracy at 45%, the ladder means span 0.430–0.506 (range 0.076), while the two inits differ by 0.142 in 41001 and 0.126 in 31000. At 50% the ladder means span 0.018 and the init differences reach 0.035. The one setting where ladder spread exceeds every within-ladder init difference is 40% on the graded measures. There, 41002 is ahead on both inits: σ-margin 0.51/0.78 against at most 0.42 elsewhere, ladder-mean range 0.48 against init differences up to 0.28. P(a+b over S) shows the same with less separation (range 0.155 against at most 0.130). Accuracy at 40% does not: 41003 init 30000 (0.052) is above 41002 init 30000 (0.025).
 5. **P(S over N) falls with share in every ladder** (asked by audit investigation 1). From 30% to 50% it falls by 0.051–0.060 in each of the 8 sequences: 0.940–0.949 at 30%, 0.910–0.928 at 40%, 0.890–0.903 at 45%, 0.882–0.896 at 50%. It is not strictly monotone in 3 sequences, which rise by at most 0.006 between 45% and 50% (41002 init 30000; 41003 both inits). Within a run it falls slowly during training at every share (Figure 3, fourth column).
-6. **Horizon.** From 30,000 to 50,000 updates, 45% accuracy rises by 0.067–0.112 in every e3 run (e2: +0.048 and +0.085). 40% accuracy changes by −0.006 to +0.031, while its σ-margin still rises by 0.10–0.22. At 50,000 updates the 45% runs are not at a plateau.
+6. **Horizon.** From 30,000 to 50,000 updates, 45% accuracy rises by 0.067–0.112 in every e3 run (e2: +0.048 and +0.085). 40% accuracy changes by −0.006 to +0.031, while its σ-margin still rises by 0.10–0.22. ~~At 50,000 updates the 45% runs are not at a plateau.~~ [Correction, packet 2: this rested on the 30,000 and 50,000 checkpoints only. Every-100-update metrics show the 45% runs within 0.01 of their 50,000 value from 37,000–47,000 updates on, and the continuations do not move (packet 2, items 1 and 6). The 40% σ-margin rise likewise stops: it changes by −0.01 to +0.04 from 50,000 to 100,000.]
 
 **Table 2.** Interpolated training-pair count at which each measure crosses a level at 50,000 updates, per init (30000, 30001). Linear in count between neighbouring rungs.
 
@@ -91,7 +177,7 @@ No measure is undefined for any pair in any run (N and S are never empty on thes
 
 ## Unresolved alternatives
 
-- **Horizon.** The 45% runs still rise at 50,000 updates. A longer horizon would move every accuracy crossing toward fewer pairs, and it could change the ladder against init comparison at 45%.
+- ~~**Horizon.** The 45% runs still rise at 50,000 updates. A longer horizon would move every accuracy crossing toward fewer pairs, and it could change the ladder against init comparison at 45%.~~ [Resolved by packet 2: to 150,000 updates nothing moves.]
 - **Init spread.** Init spread is estimated from two seeds per cell. A ladder effect of the size seen at 40% (about 0.3–0.5 σ in margin) could be real or chance.
 - **Between rungs.** Behaviour between rungs (for example, 363 to 420 pairs) is not observed. The interpolated crossings assume a straight line across a 60-pair gap.
 - **Which property matters.** All four ladders add whole transpose groups in a seeded order. If identity matters at 40%, these runs do not say which property of the added groups (operand coverage, label coverage, class balance) matters.
@@ -109,7 +195,7 @@ No measure is undefined for any pair in any run (N and S are never empty on thes
   - 50%: `research/coordinator/runs/e1f2-co-add-w128-i3000{0,1}-tf50-a1`.
   - These runs use the same recipe, but were produced at earlier commits and on other hosts.
 - **Checks in `ladder.py`.** Before scoring, `ladder.py` asserts that within each ladder the pair and label arrays are identical, every training set is transpose-closed, and the sets nest strictly. It also asserts that the eval pairs equal the complement of the largest training set and match `research/e3/data/eval-d<seed>.npz`. For every checkpoint it checks the manifest SHA-256, and checks that recomputed audit-split accuracy matches `metrics.jsonl` to 1e-12.
-- **Budget.** The initial runs took about 28 min, and analysis less than 1 min, for about 29 of the lane's 70 min (D7). That leaves about 25 min for the follow-up allowance plus margin.
+- **Budget.** The initial runs took about 28 min, and analysis less than 1 min, for about 29 of the lane's 70 min (D7). Packet 2 has the total.
 
 ## Regenerate
 
@@ -117,7 +203,7 @@ From the repository root, with the analysis group installed:
 
 ```bash
 C=research/coordinator/runs; P=research/size-time/runs; E=research/e2/dynamics/runs
-uv run --locked --group analysis python research/e3/dynamics/ladder.py research/e3/dynamics/runs/e3-dy-*-a1 \
+uv run --locked --group analysis python research/e3/dynamics/ladder.py research/e3/dynamics/runs/e3-dy-*-d4100?-a1 \
   $C/e1-co-add-w128-i30000-a1 $P/e1-st-add-w128-i30001-a1 $E/e2-dy-add-w128-i3000{0,1}-tf4{0,5}-a1 \
   $C/e1f2-co-add-w128-i3000{0,1}-tf50-a1 --out research/e3/dynamics/figures
 ```
