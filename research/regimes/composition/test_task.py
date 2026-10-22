@@ -79,11 +79,28 @@ class TaskTests(unittest.TestCase):
         checks = task.checks(self.P, self.train, self.held)
         self.assertAlmostEqual(checks['heldout_baselines']['drop op 3: P[b](P[a](s))'], drop3)
 
+    def test_rnn_finite_difference_gradients(self):
+        import train
+        d = {k: v[::7] for k, v in task.rows(self.P, self.train).items()}  # 55 rows
+        r = np.random.default_rng(5)
+        p = train.rnn_init(6, 3)
+        for k in ('bs', 'bh', 'bv'):  # off the ReLU kinks that zero biases put one-hot inputs on
+            p[k] = r.normal(0, .3, p[k].shape)
+        for steps in (('final',), ('step1', 'step2', 'final')):
+            targets = {h: d[h] for h in steps}
+            g = train.rnn_loss_grad(p, d, targets)[1]
+            for k, v in p.items():
+                for idx in list(np.ndindex(v.shape))[:12]:
+                    old = v[idx]; v[idx] = old + 1e-6
+                    up = train.rnn_loss_grad(p, d, targets)[0]; v[idx] = old - 1e-6
+                    down = train.rnn_loss_grad(p, d, targets)[0]; v[idx] = old
+                    self.assertAlmostEqual(g[k][idx], (up - down)/2e-6, delta=1e-6 + 1e-4*abs(g[k][idx]), msg=f'{k}{idx}')
+
     def test_train_smoke_record_and_shuffle(self):
         with tempfile.TemporaryDirectory() as tmp:
-            for cond in ('final', 'shuf', 'interp'):
-                out = Path(tmp)/cond
-                subprocess.run([sys.executable, str(HERE/'train.py'), '--out', str(out), '--condition', cond,
+            for cond, model in (('final', 'mlp'), ('shuf', 'mlp'), ('interp', 'mlp'), ('inter', 'rnn')):
+                out = Path(tmp)/(cond + model)
+                subprocess.run([sys.executable, str(HERE/'train.py'), '--out', str(out), '--condition', cond, '--model', model,
                                 '--init-seed', '900099', '--updates', '3', '--eval-every', '1', '--hidden', '8', '8'],
                                check=True, capture_output=True)
                 config = json.loads((out/'config.json').read_text())
@@ -97,7 +114,9 @@ class TaskTests(unittest.TestCase):
                     # Shuffled targets keep the label counts but no longer match the true states.
                     self.assertEqual(config['exposure']['labels_per_row'], 3)
                     self.assertLess(lines[-1]['fit_targets']['step1']['acc'], 1)
-            a = nets.load(Path(tmp)/'final'/'ckpt-0.npz')[0]; b = nets.load(Path(tmp)/'shuf'/'ckpt-0.npz')[0]
+                if model == 'rnn':
+                    self.assertEqual(config['exposure']['total_parameters'], 8*8+8 + 8*8+4*8+8 + 8*8+8)
+            a = nets.load(Path(tmp)/'finalmlp'/'ckpt-0.npz')[0]; b = nets.load(Path(tmp)/'shufmlp'/'ckpt-0.npz')[0]
             for k in a:  # same init seed: trunk and final head start bitwise identical across conditions
                 self.assertTrue(np.array_equal(a[k], b[k]), k)
 
