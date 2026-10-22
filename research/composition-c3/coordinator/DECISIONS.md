@@ -4,8 +4,8 @@ Bobby's packet is in [charter/](charter/), verbatim (uploaded 2026-10-22 04:57Z)
 
 ## D1. Base, branch, directory, parent
 
-- **Gate.** c3 began after c2's review was complete and its handoff pinned (c2 INDEX, SYNTHESIS, draft integration PR; D2).
-- **Branch.** `swarm/composition-c3`, created from `swarm/composition-c2` at `C2_HANDOFF`, the head of c2's draft integration PR. This packet authorizes no c2 merge, and none was made.
+- **Gate.** c3 began after c2's review was complete and its handoff pinned: c2's reviewer passed every lane and the synthesis (c2 `review/REVIEW.md`, PRs #50, #53, #56–#60), and the draft integration PR #61 to `swarm/exploration` is open for Bobby.
+- **Branch.** `swarm/composition-c3`, created from `swarm/composition-c2` at `7fe75e6`, the head of c2's draft integration PR. This packet authorizes no c2 merge, and none was made.
 - **Directory.** `research/composition-c3/`, with `common/`, `coordinator/`, and one directory per lane: `correction/`, `scaffolding/`, `review/`.
 - **PRs.** Worker PRs target `swarm/composition-c3`.
 - **Final PR.** A draft to the actual parent for Bobby, which the coordinator does not merge. The parent is `swarm/composition-c2` if c2's PR is still open at the end. If Bobby has merged c2 into `swarm/exploration` by then, the parent is `swarm/exploration`, after merging it into c3.
@@ -47,7 +47,7 @@ Sources: c2 `coordinator/SYNTHESIS.md` and the lane NOTEs, with `review/REVIEW.m
 | `test_c3.py` | 8 tests (run in its own process): schedule boundaries and label exposure; gradient linear in the weights; r1/c2 recipe parsing; no-change mode equals c2train bitwise; drop branch equals c2train final-only from the same state; mid-taper resume bitwise; recovered r1 checkpoints resume only under r1's recipe; identity correction equals the plain forward, and the base stays frozen. |
 
 - **Verification.** `c3-co-verify-keep-s51200-a1` resumes r1's tied/inter `ckpt-1000` to 3,000 in no-change mode. Every r1 key equals r1's published row at all 41 logged steps.
-- **Pin.** `C3_PIN`. The reviewer checks it before any worker training or fitting.
+- **Pin.** `be41d16`: `common/*.py` as of that commit, unchanged on the branch head. The reviewer checks it before any worker training or fitting. Later coordinator commits change only `coordinator/` and docs unless this log records a re-pin.
 - **Not in the pin.**
   - An optimizer reset. A follow-up that needs one gets a coordinator re-pin and new attempt IDs.
   - The correction module and its fitting, which are lane code.
