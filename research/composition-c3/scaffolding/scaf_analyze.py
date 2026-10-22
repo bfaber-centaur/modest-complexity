@@ -12,6 +12,7 @@ ckpt-S. Everything reads committed records and checkpoints.
 import argparse
 import csv
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import shutil
@@ -26,6 +27,8 @@ import c2rnn  # noqa: E402
 import c2task  # noqa: E402
 import c3train  # noqa: E402
 import nets  # noqa: E402
+_spec = importlib.util.spec_from_file_location('c2_time_analyze', C2/'time'/'time_analyze.py')
+c2time = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(c2time)  # its compatibility measure
 
 RUNS, FIGS = HERE/'runs', HERE/'figures'
 R1_RUNS = REPO/'research'/'regimes'/'composition'/'runs'
@@ -37,6 +40,8 @@ END, EVERY, THRESHOLD, SUSTAIN, DEGRADE = 50000, 50, 0.95, 5, 0.05
 R1_KEYS = ('train', 'held', 'held_final_pred')
 SMALL = ('config.json', 'metrics.jsonl', 'runtime.json')
 HEADS = ('step1', 'step2', 'final')
+EPS = c3train.c2train.EPS
+SCHEDULE_POINTS = (-1, 0, 1, 1998, 1999, 2000)
 
 
 def run_id(kind, S, seed, attempt=1):
@@ -80,8 +85,8 @@ def rows_of(arm, seed, S=None):
     if arm in ('keep', 'final'):
         r1 = r1_rows('inter' if arm == 'keep' else 'final', seed)
         cont = read_jsonl(C2/'time'/'runs'/f'c2-time-tt-{"inter" if arm == "keep" else "final"}-s{seed}-a1'/'metrics.jsonl')
-        assert same_r1_keys(cont[0], r1[-1])
-        return r1 + cont[1:]
+        assert same_r1_keys(cont[0], r1[-1]) and r1[-1]['step'] == cont[0]['step'] == 10000
+        return r1[:-1] + cont  # the c2 row at 10k equals r1's in every r1 key and also carries diag
     return read_jsonl(RUNS/run_id(arm, S, seed)/'metrics.jsonl')
 
 
@@ -153,6 +158,12 @@ def weights_recount(t, S, D):
     return 0. if k >= D - 1 else 1 - (k + 1)/D
 
 
+def schedule_points(cfg, S, D):
+    """The recorded schedule (config.json) against the restatement at S-1, S, S+1, S+1998, S+1999 and S+2000,
+    which covers the taper's last nonzero update and its first zero one (S+1999 is not a logged row)."""
+    return {S + k: [c3train.weights_at(S + k, cfg['schedule']), [weights_recount(S + k, S, D)]*2 + [1.]] for k in SCHEDULE_POINTS}
+
+
 def check():
     out = dict(branches={}, frozen_reference={})
     for S in SWITCH:
@@ -167,11 +178,13 @@ def check():
                 bad_w = [r['step'] for r in rows if any(abs(w - x) > 1e-12 for w, x in
                          zip(r['step_weights'], (weights_recount(r['step'], S, D),)*2 + (1.,)))]
                 n_inter = sum(weights_recount(t, S, D) != 0 for t in range(S, END))
+                pts = schedule_points(cfg, S, D)
                 expo = cfg['exposure']['labels_this_run']
                 out['branches'][rid] = dict(
                     first_step=rows[0]['step'], last_step=rows[-1]['step'], logged=len(rows),
                     join_equals_r1=same_r1_keys(rows[0], r1[S]),
                     step_weights_differ_at=bad_w[:5], n_step_weights_differ=len(bad_w),
+                    schedule_points=pts, schedule_points_equal=all(a == b for a, b in pts.values()),
                     exposure_updates_recount=[n_inter, n_inter, END - S], exposure_updates_logged=expo['updates_with_weight'],
                     exposure_matches=expo['updates_with_weight'] == [n_inter, n_inter, END - S],
                     recipe=dict(task=cfg['task_id'], scheme=cfg['scheme'], lr=cfg['lr'], wd=cfg['wd'], hidden=cfg['hidden'],
@@ -192,7 +205,7 @@ def check():
                 out['frozen_reference'][f'{arm}-s{seed}-{step}'] = dict(
                     equal=all(r is not None and got[f'L{L}'] == r for L, r in zip(LENGTHS, ref)), ours=[got[f'L{L}'] for L in LENGTHS], published=ref)
     (HERE/'checks.json').write_text(json.dumps(out, indent=1)+'\n')
-    print(json.dumps({k: {i: {x: v[x] for x in v if x in ('join_equals_r1', 'n_step_weights_differ', 'exposure_matches', 'equal')}
+    print(json.dumps({k: {i: {x: v[x] for x in v if x in ('join_equals_r1', 'n_step_weights_differ', 'schedule_points_equal', 'exposure_matches', 'equal')}
                           for i, v in d.items()} for k, d in out.items()}, indent=1))
 
 
@@ -218,9 +231,31 @@ def arms():
     return out
 
 
+def optimizer_row(arm, S, seed, rows):
+    """Eps-regime onsets (first logged step with median, and with every coordinate's, sqrt(v-hat) below eps)
+    and the update norm just after the switch relative to the switch row."""
+    d = [(r['step'], r['diag']) for r in rows if 'diag' in r]
+    first = lambda f: next((t for t, x in d if f(x)), '')
+    out = dict(arm=arm, S=S or '', seed=seed, first_diag_step=d[0][0] if d else '',
+               median_below_eps_step=first(lambda x: x['adam_sqrt_vhat']['median'] < EPS),
+               all_below_eps_step=first(lambda x: x['adam_sqrt_vhat']['frac_below_eps'] >= 1.))
+    if S:
+        u = {t: x['update_norm'] for t, x in d}
+        for k in (50, 500, 2000, 5000):
+            out[f'update_norm_ratio_S+{k}'] = u[S + k]/u[S] if S + k in u else ''
+    return out
+
+
+def compatibility_rows(arm, S, seed, rows):
+    """Neighbour compatibility of wrong held-out length-3 predictions at the fixed times (c2 time lane's measure)."""
+    logged = {r['step']: r for r in rows}
+    return [dict(arm=arm, S=S or '', seed=seed, step=t, **c2time.compatibility(logged[t]['held_final_pred']))
+            for t in ckpt_steps(arm, S) if t in logged]
+
+
 def measure():
     FIGS.mkdir(exist_ok=True)
-    traj, fro, thr = [], [], []
+    traj, fro, thr, opt, comp = [], [], [], [], []
     for arm, S, seed in arms():
         sched = schedule(arm, S)
         rows = rows_of(arm, seed, S)
@@ -238,12 +273,18 @@ def measure():
                              sqrt_vhat_median=v.get('median', ''), sqrt_vhat_max=v.get('max', ''), frac_below_eps=v.get('frac_below_eps', ''),
                              train_margin_min=d.get('train_final_margin', {}).get('min', ''),
                              train_margin_median=d.get('train_final_margin', {}).get('median', '')))
-        steps = [r['step'] for r in rows]
-        for name, acc in (('held_final', [r['held']['final']['acc'] for r in rows]),
-                          ('held_notN', [(r.get('held_subset') or subsets(r['held_final_pred']))['notN'] for r in rows])):
+        # Thresholds are read on the whole trajectory from init: a branch's rows follow r1 tied/inter's rows before S,
+        # so a crossing before the switch (S = 10k) is the keep arm's crossing.
+        full = rows if S is None else [r for r in r1_rows('inter', seed) if r['step'] < S] + rows
+        steps = [r['step'] for r in full]
+        for name, acc in (('held_final', [r['held']['final']['acc'] for r in full]),
+                          ('held_notN', [(r.get('held_subset') or subsets(r['held_final_pred']))['notN'] for r in full])):
             t = first_sustained(steps, acc)
             thr.append(dict(arm=arm, S=S or '', seed=seed, measure=name, first_step=steps[0], last_step=steps[-1],
-                            crossing_step=t if t is not None else '', censored=t is None, value_at_end=acc[-1]))
+                            crossing_step=t if t is not None else '', censored=t is None, before_switch=t is not None and S is not None and t < S,
+                            value_at_switch=acc[steps.index(S)] if S else '', value_at_end=acc[-1]))
+        opt.append(optimizer_row(arm, S, seed, rows))
+        comp += compatibility_rows(arm, S, seed, rows)
         logged = {r['step']: r for r in rows}
         for step in ckpt_steps(arm, S):
             path = ckpt_path(arm, seed, step, S)
@@ -256,6 +297,8 @@ def measure():
     write_csv(FIGS/'scaf_frozen.csv', fro)
     write_csv(FIGS/'scaf_threshold.csv', thr)
     write_csv(FIGS/'scaf_retention.csv', retention(fro))
+    write_csv(FIGS/'scaf_optimizer.csv', opt)
+    write_csv(FIGS/'scaf_compatibility.csv', comp)
 
 
 def retention(fro):
@@ -282,11 +325,11 @@ def retention(fro):
 
 def write_csv(path, rows):
     if not rows:
-        print(path.relative_to(REPO), 'no rows, not written'); return
+        print(path.name, 'no rows, not written'); return
     with path.open('w', newline='') as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w = csv.DictWriter(f, fieldnames=list(dict.fromkeys(k for r in rows for k in r)), restval='')
         w.writeheader(); w.writerows(rows)
-    print(path.relative_to(REPO), len(rows), 'rows')
+    print(path.name, len(rows), 'rows')
 
 
 # ---- figure ------------------------------------------------------------------------------------
@@ -299,7 +342,7 @@ MARKER = dict(zip(SEEDS, 'osD'))
 def read_csv(path):
     with path.open() as f:
         rows = list(csv.DictReader(f))
-    keep_str = ('arm', 'status', 'measure', 'censored')
+    keep_str = ('arm', 'status', 'measure', 'censored', 'before_switch')
     return [{k: (float(v) if v != '' and k not in keep_str else v) for k, v in r.items()} for r in rows]
 
 
@@ -309,14 +352,18 @@ def figure():
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
     traj, fro, thr = read_csv(FIGS/'scaf_main.csv'), read_csv(FIGS/'scaf_frozen.csv'), read_csv(FIGS/'scaf_threshold.csv')
-    rows_k = ['sched', 'held', 'notN', 'train', 'readout', 'L6', 'diag', 'vhat']
+    rows_k = ['sched', 'held', 'notN', 'train', 'readout', 'L6', 'diag', 'vhat', 'lengths']
     titles = dict(sched='intermediate-loss weight of the update', held='held-out length-3 final accuracy (128 rows)',
                   notN='held-out ¬N accuracy (42 rows)', train='train final CE (solid), weighted train loss (dotted)',
                   readout='lengths 1–2: shared readout on h1 (solid), h2 (dotted), training rows',
                   L6='frozen: L = 6 (solid), L = 5 (dashed), L = 4 (dotted), all programs',
-                  diag='global L2: update (solid), gradient (dotted); keep and final-only logged from 10k', vhat='Adam √v̂: median (solid), max (dotted); eps dashed')
-    heights = [.45, 1, 1, .9, .9, 1, .9, .9]
-    fig, axes = plt.subplots(len(rows_k), 2, figsize=(13, 25), sharex=True, gridspec_kw=dict(height_ratios=heights, hspace=.32, wspace=.12, top=.885))
+                  diag='global L2: update (solid), gradient (dotted); keep and final-only logged from 10k', vhat='Adam √v̂: median (solid), max (dotted); eps dashed',
+                  lengths='frozen accuracy by length at 50k (8·4^L rows; L = 3 includes training); grey: at S')
+    heights = [.45, 1, 1, .9, .9, 1, .9, .9, .9]
+    fig, axes = plt.subplots(len(rows_k), 2, figsize=(13, 28), gridspec_kw=dict(height_ratios=heights, hspace=.4, wspace=.12, top=.89))
+    for j in range(2):
+        for a in axes[:-2, j]:
+            a.sharex(axes[-2, j]); a.tick_params(labelbottom=False)
     present = {(r['arm'], r['S'], int(r['seed'])) for r in traj}
 
     def series(arm, S, seed, key, src=traj):
@@ -344,23 +391,33 @@ def figure():
                     plot(ax['L6'], f'L{L}', ls=ls, lw=1.4 if L == 6 else 1, src=fro, me=1)
                 plot(ax['diag'], 'update_norm'); plot(ax['diag'], 'grad_norm', ls=':', lw=1)
                 plot(ax['vhat'], 'sqrt_vhat_median'); plot(ax['vhat'], 'sqrt_vhat_max', ls=':', lw=1)
+                end = [r for r in fro if r['arm'] == arm and r['S'] == s_key and int(r['seed']) == seed and r['step'] == END]
+                if end:
+                    ax['lengths'].plot(LENGTHS, [end[0][f'L{L}'] for L in LENGTHS], lw=1.3, **kw)
+        for seed in SEEDS:
+            sw = [r for r in fro if r['arm'] == 'keep' and int(r['seed']) == seed and r['step'] == S]
+            if sw:
+                ax['lengths'].plot(LENGTHS, [sw[0][f'L{L}'] for L in LENGTHS], color='0.55', lw=1, ls='--', marker=MARKER[seed], ms=3)
         for r in thr:
             if r['measure'] == 'held_final' and r['crossing_step'] != '' and r['S'] in ('', float(S)):
                 ax['held'].scatter([r['crossing_step']], [THRESHOLD], marker='v', s=40, color=COLOR[r['arm']], edgecolor='k', lw=.5, zorder=5)
-        for k in ('held', 'notN', 'readout', 'L6'):
+        for k in ('held', 'notN', 'readout', 'L6', 'lengths'):
             ax[k].axhline(THRESHOLD, color='0.45', lw=.9, ls=(0, (4, 3))); ax[k].axhline(1/8, color='0.65', lw=.8, ls=':')
             ax[k].set_ylim(-.02, 1.04)
         ax['vhat'].axhline(1e-8, color='0.3', lw=1, ls=(0, (4, 3)))
         for k in ('train', 'diag', 'vhat'):
             ax[k].set_yscale('log')
         for k, a in ax.items():
-            a.axvline(S, color='0.3', lw=1.1)
-            a.grid(alpha=.25, lw=.5); a.set_xlim(0, END)
+            if k != 'lengths':
+                a.axvline(S, color='0.3', lw=1.1); a.set_xlim(0, END)
+            a.grid(alpha=.25, lw=.5)
             a.set_title(titles[k], loc='left', fontsize=9)
+        ax['lengths'].set_xticks(LENGTHS); ax['lengths'].set_xlabel('program length L (1–2 supervised before S; 4–6 novel, shaded)')
+        ax['lengths'].axvspan(3.5, 6.5, color='0.92', zorder=0); ax['lengths'].set_xlim(.7, 6.3)
         ax['sched'].set_title(f'switch S = {S:,}   ·   ' + titles['sched'], loc='left', fontsize=10, fontweight='bold', pad=18)
         top = ax['sched'].secondary_xaxis('top', functions=(lambda x, S=S: x - S, lambda x, S=S: x + S))
         top.tick_params(labelsize=7); top.set_xlabel('updates since the switch', fontsize=7, labelpad=1)
-        ax['vhat'].set_xlabel('total updates from init (switch S marked)')
+        ax['vhat'].set_xlabel('total updates from init (switch S marked)', fontsize=9)
         missing = [f'{k} s{s}' for k in KINDS for s in SEEDS if (k, float(S), s) not in present]
         if missing:
             ax['held'].text(.99, .05, 'not run: ' + ', '.join(missing), transform=ax['held'].transAxes, ha='right', fontsize=7, color='crimson')
@@ -374,7 +431,7 @@ def figure():
                  y=.965, fontsize=11)
     for ext in ('png', 'svg'):
         fig.savefig(FIGS/f'scaf_main.{ext}', dpi=120, bbox_inches='tight')
-    print('wrote', (FIGS/'scaf_main.png').relative_to(REPO))
+    print('wrote', FIGS/'scaf_main.png')
 
 
 def main():

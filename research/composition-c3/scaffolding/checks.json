@@ -1,5 +1,1458 @@
 {
- "branches": {},
+ "branches": {
+  "c3-scaf-drop-at1k-s51200-a1": {
+   "first_step": 1000,
+   "last_step": 50000,
+   "logged": 981,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "1000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "1001": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "2998": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "2999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "3000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    0,
+    0,
+    49000
+   ],
+   "exposure_updates_logged": [
+    0,
+    0,
+    49000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 1000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 1
+    },
+    "resumed_step": 1000,
+    "resumed_sha256": "bc7cb3c42dae6b9e1e7557ff05b0346ffabde6f476930669cc8a7bd95605b51c",
+    "source_run": "r1-comp-rnn-inter-s51200-a1"
+   }
+  },
+  "c3-scaf-drop-at1k-s51201-a1": {
+   "first_step": 1000,
+   "last_step": 50000,
+   "logged": 981,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "1000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "1001": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "2998": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "2999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "3000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    0,
+    0,
+    49000
+   ],
+   "exposure_updates_logged": [
+    0,
+    0,
+    49000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 1000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 1
+    },
+    "resumed_step": 1000,
+    "resumed_sha256": "e0bfd426c0267529aa76d2ccfe22132bde3f5a010677d59b894e50b55cbcf0b0",
+    "source_run": "r1-comp-rnn-inter-s51201-a1"
+   }
+  },
+  "c3-scaf-drop-at1k-s51202-a1": {
+   "first_step": 1000,
+   "last_step": 50000,
+   "logged": 981,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "1000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "1001": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "2998": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "2999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "3000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    0,
+    0,
+    49000
+   ],
+   "exposure_updates_logged": [
+    0,
+    0,
+    49000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 1000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 1
+    },
+    "resumed_step": 1000,
+    "resumed_sha256": "120519f183b7221a17fdefadd832fa4ba8a97846a7168eb5e8b2305ebe463f16",
+    "source_run": "r1-comp-rnn-inter-s51202-a1"
+   }
+  },
+  "c3-scaf-taper-at1k-s51200-a1": {
+   "first_step": 1000,
+   "last_step": 50000,
+   "logged": 981,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "1000": [
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ],
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ]
+    ],
+    "1001": [
+     [
+      0.999,
+      0.999,
+      1.0
+     ],
+     [
+      0.999,
+      0.999,
+      1.0
+     ]
+    ],
+    "2998": [
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ],
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ]
+    ],
+    "2999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "3000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    1999,
+    1999,
+    49000
+   ],
+   "exposure_updates_logged": [
+    1999,
+    1999,
+    49000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 1000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 2000
+    },
+    "resumed_step": 1000,
+    "resumed_sha256": "bc7cb3c42dae6b9e1e7557ff05b0346ffabde6f476930669cc8a7bd95605b51c",
+    "source_run": "r1-comp-rnn-inter-s51200-a1"
+   }
+  },
+  "c3-scaf-taper-at1k-s51201-a1": {
+   "first_step": 1000,
+   "last_step": 50000,
+   "logged": 981,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "1000": [
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ],
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ]
+    ],
+    "1001": [
+     [
+      0.999,
+      0.999,
+      1.0
+     ],
+     [
+      0.999,
+      0.999,
+      1.0
+     ]
+    ],
+    "2998": [
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ],
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ]
+    ],
+    "2999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "3000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    1999,
+    1999,
+    49000
+   ],
+   "exposure_updates_logged": [
+    1999,
+    1999,
+    49000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 1000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 2000
+    },
+    "resumed_step": 1000,
+    "resumed_sha256": "e0bfd426c0267529aa76d2ccfe22132bde3f5a010677d59b894e50b55cbcf0b0",
+    "source_run": "r1-comp-rnn-inter-s51201-a1"
+   }
+  },
+  "c3-scaf-taper-at1k-s51202-a1": {
+   "first_step": 1000,
+   "last_step": 50000,
+   "logged": 981,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "1000": [
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ],
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ]
+    ],
+    "1001": [
+     [
+      0.999,
+      0.999,
+      1.0
+     ],
+     [
+      0.999,
+      0.999,
+      1.0
+     ]
+    ],
+    "2998": [
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ],
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ]
+    ],
+    "2999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "3000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    1999,
+    1999,
+    49000
+   ],
+   "exposure_updates_logged": [
+    1999,
+    1999,
+    49000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 1000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 2000
+    },
+    "resumed_step": 1000,
+    "resumed_sha256": "120519f183b7221a17fdefadd832fa4ba8a97846a7168eb5e8b2305ebe463f16",
+    "source_run": "r1-comp-rnn-inter-s51202-a1"
+   }
+  },
+  "c3-scaf-drop-at10k-s51200-a1": {
+   "first_step": 10000,
+   "last_step": 50000,
+   "logged": 801,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "9999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "10000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "10001": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "11998": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "11999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "12000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    0,
+    0,
+    40000
+   ],
+   "exposure_updates_logged": [
+    0,
+    0,
+    40000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 10000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 1
+    },
+    "resumed_step": 10000,
+    "resumed_sha256": "046f4c250d8c7aacc9999437f0223fc029cee6e2cbae6c1644b282e20b9f8010",
+    "source_run": "r1-comp-rnn-inter-s51200-a1"
+   }
+  },
+  "c3-scaf-drop-at10k-s51201-a1": {
+   "first_step": 10000,
+   "last_step": 50000,
+   "logged": 801,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "9999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "10000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "10001": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "11998": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "11999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "12000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    0,
+    0,
+    40000
+   ],
+   "exposure_updates_logged": [
+    0,
+    0,
+    40000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 10000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 1
+    },
+    "resumed_step": 10000,
+    "resumed_sha256": "d83221c12ff2c2a7d41a7b39218978fedd0f68c78a099361c66f64d30e4a965e",
+    "source_run": "r1-comp-rnn-inter-s51201-a1"
+   }
+  },
+  "c3-scaf-drop-at10k-s51202-a1": {
+   "first_step": 10000,
+   "last_step": 50000,
+   "logged": 801,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "9999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "10000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "10001": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "11998": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "11999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "12000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    0,
+    0,
+    40000
+   ],
+   "exposure_updates_logged": [
+    0,
+    0,
+    40000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 10000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 1
+    },
+    "resumed_step": 10000,
+    "resumed_sha256": "413f8dd926a736e81eddb8c3b2ec68217e152038ac13bff58115a7e87fd6f79a",
+    "source_run": "r1-comp-rnn-inter-s51202-a1"
+   }
+  },
+  "c3-scaf-taper-at10k-s51200-a1": {
+   "first_step": 10000,
+   "last_step": 50000,
+   "logged": 801,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "9999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "10000": [
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ],
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ]
+    ],
+    "10001": [
+     [
+      0.999,
+      0.999,
+      1.0
+     ],
+     [
+      0.999,
+      0.999,
+      1.0
+     ]
+    ],
+    "11998": [
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ],
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ]
+    ],
+    "11999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "12000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    1999,
+    1999,
+    40000
+   ],
+   "exposure_updates_logged": [
+    1999,
+    1999,
+    40000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 10000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 2000
+    },
+    "resumed_step": 10000,
+    "resumed_sha256": "046f4c250d8c7aacc9999437f0223fc029cee6e2cbae6c1644b282e20b9f8010",
+    "source_run": "r1-comp-rnn-inter-s51200-a1"
+   }
+  },
+  "c3-scaf-taper-at10k-s51201-a1": {
+   "first_step": 10000,
+   "last_step": 50000,
+   "logged": 801,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "9999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "10000": [
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ],
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ]
+    ],
+    "10001": [
+     [
+      0.999,
+      0.999,
+      1.0
+     ],
+     [
+      0.999,
+      0.999,
+      1.0
+     ]
+    ],
+    "11998": [
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ],
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ]
+    ],
+    "11999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "12000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    1999,
+    1999,
+    40000
+   ],
+   "exposure_updates_logged": [
+    1999,
+    1999,
+    40000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 10000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 2000
+    },
+    "resumed_step": 10000,
+    "resumed_sha256": "d83221c12ff2c2a7d41a7b39218978fedd0f68c78a099361c66f64d30e4a965e",
+    "source_run": "r1-comp-rnn-inter-s51201-a1"
+   }
+  },
+  "c3-scaf-taper-at10k-s51202-a1": {
+   "first_step": 10000,
+   "last_step": 50000,
+   "logged": 801,
+   "join_equals_r1": true,
+   "step_weights_differ_at": [],
+   "n_step_weights_differ": 0,
+   "schedule_points": {
+    "9999": [
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "10000": [
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ],
+     [
+      0.9995,
+      0.9995,
+      1.0
+     ]
+    ],
+    "10001": [
+     [
+      0.999,
+      0.999,
+      1.0
+     ],
+     [
+      0.999,
+      0.999,
+      1.0
+     ]
+    ],
+    "11998": [
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ],
+     [
+      0.0004999999999999449,
+      0.0004999999999999449,
+      1.0
+     ]
+    ],
+    "11999": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "12000": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "schedule_points_equal": true,
+   "exposure_updates_recount": [
+    1999,
+    1999,
+    40000
+   ],
+   "exposure_updates_logged": [
+    1999,
+    1999,
+    40000
+   ],
+   "exposure_matches": true,
+   "recipe": {
+    "task": "ops51000-ls51100",
+    "scheme": {
+     "transition": true,
+     "readout": true
+    },
+    "lr": 0.001,
+    "wd": 0.1,
+    "hidden": 128,
+    "schedule": {
+     "before": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "switch_step": 10000,
+     "after": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "taper": 2000
+    },
+    "resumed_step": 10000,
+    "resumed_sha256": "413f8dd926a736e81eddb8c3b2ec68217e152038ac13bff58115a7e87fd6f79a",
+    "source_run": "r1-comp-rnn-inter-s51202-a1"
+   }
+  }
+ },
  "frozen_reference": {
   "keep-s51200-10000": {
    "equal": true,

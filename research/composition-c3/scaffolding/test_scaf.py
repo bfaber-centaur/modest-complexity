@@ -121,6 +121,26 @@ class Frozen(unittest.TestCase):
         self.assertEqual(e['held_final_pred'], row['held_final_pred'])
         self.assertEqual(e['held_L3'], row['held']['final']['acc'])
 
+    def test_frozen_lengths_equal_a_plain_per_row_loop(self):
+        p = sa.nets.load(sa.ckpt_path('keep', 51201, 10000))[0]
+        e = sa.frozen(p)
+        rng = np.random.default_rng(72000)
+        relu = lambda x: np.maximum(x, 0)
+        for L in (1, 2, 4, 5, 6):
+            d = sa.length_rows(L)
+            correct = 0
+            for i in range(len(d['s'])):
+                h = relu(np.eye(8)[d['s'][i]] @ p['Ws'] + p['bs'])
+                for op in d['ops'][i]:
+                    h = relu(h @ p['A'] + np.eye(4)[op] @ p['B'] + p['bh'])
+                correct += int(np.argmax(h @ p['V'] + p['bv']) == d['states'][i, -1])
+            self.assertAlmostEqual(e[f'L{L}'], correct/len(d['s']), places=12)
+            i = int(rng.integers(len(d['s'])))   # the answer itself, from the permutations
+            x = d['s'][i]
+            for op in d['ops'][i]:
+                x = sa._T['P'][op, x]
+            self.assertEqual(x, d['states'][i, -1])
+
     def test_subsets_and_program_counts(self):
         self.assertEqual((int(sa.NBR.sum()), int((~sa.NBR).sum())), (86, 42))
         self.assertEqual([len(sa.length_rows(L)['s']) for L in (1, 2, 3)], [32, 128, 512])
