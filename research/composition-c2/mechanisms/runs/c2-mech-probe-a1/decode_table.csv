@@ -1,0 +1,145 @@
+condition,seed,run_id,step,fit_position,score_position,train_fit,heldout_acc
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,0,0,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,0,1,1.0,0.78125
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,0,2,1.0,0.546875
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,0,3,1.0,0.3828125
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,1,0,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,1,1,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,1,2,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,1,3,1.0,0.9921875
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,2,0,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,2,1,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,2,2,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,2,3,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,3,0,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,3,1,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,3,2,1.0,1.0
+tied/inter,51200,r1-comp-rnn-inter-s51200-a1,10000,3,3,1.0,0.9921875
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,0,0,1.0,1.0
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,0,1,1.0,0.46875
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,0,2,1.0,0.328125
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,0,3,1.0,0.2109375
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,1,0,1.0,1.0
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,1,1,1.0,1.0
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,1,2,1.0,0.953125
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,1,3,1.0,0.7734375
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,2,0,1.0,1.0
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,2,1,1.0,1.0
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,2,2,1.0,1.0
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,2,3,1.0,0.9453125
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,3,0,1.0,0.875
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,3,1,1.0,1.0
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,3,2,1.0,1.0
+tied/inter,51201,r1-comp-rnn-inter-s51201-a1,10000,3,3,1.0,0.9375
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,0,0,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,0,1,1.0,0.65625
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,0,2,1.0,0.59375
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,0,3,1.0,0.4921875
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,1,0,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,1,1,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,1,2,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,1,3,1.0,0.9609375
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,2,0,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,2,1,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,2,2,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,2,3,1.0,0.9921875
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,3,0,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,3,1,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,3,2,1.0,1.0
+tied/inter,51202,r1-comp-rnn-inter-s51202-a1,10000,3,3,1.0,0.9921875
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,0,0,1.0,1.0
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,0,1,1.0,0.34375
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,0,2,1.0,0.2421875
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,0,3,1.0,0.140625
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,1,0,1.0,0.625
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,1,1,1.0,1.0
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,1,2,1.0,0.28125
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,1,3,1.0,0.140625
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,2,0,1.0,0.375
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,2,1,1.0,0.59375
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,2,2,1.0,1.0
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,2,3,1.0,0.2578125
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,3,0,1.0,0.125
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,3,1,1.0,0.46875
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,3,2,1.0,0.578125
+per-step readout/inter,51200,r1-rev-comp-rnn-untied-s51200-a1,10000,3,3,1.0,0.6015625
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,0,0,1.0,1.0
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,0,1,1.0,0.25
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,0,2,1.0,0.1796875
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,0,3,1.0,0.1484375
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,1,0,1.0,0.375
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,1,1,1.0,1.0
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,1,2,1.0,0.4375
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,1,3,1.0,0.1171875
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,2,0,1.0,0.625
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,2,1,1.0,0.6875
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,2,2,1.0,1.0
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,2,3,1.0,0.28125
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,3,0,1.0,0.5
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,3,1,1.0,0.46875
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,3,2,1.0,0.59375
+per-step readout/inter,51201,r1-rev-comp-rnn-untied-s51201-a1,10000,3,3,1.0,0.515625
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,0,0,1.0,1.0
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,0,1,1.0,0.3125
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,0,2,1.0,0.1953125
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,0,3,1.0,0.1171875
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,1,0,1.0,0.5
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,1,1,1.0,1.0
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,1,2,1.0,0.4453125
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,1,3,1.0,0.2109375
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,2,0,1.0,0.75
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,2,1,1.0,0.6875
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,2,2,1.0,1.0
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,2,3,1.0,0.3203125
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,3,0,1.0,0.125
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,3,1,1.0,0.65625
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,3,2,1.0,0.5546875
+per-step readout/inter,51202,r1-rev-comp-rnn-untied-s51202-a1,10000,3,3,1.0,0.5078125
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,0,0,1.0,1.0
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,0,1,1.0,0.1875
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,0,2,1.0,0.171875
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,0,3,1.0,0.203125
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,1,0,1.0,0.25
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,1,1,1.0,1.0
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,1,2,1.0,0.1484375
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,1,3,1.0,0.1171875
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,2,0,1.0,0.125
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,2,1,1.0,0.3125
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,2,2,1.0,1.0
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,2,3,1.0,0.1171875
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,3,0,1.0,0.0
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,3,1,1.0,0.15625
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,3,2,1.0,0.1171875
+tied/final,51200,r1-comp-rnn-final-s51200-a1,10000,3,3,1.0,0.2890625
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,0,0,1.0,1.0
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,0,1,1.0,0.15625
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,0,2,1.0,0.109375
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,0,3,1.0,0.125
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,1,0,1.0,0.0
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,1,1,1.0,1.0
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,1,2,1.0,0.0703125
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,1,3,1.0,0.109375
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,2,0,1.0,0.0
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,2,1,1.0,0.09375
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,2,2,1.0,1.0
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,2,3,1.0,0.109375
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,3,0,1.0,0.25
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,3,1,1.0,0.09375
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,3,2,1.0,0.125
+tied/final,51201,r1-comp-rnn-final-s51201-a1,10000,3,3,1.0,0.34375
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,0,0,1.0,1.0
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,0,1,1.0,0.125
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,0,2,1.0,0.109375
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,0,3,1.0,0.109375
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,1,0,1.0,0.0
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,1,1,1.0,1.0
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,1,2,1.0,0.2109375
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,1,3,1.0,0.15625
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,2,0,1.0,0.0
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,2,1,1.0,0.0625
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,2,2,1.0,1.0
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,2,3,1.0,0.1484375
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,3,0,1.0,0.25
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,3,1,1.0,0.03125
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,3,2,1.0,0.0859375
+tied/final,51202,r1-comp-rnn-final-s51202-a1,10000,3,3,1.0,0.3046875

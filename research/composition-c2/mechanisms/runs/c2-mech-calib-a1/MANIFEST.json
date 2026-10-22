@@ -1,0 +1,32 @@
+[
+ {
+  "file": "cells.csv",
+  "bytes": 19241,
+  "sha256": "fa4bc42b00112e0fa1847828c0e7be34401623e6cf563de7a76a2af5bc6db400",
+  "committed": true
+ },
+ {
+  "file": "checks.json",
+  "bytes": 10166,
+  "sha256": "34f3e66c2be2f5c145aa4481d1bf2a84561a471c9fa2ae616d952afe0e97d664",
+  "committed": true
+ },
+ {
+  "file": "geometry.csv",
+  "bytes": 17011,
+  "sha256": "86d8576501bfe2bf349f4b1cb42fb49b97f5f0519ba26da8df83e7cfc4c61180",
+  "committed": true
+ },
+ {
+  "file": "pairs.csv",
+  "bytes": 225050,
+  "sha256": "065208e9679b0088fc12b930634c0818f85c6edc7a840eab08206281ea0c2430",
+  "committed": true
+ },
+ {
+  "file": "stdout.log",
+  "bytes": 2020,
+  "sha256": "f1683a9f35bb3e78e6c0962da51e002b59bd4068f2d1a169b6ac96140243b6e2",
+  "committed": true
+ }
+]

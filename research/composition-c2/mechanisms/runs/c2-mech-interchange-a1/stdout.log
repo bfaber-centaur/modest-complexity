@@ -1,0 +1,29 @@
+r1-comp-rnn-inter-s51200-a1 0 diag S 0.104 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-inter-s51200-a1 1000 diag S 0.834 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-inter-s51200-a1 10000 diag S 1.000 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-inter-s51201-a1 0 diag S 0.127 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-inter-s51201-a1 1000 diag S 0.838 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-inter-s51201-a1 10000 diag S 0.990 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-inter-s51202-a1 0 diag S 0.129 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-inter-s51202-a1 1000 diag S 0.840 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-inter-s51202-a1 10000 diag S 1.000 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-rev-comp-rnn-untied-s51200-a1 0 diag S 0.104 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-rev-comp-rnn-untied-s51200-a1 1000 diag S 0.814 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-rev-comp-rnn-untied-s51200-a1 10000 diag S 0.908 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-rev-comp-rnn-untied-s51201-a1 0 diag S 0.127 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-rev-comp-rnn-untied-s51201-a1 1000 diag S 0.805 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-rev-comp-rnn-untied-s51201-a1 10000 diag S 0.881 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-rev-comp-rnn-untied-s51202-a1 0 diag S 0.129 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-rev-comp-rnn-untied-s51202-a1 1000 diag S 0.809 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-rev-comp-rnn-untied-s51202-a1 10000 diag S 0.879 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-final-s51200-a1 0 diag S 0.104 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-final-s51200-a1 1000 diag S 0.795 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-final-s51200-a1 10000 diag S 0.818 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-final-s51201-a1 0 diag S 0.127 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-final-s51201-a1 1000 diag S 0.797 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-final-s51201-a1 10000 diag S 0.828 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-final-s51202-a1 0 diag S 0.129 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-final-s51202-a1 1000 diag S 0.797 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+r1-comp-rnn-final-s51202-a1 10000 diag S 0.830 {'self_swap_state_bitwise': True, 'self_swap_pred_equal': True, 'recombined_max_abs_diff': 0.0, 'recombined_bitwise': True, 'diagonal_pred_identical': True}
+/home/user/modest-complexity/.venv/lib/python3.12/site-packages/numpy/__config__.py:155: UserWarning: Install `pyyaml` for better output
+  warnings.warn("Install `pyyaml` for better output", stacklevel=1)

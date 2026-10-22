@@ -121,3 +121,35 @@ All computed exhaustively; no sampling except the random controls.
 Liška, Kruszewski and Baroni (2018), [arXiv:1802.06467](https://arxiv.org/abs/1802.06467), introduce lookup-table composition. With extra supervision, standard RNNs could reach compositional solutions. Without it, a small share of initializations reached partial ones.
 
 The interchange framing follows the general causal-abstraction literature. This lane makes no novelty claim and has not done a targeted literature check.
+
+## Follow-up (proposed after M2, 2026-10-22; awaiting coordinator approval)
+
+**What M2 showed** (README, M2 observations): in all three conditions, replacing a state by its training-row class mean (the semantic centroid) does better than the natural state where the natural state fails:
+- tied/inter at L = 5–6;
+- the depth-2 → op 3 step on held-out programs, in per-step readout and tied/final.
+
+So the history-specific part of the state goes with the failures. M2 cannot tell which part of that variation matters, or whether the class-mean directions carry the symbol causally on held-out rows.
+
+**Proposal (candidate B, refined).** Use the nine 10k checkpoints. Fit everything on training-row states only: the centroids c_i(x), and U_i, the span of the 7 centered centroids at depth i. Evaluate at boundary i = 2 on all 512 rows: patch, then op 3, then the recipient readout. Score held-out programs and training programs separately. In tied/inter, also evaluate at boundary i = 3 followed by 1–3 more ops (L = 4–6, all programs).
+
+The history residual is r = h_i − c_i(x), with x the row's true symbol. The patched states are:
+1. **Dose.** h' = c_i(x) + λ r, for λ ∈ {0, 0.25, 0.5, 0.75, 1}. λ = 1 is natural and λ = 0 is the M2 centroid.
+2. **Where the harmful residual lives.**
+   - h' = c_i(x) + Π_U r keeps only the residual inside U.
+   - h' = c_i(x) + Π_⊥ r keeps only the residual outside U.
+   - Matched controls repeat both with five random 7-dimensional subspaces (seed 64302).
+3. **Held-out subspace interchange.**
+   - h' = h_b + Π_U (h_d − h_b) is applied to held-out-program bases at i = 2. Donors are all depth-2 states with a different symbol.
+   - The target is the oracle op 3 on the donor's symbol.
+   - Controls: the same with the five random 7-dimensional subspaces, and with the complement Π_⊥.
+
+**Predictions.**
+- **tied/inter.** Accuracy rises monotonically as λ → 0. The harmful residual is mostly outside U: keeping Π_⊥ r reproduces the natural errors, and keeping Π_U r does not. U-interchange follows the donor in ≥ 0.9 of held-out pairs; random subspaces do so in ≤ 0.2.
+- **per-step readout and tied/final.** The same direction at i = 2, with U-interchange lower (0.4–0.8).
+- **Not predicted.** Whether the residual inside U also harms.
+
+**Limits.** The centroid uses the row's true symbol, so a high λ = 0 accuracy is not something the network achieves on its own. A negative subspace result would not rule out a nonlinear or redundant code. U is fit on training rows, and its 7 dimensions are fixed by the 8 classes.
+
+**Cost and IDs.** Forward passes only, under 1 min. Run ID `c2-mech-residual-a1`, seed 64302. No training.
+
+**Alternative (A, if preferred).** Run M2–M3 on the time lane's committed 20k–50k checkpoints, to trace whether cross-length S, C and S_cent rise with training in the per-step-readout and tied/final arms. It depends on those checkpoints existing.
