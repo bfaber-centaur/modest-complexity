@@ -1,6 +1,6 @@
 # Composition follow-ups c3: synthesis
 
-**Status.** DRAFT (correction section only; scaffolding pending).
+**Status.** DRAFT. Sections 1 and 2 are written; the scaffolding follow-up, its review, limitations, next questions and the runs table are pending.
 
 **Scope of every claim.**
 - **Task.** The original task and split (`ops51000-ls51100`), with three paired init seeds (51200–51202). The correction follow-up adds eight tied/final bases from four new task draws.
@@ -43,7 +43,34 @@ Lane notes: [correction](../correction/NOTE.md), [scaffolding](../scaffolding/NO
 
 ## 2. What temporary supervision left behind
 
-*Pending the scaffolding lane.*
+**Setting.** The tied/tied RNN on the original task, with three init seeds (51200–51202).
+- Intermediate labels (loss weights [1, 1, 1]) are used until a switch S, then final labels only ([0, 0, 1]). The switch is either immediate (drop, B) or a linear taper over 2,000 updates (taper, C).
+- References, both run to 50k: keep [1, 1, 1] throughout (A), and final-only from init (D). Both are the existing r1 runs plus c2's continuations.
+- S = 1,000: every seed is partial (held-out length 3 at 0.34–0.36, ¬N at most 0.02).
+- S = 10,000: length 3 is at or near 1.0, but length transfer is still forming (L6 at 0.56–0.86).
+- Measures are logged every 50 updates. Frozen lengths 1–6 are evaluated at fixed checkpoints only: S, S + 2,000, 10k, and 20k–50k.
+
+| at 50,000 updates | held-out length 3 | ¬N | L4–L6 |
+|---|---|---|---|
+| A keep | 1.00 | 1.00 | 1.00 |
+| B drop and C taper, both S, all seeds (12 branches) | 1.00 | 1.00 | 0.99–1.00 |
+| D final-only from init | 0.56–0.70 | 0.12–0.26 | 0.10–0.15 |
+
+- **At 50k, removing the labels lost nothing measured.** All 84 endpoint measures (12 branches × held-out L3, ¬N, L1, L2, L4, L5, L6) are within 5 pp of keep. Every branch ends 0.30–0.44 above D on held-out length 3 and 0.85–0.91 above it on L4–L6.
+- **Even 1,000 updates of intermediate labels made a lasting difference.** After S = 1k, drop and taper (1,000 full updates, then a 2,000-update taper) reach keep's 50k endpoint in all three seeds, including lengths 4–6. D does not within 50k. In c2, D reached 0.90–0.96 on held-out length 3 by 100k with lengths 4–6 at 0.06–0.14 (D2).
+- **The cost of removing them was time.** At S = 1k, held-out length 3 first holds ≥ 0.95 at 14,600–20,450 updates (drop) and 12,050–21,400 (taper), against keep's 7,700–9,150. The largest gaps fall at 10k–20k: drop s51202 at 10k is −0.39 on held-out and −0.86 on ¬N. At S = 10k, L6 lags keep by up to 0.34 at 20k and closes by 40k–50k.
+- **Previously supervised states stayed readable without their labels.** The shared readout on h1 and h2 stays at or above 0.92 on training rows after the switch (1.0 throughout after S = 10k). Frozen L1–L2 is ≥ 0.95 at every fixed time and 1.0 at 50k. D's readout, never trained on h1 or h2, reads them near chance.
+- **Taper and drop end the same.** At S = 1k the taper crosses earlier in two seeds and later in one.
+- **Optimizer.** The update norm falls after the switch. The eps regime begins at about 29k in every branch, as in keep and D.
+- **Three of the lane's six predictions failed.** It expected forgetting of the step-1/2 readout and of length transfer after S = 10k, and a stall short of keep after S = 1k. None happened by 50k.
+- **Checks.** Every branch joins r1 tied/inter exactly at S. The logged schedules and exposures match the declared ones. The frozen evaluation reproduces c2's published lengths table for keep and D. The reviewer's checks (S1–S7, CX-S1, CX-S2) are *pending*.
+
+**Attribution (pending the follow-up).** A drop changes the loss, but the Adam moments carried from three-head training remain for about a thousand updates (b2 = 0.999). The follow-up resets the moments at S = 1k in keep and in drop, with matched carried controls (6 runs). It asks whether the post-switch acquisition comes from the state at S or partly from the carried moments.
+
+**Reading.**
+- On this task and recipe, 1,000 updates of intermediate supervision were enough to put tied/tied training on keep's 50k endpoint. Removing the labels at 1k or 10k slowed acquisition but did not undo it, and nothing was forgotten by 50k.
+- This does not show that the labels are necessary: D is one tested baseline at a finite horizon, not a bound. It does not say what the trained network computes, or that the result holds past 50k, on other tasks, or under other recipes.
+- The equal endpoints hide different paths. At S = 1k the lag behind keep lasts 5,000–12,000 updates.
 
 ## 3. Limitations
 
