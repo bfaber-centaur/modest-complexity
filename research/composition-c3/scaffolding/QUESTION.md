@@ -150,3 +150,53 @@ There is one follow-up, proposed after the first figure and approved by the coor
 - **Runs.** `runs/<ID>/` with the small run files and `MANIFEST.json`. Checkpoints at the fixed times are committed.
 - **Figure.** The primary figure as PNG, SVG and CSV.
 - **Write-up.** README.md, NOTE.md and a reviewer handoff list.
+
+## Follow-up addendum, 2026-10-22 06:10Z (written after M2's results, before any follow-up run)
+
+The coordinator approved this follow-up at 06:06Z, after the first figure (NOTE.md). It is QUESTION.md's default control, applied at S = 1,000 even though its 50k trigger was not met. The reason: at S = 1k, a drop after 1,000 supervised updates still reaches keep's endpoint, while final-only from init does not (by 100k, in c2). The open attribution is whether that history sits in the weights at S, or partly in the Adam moments carried past S.
+
+**Intervention.** `--reset-optimizer-at 1000` (coordinator re-pin; the reviewer checks it before any launch). At update 1,000, m, v and Adam's step count are replaced by a fresh state, and the weights are carried unchanged. Nothing else differs from the matched carried run.
+
+**Arms at S = 1,000.** Three seeds, each from the same `r1-comp-rnn-inter-s<seed>-a1/ckpt-1000`, run to 50,000 with checkpoints at 3k, 10k and 20k–50k and `--diag`:
+
+| arm | schedule | moments at 1k | source |
+|---|---|---|---|
+| A keep, carried | [1, 1, 1] | carried | reused (r1 inter, then c2-time-tt-inter) |
+| A′ keep, reset | [1, 1, 1] | reset | new, `c3-scaf-keep-reset-at1k-s<seed>-a1` |
+| B drop, carried | [0, 0, 1] from 1k | carried | reused, `c3-scaf-drop-at1k-s<seed>-a1` |
+| B′ drop, reset | [0, 0, 1] from 1k | reset | new, `c3-scaf-drop-reset-at1k-s<seed>-a1` |
+| D final-only from init | [0, 0, 1] | – | reused |
+
+**Matched-control check.** Under the new pin with no reset, two on-host runs go from ckpt-1000 to 3,000:
+- `c3-scaf-verify-carried-keep-at1k-s51200-a1` must equal r1 tied/inter, row for row, in every r1 key.
+- `c3-scaf-verify-carried-drop-at1k-s51200-a1` must equal `c3-scaf-drop-at1k-s51200-a1`, row for row, in every key including `diag`.
+
+If either fails, the reused carried arms are not matched controls, and nothing is launched until the coordinator decides.
+
+**Size and budget.** 6 × 49,000 = 294,000 updates plus 2 × 2,000. At the main runs' 5.8–6.2 ms per update with two workers, that is about 15 minutes of the 20-minute follow-up budget (80% is 16 minutes, and the coordinator is told then). Timeouts are 900 s per branch and 180 s per check.
+
+**Measures.** The same as the main runs: logged trajectories, frozen L1–6 at the fixed times, thresholds, retention, optimizer onsets and compatibility. Comparisons are at equal total updates:
+- **Reset effect in drop.** Δ_reset,B(t) = m_B′(t) − m_B(t).
+- **Reset effect in keep.** Δ_reset,A(t) = m_A′(t) − m_A(t).
+- **History attribution.** The difference of the two: Δ_reset,B − Δ_reset,A.
+
+**Predictions** (written before any follow-up run; low confidence):
+1. **Endpoints.** At 50k, B′ is within 5 pp of B on held-out L3, ¬N and L4–6 in all three seeds, so the endpoint does not depend on the carried moments. A′ is within 5 pp of A on the same measures.
+2. **Crossing times.** B′'s held-out threshold crossing is within 3,000 updates of B's in at least two of three seeds.
+3. **Transient.** In the first 100 updates after the reset, the update L2 norm in A′ and B′ exceeds 1.5× the matched carried run's at the same step. A fresh, bias-corrected Adam scales every coordinate to about lr. Train final CE may rise transiently.
+4. **Eps regime.** The onset of the eps regime (every coordinate's √v̂ < eps) in A′ and B′ is within ±2,000 updates of the matched carried arm.
+
+**Interpretation rules, fixed now.** These hold for this task, recipe, horizon and seeds.
+- **Weights at S suffice.** B′ ends within 5 pp of B at 50k on held-out L3 and L6 in all seeds. Then the post-switch acquisition is not attributed to the carried moments; the state at S is enough under this recipe. This does not show that moments never matter.
+- **Moments implicated.** B′ ends at least 5 pp below B on held-out L3 or L6 in a seed, and A′ does not end at least 5 pp below A in that seed. Then that seed's post-switch acquisition depends in part on the carried moments.
+- **Reset perturbation.** A′ and B′ both end at least 5 pp below their carried arms. Then the effect is attributed to the reset itself, not to the supervision history.
+- **Mixed.** Mixed outcomes are reported per seed.
+- **Paths.** Differences in path (crossing time, transient) are reported as such, not as endpoint retention or loss.
+
+**Figure.** `figures/scaf_followup.png` with its CSV, for S = 1k only:
+- the schedule and the reset marker;
+- held-out L3 and ¬N;
+- frozen L4–6 at the fixed times;
+- train final CE and the step-1/2 readout;
+- update norm (with a zoom on 1,000–1,500) and √v̂ against eps;
+- per seed, for A, A′, B, B′ and D.

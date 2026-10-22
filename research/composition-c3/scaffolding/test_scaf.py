@@ -30,7 +30,7 @@ def flag_list(argv, name):
 class Plan(unittest.TestCase):
     def test_twelve_branches_with_the_declared_constants(self):
         ids = [sa.run_id(k, S, s) for S in sa.SWITCH for k in sa.KINDS for s in sa.SEEDS]
-        self.assertEqual(sorted(i for i in PLAN if '-calib-' not in i), sorted(ids))
+        self.assertEqual(sorted(i for i in PLAN if '-calib-' not in i and '-reset-' not in i and '-verify-' not in i), sorted(ids))
         for kind, D in sa.KINDS.items():
             for S in sa.SWITCH:
                 for seed in sa.SEEDS:
@@ -44,6 +44,32 @@ class Plan(unittest.TestCase):
                     self.assertIn('--diag', a)
                     saved = {int(x) for x in flag_list(a, '--checkpoint-steps')} | {sa.END}
                     self.assertEqual(saved, set(sa.ckpt_steps(kind, S)) - {S})
+
+
+def without(argv, flags):
+    """argv with each named flag and its values removed (run ID and purpose always dropped)."""
+    out, skip = [], False
+    for v in argv:
+        if v.startswith('--'):
+            skip = v in flags + ('--run-id', '--purpose')
+        if not skip:
+            out.append(v)
+    return out
+
+
+class FollowupPlan(unittest.TestCase):
+    def test_reset_arms_equal_their_carried_matches_except_the_reset(self):
+        switch = ('--switch-step', '--switch-weights', '--taper-updates')
+        for seed in sa.SEEDS:
+            drop = PLAN[sa.run_id('drop', 1000, seed)]
+            for arm, want in (('drop', without(drop, ())), ('keep', without(drop, switch))):
+                a = PLAN[f'c3-scaf-{arm}-reset-at1k-s{seed}-a1']
+                self.assertEqual(flag(a, '--reset-optimizer-at'), '1000')
+                self.assertEqual(without(a, ('--reset-optimizer-at',)), want)
+        for arm in ('keep', 'drop'):
+            a = PLAN[f'c3-scaf-verify-carried-{arm}-at1k-s51200-a1']
+            self.assertNotIn('--reset-optimizer-at', a)
+            self.assertEqual([flag(a, '--updates'), flag(a, '--checkpoint-steps')], ['3000', '3000'])
 
 
 class Schedule(unittest.TestCase):
