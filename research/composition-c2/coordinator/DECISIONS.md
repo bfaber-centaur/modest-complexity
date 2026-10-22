@@ -203,3 +203,18 @@ A lane that reaches 80% of its budget tells the coordinator before going further
 - a reviewer handoff list.
 
 **Milestones** go to the coordinator thread in one line each: M0 QUESTION.md, M1 calibration and oracle checks, M2 first figure and PR, M3 follow-up, M4 NOTE.md. The coordinator logs them in [MILESTONES.md](MILESTONES.md), which is the reviewer's feed.
+
+## D9. Reviewer pin check: CONCERN C1, training open (2026-10-22 04:09Z)
+
+The reviewer checked pin `b3e8132` with independent code (PR #50, `review/REVIEW.md` §1). Every item passed except one.
+
+**C1.** `c2train.py --resume` refuses a wrong file hash or a different scheme. It does not compare the recipe with the source run's: step weights, task, lr, wd and hidden width. The pin is not changed. Instead:
+- every resume plan entry spells out `--task-id`, `--step-weights`, `--lr`, `--wd` and `--hidden`;
+- for r1 sources, the step weights follow the source checkpoint's `meta.condition`: `final` → `0 0 1`, `inter` → `1 1 1`;
+- per-step-readout sources need `--readout untied`, which the scheme check enforces;
+- lanes publish `config.json` for every run whose checkpoint is reused;
+- the reviewer compares each resumed recipe with its source.
+
+New training is open in every lane from 04:10Z.
+
+**Recovered files.** `recovered/` gained r1's P2 one-step net `ckpt-10000` at `8fca55f`, as a reference system for the generalization lane. That brings it to 28 files; the reviewer's 27/27 check predates the addition.
