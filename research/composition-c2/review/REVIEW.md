@@ -9,7 +9,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd 0 follow-up (`501071c`): **PASS** on every number checked; note S1 (F4 lead is 0.05–0.13). CX-S2: "nearly flat" is a slow rise in every run while logits keep growing, not a plateau. wd 0 decode and group tables NOT CHECKED. | §5 |
 | Generalization | Parts A and B, A5 and the follow-up anatomy (NOTE `6fe1435`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1, G2, G5 and G6. CX-G3: drift predicts failures within a transition in every model, but only 1.2–3.3×, so it is a partial account (note G7). Note G8. | §3 |
 | Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. CONCERN M1 on the centroid/residual reading, from CX-M1, is **addressed** in NOTE `0fe8624`, as are notes M2 and M3; that revision PASSES, including O6's scale-outside-U claim (0.67–0.98). Note M4 on one README word. | §4 |
-| Synthesis draft `eac869e` | **CONCERN SY1**: the eps qualifier overreaches for the per-step readout, 61–87% of whose gain came before the switch. Notes SY2–SY6 (one false sentence about tied transitions, missing committed checkpoints, disclosure, unchecked inputs, minor). Every other quoted number matches. | §6 |
+| Synthesis drafts `eac869e`, `ef69e01`, `84b5175` | Draft 3 takes SY1–SY7 (**PASS**). Draft 1 had **CONCERN SY1**: the eps qualifier overreaches for the per-step readout, 61–87% of whose gain came before the switch. Notes SY2–SY6 (one false sentence about tied transitions, missing committed checkpoints, disclosure, unchecked inputs, minor). Every other quoted number matches. Draft 2 had **CONCERN SY7** (from T2). | §6 |
 
 ## 1. Pin check (`b3e8132`)
 
@@ -433,4 +433,11 @@ Every quoted number was checked against the lane NOTEs, REVIEW.md and my script 
 - **SY7, CONCERN (from T2).** Two places need changing.
   - "Extra labels" says that final-only "transfers nothing past length 3 at 50k (100k was not evaluated at longer lengths)". It has now been evaluated: at 100k, L = 4–6 is 0.06–0.14 and the readout reads h1 and h2 at chance (CX-T4).
   - "The extra labels changed how fast composition came on the original table" should read "how fast held-out length-3 accuracy came". By 100k, final-only reaches that accuracy without length transfer.
+
+### Draft 3 (`84b5175`): SY7
+
+- **PASS.** SY7 is taken in all four places: the short answer (a), the final-only and length bullets in (a), the generalization bullet, and "Extra labels".
+- **Numbers.** Each new number matches §2 T2 and `out/rev_time.txt` (CX-T4): h1 and h2 read at 0.00–0.19, L = 4–6 at 0.06–0.14 at 100k. The pooled "0.06–0.15 beyond length 3" over 10k, 50k and 100k matches A4 (0.115–0.136 at 10k), A5 (0.095–0.15 at 50k) and CX-T4.
+- **Scope.** "Whether the model extended past length 3 at all" is bounded by the sentence's "within this budget", so it does not claim impossibility.
+- **Still open.** The time NOTE corrections for T2–T5 are not yet checked; the synthesis lists them as an open item.
 
