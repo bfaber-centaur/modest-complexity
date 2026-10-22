@@ -6,7 +6,7 @@ Design and predictions: [QUESTION.md](QUESTION.md). Findings: [NOTE.md](NOTE.md)
 
 | file | what |
 |---|---|
-| `task.py` | the 1,024 inputs, label functions (y1, y2, part, unrel), probe targets, split, coverage |
+| `task.py` | the 1,024 inputs, label functions (y1, y2, part, unrel, follow-up split), probe targets, split, coverage |
 | `test_task.py` | independent oracle and split checks (itertools/boolean recomputation, relevant-bit enumeration, disjoint/nested splits) |
 | `train.py` | one run = one arm x one replicate (transfer with frozen readout, or joint) |
 | `analyze.py` | `publish` (run files + `runs/MANIFEST.sha256`), `figures`, `mechanism` |
