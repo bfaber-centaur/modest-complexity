@@ -26,7 +26,8 @@ class Oracle(unittest.TestCase):
         for i, x in enumerate(R):
             x1, x2, x3, x4, x5, x6, x7 = (bool(v) for v in x[:7])
             z = x1 != x2
-            want = dict(y1=z != x3, y2=z and x4, part=(x2 != x3) != x4, unrel=(x5 != x6) != x7)
+            want = dict(y1=z != x3, y2=z and x4, part=(x2 != x3) != x4, unrel=(x5 != x6) != x7,
+                        split=2*((x1 != x3) != x5) + ((x2 != x6) != x7))
             for t, v in want.items():
                 self.assertEqual(task.LABELS[t][i], int(v), (i, t))
             self.assertEqual(task.PROBES['x1^x2'][i], int(z))
@@ -36,6 +37,7 @@ class Oracle(unittest.TestCase):
         self.assertEqual(task.LABELS['y2'].sum(), 256)  # imbalanced: 1 on a quarter
         for t in ('y1', 'part', 'unrel'):
             self.assertEqual(task.LABELS[t].sum(), 512)
+        self.assertEqual(np.bincount(task.LABELS['split']).tolist(), [256]*4)
 
     def test_relevant_bits(self):
         # A label depends on a bit iff flipping that bit changes it for some input.

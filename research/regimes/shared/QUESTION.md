@@ -134,6 +134,41 @@ Each replicate is drawn as its own trace. Training accuracy is drawn next to hel
 - **Bearing on this design.** It motivates looking at per-neuron input weights and flip sensitivity on irrelevant bits, rather than only at accuracy. It does not study transfer between tasks.
 - **Not retrieved.** Nothing else was looked up.
 
-## Follow-up
+## Follow-up (written after M2 at 55d6787, before any follow-up run)
 
-(Empty until the first figure is pushed. Motivation and prediction go here before the run.)
+### Motivation
+
+- **Initial comparison** (figures/transfer.png, final.csv).
+  - With full fine-tuning, `part` (x2⊕x3⊕x4) transfers about as much as `rel` at n = 32–128. Rel − part is all-positive only at n = 16, where replicates also differ in pattern coverage (reviewer C2.1).
+  - With frozen features, `rel` beats `part` by +0.15 to +0.35 on every replicate at n = 32–128, and reaches 0.98–1.00 at n ≥ 128.
+- **Probes** (figures/mechanism.csv).
+  - y1-pretrained layer 2 linearly encodes all three pairwise XORs of x1, x2, x3, z included, at 1.00. The initialization scores 0.82, and `part` 0.80–0.93.
+  - So z is decodable but not singled out.
+- **Reviewer C2.2.** `part` shares y2's gate bit x4 rather than the pair {x1, x2}, so `rel` versus `part` changes two things at once.
+- **Missing control.** A pretraining task that shares exactly the pair {x1, x2} with y2, not x4, and has no x1⊕x2 intermediate.
+
+### Follow-up arm `split`
+
+- **Label.** A 4-class label (x1⊕x3⊕x5, x2⊕x6⊕x7): two 3-parities, one through x1 and one through x2.
+  - They share no other bit with y2 or with each other. Neither has x1⊕x2 in any decomposition.
+  - The pair is a single softmax head of 4 classes. Linear logits need a and b, not a⊕b.
+- **Same as every other arm.** Pool, 2,000 updates, Adam reset, phase 2, readouts, paired replicates s52200–52202.
+- **Code change.** The pre head gets as many classes as its label. The trunk and `new` head initializations are unchanged, so the arm is paired with the initial runs bitwise; 2-class arms are unaffected.
+- **Exposure caveat.** Each pool input carries two bits of label instead of one. The control therefore gets more supervision than `rel`, which works against the prediction below.
+
+### Predictions
+
+1. **Frozen readout.** `split` sits near `part`/`fresh`, about 0.7–0.9 at n = 512, clearly below `rel` (all three paired differences ≤ −0.05 at n = 32–128). Layer-2 z probe for `split` pretrained near initialization (≤ 0.9).
+2. **Fine-tuning.** `split` ≈ `rel` and `part` at n ≥ 64: the benefit is attention to the right bits, not z.
+
+### Reading the result
+
+- **Prediction 1 holds.** The rel-specific frozen-feature transfer tracks a linearly available z, not mere exposure to x1 and x2.
+- **`split` frozen ≈ `rel`.** Then z encoding is not what drives the frozen advantage. Its z probe says whether split built z anyway.
+- **`split` fine-tune < `part`.** Then sharing the gate bit x4 matters for fine-tuning.
+
+### Scope
+
+- **Runs.** 3 runs, about 10 s each.
+- **Analysis.** `analyze.py mechanism` and a separate follow-up figure. The follow-up is drawn apart from the initial comparison.
+- **Steering.** The pre-registered mean-difference steering is reported as run, with no redesign of it in this round.

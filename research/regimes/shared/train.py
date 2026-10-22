@@ -38,7 +38,7 @@ def head_metrics(logits, y, idx):
     z = logits[idx]; yy = y[idx]
     zs = z - z.max(1, keepdims=True); lse = np.log(np.exp(zs).sum(1))
     pred = z.argmax(1)
-    rec = [np.mean(pred[yy == c] == c) for c in (0, 1) if np.any(yy == c)]
+    rec = [np.mean(pred[yy == c] == c) for c in np.unique(yy)]
     return dict(acc=float(np.mean(pred == yy)), bal_acc=float(np.mean(rec)),
                 loss=float(np.mean(lse - zs[np.arange(len(yy)), yy])))
 
@@ -124,7 +124,11 @@ def main():
     args.out.mkdir(parents=True, exist_ok=False)
     timing = Timings()
     pool, test = task.split(args.data_seed)
-    p0 = nets.init(task.N_BITS, args.hidden, {'pre': 2, 'new': 2}, args.init_seed)
+    # The pre head has as many classes as its label (4 for 'split'). The trunk and
+    # 'new' head draws do not depend on it, so every arm stays paired bitwise.
+    pre_task = args.aux if args.mode == 'joint' else args.pre
+    k_pre = 2 if pre_task == 'none' else int(task.LABELS[pre_task].max()) + 1
+    p0 = nets.init(task.N_BITS, args.hidden, {'pre': k_pre, 'new': 2}, args.init_seed)
     trunk = [k for k in p0 if k[0] in 'Wb' and k[1:].isdigit()]
     params = dict(trunk=sum(p0[k].size for k in trunk), head=p0['W_new'].size + p0['b_new'].size)
     config = dict(vars(args), out=str(args.out), seeds=dict(init=args.init_seed, data=args.data_seed),

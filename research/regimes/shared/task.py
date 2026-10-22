@@ -7,7 +7,8 @@ binary expansion of i (x1 is the least significant bit). Bobby's family:
     y2 = z AND x4          (the new task; 1 on a quarter of the domain)
 Pretraining tasks of the other arms are 3-bit parities on other bit sets
 (see QUESTION.md): 'part' = x2^x3^x4 shares two of y2's relevant bits but
-cannot contain x1^x2; 'unrel' = x5^x6^x7 shares none.
+cannot contain x1^x2; 'unrel' = x5^x6^x7 shares none. The follow-up 'split' is a
+4-class pair of parities, one through x1 and one through x2, with no x1^x2.
 """
 import numpy as np
 
@@ -30,8 +31,10 @@ LABELS = {
     'y2': Z & B[:, 3],
     'part': parity(2, 3, 4),
     'unrel': parity(5, 6, 7),
+    # Follow-up control (QUESTION.md): 4 classes, 2*(x1^x3^x5) + (x2^x6^x7).
+    'split': 2*parity(1, 3, 5) + parity(2, 6, 7),
 }
-RELEVANT = {'y1': (1, 2, 3), 'y2': (1, 2, 4), 'part': (2, 3, 4), 'unrel': (5, 6, 7)}
+RELEVANT = {'y1': (1, 2, 3), 'y2': (1, 2, 4), 'part': (2, 3, 4), 'unrel': (5, 6, 7), 'split': (1, 2, 3, 5, 6, 7)}
 # Candidate intermediates probed in the hidden layers; z first.
 PROBES = {'x1^x2': Z, 'x1^x3': parity(1, 3), 'x2^x3': parity(2, 3), 'x1^x4': parity(1, 4),
           'x5^x6': parity(5, 6), 'x1&x2': B[:, 0] & B[:, 1], 'x1': B[:, 0], 'x4': B[:, 3]}
