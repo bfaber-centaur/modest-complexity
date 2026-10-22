@@ -92,3 +92,14 @@ Each status names what it affects.
   - Reference: the same readouts on the untrained network.
 - *Prediction if z is privileged:* the y2 readout exceeds the y2' and y2'' readouts by ≥ 0.1 at n ≥ 128 on each replicate.
 - *Prediction if the counterexample holds:* all three are within about 0.05 of each other, so frozen-feature transfer says "pairwise XORs of y1's bits are linearly available", not "z".
+
+**2026-10-22 ~03:12, R2 M4 (`f493c1a`), before running.**
+- *Target.* NOTE.md's fine-tuning reading: `part` matches `rel` and `split` gives nothing, which "points at sharing the gate bit x4, or at fewer y2-irrelevant pretraining bits".
+- *Counterexample arm `gate`.* Pretrain on g = x3⊕x4⊕x5. It shares only the gate bit x4 with y2: no x1, no x2. It has two y2-irrelevant bits, x3 and x5, which puts it between `part`/`rel` (one) and `unrel` (three).
+- *Recipe.* The lane's exact train.py at `f493c1a`, loaded read-only, with g added to its label table in memory. The three lane replicates' init and data seeds are reused on purpose so the arm is paired with theirs. This is a new configuration, not a new independent seed.
+- *Wrapper check.* One replay of the lane's `part` replicate 52200 must reproduce its published final.csv rows bitwise.
+- *Predictions,* on fine-tuned test x4 = 1 accuracy at n = 32–64, paired against `fresh` and `part`:
+  - if the gate bit drives fine-tuned transfer: `gate` − `fresh` ≥ +0.05 on all three replicates, and `gate` is within about 0.05 of `part`;
+  - if the y2-irrelevant bit count drives it: `gate` lands between `part` and `unrel`, at or below `fresh`;
+  - if sharing x2 is what `part` adds: `gate` is below `part` on all three replicates.
+- *Budget.* 4 runs of about 10 s each.
