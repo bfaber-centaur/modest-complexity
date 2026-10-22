@@ -221,6 +221,18 @@
     "r1-comp-shuf-s51202-a1"
    ],
    "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-probe-a1",
+   "argv": [
+    "research/regimes/composition/analyze.py",
+    "probe",
+    "--root",
+    "runs/regimes",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 300
   }
  ]
 }

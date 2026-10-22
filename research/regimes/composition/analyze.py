@@ -224,15 +224,107 @@ def neighbour_labels(P, train, he):
     return out
 
 
+def fit_probe(H, y, Hh, yh, seed, updates=1000, lr=1e-2):
+    """Linear softmax probe (nets with no hidden layer) fitted on training-program rows.
+    Returns (weights, train accuracy, held-out accuracy)."""
+    sys.path.insert(0, str(HERE.parent/'common')); import nets
+    p = nets.init(H.shape[1], [], dict(y=task.N_SYM), seed); st = nets.adam_state(p)
+    for _ in range(updates):
+        nets.adam_step(p, nets.loss_grad(p, H, dict(y=y))[2], st, lr)
+    acc = lambda X, t: float(np.mean(nets.forward(p, X)[1]['y'].argmax(1) == t))
+    return p['W_y'], acc(H, y), acc(Hh, yh)
+
+
+def probe(root, out):
+    """Descriptive decoding of step1/step2/final from each layer (input, hidden 1, hidden 2) at
+    initialization and at the last update; then interchange interventions on the probe subspaces.
+    Checkpoints are read from the local run root and checked against the published manifests."""
+    sys.path.insert(0, str(HERE.parent/'common')); import nets
+    out.mkdir(parents=True, exist_ok=False)
+    P, _ = task.draw_ops(); L, train, held = task.split()
+    data = dict(train=task.rows(P, train), held=task.rows(P, held))
+    X = {k: task.encode(d) for k, d in data.items()}
+    rng = np.random.default_rng(51320)
+    # Source rows for each base row: 8 per base, same split, different step2 (or step1) from the base.
+    probes, inter = [], []
+    for c in CONDS:
+        for s in SEEDS:
+            rid = run_id(c, s)
+            manifest = {m['file']: m['sha256'] for m in json.loads((RUNS/rid/'MANIFEST.json').read_text())}
+            for step in (0, 10000):
+                f = root/rid/f'ckpt-{step}.npz'
+                if hashlib.sha256(f.read_bytes()).hexdigest() != manifest[f.name]:
+                    raise SystemExit(f'{f} does not match its published SHA-256')
+                p = nets.load(f)[0]
+                acts = {k: nets.forward(p, X[k])[0] for k in X}  # [input, h1, h2]
+                for layer in (0, 1, 2):
+                    if layer == 0 and (c, s, step) != (CONDS[0], SEEDS[0], 0):
+                        continue  # the input layer does not depend on the run
+                    for target in STEPS_ALL:
+                        W, a_tr, a_he = fit_probe(acts['train'][layer], data['train'][target], acts['held'][layer],
+                                                  data['held'][target], seed=51310)
+                        probes.append(dict(run_id=rid if layer else 'input', condition=c if layer else '', init_seed=s if layer else '',
+                                           step=step, layer=layer, target=target, probe_train_acc=a_tr, probe_held_acc=a_he))
+                        if step == 10000 and layer in (1, 2) and target in ('step1', 'step2'):
+                            inter += interchange(nets, p, P, data, acts, layer, target, W, rng, rid, c, s)
+                print(rid, step, flush=True)
+    for name, rows_ in (('probes', probes), ('interventions', inter)):
+        with (out/f'{name}.csv').open('w', newline='') as f:
+            w = csv.DictWriter(f, fieldnames=list(rows_[0])); w.writeheader(); w.writerows(rows_)
+
+
+STEPS_ALL = ('step1', 'step2', 'final')
+
+
+def interchange(nets, p, P, data, acts, layer, target, W, rng, rid, cond, seed):
+    """Swap the component of a layer's activation that lies in a subspace between a base row and a
+    source row whose `target` state differs, then read the final head. The counterfactual answer is
+    the base program's remaining ops applied to the source's state; rows whose counterfactual equals
+    the base or the source answer are excluded so the three readings are distinct."""
+    Wc = W - W.mean(1, keepdims=True)
+    U, sv, _ = np.linalg.svd(Wc, full_matrices=False)
+    U = U[:, sv > 1e-8*sv.max()]
+    k = U.shape[1]
+    out = []
+    for split in ('train', 'held'):
+        d, H = data[split], acts[split][layer]
+        n = len(d['s'])
+        base, src = [], []
+        for i in range(n):
+            cand = np.flatnonzero(d[target] != d[target][i])
+            for j in rng.choice(cand, 8, replace=False):
+                base.append(i); src.append(j)
+        base, src = np.array(base), np.array(src)
+        state = d[target][src]
+        cf = P[d['c'][base], state] if target == 'step2' else P[d['c'][base], P[d['b'][base], state]]
+        keep = (cf != d['final'][base]) & (cf != d['final'][src])
+        base, src, cf = base[keep], src[keep], cf[keep]
+        subspaces = [('probe', U)] + [(f'random-{r}', np.linalg.qr(rng.normal(size=(H.shape[1], k)))[0]) for r in range(5)]
+        subspaces.append(('whole layer', None))
+        for name, B in subspaces:
+            Hb, Hs = H[base], H[src]
+            Hp = Hs.copy() if B is None else Hb + (Hs - Hb) @ B @ B.T
+            pred = nets.forward_from(p, layer, Hp)[1]['final'].argmax(1)
+            out.append(dict(run_id=rid, condition=cond, init_seed=seed, layer=layer, variable=target, subspace=name,
+                            dim=H.shape[1] if B is None else k, pairs_from=split, n_pairs=len(base),
+                            follows_counterfactual=float(np.mean(pred == cf)), keeps_base_answer=float(np.mean(pred == d['final'][base])),
+                            gives_source_answer=float(np.mean(pred == d['final'][src])),
+                            unpatched_base_acc=float(np.mean(nets.forward_from(p, layer, Hb)[1]['final'].argmax(1) == d['final'][base]))))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd', required=True)
     p = sub.add_parser('publish'); p.add_argument('--root', type=Path, required=True); p.add_argument('--ids', nargs='+', required=True)
     p.add_argument('--commit-checkpoints', nargs='*', default=[], help='RUN_ID/ckpt-N.npz files to copy into git')
     sub.add_parser('figure')
+    p = sub.add_parser('probe'); p.add_argument('--root', type=Path, required=True); p.add_argument('--out', type=Path, required=True)
     args = ap.parse_args()
     if args.cmd == 'publish':
         publish(args.root, args.ids, set(args.commit_checkpoints))
+    elif args.cmd == 'probe':
+        probe(args.root, args.out)
     else:
         figure()
 
