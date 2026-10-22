@@ -9,6 +9,33 @@
   "differing_steps": [],
   "recipe_differs": {}
  },
+ "c2-time-tt-inter-s51200-a1": {
+  "source": "research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1",
+  "first_step": 10000,
+  "last_step": 50000,
+  "logged": 801,
+  "join_step_differs": false,
+  "subset_recomputed_equal": true,
+  "recipe_differs": {}
+ },
+ "c2-time-tt-inter-s51201-a1": {
+  "source": "research/regimes/composition/runs/r1-comp-rnn-inter-s51201-a1",
+  "first_step": 10000,
+  "last_step": 50000,
+  "logged": 801,
+  "join_step_differs": false,
+  "subset_recomputed_equal": true,
+  "recipe_differs": {}
+ },
+ "c2-time-tt-inter-s51202-a1": {
+  "source": "research/regimes/composition/runs/r1-comp-rnn-inter-s51202-a1",
+  "first_step": 10000,
+  "last_step": 50000,
+  "logged": 801,
+  "join_step_differs": false,
+  "subset_recomputed_equal": true,
+  "recipe_differs": {}
+ },
  "c2-time-verify-tu-inter-s51200-a1": {
   "source": "research/regimes/review/runs/r1-rev-comp-rnn-untied-s51200-a1",
   "steps": [
@@ -19,6 +46,33 @@
   "differing_steps": [],
   "recipe_differs": {}
  },
+ "c2-time-tu-inter-s51200-a1": {
+  "source": "research/regimes/review/runs/r1-rev-comp-rnn-untied-s51200-a1",
+  "first_step": 10000,
+  "last_step": 50000,
+  "logged": 801,
+  "join_step_differs": false,
+  "subset_recomputed_equal": true,
+  "recipe_differs": {}
+ },
+ "c2-time-tu-inter-s51201-a1": {
+  "source": "research/regimes/review/runs/r1-rev-comp-rnn-untied-s51201-a1",
+  "first_step": 10000,
+  "last_step": 50000,
+  "logged": 801,
+  "join_step_differs": false,
+  "subset_recomputed_equal": true,
+  "recipe_differs": {}
+ },
+ "c2-time-tu-inter-s51202-a1": {
+  "source": "research/regimes/review/runs/r1-rev-comp-rnn-untied-s51202-a1",
+  "first_step": 10000,
+  "last_step": 50000,
+  "logged": 801,
+  "join_step_differs": false,
+  "subset_recomputed_equal": true,
+  "recipe_differs": {}
+ },
  "c2-time-verify-tt-final-s51200-a1": {
   "source": "research/regimes/composition/runs/r1-comp-rnn-final-s51200-a1",
   "steps": [
@@ -27,6 +81,33 @@
   ],
   "logged": 41,
   "differing_steps": [],
+  "recipe_differs": {}
+ },
+ "c2-time-tt-final-s51200-a1": {
+  "source": "research/regimes/composition/runs/r1-comp-rnn-final-s51200-a1",
+  "first_step": 10000,
+  "last_step": 50000,
+  "logged": 801,
+  "join_step_differs": false,
+  "subset_recomputed_equal": true,
+  "recipe_differs": {}
+ },
+ "c2-time-tt-final-s51201-a1": {
+  "source": "research/regimes/composition/runs/r1-comp-rnn-final-s51201-a1",
+  "first_step": 10000,
+  "last_step": 50000,
+  "logged": 801,
+  "join_step_differs": false,
+  "subset_recomputed_equal": true,
+  "recipe_differs": {}
+ },
+ "c2-time-tt-final-s51202-a1": {
+  "source": "research/regimes/composition/runs/r1-comp-rnn-final-s51202-a1",
+  "first_step": 10000,
+  "last_step": 50000,
+  "logged": 801,
+  "join_step_differs": false,
+  "subset_recomputed_equal": true,
   "recipe_differs": {}
  }
 }
