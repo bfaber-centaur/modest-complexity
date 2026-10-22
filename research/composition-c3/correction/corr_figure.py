@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """First figure (QUESTION.md): final accuracy by arm in the main and grouped evaluations, and the
 symbol and centroid error of the corrected h_2. Every base seed is shown; source rows go to
-figures/correction.csv.
+figures/correction.csv. The follow-up F2 figure (figures/followup_f2.*) draws the same four panels
+for the eight c2 generalization tied/final bases on new task draws.
 
 uv run --locked --group analysis python research/composition-c3/correction/corr_figure.py
 """
@@ -96,5 +97,76 @@ def main():
     print(out/'correction.png', len(src), 'rows')
 
 
+F2_RUNS = {'main': HERE/'runs'/'c3-corr-f2-main-a1', 'grouped': HERE/'runs'/'c3-corr-f2-grouped-a1'}
+F2_TASKS = ('ops63000-ls63100', 'ops63000-ls63101', 'ops63001-ls63102', 'ops63001-ls63103')
+F2_SEEDS = (63200, 63201)
+TASK_COLORS = dict(zip(F2_TASKS, ['#1b6ca8', '#d1495b', '#3a7d44', '#c08a1e']))
+TASK_MARKERS = dict(zip(F2_TASKS, 'osD^'))
+
+
+def followup():
+    acc = {s: list(csv.DictReader((F2_RUNS[s]/'accuracy.csv').open())) for s in F2_RUNS}
+    st = {s: list(csv.DictReader((F2_RUNS[s]/'states.csv').open())) for s in F2_RUNS}
+    eval_prefixes = dict(main='fit', grouped='eval')
+    bases = [(t, sd) for t in F2_TASKS for sd in F2_SEEDS]
+    offs = dict(zip(bases, [-0.33 + 0.66*i/(len(bases)-1) for i in range(len(bases))]))
+    src = []
+
+    def pick(table, **kw):
+        out = [r for r in table if all(r[k] == str(v) for k, v in kw.items())]
+        assert len(out) == 1, (kw, len(out))
+        return out[0]
+
+    fig, axes = plt.subplots(1, 4, figsize=(15, 4.6), sharex=True)
+    titles = ['Main: seen prefixes, new op 3\n(filled: held-out programs, hollow: training)',
+              'Grouped: adapter-held-out prefixes\n(not globally unseen states), same fill code',
+              'Symbol of the corrected h$_2$ (nearest fit centroid;\nfilled: grouped eval prefixes, hollow: main)',
+              'Centroid error of the corrected h$_2$\n(same fill code; log scale)']
+    for c, ax in enumerate(axes):
+        ax.axvspan(3.5, 4.5, color='0.93', zorder=0)
+        for (t, sd) in bases:
+            for i, arm in enumerate(ARMS):
+                pts = []
+                if c < 2:
+                    split = ('main', 'grouped')[c]
+                    for rows, filled in (('held', True), ('train', False)):
+                        v = pick(acc[split], task_id=t, seed=sd, arm=arm, prefixes=eval_prefixes[split], rows=rows)
+                        pts.append((float(v['accuracy']), filled))
+                        src.append(dict(panel=f'{split} final accuracy', task_id=t, seed=sd, arm=arm, prefixes=v['prefixes'],
+                                        rows=rows, n=v['n'], value=v['accuracy']))
+                else:
+                    meas = ('symbol_acc', 'centroid_err')[c-2]
+                    for split, filled in (('grouped', True), ('main', False)):
+                        v = pick(st[split], task_id=t, seed=sd, arm=arm, prefixes=eval_prefixes[split])
+                        val = max(float(v[meas]), 1e-3) if meas == 'centroid_err' else float(v[meas])
+                        pts.append((val, filled))
+                        src.append(dict(panel=meas, task_id=t, seed=sd, arm=arm, prefixes=v['prefixes'], rows='', n=v['n'], value=v[meas]))
+                for y, filled in sorted(pts, key=lambda q: q[1]):
+                    ax.scatter(i + offs[(t, sd)], y, s=20 if filled else 46, marker=TASK_MARKERS[t], zorder=4 if filled else 3,
+                               linewidths=1.0, facecolors=TASK_COLORS[t] if filled else 'white', edgecolors=TASK_COLORS[t])
+        if c == 3:
+            ax.set_yscale('log'); ax.set_ylim(5e-4, 20)
+            ax.text(3.5, 2.2e-3, 'D, E: exact (0),\ndrawn at 1e-3', ha='center', fontsize=7, color='0.35')
+        else:
+            ax.set_ylim(-0.03, 1.05); ax.axhline(1/8, color='black', lw=0.7, alpha=0.6)
+            ax.text(-0.45, 1/8 + 0.015, 'chance', fontsize=7, color='0.35')
+        ax.set_xticks(range(5)); ax.set_xticklabels(ARM_LABELS, fontsize=8)
+        ax.grid(axis='y', color='0.9', lw=0.6); ax.set_axisbelow(True)
+        ax.set_title(titles[c], fontsize=9)
+    axes[0].set_ylabel('tied/final on new task draws\n(c2 generalization, frozen 10k)', fontsize=9.5)
+    handles = [plt.Line2D([], [], color=TASK_COLORS[t], marker=TASK_MARKERS[t], ls='', ms=7, label=t) for t in F2_TASKS]
+    handles += [plt.Line2D([], [], color='white', ls='', label='within a task: seed 63200 left, 63201 right')]
+    fig.legend(handles=handles, loc='lower center', ncol=5, frameon=False, fontsize=9, bbox_to_anchor=(0.5, -0.02))
+    fig.suptitle('c3 correction follow-up F2: recipe fixed (k = 64, lr = 1e-3, seed 71200), refit per base; '
+                 'grouped split rule and seed 71300 unchanged', fontsize=10.5)
+    fig.tight_layout(rect=(0, 0.07, 1, 0.95))
+    out = HERE/'figures'
+    fig.savefig(out/'followup_f2.png', dpi=130); fig.savefig(out/'followup_f2.svg')
+    with (out/'followup_f2.csv').open('w', newline='') as f:
+        w = csv.DictWriter(f, fieldnames=list(src[0])); w.writeheader(); w.writerows(src)
+    print(out/'followup_f2.png', len(src), 'rows')
+
+
 if __name__ == '__main__':
     main()
+    followup()

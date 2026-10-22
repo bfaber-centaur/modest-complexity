@@ -30,3 +30,9 @@ Dated entries, each written before the step it governs is executed. The design t
   - `test_corr.py` gains the F2 verification test (8 tests).
 - **Post-hoc reference (the coordinator's request; not a prediction, no fitting).** Run `c3-corr-posthoc-v2-a1` (`corr_posthoc.py`) applies the per-step-readout bases' own step-2 readout V2 to h_2 of the grouped split's fit, val and eval prefixes. V2 was trained on all 128 prefixes, all of which are base training states (D2). So this shows that the frozen h_2 is linearly read by a readout fit on every prefix. It is not a held-out decoder.
 
+**Result (post hoc, 05:39Z).** `c3-corr-posthoc-v2-a1`: V2 reads the symbol at 1.00 on fit, val and eval prefixes of all three per-step bases. Hashes were unchanged and nothing was fit. Read it as described above, not as a held-out decoder.
+
+## 2026-10-22 05:45Z: correction to the first-figure text
+
+The first README and PR text said no learned arm beats A on eval-prefix held rows. That is wrong for one base: D in per-step 51201 reaches 0.625 against A's 0.562, which is 2 of 32 rows and +15% of the gain. The data and figure were always correct. The README is corrected, and the PR body is updated.
+

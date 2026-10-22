@@ -1,0 +1,13 @@
+condition,seed,run_id,readout,prefixes,n,symbol_acc
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,V2,all,128,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,V2,fit,64,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,V2,val,32,1.0
+per-step readout,51200,r1-rev-comp-rnn-untied-s51200-a1,V2,eval,32,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,V2,all,128,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,V2,fit,64,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,V2,val,32,1.0
+per-step readout,51201,r1-rev-comp-rnn-untied-s51201-a1,V2,eval,32,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,V2,all,128,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,V2,fit,64,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,V2,val,32,1.0
+per-step readout,51202,r1-rev-comp-rnn-untied-s51202-a1,V2,eval,32,1.0

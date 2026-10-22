@@ -1,0 +1,10 @@
+c2-gen-final-ops63000-ls63100-s63200-a1 grouped eval held A-E [0.531, 0.25, 0.188, 0.281, 0.938]
+c2-gen-final-ops63000-ls63100-s63201-a1 grouped eval held A-E [0.5, 0.344, 0.25, 0.281, 0.969]
+c2-gen-final-ops63000-ls63101-s63200-a1 grouped eval held A-E [0.469, 0.25, 0.281, 0.312, 0.906]
+c2-gen-final-ops63000-ls63101-s63201-a1 grouped eval held A-E [0.406, 0.25, 0.219, 0.188, 1.0]
+c2-gen-final-ops63001-ls63102-s63200-a1 grouped eval held A-E [0.656, 0.344, 0.469, 0.469, 0.969]
+c2-gen-final-ops63001-ls63102-s63201-a1 grouped eval held A-E [0.688, 0.344, 0.469, 0.406, 1.0]
+c2-gen-final-ops63001-ls63103-s63200-a1 grouped eval held A-E [0.625, 0.312, 0.438, 0.469, 1.0]
+c2-gen-final-ops63001-ls63103-s63201-a1 grouped eval held A-E [0.469, 0.406, 0.281, 0.438, 0.938]
+/home/user/modest-complexity/.venv/lib/python3.12/site-packages/numpy/__config__.py:155: UserWarning: Install `pyyaml` for better output
+  warnings.warn("Install `pyyaml` for better output", stacklevel=1)

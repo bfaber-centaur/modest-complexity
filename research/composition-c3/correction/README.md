@@ -46,7 +46,7 @@ All six bases are frozen ckpt-10000 runs: per-step readout and tied/final, seeds
 | tied/final 51202 | 0.406 | 0.281 | 0.156 | 0.312 | 0.938 | 0.167 | 0.448 | 0.271 | 0.854 | 0.31 |
 
 - **E.** E uses centroids from the 64 fit prefixes only. With the true symbol it stays at 0.83–1.00 on eval-prefix rows.
-- **No learned arm beats A on eval-prefix held rows** in any base. The gains, as a share of E − A, are:
+- **Learned arms against A on eval-prefix held rows.** Only one learned arm, in one base, is above A: D in per-step 51201, at 0.625 against 0.562 (2 of 32 rows). B is never above A. The gains, as a share of E − A, are:
   - B: −50% to 0%;
   - D: −30% to +15%;
   - C: −92% to 0%.
@@ -77,7 +77,7 @@ All six bases are frozen ckpt-10000 runs: per-step readout and tied/final, seeds
 ## Interpretation (limited; QUESTION.md limits apply)
 
 1. **Seen states.** On the states it was fit on, a supervised post-hoc correction using only h_2 reproduces the oracle-centroid gain in both weak arms (B, D). Because of the overlap, this shows only that the frozen h_2 of a *seen* prefix can be mapped to its centroid. It says nothing about new states.
-2. **New prefixes.** On prefixes the correction did not fit, under this design, the correction recovers none of the gain and breaks answers the base model already got right.
+2. **New prefixes.** On prefixes the correction did not fit, under this design, the correction recovers essentially none of the gain: at most +15% in one base, and ≤ 0 in the rest. It also breaks answers the base model already got right. F2 replicates this on eight bases from new task draws (below).
    - The design: 8 fit prefixes per symbol, a linear decoder, a 64-unit map, and 2,000 updates.
    - The failing step is reading the symbol from h_2 across prefixes. The decoder is at 0.22–0.66, while the oracle's centroid replacement with the same fit centroids still works (0.83–1.00).
    - This is a finite-data, small-module result. It does not show that h_2 lacks the symbol in a decodable form. Only 16 prefixes per symbol exist at depth 2, so no split can fit on much more.
@@ -91,7 +91,7 @@ uv sync --locked --group analysis
 uv run --locked python -m unittest -v research/composition-c3/correction/test_corr.py
 uv run --locked python research/regimes/common/run_jobs.py --plan research/composition-c3/correction/plan.json \
   --root runs/c3 --registry research/composition-c3/correction/registry.jsonl --session-label LABEL \
-  --ids c3-corr-calib-s900200-a1 c3-corr-main-a1 c3-corr-grouped-a1   # new IDs if rerun; never reuse
+  --ids c3-corr-calib-s900200-a1 c3-corr-main-a1 c3-corr-grouped-a1 c3-corr-f2-main-a1 c3-corr-f2-grouped-a1 c3-corr-posthoc-v2-a1   # new IDs if rerun; never reuse
 uv run --locked python research/composition-c3/correction/corr_collect.py --root runs/c3 RUN_ID ...
 uv run --locked --group analysis python research/composition-c3/correction/corr_figure.py
 ```
@@ -100,13 +100,59 @@ uv run --locked --group analysis python research/composition-c3/correction/corr_
 |---|---|
 | `corr_core.py` | bases (SHA-256 + recipe check, frozen), prefix sets, grouped split, centroids, map, arms |
 | `corr_calib.py` | training-only calibration (grouped fit → val, seed 900200) |
-| `corr_eval.py` | arms A–E for one split |
-| `corr_figure.py` | first figure and its CSV |
+| `corr_eval.py` | arms A–E for one split (`--bases f2` for the follow-up) |
+| `corr_posthoc.py` | post-hoc reference: per-step bases' own V2 on grouped prefixes (no fitting) |
+| `corr_figure.py` | first figure and the F2 figure, with their CSVs |
 | `corr_collect.py` | copies run outputs here with a MANIFEST |
-| `test_corr.py` | 7 checks (sets, split, centroid weighting, frozen identity, map gradient, shared draw, h-only corrections) |
+| `test_corr.py` | 8 checks (sets, split, centroid weighting, frozen identity, F2 base verification, map gradient, shared draw, h-only corrections) |
 
 **Figure layout.** The figure has 4 columns rather than the planned 3, because symbol accuracy and centroid error are in separate panels. Its content is otherwise as declared.
 
-## Follow-up
+## Follow-up F2: new task draws
 
-Not yet run. The candidates are F1 (another depth) and F2 (a second task draw), declared in QUESTION.md. One is chosen with the coordinator.
+The coordinator approved F2 at 05:37Z. The declaration and predictions were committed before running, at 95052f5 (QUESTION.md addendum).
+
+- **Bases.** The eight c2 generalization tied/final `ckpt-10000` runs: tasks `ops63000-ls63100`, `ops63000-ls63101`, `ops63001-ls63102` and `ops63001-ls63103`, each with init seeds 63200 and 63201.
+- **Recipe.** Fixed (k = 64, lr = 1e-3, 2,000 updates, map seed 71200, probe seed 71301) and refit per base.
+- **Split.** The same grouped rule and seed 71300, applied to each task's own prefixes.
+
+![followup](figures/followup_f2.png)
+
+Source rows: [figures/followup_f2.csv](figures/followup_f2.csv). Per-row tables: `runs/c3-corr-f2-{main,grouped}-a1/`.
+
+**Observations.**
+- **Checks.** A's held accuracy equals each run's logged step-10000 value (8/8). Hashes are unchanged.
+- **Main** (seen states):
+  - A held: 0.42–0.55.
+  - D = E in all eight: 0.875–1.000.
+  - B held: 0.83–0.99, recovering 79–100% of E − A.
+  - C held: 0.32–0.52, below A in all eight (−12% to −36%).
+  - Train rows: B 0.84–0.995, C 0.77–0.94.
+- **Grouped eval prefixes** (32 held rows; 96 train rows):
+  - A held: 0.41–0.69. E held: 0.91–1.00.
+  - B held: 0.25–0.41 (−110% to −13% of the gain). D held: 0.19–0.47 (−90% to −7%). C held: 0.19–0.47 (−85% to −32%).
+  - Every learned arm is below A on held rows in all eight bases.
+  - Train rows fall from A's 1.00 to 0.23–0.46 (B), 0.19–0.44 (D) and 0.49–0.62 (C). E's train rows are 0.87–1.00.
+  - The decoder reads eval-prefix symbols at 0.19–0.44, against 1.00 on its fit prefixes.
+  - The uncorrected state's nearest fit centroid is right for 0.125–0.34 of eval prefixes.
+- **Compute.** About 19 s with both runs concurrent, so about 0.3 of the 5-minute follow-up budget.
+
+**F2 predictions.**
+
+| # | prediction | result |
+|---|---|---|
+| 1 | A equals the logged value; hashes unchanged | **held** (8/8) |
+| 2 | Main: D = E in all eight; B ≥ 60% in ≥ 6 of 8 | **held** (8/8; B 79–100%) |
+| 3 | Grouped: E − A ≥ 0.1 in ≥ 6 of 8 | **held** (8/8) |
+| 3 | Grouped: B and D each < 20% of the gain in ≥ 6 | **held** (8/8 each; all negative) |
+| 3 | Grouped: decoder ≤ 0.5 in ≥ 6 of 8 | **held** (8/8; 0.19–0.44) |
+| 3 | Grouped: B and D train rows < 0.9 in all 8 | **held** |
+
+**Post-hoc reference** (`c3-corr-posthoc-v2-a1`; the coordinator's request; ADAPTIVE.md).
+- The per-step bases' own step-2 readout V2 reads the symbol of h_2 at 1.00 on fit, val and eval prefixes alike, in all three seeds. No fitting is involved.
+- V2 was trained on all 128 prefixes, and every one is a base training state (D2), so this is not a held-out decoder.
+- It shows that one linear readout separates every prefix's frozen h_2 by symbol. It does not show that a readout fit on half the prefixes generalizes to the rest, which is exactly what failed above.
+
+## Bound on the grouped result
+
+Each grouped fit has 64 prefixes (8 per symbol) in a 128-dimensional state, with an unregularized linear decoder and map. The failure bounds this adapter under this exposure. It does not show whether the symbol is linearly available in h_2: the base's own V2 separates all 128 per-step states. At depth 2 there are only 16 prefixes per symbol, so no grouped split can fit on many more.
