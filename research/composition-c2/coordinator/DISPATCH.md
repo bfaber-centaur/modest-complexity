@@ -4,7 +4,7 @@ The c2 coordinator is the thread "Four-regime expedition" (`cmsg_01APdvkRg6kVtZy
 
 If threads cannot be started, a human can paste each launch text below into a new Claude Code session on this repository. Together with the files it names, each text is self-contained.
 
-**Pin:** `swarm/composition-c2` at `PIN`.
+**Pin:** `swarm/composition-c2` at `b3e8132`.
 
 | # | lane | thread | role file | directory | label |
 |---|---|---|---|---|---|
@@ -18,7 +18,7 @@ If threads cannot be started, a human can paste each launch text below into a ne
 
 > You are the ROLE in composition round c2 in bfaber-centaur/modest-complexity. Bobby's launch packet is attached.
 >
-> 1. Fetch branch `swarm/composition-c2` (pin `PIN`) and merge it into your designated branch.
+> 1. Fetch branch `swarm/composition-c2` (pin `b3e8132`) and merge it into your designated branch.
 > 2. Read `research/composition-c2/coordinator/charter/FILE`, which is your role prompt verbatim from Bobby.
 > 3. Read `research/composition-c2/coordinator/DECISIONS.md`. It holds your assignment, the shared-code pin, your run-ID prefix, seed range and budget, and the gates.
 >

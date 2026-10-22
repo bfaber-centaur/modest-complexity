@@ -37,7 +37,7 @@ The original RNN checkpoint files were still on the two containers that wrote th
 
 ## D3. Shared-code pin
 
-[`common/`](../common/) contains `c2task.py`, `c2rnn.py`, `c2train.py`, `c2probe.py` and `test_c2.py`. It imports r1's `task.py` under the module name `r1_comp_task`, and `research/regimes/common/nets.py` unchanged. Pin commit: see [INDEX.md](INDEX.md). The reviewer checks the pin before any new training.
+[`common/`](../common/) contains `c2task.py`, `c2rnn.py`, `c2train.py`, `c2probe.py` and `test_c2.py`. It imports r1's `task.py` under the module name `r1_comp_task`, and `research/regimes/common/nets.py` unchanged. Pin commit: `b3e8132`. The reviewer checks the pin before any new training.
 
 **Model and recipe.** These are r1's defaults. Every one can be set, and every run's `config.json` records it.
 - **Model.** Width 128, ReLU. One start embedding (`Ws`, `bs`) shared by every scheme.

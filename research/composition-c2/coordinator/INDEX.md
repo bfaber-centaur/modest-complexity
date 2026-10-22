@@ -15,4 +15,4 @@ Bobby's packet: [charter/](charter/) (verbatim). Decisions, assignments, budgets
 | reviewer | `review/` | not started |
 | final draft PR to `swarm/exploration` | | not opened |
 
-Pin commit: recorded in DISPATCH.md once pushed.
+Pin commit: `b3e8132` (shared code `common/` as of that commit). Later coordinator commits touch only `coordinator/` unless DECISIONS records a re-pin.
