@@ -25,14 +25,14 @@ lines, ok_all = [], True
 for cell in ('TT', 'TU'):
     for seed in S.SEEDS:
         rid = S.replay_id(cell, seed)
-        rep = S.read_metrics(S.run_dir(rid)/'metrics.jsonl')
+        rep = S.read_metrics(S.find(rid, 'metrics.jsonl'))
         orig = S.read_metrics(S.metrics_path(cell, seed))
         same_metrics = len(rep) == len(orig) and all({k: a[k] for k in R1_KEYS} == {k: b[k] for k in R1_KEYS} for a, b in zip(rep, orig))
         same_subset = all(a['held_subset']['N'] == S.subset_from_pred(b, held_final, nbr)['N'] and
                           a['held_subset']['notN'] == S.subset_from_pred(b, held_final, nbr)['notN'] for a, b in zip(rep, orig))
         same_ckpt = {}
         for step in (1000, 10000):
-            p1, s1, _ = nets.load(S.run_dir(rid)/f'ckpt-{step}.npz')
+            p1, s1, _ = nets.load(S.find(rid, f'ckpt-{step}.npz'))
             p0, s0, _ = nets.load(S.checkpoint(cell, seed, step))
             same_ckpt[step] = (s1['t'] == s0['t'] and set(p1) == set(p0) and
                                all(np.array_equal(d1[k], d0[k]) for d1, d0 in ((p1, p0), (s1['m'], s0['m']), (s1['v'], s0['v'])) for k in d0))

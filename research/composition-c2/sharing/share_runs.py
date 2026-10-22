@@ -38,6 +38,14 @@ def run_dir(rid):
     return LANE_RUNS/rid if (LANE_RUNS/rid).exists() else RUNS_ROOT/rid
 
 
+def find(rid, name):
+    """A run file, committed record first, then the local output (checkpoints are mostly local)."""
+    for d in (LANE_RUNS/rid, RUNS_ROOT/rid):
+        if (d/name).exists():
+            return d/name
+    raise FileNotFoundError(f'{rid}/{name}')
+
+
 def metrics_path(cell, seed):
     if cell in R1_RUN:
         return Path(str(R1_RUN[cell]).format(seed))/'metrics.jsonl'
@@ -51,11 +59,7 @@ def checkpoint(cell, seed, step):
         if not path.exists():
             raise FileNotFoundError(path)
         return path
-    rid = run_id(cell, seed)
-    for d in (LANE_RUNS/rid, RUNS_ROOT/rid):
-        if (d/f'ckpt-{step}.npz').exists():
-            return d/f'ckpt-{step}.npz'
-    raise FileNotFoundError(f'{rid} ckpt-{step}')
+    return find(run_id(cell, seed), f'ckpt-{step}.npz')
 
 
 def task():

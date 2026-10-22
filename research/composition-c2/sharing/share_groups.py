@@ -73,9 +73,9 @@ def main():
                     path = S.checkpoint(cell, seed, step)
                 except FileNotFoundError:
                     # TT/TU originals kept only ckpt-0/1000/10000; their replays carry the rest.
-                    rid = S.replay_id(cell, seed)
-                    path = S.run_dir(rid)/f'ckpt-{step}.npz'
-                    if not path.exists():
+                    try:
+                        path = S.find(S.replay_id(cell, seed), f'ckpt-{step}.npz')
+                    except FileNotFoundError:
                         continue
                 rows += [dict(r, source=path.parent.name) for r in rows_for(path, cell, seed, step)]
     fields = ['cell', 'seed', 'step', 'source', 'group', 'copy', 'param_norm', 'adam_step_norm', 'decay_step_norm',
