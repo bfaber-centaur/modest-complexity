@@ -125,3 +125,19 @@ The specific rules are written into this file as a dated addendum before the int
 - **M1–M4** pass.
 - **R2** is the reading most at risk: the off-reference channel grows at both wd values.
 - **C2.** A's reference channel gives low but nonzero sufficiency accuracy, about 0.1–0.2.
+
+## Addendum 1 (2026-10-22, about 02:40 UTC, before computing section 2)
+
+Written before any channel, coherence or projection value was computed. Nothing from the lanes' output had been seen. Three parts of section 2 were under-specified and are fixed here.
+
+- **C2 margin rule.**
+  - Raw logits of different networks are on different scales, so B and A are compared on margins divided by that checkpoint's RMS centred logit over the 483 pairs. That normalisation is scale-free.
+  - "Exceeds A's, with non-overlapping seed ranges" must hold for the margin over N and for the margin over S.
+  - Margins are means over pairs, so that they add across channels.
+- **Pure-decay benchmark (R1).** The ratio is the reference channel's mean margin at t divided by ρ_{t−100}² times its value at update 100, for t ≥ 100.
+- **Coherence and full-table projections (my versions; the lane's are compared when they are pushed).**
+  - For unit j in frequency group k = k_j, A_j = Σ_{(a,b)} Σ_c h_j(a,b) W_j(c) e^{−2πik(a+b−c)/p}.
+  - The aggregate index is Σ_k |Σ_{j∈k} A_j| / Σ_k Σ_{j∈k} |A_j|.
+  - It is computed over all 961 pairs, the 483 common pairs, and the 299 training pairs.
+  - The full-table projection is g(d) = mean over a pair set of z(a, b, a+b−d). It gives common accuracy 1 if argmax_d g = 0 and 0 otherwise, and is computed over the same three pair sets.
+  - Both are computed for A and B at updates 0, 100, 2,000 and 20,000.
