@@ -17,7 +17,10 @@ Per run (definitions declared in QUESTION.md Q1, before measuring):
   decision (QUESTION.md Q1 addendum, fixed before the new runs): for each run at 0 < wd < 1 and each
     threshold, r = observed crossing update / the update at which it would reach the exposure at which
     the wd 1 run from the same start crossed; within a factor 1.5 = "exposure clock", above = "slower"
-    (censored runs: slower, with r a lower bound), below = "faster".
+    (censored runs: slower, with r a lower bound), below = "faster";
+  matched (descriptive, chosen after viewing the first figure, not part of the decision rule): own
+    held-out accuracy, train cross-entropy and norm of each decayed run at the logged update nearest
+    E = 0.1, 0.3, 0.6, 1, 1.5, 2, beside the wd 0 run from the same start at that same update.
 
 uv run --locked --group analysis python research/e4/dynamics/decay.py RUN_DIR ... --out DIR
 """
@@ -42,6 +45,7 @@ from margins_check import COMMON, tr30, tr50  # noqa: E402  (frozen e1 30% and e
 P = 31
 STARTS = ROOT/'research/e3/mechanisms/starts'
 THETA_FIXED = .10
+MATCH_E = (.1, .3, .6, 1., 1.5, 2.)
 WD_COLORS = {0.0: '#555555', 0.1: '#1b9e77', 0.3: '#d95f02', 1.0: '#7570b3'}
 
 
@@ -149,6 +153,27 @@ def decision(summ, lr=1e-3, band=1.5):
     return out
 
 
+def matched(runs, dense_rows):
+    """Each decayed run at the logged update nearest each exposure in MATCH_E, beside its wd 0 partner at that update."""
+    by = {}
+    for r in dense_rows:
+        by.setdefault((r['wd'], r['init_seed']), {})[r['step']] = r
+    out = []
+    for run in sorted(runs, key=lambda r: (r['init_seed'], r['wd'])):
+        if run['wd'] == 0:
+            continue
+        mine, zero = by[(run['wd'], run['init_seed'])], by.get((0.0, run['init_seed']), {})
+        for e in MATCH_E:
+            step = min(mine, key=lambda t: abs(mine[t]['exposure'] - e))
+            if abs(mine[step]['exposure'] - e) > .01*e:
+                continue
+            r, z = mine[step], zero.get(step)
+            out.append(dict(run_id=run['run_id'], wd=run['wd'], init_seed=run['init_seed'], E=e, step=step,
+                            exposure=r['exposure'], own_heldout=r['own_heldout'], train_ce=r['train_ce'], norm=r['norm'],
+                            wd0_own_heldout=z['own_heldout'] if z else '', wd0_norm=z['norm'] if z else ''))
+    return out
+
+
 def write_csv(path, rows):
     fields = list(dict.fromkeys(k for r in rows for k in r))
     with path.open('w', newline='') as f:
@@ -231,6 +256,9 @@ def main():
     rule = decision(summ)
     if rule:
         write_csv(args.out/'decay_decision.csv', rule)
+    match = matched(runs, dense_rows)
+    if match:
+        write_csv(args.out/'decay_matched.csv', match)
     figure(runs, dense_rows, ck_rows, summ, args.out, 'update')
     if any(r['wd'] > 0 for r in runs):
         figure(runs, dense_rows, ck_rows, summ, args.out, 'exposure')
