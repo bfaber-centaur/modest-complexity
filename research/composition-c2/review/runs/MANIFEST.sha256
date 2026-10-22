@@ -1,0 +1,4 @@
+b110c5c983fef65bfc63683017b21486f42f0d8ee3218887d68178c83f2e7f3c  c2-rev-verify-final-s51200-a1/config.json
+daaa2648e7fe43bdd44895a26e315027a0320bb9d5d4d7f5a0928cff7d52b588  c2-rev-verify-final-s51200-a1/metrics.jsonl
+3b92a858e84f2af02c95141023f7f28ed2f133775287210bcab463f2890b379a  c2-rev-verify-final-s51200-a1/runtime.json
+e271bf026ba192146ac6ffd0d6101bd37552c9a898d90a59198d54d938ab4f90  c2-rev-verify-final-s51200-a1/ckpt-10000.npz  local-only: arrays equal ../../recovered/r1-comp-rnn-final-s51200-a1/ckpt-10000.npz (rev_pin.py)
