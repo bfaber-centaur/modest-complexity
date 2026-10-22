@@ -110,10 +110,12 @@ Recorded separately in [ADAPTIVE.md](ADAPTIVE.md) as they happen.
 1. Concentration: share of a model's first errors (steps 4–6 pooled) carried by its 1, 4 and 8 most frequent transitions (diffuse expectation 1/32, 4/32, 8/32), with the full 32-entry table per model.
 2. Consistency across depth: Spearman correlation, over the 32 transitions, between the first-error rate at step 5 and at step 6 (step 4 has few errors in some models; reported where it has at least 20).
 3. Wrong answers at the first error: share equal to another op applied to the true state, `P[k'](x)` with k' ≠ k (3 of the 7 wrong symbols, so 3/7 if errors were uniform over wrong symbols). Descriptive.
+4. Held-out windows (added 04:22Z after the reviewer's G1 on Part A, still before any follow-up measurement). The reviewer found that length-4–6 programs containing any held-out length-3 window are less accurate. Here: the share of first errors at step t* whose last three ops (t*−2, t*−1, t*) form a held-out program of the model's split, against the base rate 16/64 = 0.25 of such windows among exhaustive rows; and, per row, accuracy at lengths 4–6 split by whether the program contains any held-out window (the reviewer's breakdown, recomputed here).
 
 **Predictions.**
 - **F1.** In every one of the 11 models, the 4 most frequent transitions carry ≥ 50% of first errors at steps 4–6.
 - **F2.** The step-5 and step-6 first-error rates over the 32 transitions correlate positively (Spearman ρ > 0.5) in at least 9 of 11 models.
+- **F3.** First errors are enriched for a held-out window ending at the error step: share ≥ 0.375 (1.5× the base rate) in at least 9 of 11 models.
 - If F1 fails broadly (top-4 share near 4/32), the decline is diffuse accumulation rather than a few broken transitions.
 
 Run ID `c2-gen-followup-anatomy-a1` (`gen_followup.py`), elapsed cost about 1 minute. This stays a frozen evaluation; it does not test whether the hidden state is a reusable semantic state (the mechanisms lane's interchange question) and does not fit anything on longer programs.
