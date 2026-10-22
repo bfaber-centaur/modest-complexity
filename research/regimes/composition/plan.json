@@ -1,0 +1,6 @@
+{
+ "note": "R1 composition plan (QUESTION.md). Entries are pushed before launch. Calibration seeds 900000+ are never pooled with research runs.",
+ "runs": [
+  {"run_id": "r1-comp-calib-inter-s900000-a1", "argv": ["research/regimes/composition/train.py", "--out", "{out}", "--condition", "inter", "--init-seed", "900000", "--updates", "1000", "--run-id", "r1-comp-calib-inter-s900000-a1", "--purpose", "calibration"], "timeout": 120}
+ ]
+}
