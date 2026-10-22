@@ -74,6 +74,12 @@ The TU cell is my r1 arm (disclosure above). Checks, with code written here:
 
 (Dated, before the matching analysis or run.)
 
+- **04:4x, sharing wd-0 follow-up.** This is post hoc in one respect. It was written after the coordinator's one-line summary, which said held-out at 10k was 0.30–0.45, ¬N ≤ 0.07, and "nearly flat after 1–4k, not eps-limited". It was written before opening any wd-0 file.
+  - **Checks.** The recipes (wd 0, everything else as at wd 0.1). The step-0 rows equal the wd-0.1 runs' per seed. The endpoints recomputed from the logged prediction strings with my ¬N recount. No checkpoints are committed.
+  - **CX-S2, against "without decay, no cell composes within 10k".** "Nearly flat" could be an argmax property while the function still moves.
+  - *Test.* Per run, from 5k to 10k: the held-out change, the held-out final CE, the train final margin (from `--diag`), and the number of held-out predictions that change between consecutive evaluations.
+  - *Prediction.* Held-out changes by at most 0.03 in every run. But the train margin keeps growing, by more than 10%, and held-out CE rises: the logits keep scaling up on fixed answers. That would make "flat" a statement about answers, not about the function.
+
 - **04:28, sharing counterexample** (f966c73). This was written after reading its M0 `f84dbc3` and its NOTE's Interpretation section (`d8735fc`). I had also seen the coordinator's relay of the 10k held-out and ¬N table. I had not seen any trajectory, CSV or figure.
   - **CX-S1, against "tying the transition does worse under per-step readouts on every seed" and "the two tyings are non-additive" (NOTE Interpretation 2).** Both claims are read at exactly 10,000 updates, with cells still rising.
   - *Test.* Is the sign stable over the last 2,000 updates? I check every logged evaluation from 8,000 to 10,000 (41 per run), per seed: UU − TU and the interaction (TT − TU) − (UT − UU).
