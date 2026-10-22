@@ -4,3 +4,4 @@ Every choice made after [QUESTION.md](QUESTION.md) was committed, with its time 
 
 | time | choice | based on | outcomes seen? |
 |---|---|---|---|
+| 04:10 | Recipe flags (`--task-id`, `--hidden`, `--lr`, `--wd`, `--eval-every`) written explicitly into every plan argv; values unchanged from the defaults | reviewer pin check C1, relayed by the coordinator | no |
