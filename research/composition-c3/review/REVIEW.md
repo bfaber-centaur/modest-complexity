@@ -5,7 +5,7 @@ Questions and predictions, committed before each measurement: [QUESTION.md](QUES
 | item | verdict | section |
 |---|---|---|
 | Pin `be41d16` (D3) | **PASS**. No defect in what a branch or a correction computes. Notes N1–N4. My finite-difference check P3 missed its own tolerance at `ckpt-10000` (see §1). | §1 |
-| Correction lane | not started | |
+| Correction lane (PR #63, `c3f03cd`) | **PASS**. Every number in its tables, both figures and the NOTE recomputes exactly from my own code (B and C to 0 rows). Leak checks hold. CX-C1 held: the bins of gain recovered are stable across three other map and probe draws. CX-C2 failed narrowly: a val-tuned ridge decoder reads new prefixes up to 5/32 better, but recovers at most 6% of the gain, so the conclusion stands. C6: on adapter-held-out prefixes B is not purely decoder-plus-centroid. Wording notes W1–W3. | §2 |
 | Scaffolding lane | not started | |
 
 ## 1. Pin check of `be41d16`
@@ -65,3 +65,57 @@ Questions and predictions, committed before each measurement: [QUESTION.md](QUES
 - **N4.** For a c2 source, the weights before that run's own resume step are taken from its config's constant step weights. c2 D9 and the c2 time review (§2 there) checked those chains.
 
 **For the correction lane (P5).** On the original split, each depth-2 state occurs exactly three times among the training rows. So D6's "each unique state once" centroid gives the same centroids as a per-row mean there. The weighting matters only on grouped-prefix splits.
+
+## 2. Correction lane (PR #63 at `c3f03cd`)
+
+**PASS.** Checks and counterexamples were committed before I opened any lane result (QUESTION.md §2, `44e7556`; script at `ae77579`).
+- **Evidence.** `rev_corr.py`, run as `c3-rev-corr-a1` (failed in C7 on my own panel mapping; [out/rev_corr_pass1.txt](out/rev_corr_pass1.txt)) and `c3-rev-corr-a2` ([out/rev_corr.txt](out/rev_corr.txt)). Also `rev_corr_note.py` ([out/rev_corr_note.txt](out/rev_corr_note.txt)).
+- **My own code.** The forward pass is c2's `rev_pin.my_forward`. The prefix sets, split, centroids and map training are mine, written from the lane's QUESTION. The probe is c2's pinned `c2probe`.
+- **Disclosure.** The per-step-readout bases are my r1 arm.
+
+**C1–C5, C7: PASS in every cell.**
+- **C1.** All 14 bases (6 original, 8 F2) hash to RECOVERY.json or MANIFEST.json at step 10,000. Each loaded file's `params_sha256` equals the lane's before, after-fit and after records.
+- **C2.** My grouped split equals the lane's for every task: 8/4/4 per symbol, disjoint. Each prefix's 4 rows stay in one group, and eval = 32 held + 96 training rows.
+- **C3.** My accuracies equal every cell of the lane's four `accuracy.csv` files (10 main and 30 grouped cells per base). A, D and E are exact. B and C, from my own map code, are also exact: the difference is 0 rows everywhere.
+- **C4.** The symbol accuracy, centroid error and decoder accuracy of the corrected states equal the lane's `states.csv`.
+- **C5, leakage, from the code.** B, C and D get h_2 alone, and only E gets the true symbol. Fits use the fit prefixes only. Calibration uses fit → val only, with seed 900200, and no final answers.
+- **C7.** All 240 values in `figures/correction.csv` and all 320 in `figures/followup_f2.csv` recompute from my numbers. I looked at both PNGs. They show every seed, mark chance and label E as the oracle reference. The fill code differs between panels (held/train in panels 1–2, grouped/main in 3–4), but each panel title says which.
+- **NOTE numbers** (`rev_corr_note.py`). Every quoted range matches:
+  - main: A, B, C, D = E;
+  - grouped eval: E 0.84–1.00; B −50% to 0% of the gain; D above A only in per-step 51201 (0.625 vs 0.562); training rows 0.17–0.64; decoder 0.53–0.66 / 0.22–0.31;
+  - F2: B 79–100% (main), and in grouped every learned arm below A, B −110% to −13%, D −90% to −7%, training rows 0.19–0.62, decoder 0.19–0.44, E 0.91–1.00.
+
+**CX-C1, the map and probe draws: held.** I refit B with map seeds 73010–73012 and D with probe seeds 73020–73022. The bin of gain recovered did not change in any of the 6 original bases, in either evaluation:
+- main: above 60% for both B and D;
+- grouped: below 20% for both B and D.
+
+So the lane's single draws (71200, 71301) carry its per-base statements.
+
+**CX-C2, other decoders: failed narrowly. The conclusion stands.** On grouped eval prefixes of the 11 tied/final bases (3 original, 8 F2):
+- **The prediction missed.** A ridge decoder with λ chosen on val prefixes raises held final accuracy over the lane's probe by up to +0.156 (5 of 32 rows, `ops63001-ls63102-s63201`) and +0.125 (original s51201). Decoder accuracy rises by up to +0.156. I predicted at most 0.10 and 0.15.
+- **The gain stays small.** Even so, ridge recovers at most +6% of the gain (original s51201; −80% to −11% elsewhere), so "recovers essentially none of the gain" holds for this second decoder too.
+- **Nearest-centroid decoding is worse than the probe everywhere.**
+- **What it means.** The NOTE's decoder accuracies (0.22–0.31; 0.19–0.44 in F2) belong to its unregularized probe; ridge reaches 0.28–0.34 and up to 0.56 in F2. That fits the NOTE's own bound: "this adapter under this exposure… does not show whether the symbol is linearly available in h_2".
+
+**C6, decoder-plus-centroid accounting: holds on seen states, not on adapter-held-out prefixes.**
+- **Main evaluation.** B's corrected state never has the wrong nearest-centroid symbol, and B ≤ D + 1/32 in all 14 bases.
+- **Grouped eval prefixes.**
+  - B exceeds D by more than 1/32 in 3 of 14 bases: tied/final s51201 0.312 vs 0.219, which is the NOTE's reported failure of its prediction 4, plus two F2 bases, 0.344 vs 0.281 and 0.250 vs 0.188. The NOTE reports only the first, since F2 made no such prediction.
+  - On held rows where B's corrected state decodes to the wrong symbol, B is still right on 13–33% in 8 of 14 bases; I predicted at most chance, 12.5%.
+- **What it means.** B's output on new prefixes is not a clean centroid snap: it keeps some of the natural state. B stays below A there, so this is not evidence of a useful extra computation. It does mean that "B behaves like a decoder plus re-encoder" holds on seen states only.
+
+**Wording notes (minimal remedies).**
+- **W1.** The short answer says that on seen states the correction "recovers the full gain". D does in all six bases. B does in five; in tied/final s51202 it recovers 75% (0.805 against E 0.969). Remedy: "D recovers the full gain, and B 75–103%".
+- **W2.** "Replacing a correctly handled state with a slightly wrong centroid" is imprecise. D substitutes the centroid of a wrong symbol, and B an off-centroid state. Remedy: say that.
+- **W3.** "The same holds for eight bases from new task draws" should say that these are tied/final only, as the F2 section does. The NOTE's prediction table already says that F2's predictions came after the original grouped result.
+
+**Charter priorities.**
+- True symbols enter only the targets and E.
+- Fits use only their declared split.
+- Prefix copies stay together.
+- Adapter-held-out and base-held-out rows are reported separately.
+- Base weights are unchanged.
+- Rescue is kept apart from identification ("What they do not show").
+
+The specificity checks are CX-C1, CX-C2 and C6 above.
+

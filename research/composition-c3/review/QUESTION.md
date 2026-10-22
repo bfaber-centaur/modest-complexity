@@ -30,6 +30,49 @@ Code under test is imported read-only or run as a subprocess. The forward pass, 
 
 Verdict rule: BLOCK if any of P1–P3, P5 or P9 fails in a way that changes what a branch or correction computes. CONCERN if a check fails without changing results, or a recipe pairing that should be refused is accepted. Otherwise PASS.
 
+## 2. Correction lane (PR #63 at `c3f03cd`)
+
+I have read its QUESTION.md (`3e3f73d` and the addenda through `95052f5`), ADAPTIVE.md and `corr_core.py`, and nothing else from the lane. I have not opened `accuracy.csv`, `fits.csv`, `states.csv`, `checks.json`, the figures, README or NOTE. Two results reached me before this entry: the coordinator's relay and ADAPTIVE both say that D beats A once on grouped held rows (per-step s51201, 0.625 against 0.562), and that per-step V2 reads every prefix's h_2 at 1.00.
+
+**Checks** (script `rev_corr.py`, run as `c3-rev-corr-a1` through `run_jobs.py`). My forward pass and oracle come from the c2 review (`rev_pin.py`). The prefix sets, split, centroids, map training and measures are mine, written from the QUESTION text. The probe is c2's pinned `c2probe.fit_probe`, reviewed in c2.
+
+| # | check | prediction |
+|---|---|---|
+| C1 | Bases. The six D4 files and the eight F2 files hash to RECOVERY.json or MANIFEST.json, and step 10,000. `params_sha256` of each loaded file equals the lane's before and after records | all equal |
+| C2 | Sets. There are 128 prefixes, 16 per symbol. My grouped split, from the QUESTION rule (prefix index lex(op1, op2)·8 + s; within each symbol in order, one generator `default_rng(71300)`; cut 8/4/4), equals the lane's. Every prefix's 4 rows (3 training, 1 held) sit in one group, and the groups are disjoint. Eval = 32 held + 96 training rows | equal, and leak-free. The same is checked per F2 task |
+| C3 | My recomputation of every arm × base × evaluation × row set in the lane's accuracy table (original and F2). A and E use my forward and my unique-prefix centroids. D uses `c2probe.fit_probe(H_fit, x_fit, 71301)` and my centroids. B and C are my own map code (128 → 64 → 128 ReLU, W1 He-normal then W2 LeCun-normal from `default_rng(71200)`, zero biases, Adam via `nets.adam_step`, lr 1e-3, 2,000 updates, MSE averaged over prefixes and units) | A, D and E exact. B and C within 1 row of each row set (identical if my draw order is theirs) |
+| C4 | Also on my side: nearest-centroid symbol accuracy of the corrected state, centroid error, decoder accuracy, gain recovered (E − A ≥ 0.1 only), and train-row accuracy, against whatever of these the lane reports | equal, to rounding |
+| C5 | Leakage, from the code. At evaluation B, C and D receive h_2 only; E alone uses the true symbol. Grouped centroids, map, decoder and calibration use fit (and val for calibration) prefixes only. The eval prefixes enter nothing that is fit or chosen | holds |
+| C6 | Decoder-plus-centroid accounting. Per base and evaluation, is B ≤ D + 1/32 on held rows? And per row: of the rows where B's corrected state has the wrong nearest-centroid symbol, how many does B still answer correctly? | B ≤ D + 1/32 everywhere. B answers ≤ 1/8 of its wrong-symbol rows (chance), so its gain is the decoded symbol |
+
+**Counterexamples** (committed before I open any lane result).
+- **CX-C1, the map draw.** I refit B with three map draws of my own (73010, 73011, 73012), everything else fixed, and refit the decoder with probe seeds 73020–73022. The lane's per-base claim is the bin of gain recovered: below 20%, 20–60%, or above 60% (where E − A ≥ 0.1). Prediction: in both evaluations, that bin is unchanged across my three draws in at least 5 of the 6 original bases. If it changes in more, the single map and probe draws do not carry the lane's per-base statements.
+- **CX-C2, the decoder.** This would weaken a negative grouped result. Two decoders that the lane did not try, both fit on fit prefixes only:
+  1. nearest centroid (fit centroids);
+  2. ridge regression to one-hot symbols, with λ chosen from {1e-3, 1e-2, 1e-1, 1, 10} on val prefixes only.
+
+  Each is followed by c(x̂). Prediction: on grouped eval prefixes, neither raises decoder accuracy by more than 0.15 over the lane's probe, or held-row final accuracy by more than 0.1, in any tied/final base (original or F2). If one does, then "the adapter fails on new prefixes" is about the unregularized probe, not about what h_2 carries linearly.
+
+## 3. Scaffolding lane (written while its training runs; before any of its results exist on its branch)
+
+I have read its QUESTION.md (`b1928fe`) and nothing else from the lane. Its branch head when I wrote this was `de9ff42`, which holds the plan, calibration records, `scaf_analyze.py` and `test_scaf.py`, and no branch results.
+
+**Checks** (script to come, mine; forward and oracle from `rev_pin.py`).
+
+| # | check | prediction |
+|---|---|---|
+| S1 | **Branch points.** Each of the 12 configs resumes the recovered r1 tied/inter `ckpt-S` with the RECOVERY.json hash, manifest-listed, with the right run ID and the explicit recipe flags. Each branch's first row (step S) equals r1's published row on every r1 key | all 12 |
+| S2 | **Schedule.** `step_weights` on every logged row equals my w(t) (D5, including S, S + 1,999 and S + 2,000). The final weight is exactly 1. The exposure in each config equals my recount | all 12 |
+| S3 | **Records.** Committed checkpoints match their MANIFEST hashes. Every checkpoint rescores with my forward to its logged row (train, held, `held_final_pred`). The registry holds every attempt, and none is missing or silently retried | all |
+| S4 | **Frozen lengths.** Every number in the lane's L = 1–6 table, recomputed with my forward and oracle, exhaustively. This includes its reproduction of c2 generalization's keep and final-only numbers at 10k and 50k | exact |
+| S5 | **Arithmetic.** Δ_branch, Δ_keep, Δ_D, the threshold crossings and the retention / degradation / collapse labels, recomputed from the joined trajectories at the fixed times (no checkpoint chosen by score). The reused keep and final-only arms are the c2 time runs, whose joins the c2 review passed | exact |
+| S6 | **Parameters keep moving.** In every branch every parameter changes over S → S + 2,000 and S + 2,000 → 50k. The Adam step carries | all |
+| S7 | **Figure.** Every value in the lane's figure CSV recomputes from the logged rows or from S4. I look at the PNG | equal |
+
+**Counterexamples** (committed before any scaffolding result exists).
+- **CX-S1, length 3 hiding length transfer.** At S = 10k, if B or C is "retained" at length 3 (within 0.05 of keep at 50k), my own exhaustive evaluation of its `ckpt-50000` at L = 6 is ≥ 0.05 below keep's `ckpt-50000` in at least one seed. The shared readout reads h1 or h2 (train step-1 or step-2 accuracy) below 0.9 in at least two seeds. If neither holds, "retention at length 3" also carries length transfer here, and I say so.
+- **CX-S2, decay without the intermediate loss.** Decoupled decay alone shrinks a parameter that no remaining loss supports by (1 − 1e-4)^40,000 ≈ e^−4 over 10k → 50k. Prediction: at S = 10k, every B branch's parameter norm at `ckpt-50000` is below keep's at 50k in all three seeds. The h1/h2 readout directions shrink most, measured by ‖V‖ against keep. If the norms are equal or larger, the final-only loss alone sustains the whole solution's scale.
+
 ## Revisions
 
 ### 05aac5a + runs (05:23–05:24), before any analysis of them
@@ -46,3 +89,43 @@ Three things in the first pass need entries before the second pass.
   - **P3b, new.** The same check at `ckpt-10000` plus N(0, 0.01²) per element, 3 seeds × 3 weightings. Prediction: ≤ 1e-6 relative.
 - **CX-P1, second line failed because my assumption about the file layout was wrong.** The per-step-readout runs have neither a `MANIFEST.json` nor their own `MANIFEST.sha256`. Their hashes are in the shared `research/regimes/review/runs/MANIFEST.sha256`, which `check_source` does not read. The check now tests that and that the recovered files match it. Prediction: true.
 - **P5 crashed** on a key name of mine (`bv` does not exist in the untied-readout scheme). The changed element is now in `bs`.
+
+### 44e7556 + script (before running `c3-rev-corr-a1`)
+
+- **Files read since 44e7556.** The header lines of the lane's CSVs, `corr_eval.py`, `corr_calib.py` and the first data row of `figures/correction.csv`. That row is A main held s51200 = 0.633, which equals r1's published value.
+- **C5, from the code.**
+  - `corr_core.correction` passes h_2 alone to B, C and D, and gives E the true symbol.
+  - `fit_arms` receives only the fit prefixes.
+  - `corr_calib.py` uses grouped fit → val prefixes only, with init seed 900200, and computes no final answers.
+  - Holds.
+- **C7, added (no prediction beyond "equal").** Every value in `figures/correction.csv` and `figures/followup_f2.csv` recomputes from my numbers: A, D and E exactly, and B and C within one row.
+- **Run.** `rev_corr.py` runs as `c3-rev-corr-a1` through `run_jobs.py` (plan entry in this commit).
+
+### ae77579, first run `c3-rev-corr-a1` (failed with exit code 1 after 190 s; log kept as [out/rev_corr_pass1.txt](out/rev_corr_pass1.txt))
+
+- **Complete before the crash, and recorded as they stand:**
+  - C1–C4 pass in all 28 base × evaluation cells, with B and C exact to 0 rows.
+  - C6 fails in part: "B ≤ D + 1/32" fails in 3 grouped cells, and "≤ 1/8 of wrong-symbol rows" fails in 8 grouped cells.
+  - CX-C1 passes, 6/6 in every case.
+  - CX-C2 fails: the largest rises are +0.156 in decoder accuracy and +0.156 in held final accuracy.
+- **The crash was in C7, a bug of mine.** C7 read the `symbol_acc`/`centroid_err` panels, which have no split in their name, as the main evaluation. They are keyed by prefixes instead: `fit` means main and `eval` means grouped.
+- **Rerun `c3-rev-corr-a2`.** The fix maps the split from the prefixes. Two other additions change no check:
+  - the CX-C2 lines print the gain recovered;
+  - all my accuracies are dumped to `rev_corr.json`.
+
+  Prediction: C1–C6 and the counterexamples come out as in the first run (the code is deterministic), and C7 passes.
+
+### 63625a5, rerun `c3-rev-corr-a2` complete (191 s); now the lane's NOTE (`c3f03cd`)
+
+- **The rerun.** Every line matches pass 1 except C7, which now passes: 240 + 320 figure values.
+- **Files now read.** The lane's NOTE.md and both figure PNGs.
+- **Next check, `rev_corr_note.py` (reading only).** It compares the NOTE's numbers with my accuracies (`rev_corr.json`) and with the decoder accuracies in the lane's `states.csv`, which C4 showed equal mine:
+  - **Main, held.** A, B, C, D and E as quoted. C is below A in all six bases. "Recovers the full gain" is checked per arm.
+  - **Grouped eval prefixes.**
+    - Held rows: E, B against A with its gain range, "D above A once", C ≤ A.
+    - Training rows: learned arms 0.17–0.64.
+    - Decoder: 0.53–0.66 / 0.22–0.31.
+  - **F2.**
+    - Main: B 79–100% of the gain, D = E, C < A.
+    - Grouped: every learned arm below A; B −110% to −13%, D −90% to −7%; training rows 0.19–0.62; decoder 0.19–0.44; E 0.91–1.00.
+

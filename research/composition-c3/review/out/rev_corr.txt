@@ -1,0 +1,212 @@
+PASS C1 r1-rev-comp-rnn-untied-s51200-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 r1-rev-comp-rnn-untied-s51200-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-rev-comp-rnn-untied-s51200-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-rev-comp-rnn-untied-s51200-a1", "split": "main", "group": "fit", "A": 0.6328, "B": 1.0, "B@73010": 1.0, "B@73011": 0.9453, "B@73012": 0.9922, "C": 0.4922, "D": 1.0, "D-nc": 0.5156, "D@73020": 1.0, "D@73021": 1.0, "D@73022": 1.0, "E": 1.0, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 r1-rev-comp-rnn-untied-s51200-a1 main (fit held): B <= D + 1/32  [B 1.000 D 1.000]
+PASS C6 r1-rev-comp-rnn-untied-s51200-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 r1-rev-comp-rnn-untied-s51200-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 r1-rev-comp-rnn-untied-s51200-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 r1-rev-comp-rnn-untied-s51200-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-rev-comp-rnn-untied-s51200-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-rev-comp-rnn-untied-s51200-a1", "split": "grouped", "group": "eval", "A": 0.6875, "B": 0.5312, "B@73010": 0.4375, "B@73011": 0.3438, "B@73012": 0.4688, "C": 0.4062, "D": 0.5938, "D-nc": 0.2188, "D-ridge": 0.8125, "D@73020": 0.5938, "D@73021": 0.625, "D@73022": 0.625, "E": 1.0, "wrong_symbol_rows": 15, "B_acc_on_wrong_symbol_rows": 0.13333333333333333, "ridge_lambda": 1.0}
+PASS C6 r1-rev-comp-rnn-untied-s51200-a1 grouped (eval held): B <= D + 1/32  [B 0.531 D 0.594]
+FAIL C6 r1-rev-comp-rnn-untied-s51200-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [15 rows, B correct on 0.13333333333333333]
+PASS C1 r1-rev-comp-rnn-untied-s51201-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 r1-rev-comp-rnn-untied-s51201-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-rev-comp-rnn-untied-s51201-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-rev-comp-rnn-untied-s51201-a1", "split": "main", "group": "fit", "A": 0.5234, "B": 1.0, "B@73010": 1.0, "B@73011": 1.0, "B@73012": 0.9844, "C": 0.375, "D": 1.0, "D-nc": 0.4688, "D@73020": 1.0, "D@73021": 1.0, "D@73022": 1.0, "E": 1.0, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 r1-rev-comp-rnn-untied-s51201-a1 main (fit held): B <= D + 1/32  [B 1.000 D 1.000]
+PASS C6 r1-rev-comp-rnn-untied-s51201-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 r1-rev-comp-rnn-untied-s51201-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 r1-rev-comp-rnn-untied-s51201-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 r1-rev-comp-rnn-untied-s51201-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-rev-comp-rnn-untied-s51201-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-rev-comp-rnn-untied-s51201-a1", "split": "grouped", "group": "eval", "A": 0.5625, "B": 0.5625, "B@73010": 0.3125, "B@73011": 0.375, "B@73012": 0.4062, "C": 0.1875, "D": 0.625, "D-nc": 0.1875, "D-ridge": 0.5938, "D@73020": 0.5625, "D@73021": 0.5938, "D@73022": 0.5938, "E": 0.9688, "wrong_symbol_rows": 15, "B_acc_on_wrong_symbol_rows": 0.3333333333333333, "ridge_lambda": 1.0}
+PASS C6 r1-rev-comp-rnn-untied-s51201-a1 grouped (eval held): B <= D + 1/32  [B 0.562 D 0.625]
+FAIL C6 r1-rev-comp-rnn-untied-s51201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [15 rows, B correct on 0.3333333333333333]
+PASS C1 r1-rev-comp-rnn-untied-s51202-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 r1-rev-comp-rnn-untied-s51202-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-rev-comp-rnn-untied-s51202-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-rev-comp-rnn-untied-s51202-a1", "split": "main", "group": "fit", "A": 0.5156, "B": 1.0, "B@73010": 1.0, "B@73011": 1.0, "B@73012": 1.0, "C": 0.4531, "D": 1.0, "D-nc": 0.5, "D@73020": 1.0, "D@73021": 1.0, "D@73022": 1.0, "E": 1.0, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 r1-rev-comp-rnn-untied-s51202-a1 main (fit held): B <= D + 1/32  [B 1.000 D 1.000]
+PASS C6 r1-rev-comp-rnn-untied-s51202-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 r1-rev-comp-rnn-untied-s51202-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 r1-rev-comp-rnn-untied-s51202-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 r1-rev-comp-rnn-untied-s51202-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-rev-comp-rnn-untied-s51202-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-rev-comp-rnn-untied-s51202-a1", "split": "grouped", "group": "eval", "A": 0.5312, "B": 0.3438, "B@73010": 0.375, "B@73011": 0.3438, "B@73012": 0.4688, "C": 0.375, "D": 0.5, "D-nc": 0.0938, "D-ridge": 0.625, "D@73020": 0.5, "D@73021": 0.5312, "D@73022": 0.5, "E": 0.9688, "wrong_symbol_rows": 22, "B_acc_on_wrong_symbol_rows": 0.13636363636363635, "ridge_lambda": 0.1}
+PASS C6 r1-rev-comp-rnn-untied-s51202-a1 grouped (eval held): B <= D + 1/32  [B 0.344 D 0.500]
+FAIL C6 r1-rev-comp-rnn-untied-s51202-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [22 rows, B correct on 0.13636363636363635]
+PASS C1 r1-comp-rnn-final-s51200-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 r1-comp-rnn-final-s51200-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-comp-rnn-final-s51200-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-comp-rnn-final-s51200-a1", "split": "main", "group": "fit", "A": 0.2734, "B": 0.8828, "B@73010": 0.7812, "B@73011": 0.8125, "B@73012": 0.8438, "C": 0.2109, "D": 0.875, "D-nc": 0.4219, "D@73020": 0.875, "D@73021": 0.875, "D@73022": 0.875, "E": 0.875, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 r1-comp-rnn-final-s51200-a1 main (fit held): B <= D + 1/32  [B 0.883 D 0.875]
+PASS C6 r1-comp-rnn-final-s51200-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 r1-comp-rnn-final-s51200-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 r1-comp-rnn-final-s51200-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 r1-comp-rnn-final-s51200-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-comp-rnn-final-s51200-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-comp-rnn-final-s51200-a1", "split": "grouped", "group": "eval", "A": 0.2812, "B": 0.1875, "B@73010": 0.1875, "B@73011": 0.125, "B@73012": 0.1562, "C": 0.1562, "D": 0.1875, "D-nc": 0.0938, "D-ridge": 0.2188, "D@73020": 0.1875, "D@73021": 0.1875, "D@73022": 0.1875, "E": 0.875, "wrong_symbol_rows": 24, "B_acc_on_wrong_symbol_rows": 0.08333333333333333, "ridge_lambda": 1.0}
+PASS C6 r1-comp-rnn-final-s51200-a1 grouped (eval held): B <= D + 1/32  [B 0.188 D 0.188]
+PASS C6 r1-comp-rnn-final-s51200-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [24 rows, B correct on 0.08333333333333333]
+PASS C1 r1-comp-rnn-final-s51201-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 r1-comp-rnn-final-s51201-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-comp-rnn-final-s51201-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-comp-rnn-final-s51201-a1", "split": "main", "group": "fit", "A": 0.3125, "B": 0.8906, "B@73010": 0.8438, "B@73011": 0.8438, "B@73012": 0.875, "C": 0.2578, "D": 0.875, "D-nc": 0.375, "D@73020": 0.875, "D@73021": 0.875, "D@73022": 0.875, "E": 0.875, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 r1-comp-rnn-final-s51201-a1 main (fit held): B <= D + 1/32  [B 0.891 D 0.875]
+PASS C6 r1-comp-rnn-final-s51201-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 r1-comp-rnn-final-s51201-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 r1-comp-rnn-final-s51201-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 r1-comp-rnn-final-s51201-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-comp-rnn-final-s51201-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-comp-rnn-final-s51201-a1", "split": "grouped", "group": "eval", "A": 0.3125, "B": 0.3125, "B@73010": 0.375, "B@73011": 0.375, "B@73012": 0.25, "C": 0.3125, "D": 0.2188, "D-nc": 0.0625, "D-ridge": 0.3438, "D@73020": 0.2188, "D@73021": 0.2812, "D@73022": 0.2188, "E": 0.8438, "wrong_symbol_rows": 27, "B_acc_on_wrong_symbol_rows": 0.2222222222222222, "ridge_lambda": 1.0}
+FAIL C6 r1-comp-rnn-final-s51201-a1 grouped (eval held): B <= D + 1/32  [B 0.312 D 0.219]
+FAIL C6 r1-comp-rnn-final-s51201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [27 rows, B correct on 0.2222222222222222]
+PASS C1 r1-comp-rnn-final-s51202-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 r1-comp-rnn-final-s51202-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-comp-rnn-final-s51202-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-comp-rnn-final-s51202-a1", "split": "main", "group": "fit", "A": 0.3203, "B": 0.8047, "B@73010": 0.9062, "B@73011": 0.9688, "B@73012": 0.9531, "C": 0.2422, "D": 0.9688, "D-nc": 0.3594, "D@73020": 0.9688, "D@73021": 0.9688, "D@73022": 0.9688, "E": 0.9688, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 r1-comp-rnn-final-s51202-a1 main (fit held): B <= D + 1/32  [B 0.805 D 0.969]
+PASS C6 r1-comp-rnn-final-s51202-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 r1-comp-rnn-final-s51202-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 r1-comp-rnn-final-s51202-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 r1-comp-rnn-final-s51202-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 r1-comp-rnn-final-s51202-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "r1-comp-rnn-final-s51202-a1", "split": "grouped", "group": "eval", "A": 0.4062, "B": 0.2812, "B@73010": 0.25, "B@73011": 0.2188, "B@73012": 0.2812, "C": 0.1562, "D": 0.3125, "D-nc": 0.0625, "D-ridge": 0.2812, "D@73020": 0.3125, "D@73021": 0.2812, "D@73022": 0.2812, "E": 0.9375, "wrong_symbol_rows": 25, "B_acc_on_wrong_symbol_rows": 0.16, "ridge_lambda": 10.0}
+PASS C6 r1-comp-rnn-final-s51202-a1 grouped (eval held): B <= D + 1/32  [B 0.281 D 0.312]
+FAIL C6 r1-comp-rnn-final-s51202-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [25 rows, B correct on 0.16]
+PASS C1 c2-gen-final-ops63000-ls63100-s63200-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 c2-gen-final-ops63000-ls63100-s63200-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63000-ls63100-s63200-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63000-ls63100-s63200-a1", "split": "main", "group": "fit", "A": 0.4844, "B": 0.8984, "B@73010": 0.8516, "B@73011": 0.8672, "B@73012": 0.9062, "C": 0.3203, "D": 0.9375, "D-nc": 0.3516, "D@73020": 0.9375, "D@73021": 0.9375, "D@73022": 0.9375, "E": 0.9375, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 c2-gen-final-ops63000-ls63100-s63200-a1 main (fit held): B <= D + 1/32  [B 0.898 D 0.938]
+PASS C6 c2-gen-final-ops63000-ls63100-s63200-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 c2-gen-final-ops63000-ls63100-s63200-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 c2-gen-final-ops63000-ls63100-s63200-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 c2-gen-final-ops63000-ls63100-s63200-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63000-ls63100-s63200-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63000-ls63100-s63200-a1", "split": "grouped", "group": "eval", "A": 0.5312, "B": 0.25, "B@73010": 0.1562, "B@73011": 0.125, "B@73012": 0.1562, "C": 0.1875, "D": 0.2812, "D-nc": 0.2188, "D-ridge": 0.2188, "D@73020": 0.2812, "D@73021": 0.3438, "D@73022": 0.25, "E": 0.9375, "wrong_symbol_rows": 24, "B_acc_on_wrong_symbol_rows": 0.125, "ridge_lambda": 0.1}
+PASS C6 c2-gen-final-ops63000-ls63100-s63200-a1 grouped (eval held): B <= D + 1/32  [B 0.250 D 0.281]
+PASS C6 c2-gen-final-ops63000-ls63100-s63200-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [24 rows, B correct on 0.125]
+PASS C1 c2-gen-final-ops63000-ls63100-s63201-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 c2-gen-final-ops63000-ls63100-s63201-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63000-ls63100-s63201-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63000-ls63100-s63201-a1", "split": "main", "group": "fit", "A": 0.5, "B": 0.9766, "B@73010": 0.9531, "B@73011": 0.9453, "B@73012": 1.0, "C": 0.3672, "D": 1.0, "D-nc": 0.3828, "D@73020": 1.0, "D@73021": 1.0, "D@73022": 1.0, "E": 1.0, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 c2-gen-final-ops63000-ls63100-s63201-a1 main (fit held): B <= D + 1/32  [B 0.977 D 1.000]
+PASS C6 c2-gen-final-ops63000-ls63100-s63201-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 c2-gen-final-ops63000-ls63100-s63201-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 c2-gen-final-ops63000-ls63100-s63201-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 c2-gen-final-ops63000-ls63100-s63201-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63000-ls63100-s63201-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63000-ls63100-s63201-a1", "split": "grouped", "group": "eval", "A": 0.5, "B": 0.3438, "B@73010": 0.2188, "B@73011": 0.1562, "B@73012": 0.25, "C": 0.25, "D": 0.2812, "D-nc": 0.1562, "D-ridge": 0.375, "D@73020": 0.2812, "D@73021": 0.3438, "D@73022": 0.3125, "E": 0.9688, "wrong_symbol_rows": 25, "B_acc_on_wrong_symbol_rows": 0.24, "ridge_lambda": 10.0}
+FAIL C6 c2-gen-final-ops63000-ls63100-s63201-a1 grouped (eval held): B <= D + 1/32  [B 0.344 D 0.281]
+FAIL C6 c2-gen-final-ops63000-ls63100-s63201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [25 rows, B correct on 0.24]
+PASS C1 c2-gen-final-ops63000-ls63101-s63200-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 c2-gen-final-ops63000-ls63101-s63200-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63000-ls63101-s63200-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63000-ls63101-s63200-a1", "split": "main", "group": "fit", "A": 0.4219, "B": 0.8281, "B@73010": 0.8438, "B@73011": 0.9453, "B@73012": 0.875, "C": 0.3203, "D": 0.9375, "D-nc": 0.375, "D@73020": 0.9375, "D@73021": 0.9375, "D@73022": 0.9375, "E": 0.9375, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 c2-gen-final-ops63000-ls63101-s63200-a1 main (fit held): B <= D + 1/32  [B 0.828 D 0.938]
+PASS C6 c2-gen-final-ops63000-ls63101-s63200-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 c2-gen-final-ops63000-ls63101-s63200-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 c2-gen-final-ops63000-ls63101-s63200-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 c2-gen-final-ops63000-ls63101-s63200-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63000-ls63101-s63200-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63000-ls63101-s63200-a1", "split": "grouped", "group": "eval", "A": 0.4688, "B": 0.25, "B@73010": 0.25, "B@73011": 0.25, "B@73012": 0.125, "C": 0.2812, "D": 0.3125, "D-nc": 0.1875, "D-ridge": 0.3438, "D@73020": 0.2812, "D@73021": 0.2812, "D@73022": 0.3125, "E": 0.9062, "wrong_symbol_rows": 23, "B_acc_on_wrong_symbol_rows": 0.08695652173913043, "ridge_lambda": 1.0}
+PASS C6 c2-gen-final-ops63000-ls63101-s63200-a1 grouped (eval held): B <= D + 1/32  [B 0.250 D 0.312]
+PASS C6 c2-gen-final-ops63000-ls63101-s63200-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [23 rows, B correct on 0.08695652173913043]
+PASS C1 c2-gen-final-ops63000-ls63101-s63201-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 c2-gen-final-ops63000-ls63101-s63201-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63000-ls63101-s63201-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63000-ls63101-s63201-a1", "split": "main", "group": "fit", "A": 0.4531, "B": 0.9141, "B@73010": 1.0, "B@73011": 0.9766, "B@73012": 0.9766, "C": 0.375, "D": 1.0, "D-nc": 0.3672, "D@73020": 1.0, "D@73021": 1.0, "D@73022": 1.0, "E": 1.0, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 c2-gen-final-ops63000-ls63101-s63201-a1 main (fit held): B <= D + 1/32  [B 0.914 D 1.000]
+PASS C6 c2-gen-final-ops63000-ls63101-s63201-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 c2-gen-final-ops63000-ls63101-s63201-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 c2-gen-final-ops63000-ls63101-s63201-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 c2-gen-final-ops63000-ls63101-s63201-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63000-ls63101-s63201-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63000-ls63101-s63201-a1", "split": "grouped", "group": "eval", "A": 0.4062, "B": 0.25, "B@73010": 0.1562, "B@73011": 0.2188, "B@73012": 0.25, "C": 0.2188, "D": 0.1875, "D-nc": 0.125, "D-ridge": 0.1562, "D@73020": 0.1875, "D@73021": 0.2188, "D@73022": 0.1562, "E": 1.0, "wrong_symbol_rows": 25, "B_acc_on_wrong_symbol_rows": 0.16, "ridge_lambda": 10.0}
+FAIL C6 c2-gen-final-ops63000-ls63101-s63201-a1 grouped (eval held): B <= D + 1/32  [B 0.250 D 0.188]
+FAIL C6 c2-gen-final-ops63000-ls63101-s63201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [25 rows, B correct on 0.16]
+PASS C1 c2-gen-final-ops63001-ls63102-s63200-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 c2-gen-final-ops63001-ls63102-s63200-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63001-ls63102-s63200-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63001-ls63102-s63200-a1", "split": "main", "group": "fit", "A": 0.5469, "B": 0.9922, "B@73010": 0.9688, "B@73011": 0.9766, "B@73012": 0.9844, "C": 0.4375, "D": 1.0, "D-nc": 0.4375, "D@73020": 1.0, "D@73021": 1.0, "D@73022": 1.0, "E": 1.0, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 c2-gen-final-ops63001-ls63102-s63200-a1 main (fit held): B <= D + 1/32  [B 0.992 D 1.000]
+PASS C6 c2-gen-final-ops63001-ls63102-s63200-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 c2-gen-final-ops63001-ls63102-s63200-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 c2-gen-final-ops63001-ls63102-s63200-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 c2-gen-final-ops63001-ls63102-s63200-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63001-ls63102-s63200-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63001-ls63102-s63200-a1", "split": "grouped", "group": "eval", "A": 0.6562, "B": 0.3438, "B@73010": 0.4062, "B@73011": 0.5, "B@73012": 0.4688, "C": 0.4688, "D": 0.4688, "D-nc": 0.25, "D-ridge": 0.4062, "D@73020": 0.5, "D@73021": 0.5, "D@73022": 0.5312, "E": 0.9688, "wrong_symbol_rows": 20, "B_acc_on_wrong_symbol_rows": 0.05, "ridge_lambda": 10.0}
+PASS C6 c2-gen-final-ops63001-ls63102-s63200-a1 grouped (eval held): B <= D + 1/32  [B 0.344 D 0.469]
+PASS C6 c2-gen-final-ops63001-ls63102-s63200-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [20 rows, B correct on 0.05]
+PASS C1 c2-gen-final-ops63001-ls63102-s63201-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 c2-gen-final-ops63001-ls63102-s63201-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63001-ls63102-s63201-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63001-ls63102-s63201-a1", "split": "main", "group": "fit", "A": 0.5547, "B": 0.8672, "B@73010": 0.8281, "B@73011": 0.875, "B@73012": 0.875, "C": 0.5156, "D": 0.875, "D-nc": 0.4453, "D@73020": 0.875, "D@73021": 0.875, "D@73022": 0.875, "E": 0.875, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 c2-gen-final-ops63001-ls63102-s63201-a1 main (fit held): B <= D + 1/32  [B 0.867 D 0.875]
+PASS C6 c2-gen-final-ops63001-ls63102-s63201-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 c2-gen-final-ops63001-ls63102-s63201-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 c2-gen-final-ops63001-ls63102-s63201-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 c2-gen-final-ops63001-ls63102-s63201-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63001-ls63102-s63201-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63001-ls63102-s63201-a1", "split": "grouped", "group": "eval", "A": 0.6875, "B": 0.3438, "B@73010": 0.4375, "B@73011": 0.4688, "B@73012": 0.4375, "C": 0.4688, "D": 0.4062, "D-nc": 0.2188, "D-ridge": 0.5625, "D@73020": 0.4688, "D@73021": 0.5, "D@73022": 0.3438, "E": 1.0, "wrong_symbol_rows": 19, "B_acc_on_wrong_symbol_rows": 0.21052631578947367, "ridge_lambda": 0.1}
+PASS C6 c2-gen-final-ops63001-ls63102-s63201-a1 grouped (eval held): B <= D + 1/32  [B 0.344 D 0.406]
+FAIL C6 c2-gen-final-ops63001-ls63102-s63201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [19 rows, B correct on 0.21052631578947367]
+PASS C1 c2-gen-final-ops63001-ls63103-s63200-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 c2-gen-final-ops63001-ls63103-s63200-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63001-ls63103-s63200-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63001-ls63103-s63200-a1", "split": "main", "group": "fit", "A": 0.5469, "B": 0.9688, "B@73010": 0.9219, "B@73011": 0.9375, "B@73012": 0.9141, "C": 0.4922, "D": 0.9688, "D-nc": 0.4531, "D@73020": 0.9688, "D@73021": 0.9688, "D@73022": 0.9688, "E": 0.9688, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 c2-gen-final-ops63001-ls63103-s63200-a1 main (fit held): B <= D + 1/32  [B 0.969 D 0.969]
+PASS C6 c2-gen-final-ops63001-ls63103-s63200-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 c2-gen-final-ops63001-ls63103-s63200-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 c2-gen-final-ops63001-ls63103-s63200-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 c2-gen-final-ops63001-ls63103-s63200-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63001-ls63103-s63200-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63001-ls63103-s63200-a1", "split": "grouped", "group": "eval", "A": 0.625, "B": 0.3125, "B@73010": 0.4062, "B@73011": 0.3125, "B@73012": 0.3438, "C": 0.4375, "D": 0.4688, "D-nc": 0.3438, "D-ridge": 0.5625, "D@73020": 0.4375, "D@73021": 0.4688, "D@73022": 0.4375, "E": 1.0, "wrong_symbol_rows": 20, "B_acc_on_wrong_symbol_rows": 0.1, "ridge_lambda": 1.0}
+PASS C6 c2-gen-final-ops63001-ls63103-s63200-a1 grouped (eval held): B <= D + 1/32  [B 0.312 D 0.469]
+PASS C6 c2-gen-final-ops63001-ls63103-s63200-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [20 rows, B correct on 0.1]
+PASS C1 c2-gen-final-ops63001-ls63103-s63201-a1 main: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C3 c2-gen-final-ops63001-ls63103-s63201-a1 main: my accuracy equals the lane's (10 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63001-ls63103-s63201-a1 main: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63001-ls63103-s63201-a1", "split": "main", "group": "fit", "A": 0.4922, "B": 0.8906, "B@73010": 0.9062, "B@73011": 0.9375, "B@73012": 0.8281, "C": 0.4141, "D": 0.9375, "D-nc": 0.4297, "D@73020": 0.9375, "D@73021": 0.9375, "D@73022": 0.9375, "E": 0.9375, "wrong_symbol_rows": 0, "B_acc_on_wrong_symbol_rows": null, "ridge_lambda": null}
+PASS C6 c2-gen-final-ops63001-ls63103-s63201-a1 main (fit held): B <= D + 1/32  [B 0.891 D 0.938]
+PASS C6 c2-gen-final-ops63001-ls63103-s63201-a1 main: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [0 rows, B correct on None]
+PASS C1 c2-gen-final-ops63001-ls63103-s63201-a1 grouped: file hash, step 10000, params hash equal to the lane's before/after records
+PASS C2 c2-gen-final-ops63001-ls63103-s63201-a1: my grouped split equals the lane's; 8/4/4 per symbol; disjoint; each prefix's 4 rows in one group; eval = 32 held + 96 train rows
+PASS C3 c2-gen-final-ops63001-ls63103-s63201-a1 grouped: my accuracy equals the lane's (30 cells): A, D, E exact; B, C within 1 row  [worst B/C 0 rows; []]
+PASS C4 c2-gen-final-ops63001-ls63103-s63201-a1 grouped: symbol accuracy, centroid error and decoder accuracy equal the lane's  [[]]
+    {"run": "c2-gen-final-ops63001-ls63103-s63201-a1", "split": "grouped", "group": "eval", "A": 0.4688, "B": 0.4062, "B@73010": 0.25, "B@73011": 0.375, "B@73012": 0.375, "C": 0.2812, "D": 0.4375, "D-nc": 0.1875, "D-ridge": 0.4062, "D@73020": 0.4375, "D@73021": 0.4375, "D@73022": 0.4688, "E": 0.9375, "wrong_symbol_rows": 18, "B_acc_on_wrong_symbol_rows": 0.1111111111111111, "ridge_lambda": 0.1}
+PASS C6 c2-gen-final-ops63001-ls63103-s63201-a1 grouped (eval held): B <= D + 1/32  [B 0.406 D 0.438]
+PASS C6 c2-gen-final-ops63001-ls63103-s63201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong  [18 rows, B correct on 0.1111111111111111]
+PASS CX-C1 main B: bin of gain recovered unchanged across 3 other draws in >= 5 of 6 bases  [6/6: rev-comp-rnn-untied-s51200 >60%/>60%/>60%/>60%; rev-comp-rnn-untied-s51201 >60%/>60%/>60%/>60%; rev-comp-rnn-untied-s51202 >60%/>60%/>60%/>60%; comp-rnn-final-s51200 >60%/>60%/>60%/>60%; comp-rnn-final-s51201 >60%/>60%/>60%/>60%; comp-rnn-final-s51202 >60%/>60%/>60%/>60%]
+PASS CX-C1 main D: bin of gain recovered unchanged across 3 other draws in >= 5 of 6 bases  [6/6: rev-comp-rnn-untied-s51200 >60%/>60%/>60%/>60%; rev-comp-rnn-untied-s51201 >60%/>60%/>60%/>60%; rev-comp-rnn-untied-s51202 >60%/>60%/>60%/>60%; comp-rnn-final-s51200 >60%/>60%/>60%/>60%; comp-rnn-final-s51201 >60%/>60%/>60%/>60%; comp-rnn-final-s51202 >60%/>60%/>60%/>60%]
+PASS CX-C1 grouped B: bin of gain recovered unchanged across 3 other draws in >= 5 of 6 bases  [6/6: rev-comp-rnn-untied-s51200 <20%/<20%/<20%/<20%; rev-comp-rnn-untied-s51201 <20%/<20%/<20%/<20%; rev-comp-rnn-untied-s51202 <20%/<20%/<20%/<20%; comp-rnn-final-s51200 <20%/<20%/<20%/<20%; comp-rnn-final-s51201 <20%/<20%/<20%/<20%; comp-rnn-final-s51202 <20%/<20%/<20%/<20%]
+PASS CX-C1 grouped D: bin of gain recovered unchanged across 3 other draws in >= 5 of 6 bases  [6/6: rev-comp-rnn-untied-s51200 <20%/<20%/<20%/<20%; rev-comp-rnn-untied-s51201 <20%/<20%/<20%/<20%; rev-comp-rnn-untied-s51202 <20%/<20%/<20%/<20%; comp-rnn-final-s51200 <20%/<20%/<20%/<20%; comp-rnn-final-s51201 <20%/<20%/<20%/<20%; comp-rnn-final-s51202 <20%/<20%/<20%/<20%]
+    r1-comp-rnn-final-s51200-a1 D-nc gain -0.32 (D -0.16) dec 0.094 (D 0.250) held 0.094 (D 0.188)
+    r1-comp-rnn-final-s51200-a1 D-ridge gain -0.11 (D -0.16) dec 0.281 (D 0.250) held 0.219 (D 0.188)
+    r1-comp-rnn-final-s51201-a1 D-nc gain -0.47 (D -0.18) dec 0.094 (D 0.219) held 0.062 (D 0.219)
+    r1-comp-rnn-final-s51201-a1 D-ridge gain +0.06 (D -0.18) dec 0.344 (D 0.219) held 0.344 (D 0.219)
+    r1-comp-rnn-final-s51202-a1 D-nc gain -0.65 (D -0.18) dec 0.062 (D 0.312) held 0.062 (D 0.312)
+    r1-comp-rnn-final-s51202-a1 D-ridge gain -0.24 (D -0.18) dec 0.312 (D 0.312) held 0.281 (D 0.312)
+    ops63000-ls63100-s63200-a1 D-nc gain -0.77 (D -0.62) dec 0.188 (D 0.250) held 0.219 (D 0.281)
+    ops63000-ls63100-s63200-a1 D-ridge gain -0.77 (D -0.62) dec 0.219 (D 0.250) held 0.219 (D 0.281)
+    ops63000-ls63100-s63201-a1 D-nc gain -0.73 (D -0.47) dec 0.156 (D 0.281) held 0.156 (D 0.281)
+    ops63000-ls63100-s63201-a1 D-ridge gain -0.27 (D -0.47) dec 0.375 (D 0.281) held 0.375 (D 0.281)
+    ops63000-ls63101-s63200-a1 D-nc gain -0.64 (D -0.36) dec 0.156 (D 0.312) held 0.188 (D 0.312)
+    ops63000-ls63101-s63200-a1 D-ridge gain -0.29 (D -0.36) dec 0.344 (D 0.312) held 0.344 (D 0.312)
+    ops63000-ls63101-s63201-a1 D-nc gain -0.47 (D -0.37) dec 0.125 (D 0.188) held 0.125 (D 0.188)
+    ops63000-ls63101-s63201-a1 D-ridge gain -0.42 (D -0.37) dec 0.156 (D 0.188) held 0.156 (D 0.188)
+    ops63001-ls63102-s63200-a1 D-nc gain -1.30 (D -0.60) dec 0.250 (D 0.438) held 0.250 (D 0.469)
+    ops63001-ls63102-s63200-a1 D-ridge gain -0.80 (D -0.60) dec 0.406 (D 0.438) held 0.406 (D 0.469)
+    ops63001-ls63102-s63201-a1 D-nc gain -1.50 (D -0.90) dec 0.219 (D 0.406) held 0.219 (D 0.406)
+    ops63001-ls63102-s63201-a1 D-ridge gain -0.40 (D -0.90) dec 0.562 (D 0.406) held 0.562 (D 0.406)
+    ops63001-ls63103-s63200-a1 D-nc gain -0.75 (D -0.42) dec 0.344 (D 0.438) held 0.344 (D 0.469)
+    ops63001-ls63103-s63200-a1 D-ridge gain -0.17 (D -0.42) dec 0.531 (D 0.438) held 0.562 (D 0.469)
+    ops63001-ls63103-s63201-a1 D-nc gain -0.60 (D -0.07) dec 0.188 (D 0.406) held 0.188 (D 0.438)
+    ops63001-ls63103-s63201-a1 D-ridge gain -0.13 (D -0.07) dec 0.438 (D 0.406) held 0.406 (D 0.438)
+FAIL CX-C2 tied/final grouped eval: nearest-centroid and val-tuned ridge decoders raise decoder accuracy by <= 0.15 and held final accuracy by <= 0.1 over the probe, in every base  [max rise: decoder +0.156, held final +0.156]
+PASS C7 figures/correction.csv: every value recomputes from my numbers (240 values)  [unmatched panels []; []]
+PASS C7 figures/followup_f2.csv: every value recomputes from my numbers (320 values)  [unmatched panels []; []]
+12 FAILED: ['C6 r1-rev-comp-rnn-untied-s51200-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong', 'C6 r1-rev-comp-rnn-untied-s51201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong', 'C6 r1-rev-comp-rnn-untied-s51202-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong', 'C6 r1-comp-rnn-final-s51201-a1 grouped (eval held): B <= D + 1/32', 'C6 r1-comp-rnn-final-s51201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong', 'C6 r1-comp-rnn-final-s51202-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong', 'C6 c2-gen-final-ops63000-ls63100-s63201-a1 grouped (eval held): B <= D + 1/32', 'C6 c2-gen-final-ops63000-ls63100-s63201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong', 'C6 c2-gen-final-ops63000-ls63101-s63201-a1 grouped (eval held): B <= D + 1/32', 'C6 c2-gen-final-ops63000-ls63101-s63201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong', 'C6 c2-gen-final-ops63001-ls63102-s63201-a1 grouped: B answers <= 1/8 of its held rows whose corrected symbol is wrong', 'CX-C2 tied/final grouped eval: nearest-centroid and val-tuned ridge decoders raise decoder accuracy by <= 0.15 and held final accuracy by <= 0.1 over the probe, in every base']
