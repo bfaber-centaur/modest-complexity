@@ -1,8 +1,148 @@
-# e4 dynamics: decay strength between the peak and the collapse (packet 1)
+# e4 dynamics: decay strength between the peak and the collapse (packets 1 and 2)
 
-Status: the initial experiment (D6) is complete. It is **not audited**, and no follow-up has been proposed yet. The question, the definitions and the predictions were written before any new run: [QUESTION.md](QUESTION.md) Q1 (`e4e5688`) and its addendum (`e5fd1c2`), which fixed the decision rule after measuring only the existing wd 0 and wd 1 runs.
+Status:
+- **Packet 1**, the initial experiment (D6), was reviewed and merged (PR #33). Its audit is pending.
+- **Packet 2**, the lane's one follow-up, is complete. It is an endpoint intervention (D13) and is **not audited**.
+
+Every question, definition, cutoff and prediction was written before the runs it concerns:
+- [QUESTION.md](QUESTION.md) Q1 (`e4e5688`) and its addendum (`e5fd1c2`) for packet 1;
+- Q2 (`3fd6723`) for packet 2.
 
 Session label `e4-dy-cloud-1`, branch `claude/project-thread-j8mgkm`. Measures are the shared e3 definitions (e4 D5, `research/e3/audit/pairwise.py`).
+
+# Packet 2: decay switched off mid-decline (endpoint intervention, D13)
+
+## Question
+
+Packet 1 showed that the decline's timing follows decay exposure. Once the wd 1 decline has started, does it still need decay to continue? The three possible answers, with their cutoffs, were fixed in Q2 before any run:
+- (i) decay must stay on;
+- (ii) the decline sustains itself;
+- (iii) the lost answers come back by fitting.
+
+**The six runs** are `e4-dy-filt-wd1to0-u{300,1000}-w128-i3000{0,1,2}-a1`. Each one resumes the published e3 wd 1 checkpoint of `e3-me-filt-w128-i<seed>-a1` and continues at **wd 0** to 20,000 updates in total.
+- The checkpoint is at update 300 (the start of the D5 decline window) or update 1,000 (mid-decline).
+- The weights, Adam moments and update count carry over, so only wd changes. The decay is decoupled, so the moments contain gradient statistics only.
+
+**Comparators:**
+- the same wd 1 run, which keeps decay on from the identical state;
+- the wd 0 run from update 0.
+
+This is an intervention at a declared update, so it is labelled separately from packet 1's constant-wd runs (D6/D8).
+
+## Figure 3: decay switched off at update 300 or 1,000
+
+![decay off](figures/offswitch/offswitch.png)
+
+Columns are the start files. Rows: held-out accuracy (lines are own held-out, × marks are the common pairs), train cross-entropy, P(a+b over S), σ-margin and weight norm. Dotted lines mark the two switch points.
+
+## Figure 4: the reading windows
+
+![reading windows](figures/offswitch/offswitch_window.png)
+
+Own held-out accuracy on a linear axis to 2,500. The shading marks the 1,000 updates after each switch, over which the Q2 reading is taken.
+
+## Observations
+
+**Table 4. The Q2 reading.** A is own held-out accuracy. W = 1,000 updates. The quantities are:
+- Δ_off = A_off(s+W) − A_1(s);
+- Δ_1 = A_1(s+W) − A_1(s);
+- Δ_0 = A_0(s+W) − A_0(s);
+- f = (Δ_off − Δ_0)/(Δ_1 − Δ_0).
+
+f ≤ 1/3 reads (i). f ≥ 2/3 reads (ii). Recovery is flagged if A_off reaches A_1(s) + 0.05.
+
+| switch s | start | A_1(s) | A_off(s+W) | A_1(s+W) | Δ_off | Δ_1 | Δ_0 | f | reading | max A_off after s (update) | recovery |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 300 | i30000 | 0.622 | 0.533 | 0.169 | −0.089 | −0.453 | −0.068 | 0.05 | (i) decay must stay on | 0.613 (310) | no |
+| 300 | i30001 | 0.680 | 0.556 | 0.131 | −0.124 | −0.548 | −0.053 | 0.14 | (i) decay must stay on | 0.669 (310) | no |
+| 300 | i30002 | 0.737 | 0.610 | 0.169 | −0.127 | −0.568 | −0.053 | 0.14 | (i) decay must stay on | 0.731 (310) | no |
+| 1,000 | i30000 | 0.240 | 0.211 | 0.065 | −0.029 | −0.175 | −0.030 | −0.01 | (i) decay must stay on | 0.239 (1010) | no |
+| 1,000 | i30001 | 0.221 | 0.186 | 0.057 | −0.035 | −0.163 | −0.035 | 0.00 | (i) decay must stay on | 0.215 (1010) | no |
+| 1,000 | i30002 | 0.261 | 0.219 | 0.085 | −0.042 | −0.177 | −0.029 | 0.09 | (i) decay must stay on | 0.258 (1010) | no |
+
+**Table 5. At 20,000 updates.** Each cell gives common accuracy, P(a+b over S) and weight norm.
+
+| start | wd 0 throughout | off from 300 | off from 1,000 | wd 1 throughout |
+|---|---|---|---|---|
+| i30000 | 0.561 / 0.90 / 75.5 | 0.449 / 0.86 / 74.4 | 0.215 / 0.73 / 74.2 | 0.031 / 0.45 / 57.0 |
+| i30001 | 0.565 / 0.89 / 75.9 | 0.437 / 0.85 / 74.6 | 0.186 / 0.71 / 74.5 | 0.031 / 0.44 / 57.2 |
+| i30002 | 0.619 / 0.92 / 75.9 | 0.470 / 0.89 / 74.7 | 0.228 / 0.76 / 74.6 | 0.010 / 0.39 / 57.2 |
+
+1. **The pre-stated reading is (i) in all six runs, at both switch points.** f is between −0.01 and 0.14, and there is no recovery. This matches the Q2 prediction. With decay off, the next 1,000 updates lose about what the decay-free run loses over the same updates, rather than the 0.16–0.57 that wd 1 loses.
+2. **The decline does not stop at once.** Over the first 50 updates after the switch, the off runs lose about as much as wd 1 does over the same updates:
+   - 0.026–0.033 against 0.027–0.042 at s = 300;
+   - 0.011–0.018 against 0.015–0.024 at s = 1,000.
+
+   Over the first 200 updates they lose about half as much as wd 1: 0.057–0.074 against 0.124–0.168, and 0.023–0.032 against 0.057–0.071.
+
+   After that they follow a slow drift. The 0.05–0.14 of f at s = 300 comes mostly from this lag. I noticed the lag after running, and Q2 did not anticipate it.
+3. **The lost answers do not come back.** After the switch, accuracy never exceeds its value at the switch. In every run the maximum over all later logged updates comes at s + 10 and lies below A(s).
+   - At 20,000 updates the accuracy is ordered by how much decay each run received before the switch: wd 0 throughout 0.56–0.62, off from 300 0.44–0.47, off from 1,000 0.19–0.23, wd 1 throughout 0.01–0.03 (common pairs).
+   - P(a+b over S) and the σ-margin show the same order. Like accuracy, they stop falling at the switch and do not recover.
+4. **Fit and norm converge to the decay-free run while accuracy does not.**
+   - After the switch, train cross-entropy falls quickly, to 3.8–4.7e-8 at 20,000 (wd 0 throughout: 3.2–3.6e-8).
+   - The weight norm grows to 74.2–74.7 (wd 0 throughout: 75.5–75.9).
+   - Training accuracy stays at 1.
+   - None of the six runs falls below 0.10 before 20,000 updates (censored).
+5. **The later drift depends on where the run is.**
+   - From the end of the window to 20,000 updates, the off-from-300 runs lose another 0.08–0.13. Over the same updates, the wd 0 run loses 0.12–0.17.
+   - The off-from-1,000 runs, at 0.19–0.22, do not decline further: they change by 0.000 to +0.009.
+
+## Interpretation (separate from the observations)
+
+**The causal result.** The decline needs decay to keep going. Within a few hundred updates of decay being switched off, it slows to the decay-free drift or below. It does not continue on its own momentum, and switching decay off does not reverse it.
+
+Together with packet 1, this says the loss of correct held-out answers in these runs accumulates with decay exposure:
+- it starts, continues and stops with the decay;
+- the part already lost stays lost under 19,000 further updates of decay-free fitting.
+
+**What this rules out, within these runs.**
+- **Reading (ii).** A process that, once started, runs on without decay.
+- **Reading (iii).** Gradient descent on the training pairs alone does not restore the lost answers once decay is removed.
+- **"The global norm is too small."** The norm returns to the decay-free level while accuracy stays where the switch left it.
+
+**Mechanism: still not shown.**
+- A candidate, not tested here: decay removes components that the training loss does not need. They contribute nothing to fitting the 299 training pairs, so the training gradient does not rebuild them, while the components the training pairs do need grow back. This is in the spirit of Varma et al.'s efficiency account, but nothing here identifies the components. Testing it is a question for the mechanisms lane: which weight or logit components are lost between update 300 and 1,000 at wd 1, and are they absent from the off runs' growth afterwards?
+- The 50–200-update lag after the switch (item 2) is also not explained. Adam's first moment forgets within about 10 updates, so momentum alone is too short to explain it. The second moment, which remembers over about 1,000 updates, and the state's own gradient direction are candidates that were not tested.
+
+## D5 windows addressed
+
+The intervention acts in the decline window [300, 2,000] at its start (300) and middle (1,000). It answers whether the decline in that window depends on decay continuing. The late window [2,000, 20,000] holds the endpoints.
+
+## Limitations
+
+- **The design is narrow.** There are three start files, and two switch points from wd 1 only. Switching decay back on, partial decay, and other switch times were not tested.
+- **Δ_0 comes from a different state.** It is measured on the wd 0 run, which is at a higher accuracy than the switched states, as Q2 stated. The clear margin of f below 1/3 makes this unlikely to change the reading. Observation 5 shows the drift does depend on the state.
+- **The window W = 1,000 includes the lag of observation 2.** A shorter window would have given larger f at s = 300. The window was fixed in advance.
+- **20,000 updates.** Whether the off runs, or the wd 0 runs, recover or decline further later is not known.
+
+## Reproduce
+
+- **Runs.** Launched from a clean worktree detached at the claims commit `83d8b94`, with 2 workers and 1 BLAS thread each, in plan queue order (positions 1–6), 02:26:02–02:28:35 UTC.
+  - All six completed 20,000 of 20,000 updates. Every manifest records `producing_code_commit` `83d8b94` and `producing_tree_dirty: false`.
+  - Command: `uv run --locked python launch_runs.py --plan research/e4/plan.json --root runs/e4 --registry <repo>/research/e4/dynamics/registry.jsonl --session-label e4-dy-cloud-1 --workers 2 --timeout 300 --ids <the 6 IDs in queue order>`.
+  - Published files: every checkpoint written. That is every 1,000, the switch update, and the extras 500, 1,300, 1,500, 2,500 (u300) or 1,300, 1,500, 2,500 (u1000).
+- **Analysis.** `offswitch.py` at `31067f9` was committed, and smoke-tested on wd 1 runs posing as interventions (f = 1 exactly), before launch. For every run it checks:
+  - the resume file against the config and the source manifest;
+  - wd 0, and the other settings and data equal to the source's;
+  - the resumed update-s metrics row and checkpoint arrays equal to the source's.
+
+  To regenerate:
+  ```
+  M=research/e3/mechanisms/runs; E=research/e4/dynamics/runs
+  uv run --locked --group analysis python research/e4/dynamics/offswitch.py \
+    $E/e4-dy-filt-wd1to0-u{300,1000}-w128-i3000{0,1,2}-a1 \
+    --wd1 $M/e3-me-filt-w128-i3000{0,1,2}-a1 --wd0 $M/e3-me-filt-wd0-w128-i3000{0,1,2}-a1 \
+    --out research/e4/dynamics/figures/offswitch
+  ```
+  It takes about 9 s. Outputs are `offswitch_{dense,checkpoints,readings}.csv` and `offswitch{,_window}.{png,svg}`.
+- **Diagnostic, unclaimed and unpublished.** Resuming i30000@300 at wd 1 for 300 updates reproduced the source's metric rows exactly, wall-clock aside (Q2).
+
+## Budget
+
+About 2.6 min of elapsed training (six runs on two workers) and about 1 s of diagnostic. The lane total is about 5.3 of 20 min. This was the lane's one follow-up, and no further runs are planned.
+
+# Packet 1: constant decay strengths (D6)
 
 ## Question
 
@@ -216,4 +356,4 @@ About 2.7 min of elapsed training (six runs on two workers) out of 20 min. No an
 
 ## Next
 
-I have not proposed a follow-up yet. I will propose one, predeclared, after the coordinator has reviewed this figure (D8).
+The one follow-up (D8) is packet 2 above.

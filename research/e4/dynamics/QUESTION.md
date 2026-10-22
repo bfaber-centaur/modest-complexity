@@ -193,3 +193,13 @@ I expect (i) at both switch points, and no recovery. The reasoning comes from pa
   - Extras: `500,1300,1500,2500` for u300 and `1300,1500,2500` for u1000.
   - That is at most 5 off the every-1,000 grid, about 7 MB per run.
 - **Cost.** About 50 s per run on this host. About 2.6 min elapsed on 2 workers, about 5.5 of the lane's 20 min in total.
+
+## Q2 outcome (2026-10-22, after the six D13 runs)
+
+Results are in [README.md](README.md) packet 2. Under the Q2 reading, all six runs read **(i) decay must stay on**, at both switch points: f is between −0.01 and 0.14. No run recovers; the maximum after the switch is below A(s) in every run. This matches the Q2 prediction.
+
+Two things Q2 did not anticipate, reported as observations:
+- For about 50 updates after the switch, the decline continues at close to the wd 1 rate, and it fades over about 200 updates. That lag accounts for most of f at s = 300.
+- The off-from-1,000 runs do not drift down at all after the window, while the wd 0 run does.
+
+Nothing above has been edited.
