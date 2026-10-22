@@ -1,0 +1,40 @@
+You are working on composition round c2 in bfaber-centaur/modest-complexity.
+PR #49 was reviewed and merged into swarm/exploration at 5c0129b0e70d6263c5d6bd8fb68f4b940ce8d1e0. This is the minimum base, not permission to overwrite newer work. Read AGENTS.md, research/regimes/composition/NOTE.md, research/regimes/review/REVIEW.md section 1, and research/regimes/coordinator/SYNTHESIS.md. This new assignment supersedes r1 assignments and budgets only for c2. Use a separate swarm/composition-c2 integration branch and research/composition-c2 directory, coordinated through the coordinator. Worker PRs target that new branch. No main/upstream merge or paid compute.
+
+Evidence at r1's 10k updates, one permutation draw and split, three init seeds:
+- Final-only MLP 14–17%; intermediate-supervised MLP 20–25%.
+- Shared-transition RNN: final-only 27–32%; tied readout plus intermediate supervision 96–100%; per-step untied readouts plus intermediate supervision 52–63%.
+- Final-only and untied RNNs were still improving.
+- All held-out intermediate prefixes occur in training. Intermediate-head accuracy is NOT an unseen-prefix generalization test.
+- 42 of 128 held-out rows cannot be answered by copying any one-op-slot training neighbour. Final-only RNN gets none of those right at 10k. Tied/intermediate RNN reaches 88–100% on them, late in training. This rejects that particular copying rule, not every possible shortcut.
+- RNN checkpoints were local-only in r1; do not assume they are in Git. Recover and verify them, or explicitly replay original runs and compare published predictions/metrics before extending. Replays are not new seeds.
+
+Working contract:
+Exploratory science. Write QUESTION.md with predictions, controls, exact measures and a first-figure plan before new measurements. Record adaptive choices separately. Reuse locked uv dependencies and current NumPy code; no new experiment framework. Use short, inspectable implementations. Shared-code changes belong to the coordinator and must be pinned before workers launch.
+Calibrate actual CPU/memory. Coordinator assigns explicit elapsed budgets and run IDs; do not inherit an old cap blindly. Default one BLAS thread per process. Preserve failed/capped attempts, checkpoints, optimizer states, exact commands, task/split/init seeds and hashes. Keep host identity separate from scientific configuration. Test checkpoint continuation against uninterrupted execution before main continuation runs.
+Three initial paired seeds are exploratory coverage, not statistical power. Branches/checkpoints are not independent samples. Show every seed, training performance and missing runs. Keep task-draw and initialization variation distinct. Report updates, examples, parameter counts and elapsed execution; timing differs across architectures.
+One primary figure before expansion; one adaptive follow-up after the initial comparison, chosen with the coordinator. Publish PNG plus SVG, source CSV and regeneration command; visually inspect figures. Deliver a concise NOTE.md, manifest and reviewer handoff. Final scientific claims must remain bounded by tested tasks, recipes and budgets. Finite plateaus do not establish necessity or impossibility. Linear decodability does not establish causal use.
+Run existing lane/common tests in separate Python processes: local task/train module names collide in combined unittest discovery. Avoid introducing further import ambiguity.
+Starting literature: https://arxiv.org/abs/1802.06467 (lookup-table composition). Read relevant methods; distinguish reproduction, extension and speculation. No novelty claim without a targeted literature check.
+
+ROLE: COORDINATOR
+Organize four investigators (time, sharing, generalization, mechanisms) and one independent reviewer. If you cannot launch threads, return the dispatch prompts and actual dependencies for Bobby; do not simulate workers.
+
+First create the integration branch from the merged base (or verified descendant), commit this charter, and establish a compact INDEX.md, decisions and run-claim manifest. Preserve r1 and e4 artifacts. Inspect current work before assigning names to avoid duplicate experiments.
+
+Bootstrap only the shared capabilities needed now: validated RNN loading/saving/resume with optimizer state; configurable transition/readout tying; arbitrary-length evaluation; task and split IDs. Prefer small extensions in the c2 directory importing stable r1 code. A no-change mode must reproduce r1 arithmetic. Reviewer checks the pin before new training. Inventory missing checkpoints and assign replays once; publish useful recovered states. Never label a weight-only restart an exact resume.
+
+Dispatch:
+1. Time: extend existing tied/inter, untied/inter and tied/final arms to 50k.
+2. Sharing: a 2x2 transition/readout tying comparison, all with intermediate supervision.
+3. Generalization: frozen-model longer-program tests first; then a small new-task/split replication.
+4. Mechanisms: same-step and cross-step natural hidden-state interchange plus suffix continuation.
+5. Reviewer: independent oracle, scientific code checks, counterexamples and figure audit.
+
+Reuse original-draw tied/inter and untied/inter runs across lanes rather than duplicate them. Generalization and mechanisms begin with recovered 10k checkpoints while time runs continue. If checkpoints cannot be matched bitwise across hosts, document discrepancies and use matched local replays for paired comparisons rather than silently equating trajectories.
+
+Calibrate and set concrete budgets per lane; suggested first-stage scope is in worker prompts, not a requirement to exhaust it. Do not spread across width/optimizer grids yet. Require loss weighting, head initialization and decay conventions to be explicit. Comparing tied versus untied parameters changes capacity and parameter-level regularization: report that and bound the interpretation.
+
+The final packet should answer: (a) which gaps close with time, (b) which sharing choices matter within the budget, (c) whether success transfers beyond the original finite table, and (d) what natural-state interventions support. Separate architectural inductive bias, extra labels, and mechanistic evidence. Provide at most three next questions.
+
+Integrate reviewed worker PRs into swarm/composition-c2 and open a draft integration PR against swarm/exploration for Bobby. Do not merge that integration PR yourself. Keep the charter and consequential decisions committed.

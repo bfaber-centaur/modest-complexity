@@ -1,5 +1,9 @@
 # Repository workflow
 
+## Composition round c2 (branch `swarm/composition-c2`)
+
+Bobby's c2 round (opened 2026-10-22) follows up r1's composition regime. Its charter is `research/composition-c2/coordinator/charter/`; assignments, the pinned shared code, run-ID prefixes, seeds, budgets and gates are in [research/composition-c2/coordinator/DECISIONS.md](research/composition-c2/coordinator/DECISIONS.md). c2 work lives under `research/composition-c2/`, worker PRs target `swarm/composition-c2`, and the integration PR to `swarm/exploration` is left for Bobby. r1 and e4 artifacts are read-only for c2.
+
 ## Regime expedition r1 (branch `swarm/regimes`)
 
 Branch `swarm/regimes` hosts Bobby's four-regime expedition, opened and completed on 2026-10-22, separately from the e4 round. Its synthesis is [research/regimes/coordinator/SYNTHESIS.md](research/regimes/coordinator/SYNTHESIS.md). For r1 work, [research/regimes/PLAN.md](research/regimes/PLAN.md) and the role files in `research/regimes/coordinator/prompts/` supersede the swarm assignments below. r1 PRs target `swarm/regimes`. Nothing from r1 is merged into `swarm/exploration`, either `main` or upstream without Bobby's review. The general rules below still apply: small implementation, figures, provenance.

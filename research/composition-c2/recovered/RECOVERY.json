@@ -1,0 +1,248 @@
+{
+ "note": "Original r1 checkpoint files, recovered 2026-10-22 03:45Z from the containers that wrote them, copied via the project files mount, and re-hashed here against the SHA-256 published in r1 manifests. They are the original files (not replays). Weights, Adam moments and step count (nets.save).",
+ "files": [
+  {
+   "run_id": "r1-comp-rnn-inter-s51200-a1",
+   "file": "ckpt-0.npz",
+   "bytes": 149991,
+   "sha256": "996126c602df49de878d9f4a77edb82872df3e1cac576e9f9697666427bace61",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51200-a1",
+   "file": "ckpt-1000.npz",
+   "bytes": 440373,
+   "sha256": "bc7cb3c42dae6b9e1e7557ff05b0346ffabde6f476930669cc8a7bd95605b51c",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51200-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 442444,
+   "sha256": "046f4c250d8c7aacc9999437f0223fc029cee6e2cbae6c1644b282e20b9f8010",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51201-a1",
+   "file": "ckpt-0.npz",
+   "bytes": 150054,
+   "sha256": "fb1ab8ee0c4a51d56a5daf70d7bd3d524034ccb03b62e15cdddc392512f8d304",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-inter-s51201-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51201-a1",
+   "file": "ckpt-1000.npz",
+   "bytes": 440686,
+   "sha256": "e0bfd426c0267529aa76d2ccfe22132bde3f5a010677d59b894e50b55cbcf0b0",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-inter-s51201-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51201-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 443361,
+   "sha256": "d83221c12ff2c2a7d41a7b39218978fedd0f68c78a099361c66f64d30e4a965e",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-inter-s51201-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51202-a1",
+   "file": "ckpt-0.npz",
+   "bytes": 150018,
+   "sha256": "90864c4c7abe0ca6608abc4639de107fa522b083b5dc6692c298395bbe2a3403",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-inter-s51202-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51202-a1",
+   "file": "ckpt-1000.npz",
+   "bytes": 440542,
+   "sha256": "120519f183b7221a17fdefadd832fa4ba8a97846a7168eb5e8b2305ebe463f16",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-inter-s51202-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51202-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 442662,
+   "sha256": "413f8dd926a736e81eddb8c3b2ec68217e152038ac13bff58115a7e87fd6f79a",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-inter-s51202-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51200-a1",
+   "file": "ckpt-0.npz",
+   "bytes": 149994,
+   "sha256": "0acf920e19931ed76691710572c8fba8f5bcd7626f380619146f18a96a2f8b2b",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-final-s51200-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51200-a1",
+   "file": "ckpt-1000.npz",
+   "bytes": 440558,
+   "sha256": "19ad47105ab9a2726a61ba2e81704bb4633901a363d0c63a3dac48be58dcfdec",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-final-s51200-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51200-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 443421,
+   "sha256": "e035a2e4312f722c645d88578304ea68fbb6ea66954d07e4937c0bc3ba061837",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-final-s51200-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51201-a1",
+   "file": "ckpt-0.npz",
+   "bytes": 150057,
+   "sha256": "ebd83fec8cc40718b200c392643c07ce738fe2163bf8a6d3597fdcec976535d3",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-final-s51201-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51201-a1",
+   "file": "ckpt-1000.npz",
+   "bytes": 439234,
+   "sha256": "8fccdcdc54377b39a93ee4bb7572ad7fdb6058d38733b9906ecefd0eb9b57434",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-final-s51201-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51201-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 440982,
+   "sha256": "557bfac4f59db0a8197cb622134f54c7c670d98a3db684f7c74b395f995a4fe6",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-final-s51201-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51202-a1",
+   "file": "ckpt-0.npz",
+   "bytes": 150021,
+   "sha256": "2395af3e418d9175db473e790a7474994a2372014b7237851ae19316f681cc3f",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-final-s51202-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51202-a1",
+   "file": "ckpt-1000.npz",
+   "bytes": 440738,
+   "sha256": "9b01ecffa694b422baf418d40684d7eee79830fa5b144d6489bce057d6b2d00b",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-final-s51202-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51202-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 443249,
+   "sha256": "27d9719073600694f92f27e14613c9b77c7475b3c773bc46856ec104c0bb4aa4",
+   "published_manifest": "research/regimes/composition/runs/r1-comp-rnn-final-s51202-a1/MANIFEST.json",
+   "matched": true,
+   "recovered_from": "R1 thread \"Composing small programs\" container"
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51200-a1",
+   "file": "ckpt-0.npz",
+   "bytes": 168093,
+   "sha256": "2688ef9aa7fead06e525220540e9751a6e6cdb44292aeb254d7693fdf5542700",
+   "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
+   "matched": true,
+   "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51200-a1",
+   "file": "ckpt-1000.npz",
+   "bytes": 489998,
+   "sha256": "2688e1779c73fb0af2e2b952326524e5de9311117d999e23177b3abfc791ec5e",
+   "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
+   "matched": true,
+   "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51200-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 493102,
+   "sha256": "b24370b8714501208ffa92f7f64fe0d6f6cdcdefd532a74fff20f427a9081130",
+   "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
+   "matched": true,
+   "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51201-a1",
+   "file": "ckpt-0.npz",
+   "bytes": 168168,
+   "sha256": "7457bce761a97520f4042e69d680b30b1562a165ff561426fc2ec59b2fa599cd",
+   "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
+   "matched": true,
+   "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51201-a1",
+   "file": "ckpt-1000.npz",
+   "bytes": 488815,
+   "sha256": "97e0da905869e7d2642fe7aab819fde158661a504bf155d71b9d204164726a40",
+   "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
+   "matched": true,
+   "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51201-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 493787,
+   "sha256": "b3efe45fbddbb10229251e8119a788b7cab23cf899b1d0dedca47f131a985577",
+   "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
+   "matched": true,
+   "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51202-a1",
+   "file": "ckpt-0.npz",
+   "bytes": 168124,
+   "sha256": "20d913def72c0c7200f0bd8c8c62d9bb8d15e820744330ed76d8c0d8ac96f18e",
+   "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
+   "matched": true,
+   "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51202-a1",
+   "file": "ckpt-1000.npz",
+   "bytes": 490090,
+   "sha256": "d87276fc8d939c32a761305348438d480b8ca5dbe68661277968ce2ec8b866c7",
+   "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
+   "matched": true,
+   "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51202-a1",
+   "file": "ckpt-10000.npz",
+   "bytes": 494531,
+   "sha256": "fcc0145cf18b65b8f46287732a38a7346d91df88663099c9de20e4b426b37874",
+   "published_manifest": "research/regimes/review/runs/MANIFEST.sha256",
+   "matched": true,
+   "recovered_from": "reviewer thread \"Regime expedition review\" container"
+  }
+ ]
+}

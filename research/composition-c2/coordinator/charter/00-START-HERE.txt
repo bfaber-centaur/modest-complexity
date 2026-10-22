@@ -1,0 +1,16 @@
+Composition round c2 — launch packet
+
+Send 01-coordinator.txt first. Once it publishes the shared-code pin and assignments, send 02–06 to five separate threads (four investigators plus reviewer). Every role prompt includes common context. Workers should read the coordinator's committed assignments before executing. If using one orchestration-capable thread, give it this packet and have it dispatch the roles.
+
+PR #49 is merged into swarm/exploration at 5c0129b0e70d6263c5d6bd8fb68f4b940ce8d1e0. New integration target: swarm/composition-c2; final draft PR targets swarm/exploration for Bobby's review. No main/upstream merge.
+
+Questions:
+02 — Do weaker RNN arms catch up with time?
+03 — Which transition/readout sharing interventions matter?
+04 — Does success survive new tasks and longer programs?
+05 — Does hidden state support reusable semantic continuation?
+06 — Independent correctness and counterexample review.
+
+Important practical dependency: original RNN checkpoints were not published. Recover and verify or replay them once; then share pinned checkpoints. Do not invent exact resume provenance.
+
+Review of #49: all 37 common/lane tests passed in isolated processes. Combined discovery fails from local task/train import collisions. Synthesis inference limits were tightened before merge. This expedition remains exploratory.
