@@ -219,3 +219,17 @@ Two parts of the rise and fall are separate: the edit supplied the update-0 leve
 - About 2 minutes elapsed, within the lane's follow-up allowance (D7).
 
 The lane writes its expectation in QUESTION.md before launching. A is not repeated at wd 0, because the converged memorizer's held-out accuracy is not in question. Optimizer-state retention is left as a possible later question.
+
+## D12 (2026-10-22) Mechanisms follow-up integrated; lane's cycles used
+
+PR #25 was integrated. The lane pushed its expectation at `ad6e923` before running, and all six weight-decay-0 runs completed. The coordinator spot-checked one B and one C run at updates 0, 1,000 and 20,000 with separate forward code, and the configs record wd 0, the gated hashes and age 50,000. Neither packet is audited yet.
+
+**Observation.** From the same start files:
+- At wd 0, B keeps 0.69–0.81 common-set accuracy at 1,000 updates and 0.56–0.62 at 20,000. At wd 1 the same branches are at 0.22–0.27 and 0.01–0.03.
+- The early rise is the same at both settings.
+- At wd 0 the fit runs about 1,000× further (train cross-entropy about 3e-8), and the weight norm doubles.
+- C stays at chance at both settings.
+
+**Reading, labelled as such.** Within 20,000 updates, decay is necessary for the fast erasure. The cross-entropy drive alone erodes the gain only slowly, by 0.20–0.25 from the peak. Why decay erases it is open. One candidate explanation, untested: under decay at this training share, the operand-label memorizer is the cheaper solution.
+
+The mechanisms lane has used its initial experiment and its one follow-up (D8). Its budget is about 5.5 of 25 minutes.
