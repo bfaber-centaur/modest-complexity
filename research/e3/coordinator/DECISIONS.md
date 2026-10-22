@@ -196,3 +196,26 @@ The audit gate passed on every item, with evidence on `claude/project-thread-id1
 - visible limits.
 
 The nine entries moved from `reserved` to `runs` with `init_weights_sha256` filled in and `activated` set. The start files reach `swarm/exploration` with the lane's PR.
+
+## D11 (2026-10-22) Mechanisms first figure reviewed; follow-up claimed (weight decay 0)
+
+PR #24 was integrated at `d0a0657`; it is not yet audited. The coordinator spot-checked it with separate forward code on published checkpoints and matched `results/checkpoints.csv`, and the update-0 moments are zero. Reviewed figures: `research/e3/mechanisms/figures/continuation.png` and `structure.png`.
+
+**Observations, all three seeds alike:**
+- A does not move under the reset.
+- B rises from 0.43–0.58 at update 0 to 0.74–0.86 around updates 70–100, while train accuracy returns to 1.
+- B then falls to 0.22–0.27 by 1,000 updates and to near chance by 5,000.
+- During the fall B's P(S over N) climbs back to about 0.94, A's level.
+- B's P(a+b over N) stays near 0.87 against A's 0.70–0.74.
+- 90–92% of B's units keep their update-0 dominant frequency.
+- C stays at chance on held-out pairs, and its removed frequency partly regrows.
+
+Two parts of the rise and fall are separate: the edit supplied the update-0 level, and the rise after the edit came from training. "Erasure" is an observation of the held-out readout, not evidence about a hidden algorithm.
+
+**Follow-up approved, the lane's proposal.** The question is whether decay or the cross-entropy drive on 299 pairs removes B's held-out gain. The fall happens between about 300 and 2,000 updates, which overlaps both the decay timescale 1/(lr·wd) = 1,000 updates and the phase in which train CE falls from about 0.1 to about 1e-3. Design:
+- Continue the same B and C start files, with the same hashes and already gated, at `--wd 0`.
+- Everything else is unchanged.
+- Six runs, `e3-me-<filt|sham>-wd0-w128-i<30000|30001|30002>-a1`.
+- About 2 minutes elapsed, within the lane's follow-up allowance (D7).
+
+The lane writes its expectation in QUESTION.md before launching. A is not repeated at wd 0, because the converged memorizer's held-out accuracy is not in question. Optimizer-state retention is left as a possible later question.
