@@ -8,7 +8,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | Time | M0 read: two wording notes (T0.1, T0.2). Results NOT CHECKED. | §2 |
 | Sharing | NOT CHECKED | |
 | Generalization | Part A (`30c495f`, PR #51): **PASS** on every number. CX-G1 failed as predicted-against, which bounds the iteration claim (G1). Part B NOT CHECKED. | §3 |
-| Mechanisms | M1–M2 (`0949fa0`, PR #52): **PASS** on every number checked. **CONCERN M1** on the centroid reading, from CX-M1. Follow-up B NOT CHECKED (one design note). | §4 |
+| Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. **CONCERN M1** on the centroid/residual reading, from CX-M1. NOTE wording notes M2, M3. | §4 |
 
 ## 1. Pin check (`b3e8132`)
 
@@ -124,9 +124,9 @@ Evidence: [rev_gen.py](rev_gen.py) with `30c495f`; output in [out/rev_gen.txt](o
 
 ## 4. Mechanisms
 
-### M1–M2 (`0949fa0`, PR #52)
+### M1–M4 (`817a768`, PR #52; M1–M2 files unchanged since `0949fa0`)
 
-Evidence: [rev_mech.py](rev_mech.py) with `0949fa0`; output in [out/rev_mech.txt](out/rev_mech.txt). The per-step-readout condition is my r1 arm.
+Evidence: `rev_mech.py 817a768 817a768`; output in [out/rev_mech.txt](out/rev_mech.txt). The per-step-readout condition is my r1 arm.
 
 **PASS.**
 - **M1.** At ckpt-0 and ckpt-1000, my forward pass gives r1's published 128-character held-out prediction string for all 9 runs. The 10k rows were checked in §1.
@@ -135,7 +135,10 @@ Evidence: [rev_mech.py](rev_mech.py) with `0949fa0`; output in [out/rev_mech.txt
 - **Centroid patches.** Centroids fit here on the 384 training rows only give `S_cent` equal to `cells.csv` in all 144 cells.
 - **No held-out rows in any fit.** In the centroid and follow-up B code, centroids and U_i are fit on `~held` rows (`mech_interchange.py` lines 51–54, `mech_residual.py` line 67).
 
-**NOT CHECKED.** Consistency C, the random controls, geometry, and the D5 decode values. `c2probe` itself was checked in §1.
+- **Follow-up B (`c2-mech-residual-a1`).** I recomputed the residual dose (λ = 0, 0.25, 0.5, 0.75, 1) and the inside/outside-U split. Centroids and U were fit here on training rows. All 756 entries equal `residual.csv` exactly, at depth 2 → op 3 and at depth 3 → L = 4–6, for every subset.
+- **The post-hoc energy check.** `c2-mech-energy-a1` is labelled post hoc and descriptive in ADAPTIVE.md (04:23), and it chose nothing. NOTE O6 uses it only to argue "unresolved", which weakens the claim rather than strengthening it. NOTE O6 should still label it post hoc where it cites it.
+
+**NOT CHECKED.** Consistency C, the random controls and random subspaces, the held-out subspace swap, `energy.csv`, geometry, and the D5 decode values. `c2probe` itself was checked in §1.
 
 **Lane prediction for the record.** It predicted tied/inter at L = 0 (V reading h_0) would be ≤ 0.5. It is 1.000 in all seeds, so V reads the start embedding exactly.
 
@@ -150,4 +153,18 @@ Evidence: [rev_mech.py](rev_mech.py) with `0949fa0`; output in [out/rev_mech.txt
 - **Wording I would accept.** "Replacing a state by its training class mean fixes most cross-length failures in tied/inter. Matching only the norm recovers a quarter to two thirds of that. On held-out depth-3 states the gain is mostly the injected symbol."
 - **Wording that goes beyond the evidence.** "The history-specific part goes with the failures", stated without the scale component.
 
-**Design note for follow-up B (`c2-mech-residual-a1`).** U_i is the span of the *centered* centroids. A pure scale residual, r ∝ c_i(x), therefore lies largely outside U, in the mean-centroid direction. "The harmful residual is outside U" would then partly restate the norm effect above. Reporting the component of r along c_i(x), or along the mean centroid, separately would keep the two apart. I will check B's numbers when they land.
+**M1 applies to NOTE Interpretation 1.** It says the residual "goes with the errors at L = 5–6; shrinking it removes them". The dose numbers are right. But in tied/inter, about a quarter to two thirds of what the class mean fixes is fixed by matching the donor's norm alone. So "history residual" should not be read as purely a history-specific direction.
+
+**M2 (note): NOTE Interpretation 2 is close to tautological as worded.** It says these networks "contain, in their class-mean geometry, a state that the shared transition maps correctly".
+- At depth 2, every (symbol, op 3) pair occurs in training, as handoff item 3 says. The class mean is the average of training states that the network maps correctly.
+- At (2, 2), restricting natural donors to those nearest their own symbol's centroid recovers 10–59% of the gap. So part of the class-mean gain there is injecting the symbol.
+- The NOTE's own Limit, "an intervention the network cannot perform itself", should sit next to this sentence.
+
+**M3 (note): NOTE Interpretation 3 says "share of the symbol's causal effect".** The U-swap's 0.26–0.59, against ≤ 0.13 for random subspaces, is not energy-matched. O6 itself says so. "Swapping the U coordinates moves 0.26–0.59 of held-out answers to the donor's target, against ≤ 0.13 for dimension-matched random subspaces, which carry less energy" is the bounded form.
+
+**Handoff answers.**
+- Items 1 and 6: O2 is stated correctly and not overstated. My actual patching equals `cells.csv`, which in turn equals the generalization lane's lengths (§3).
+- Item 3: centroids are fit on training rows, and λ = 1 equals natural (my dose recomputation).
+- Item 5: the V3 recipient frame is declared and applied as declared. I wrote that arm; my checks used the same code path as for the other arms.
+
+**Design note for follow-up B (`c2-mech-residual-a1`), written before its results.** U_i is the span of the *centered* centroids. A pure scale residual, r ∝ c_i(x), therefore lies largely outside U, in the mean-centroid direction. "The harmful residual is outside U" would then partly restate the norm effect above. Reporting the component of r along c_i(x), or along the mean centroid, separately would keep the two apart. I will check B's numbers when they land.

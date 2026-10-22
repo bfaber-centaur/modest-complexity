@@ -4,7 +4,7 @@ h_i replaces the recipient's h_j, the recipient's remaining ops run through the 
 and the recipient's final readout (V, or V3 for per-step readouts) reads the answer. Compared with
 the lane's cells.csv at a lane commit; then counterexample CX-M1.
 
-uv run --locked python research/composition-c2/review/rev_mech.py LANE_COMMIT
+uv run --locked python research/composition-c2/review/rev_mech.py LANE_COMMIT [FOLLOWUP_COMMIT]
 """
 import csv
 import io
@@ -105,6 +105,41 @@ def main(commit):
     check('CX-M1 prediction (tied/inter): in every such cell (a) closes < 1/2 and (b) < 1/4 of the gap', ok)
 
 
+
+def followup(commit):
+    """Follow-up B (c2-mech-residual-a1): residual dose and the inside/outside-U split, recomputed."""
+    res = {(r['run_id'], r['i'], r['L'], r['kind'], r['param'], r['subset']): float(r['accuracy'])
+           for r in lane_csv(commit, 'runs/c2-mech-residual-a1/residual.csv')}
+    d = oracle_rows(ALL); tr = oracle_rows(TRAIN); trs = set(TRAIN)
+    held = np.array([tuple(map(int, q)) not in trs for q in d['ops']])
+    worst, n = 0., 0
+    for cond, seed, run in RUNS:
+        p = nets.load(C2/'recovered'/run/'ckpt-10000.npz')[0]
+        H = my_forward(p, d['s'], d['ops'], [1, 2, 3])[0]; Ht = my_forward(p, tr['s'], tr['ops'], [1, 2, 3])[0]
+        for i in (2, 3):
+            x, xt = d['states'][:, i-1], tr['states'][:, i-1]
+            c = np.stack([Ht[i][xt == v].mean(0) for v in range(8)])
+            U = np.linalg.svd(c - c.mean(0), full_matrices=False)[2][:7].T
+            r = H[i] - c[x]; inside = r @ U @ U.T
+            states = {('dose', str(lam)): c[x] + lam * r for lam in (0., .25, .5, .75, 1.)}
+            states.update({('inside', 'U'): c[x] + inside, ('outside', 'U'): c[x] + r - inside})
+            for (kind, param), h in states.items():
+                if i == 2:
+                    ok = np.concatenate([run_suffix(p, h[d['ops'][:, 2] == k], [k], 3) == d['states'][d['ops'][:, 2] == k, 2] for k in range(4)])
+                    m = np.concatenate([held[d['ops'][:, 2] == k] for k in range(4)])
+                    for name, sel in (('held', m), ('train', ~m), ('all', np.ones_like(m))):
+                        worst = max(worst, abs(ok[sel].mean() - res[run, '2', '3', kind, param, name])); n += 1
+                else:
+                    for j in (2, 1, 0):
+                        ok = np.array([run_suffix(p, h, q, 3) == apply(q, x) for q in product(range(4), repeat=3-j)])
+                        for name, sel in (('held_history', held), ('train_history', ~held), ('all', np.ones_like(held))):
+                            worst = max(worst, abs(ok[:, sel].mean() - res[run, '3', str(6-j), kind, param, name])); n += 1
+    check(f'follow-up B: residual dose (5 values) and inside/outside-U accuracies, recomputed with centroids and U fit here on training rows, '
+          f'equal residual.csv ({n} entries)', worst < 1e-12, f'max |diff| {worst:.1e}')
+
+
 if __name__ == '__main__':
     main(sys.argv[1])
+    if len(sys.argv) > 2:
+        followup(sys.argv[2])
     print('ALL PASS' if not FAIL else f'{len(FAIL)} FAILED: {FAIL}')

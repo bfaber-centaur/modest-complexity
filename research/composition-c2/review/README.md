@@ -17,7 +17,7 @@ uv run --locked python research/regimes/common/run_jobs.py --plan research/compo
     --ids c2-rev-verify-final-s51200-a1
 uv run --locked python research/composition-c2/review/rev_pin.py runs/c2 > research/composition-c2/review/out/rev_pin.txt
 uv run --locked python research/composition-c2/review/rev_gen.py 30c495f > research/composition-c2/review/out/rev_gen.txt
-uv run --locked python research/composition-c2/review/rev_mech.py 0949fa0 > research/composition-c2/review/out/rev_mech.txt
+uv run --locked python research/composition-c2/review/rev_mech.py 817a768 817a768 > research/composition-c2/review/out/rev_mech.txt
 ```
 
 `rev_pin.py` §7 reads the run's `ckpt-10000.npz`, which is local-only.
@@ -32,3 +32,4 @@ uv run --locked python research/composition-c2/review/rev_mech.py 0949fa0 > rese
 | 04:16 | `rev_pin.py` with §9 (D10) and the post-pin recovery entry | 22.0 s | 1.9 min |
 | 04:17–04:20 | `rev_gen.py` (generalization Part A): one crash on the `steps.csv` summary row, then two complete passes | 3.4 + 15.6 + 16.3 s | 2.4 min |
 | 04:25–04:27 | `rev_mech.py` (mechanisms M1–M2, CX-M1), two passes | 13.4 + 13.5 s | 2.9 min |
+| 04:29 | `rev_mech.py` at `817a768` with follow-up B | 25.3 s | 3.3 min |

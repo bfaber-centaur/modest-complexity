@@ -47,4 +47,5 @@ CX-M1 cells with S_cent - S >= 0.05: S, S_cent, share of donors symbol-present, 
   tied/final              51202 i2 j2 L3: S 0.830 S_cent 0.969; symbol-present 0.367, S on them 0.883; norm-matched 0.836; closed (a) +0.38 (b) +0.04
   tied/final              51202 i3 j3 L3: S 0.830 S_cent 1.000; symbol-present 0.400, S on them 0.976; norm-matched 0.830; closed (a) +0.86 (b) +0.00
 FAIL CX-M1 prediction (tied/inter): in every such cell (a) closes < 1/2 and (b) < 1/4 of the gap
+PASS follow-up B: residual dose (5 values) and inside/outside-U accuracies, recomputed with centroids and U fit here on training rows, equal residual.csv (756 entries)  [max |diff| 0.0e+00]
 1 FAILED: ['CX-M1 prediction (tied/inter): in every such cell (a) closes < 1/2 and (b) < 1/4 of the gap']
