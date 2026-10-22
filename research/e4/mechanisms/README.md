@@ -1,4 +1,4 @@
-# e4 mechanisms: first figure (peak to collapse)
+# e4 mechanisms: first figure (peak to collapse) and the intervention (where decay acts)
 
 Lane: mechanisms explorer, session label `e4-me-cloud-1`, branch `claude/project-thread-psralm`. Question and definitions: [QUESTION.md](QUESTION.md) (`d584af7`, addendum `73d45be`), written before any measurement. This packet speaks to the D5 **peak** and **decline** windows at wd 1, with wd 0 as the contrast, and in passing to the **rise**. Not audited yet.
 
@@ -76,21 +76,92 @@ At wd 0, the reference parts grow (U, V 31–32 → 39–41; W 25–26 → 32) a
 - that the collapsed network still "contains" an a+b algorithm that a readout could recover: no decodability test or readout refit was done, and the reference channel's accuracy is a projection, not a decoder;
 - that the label offset masks the answers during the decline.
 
-## Proposed intervention (sent to the coordinator; nothing claimed or run)
+## Intervention: where decay acts (D14, D15; not audited)
 
-The proposal is to restrict where decay acts: B at wd 1 with decoupled decay **exempting** the reference parts (decay acts only on the off-reference and DC parts). The complementary arm decays **only** the reference parts. The design, IDs and pre-stated reading are in [INTERVENTION.md](INTERVENTION.md), written before any intervention code or run.
+![intervention](figures/intervention.png)
+
+**Design.** It was written before any code or run ([INTERVENTION.md](INTERVENTION.md), `203dc54`) and approved in D14. The six claimed runs are `e4-me-filt-wd1-{xref,onlyref}-w128-i{30000,30001,30002}-a1`. Everything matches the wd 1 D7 replays except where the decoupled decay acts:
+- **xref** decays each weight minus its reference part. The reference part is each unit's cosine and sine at its update-0 frequency k_j.
+- **onlyref** decays only the reference part.
+- Nothing is frozen.
+
+**Code and runs.**
+- The shared-code patch is PR #37, pinned at `8108d8b` (D15). Without its flags, a rerun of a D7 replay reproduces all 89 checkpoints and all 501 metric rows ([results/patch_check.json](results/patch_check.json)).
+- The projection files are [intervention/](intervention/), with hashes in the plan. channels.py also checks that each file equals this analysis's update-0 reference.
+- The runs were launched in the claimed queue order from a clean worktree at `23bb74a`. All six completed, with empty git status in every config, taking 55 s elapsed with 2 workers.
+- The analysis ran from the clean commit `7049399` ([results/intervention.csv](results/intervention.csv), [intervention.py](intervention.py)).
+- Lane compute is now about 2.7 of 20 minutes.
+
+**Immediate effect.** There is none: update 0 is the start file in every arm, and all differences come from training.
+
+**Pre-stated reading applied** (f = (acc − acc wd 1)/(acc wd 0 − acc wd 1) on the common pairs at 5,000, per source):
+
+| arm | f at 2,000 | f at 5,000 | common accuracy at 5,000 | pre-stated outcome |
+|---|---|---|---|---|
+| xref (reference parts exempt) | 1.51, 1.39, 1.31 | 1.60, 1.53, 1.37 | 0.998, 1.000, 1.000 | f ≥ 0.7 in all three: decay acting on the reference parts is **necessary** for most of the collapse |
+| onlyref (decay on reference parts only) | −0.11, −0.09, −0.14 | −0.04, −0.03, −0.04 | 0.000 in all three | f ≤ 0.3 in all three: decaying only the reference parts **suffices** for the collapse |
+
+The wd 1 replay ends at 0.02–0.03 and the wd 0 replay at 0.63–0.74.
+
+**Observations, xref (reference exempt).**
+- Accuracy never falls below its update-300 value. It reaches 0.96–0.99 by 2,000 and at least 0.99 by 2,300–4,000. Own held-out splits are 0.99–1.00, and training accuracy is 1 throughout.
+- The reference parts grow:
+  - U and V together from 31–32 at update 100 to 49–51 at 5,000;
+  - W from 25–26 to 38.
+- The off-reference parts peak near update 650–850 (U, V 6.6–7.1; W 4.9–5.2) and then shrink (to 4.6–5.2 and 2.9–3.3). For comparison, the wd 1 replay reaches 21 and 18 by 5,000.
+- At 5,000:
+  - the off-reference channel's margin over S is −0.31 to −0.35, against −2.4 to −2.6 at wd 1;
+  - the reference channel's is 10.2–10.7, against 1.9 at wd 1 and 6.5–7.0 at wd 0.
+- Gates changed since update 100: 8.5–8.9%, about the wd 0 value. Alignment R stays at 0.99.
+
+**Observations, onlyref (decay on reference parts only).**
+- Accuracy falls below 0.10 at updates 700–800, against 1,550–1,950 for the wd 1 replay. It is 0.000 from 2,000 on.
+- The reference parts shrink: U and V from 29–30 to 8, W from 23–24 to 3.3–3.6. The off-reference parts grow to 49–51 (U, V) and 45–46 (W).
+- At 5,000:
+  - P(a+b over S) is 0.08–0.10, below A's 0.14–0.18;
+  - the reference channel alone is at 0.01–0.02;
+  - 42% of gates have changed since update 100.
+
+**Size of the decay, post hoc** ([results/decay_magnitude.csv](results/decay_magnitude.csv); not part of the pre-stated reading). The logged decay step norm at 5,000 compares as follows:
+
+| run | decay step norm at 5,000 | common accuracy at 5,000 |
+|---|---|---|
+| xref | 5.7–6.3e-3 | 1.00 |
+| uniform wd 0.1 (dynamics lane) | 5.5e-3 | 0.37–0.43 |
+| onlyref | 8.5–9.1e-3 | 0.00 |
+| uniform wd 0.3 | 1.6e-2 | 0.10–0.12 |
+| wd 1 | 4.5e-2 | 0.02–0.03 |
+
+Decay steps of about the same size give opposite outcomes depending on where they act. The xref arm also ends *above* wd 0, which removing decay alone could not explain. So the arms are not explained by how much decay is applied.
+
+## Reading of the intervention (provisional)
+
+- **What the collapse needs.** Within 5,000 updates from these starts, the collapse needs decay to act on the reference-frequency parts. Decaying those parts alone produces it, faster than uniform decay does.
+- **What happens when the reference parts are spared.** Decay on everything else does more than fail to collapse the network. It holds the off-reference competitor small: that part grows to about 7 and then shrinks. Meanwhile the reference parts grow unopposed, and the network reaches 0.99–1.00 on the never-trained common pairs.
+- **The first figure, read again.** The competitor grew at wd 1 *because* the reference parts were being decayed, not independently of it. With the reference spared, decay suppresses the competitor instead of making room for it. In first-figure terms, E1 (the useful component's loss) is necessary, and E2 (the competitor's growth) follows from it under this objective.
+- **Caveat, stated in advance and still applying.** The parts are coupled through the loss. With the reference spared, the training pairs are fit about 30× harder by cross-entropy (2e-4 against 7e-3 at 5,000), which leaves less gradient to build the competitor. "Necessary" here means that decay on the reference parts matters; it does not mean that their shrinkage alone is the mechanism.
+
+**Strongest alternative.** The exemption is **task-informed**. The projection names, for each unit, the frequency the filter kept, and the decay then prefers exactly those frequencies. That is a frequency-selective regulariser pointing at a Fourier solution, so the 1.00 may be largely built in by the intervention. On that view the result shows that such a solution is reachable from B's start and stable to 5,000 under this objective. It does not show what ordinary training "wants". The C1 random-feature starts (audit) through the same exemption would test this cheaply.
+
+**Not supported by this evidence:**
+- that the failed runs contained an algorithm the intervention recovered (C1 already shows the rise and collapse without them);
+- that this network would stay at 1.00 beyond 5,000 updates;
+- that uniform decay of any strength would behave like either arm;
+- that the shrinkage of the reference weights is, by itself, the cause. Shrinkage and competitor growth are coupled through the loss, as stated.
 
 ## Files
 
 - [channels.py](channels.py): measures. [plot_channels.py](plot_channels.py): the figure. [replay_check.py](replay_check.py): replay equality.
 - [results/channels.csv](results/channels.csv): one row per state. [results/channels_inputs.json](results/channels_inputs.json): provenance. [results/replay_check.json](results/replay_check.json).
 - [figures/channels.png](figures/channels.png), [figures/channels.svg](figures/channels.svg).
+- Intervention: [INTERVENTION.md](INTERVENTION.md) (design and reading, written first), [projection.py](projection.py) and [intervention/](intervention/) (projection files), [patch_check.py](patch_check.py), [intervention.py](intervention.py), [results/intervention.csv](results/intervention.csv), [results/decay_magnitude.csv](results/decay_magnitude.csv), [figures/intervention.png](figures/intervention.png).
 
-Reproduce: launch the six IDs with the registry command, then run
+Reproduce: launch the twelve IDs (six D7 replays, six D15 intervention runs) with the registry commands, then run
 
 ```
 uv run --locked --group analysis python research/e4/mechanisms/replay_check.py --local runs/e4
 uv run --locked --group analysis python research/e4/mechanisms/channels.py --local runs/e4
 uv run --locked --group analysis python research/e4/mechanisms/plot_channels.py
+uv run --locked --group analysis python research/e4/mechanisms/intervention.py
 uv run --locked --group analysis python -m unittest discover -s research/e4/mechanisms
 ```

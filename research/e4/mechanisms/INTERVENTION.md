@@ -54,3 +54,13 @@ The same `channels.py` measures, on every checkpoint, compared seed by seed with
 The channel margins say which part moved in each arm.
 
 **Caveat, stated now.** The parts are coupled through the loss. Exempting the reference part also changes how much gradient reaches the off-reference part, for example through smaller training losses. A "necessary" result therefore says that decay on the reference part matters, not that its shrinkage alone is the mechanism. If only one arm is affordable, run the exempt-reference arm.
+
+## Outcome (added 2026-10-22 after the runs; nothing above was changed)
+
+The coordinator approved the design (D14) and claimed the runs at pin `8108d8b` (D15). The six runs completed, launched at `23bb74a`.
+
+f at 5,000, per source 30000, 30001 and 30002:
+- **exempt-reference** (xref): 1.60, 1.53, 1.37. That is f ≥ 0.7 in all three, so decay acting on the reference parts is necessary for most of the collapse.
+- **reference-only** (onlyref): −0.04, −0.03, −0.04. That is f ≤ 0.3 in all three, so decaying only the reference parts suffices for the collapse.
+
+Common accuracy at 5,000 is 0.998–1.000 for xref and 0.000 for onlyref. Details, the post hoc decay-size comparison and the strongest alternative (the exemption is task-informed) are in [README.md](README.md).
