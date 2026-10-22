@@ -79,7 +79,7 @@ def panel(ax, c, traj):
     ax.set_title(f'{TITLE[c]}\n{PARAMS[c]:,} parameters, wd 0', fontsize=9.5)
 
 
-def endpoints(ax, ends, key, title):
+def endpoints(ax, ends, key, title, loc='lower left'):
     x = {c: i for i, c in enumerate(S.CELLS)}
     for wd, dx, filled in ((0.1, -0.12, False), (0.0, 0.12, True)):
         for s in S.SEEDS:
@@ -91,7 +91,7 @@ def endpoints(ax, ends, key, title):
     ax.plot([], [], 'o', color='0.3', label='wd 0 (follow-up)')
     ax.axhline(CHANCE, color='0.4', lw=0.8)
     ax.set_xticks(range(4), S.CELLS); ax.set_xlim(-0.5, 3.5); ax.set_ylim(-0.02, 1.02); ax.grid(alpha=0.25)
-    ax.set_title(title, fontsize=9.5); ax.legend(fontsize=7.5, loc='lower left')
+    ax.set_title(title, fontsize=9.5); ax.legend(fontsize=7.5, loc=loc)
 
 
 def grid(traj, ends, missing):
@@ -102,7 +102,7 @@ def grid(traj, ends, missing):
         if i == 1: ax.set_xlabel('update')
         if j == 0: ax.set_ylabel('accuracy')
     endpoints(fig.add_subplot(gs[0, 2]), ends, 'held_final', 'held-out final at 10,000 updates')
-    endpoints(fig.add_subplot(gs[1, 2]), ends, 'notN', '¬N (42 rows) at 10,000 updates')
+    endpoints(fig.add_subplot(gs[1, 2]), ends, 'notN', '¬N (42 rows) at 10,000 updates', loc='upper right')
     handles = [Line2D([], [], color=SEED_COLOR[s], lw=1.6, label=f'init seed {s}') for s in S.SEEDS] + [
         Line2D([], [], color='0.3', ls='-', lw=1.6, label='held-out final, wd 0'),
         Line2D([], [], color='0.3', ls=':', lw=1.6, label='¬N, wd 0'),

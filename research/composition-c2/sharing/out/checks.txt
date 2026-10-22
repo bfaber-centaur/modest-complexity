@@ -30,3 +30,15 @@ PASS TT notN at 10k from logged predictions: [1.0, 0.881, 1.0] (reviewer [1.0, 0
    TT held-out final / N at 10k: [1.0, 0.961, 1.0] / [1.0, 1.0, 1.0]
 PASS TU notN at 10k from logged predictions: [0.238, 0.071, 0.048] (reviewer [0.24, 0.07, 0.05])
    TU held-out final / N at 10k: [0.633, 0.523, 0.516] / [0.826, 0.744, 0.744]
+PASS seed 51200: c2-share-wd0-tt-s51200-a1 ckpt-0 weights and step-0 metrics equal r1-comp-rnn-inter-s51200-a1
+PASS seed 51201: c2-share-wd0-tt-s51201-a1 ckpt-0 weights and step-0 metrics equal r1-comp-rnn-inter-s51201-a1
+PASS seed 51202: c2-share-wd0-tt-s51202-a1 ckpt-0 weights and step-0 metrics equal r1-comp-rnn-inter-s51202-a1
+PASS seed 51200: c2-share-wd0-tu-s51200-a1 ckpt-0 weights and step-0 metrics equal r1-rev-comp-rnn-untied-s51200-a1
+PASS seed 51201: c2-share-wd0-tu-s51201-a1 ckpt-0 weights and step-0 metrics equal r1-rev-comp-rnn-untied-s51201-a1
+PASS seed 51202: c2-share-wd0-tu-s51202-a1 ckpt-0 weights and step-0 metrics equal r1-rev-comp-rnn-untied-s51202-a1
+PASS seed 51200: c2-share-wd0-ut-s51200-a1 ckpt-0 weights and step-0 metrics equal c2-share-ut-s51200-a1
+PASS seed 51201: c2-share-wd0-ut-s51201-a1 ckpt-0 weights and step-0 metrics equal c2-share-ut-s51201-a1
+PASS seed 51202: c2-share-wd0-ut-s51202-a1 ckpt-0 weights and step-0 metrics equal c2-share-ut-s51202-a1
+PASS seed 51200: c2-share-wd0-uu-s51200-a1 ckpt-0 weights and step-0 metrics equal c2-share-uu-s51200-a1
+PASS seed 51201: c2-share-wd0-uu-s51201-a1 ckpt-0 weights and step-0 metrics equal c2-share-uu-s51201-a1
+PASS seed 51202: c2-share-wd0-uu-s51202-a1 ckpt-0 weights and step-0 metrics equal c2-share-uu-s51202-a1
