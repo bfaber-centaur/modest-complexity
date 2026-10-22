@@ -10,7 +10,7 @@ Bobby's packet: [charter/](charter/) (verbatim). Decisions, assignments, budgets
 | resume and no-change verification | [verify_resume.out](verify_resume.out), runs in [runs/](runs/) | identical (D2) |
 | time lane | `time/` | M1 |
 | sharing lane | `sharing/` | M0 |
-| generalization lane | `generalization/` | M0 |
+| generalization lane | `generalization/` | M2 (draft PR #51) |
 | mechanisms lane | `mechanisms/` | M0 |
 | reviewer | `review/` | pin checked (PR #50) |
 | final draft PR to `swarm/exploration` | | not opened |

@@ -15,3 +15,4 @@
 | 04:08 | time | M1 on-host continuation check + calibration | cd92b0d; 3 resumes s51200 ckpt-1000→3000 match all published r1 keys (41 steps); 3.7–4.1 ms/update with 2 jobs; 16 s of 40 min used; nine 40k continuations planned, waiting on pin PASS |
 | 04:09 | reviewer | pin check: CONCERN C1 (resume does not check recipe), no BLOCK; training may start | PR #50, `claude/project-thread-wvait2` 39a88c4; D9 |
 | 04:10 | coordinator | training opened in all lanes; C1 remedy relayed | D9 |
+| 04:11 | generalization | M1+M2 frozen length 1–6 (Part A), figures/length.png, draft PR #51 | 30c495f; length 3 reproduces r1 exactly; found pin defect D10 (run a1 failed, kept); Part B calibration and draws started |

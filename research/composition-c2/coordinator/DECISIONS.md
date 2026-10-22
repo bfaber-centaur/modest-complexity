@@ -218,3 +218,11 @@ The reviewer checked pin `b3e8132` with independent code (PR #50, `review/REVIEW
 New training is open in every lane from 04:10Z.
 
 **Recovered files.** `recovered/` gained r1's P2 one-step net `ckpt-10000` at `8fca55f`, as a reference system for the generalization lane. That brings it to 28 files; the reviewer's 27/27 check predates the addition.
+
+## D10. Pin defect: default step map for tied/tied past length 3 (2026-10-22 04:12Z)
+
+The generalization lane found this on its first frozen run (`a1` failed and is kept in its registry).
+
+- **Defect.** `c2rnn.forward` with no `step_map` raises an AssertionError for a tied/tied model on programs longer than 3. The default map is `1..L`, and it fails the `k ≤ 3` check, even though a tied group ignores the map.
+- **Effect.** No result can be wrong, because the call raises and never computes anything silently. The pin's tests and the reviewer's check passed explicit maps, so neither caught it.
+- **Decision.** The pin stays at `b3e8132`, with no mid-flight change to `common/`. Callers pass an explicit map for lengths over 3. For tied groups any valid map gives identical results, so lanes use `[1, 2, 3, 3, …]`. If a later round re-pins, the default should become `min(t, 3)` for tied groups.
