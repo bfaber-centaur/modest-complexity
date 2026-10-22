@@ -1,0 +1,45 @@
+Continue modest-complexity as the e3 mechanisms explorer.
+
+Repository: bfaber-centaur/modest-complexity
+PR target: swarm/exploration
+Own research/e3/mechanisms/. Coordinate shared changes and run claims.
+
+Read AGENTS.md, e2 mechanisms results, the revised synthesis, and audit cycles 3–4. Wait for the coordinator’s pinned e3 setup before training.
+
+Question
+After the frequency filter improves a failed model, does subsequent training preserve, strengthen, or erase that improvement?
+
+Initial experiment
+Use the same three failed 30%-setting width-128 checkpoints at 50k updates from e1/e2. For each checkpoint create:
+A. Unchanged weights.
+B. The existing per-unit dominant-frequency filter.
+C. A sham using non-dominant frequencies.
+
+Resume all nine branches for 20k updates on the original training set and original objective. Reset Adam moments AND optimizer step count in every branch, including A. Record original checkpoint age separately from continuation updates. This studies recovery after a common optimizer reset, not uninterrupted training.
+
+Intervention controls
+Reuse the existing filter exactly and document it. Choose sham frequencies using recorded random seeds, without held-out performance selection. Match perturbation size as closely as practical using a declared label-free rule; report actual parameter displacement and logit change. A sham may differ in retained energy, gate changes, or immediate training damage: measure those differences and do not call it fully matched if it is not.
+
+Do not tune interventions against held-out accuracy. If matching cannot be made meaningful, ask the coordinator to settle the comparison before launching.
+
+Before computing
+Write the question, branch definitions, matching rule, and expected alternatives. Obtain run claims. Verify shared continuation code with the auditor.
+
+Measure
+At the original checkpoint, immediately after editing, and throughout continuation:
+- training loss/accuracy;
+- common held-out accuracy;
+- agreed normalized margins and ranks;
+- frequency structure;
+- distance from the edited starting weights.
+
+Log densely enough early to detect rapid loss of the intervention’s benefit. All branches use identical evaluation pairs.
+
+First figure
+Show the immediate intervention jump and subsequent trajectories for every seed. Keep “what the edit did” separate from “what training did afterward.”
+
+Possible outcomes include persistent benefit, erasure during training-fit recovery, sham-equivalent effects, and seed dependence. None alone proves that two distinct algorithms exist or that the filter exposed a hidden one.
+
+After the first packet, propose one adaptive follow-up that distinguishes the strongest remaining explanations. Optimizer-state retention is a separate possible follow-up, not something to mix into the initial comparison.
+
+Deliver short, reproducible results and explicit limitations. Reuse existing code; no framework expansion.

@@ -1,5 +1,7 @@
 # e2 review index (figures first)
 
+> **2026-10-22: e2 is complete** (closed at `4783a47`, [DECISIONS.md](DECISIONS.md) D11). The active round is e3: [../../e3/coordinator/INDEX.md](../../e3/coordinator/INDEX.md). This index is kept as the e2 record.
+
 Round e2 is open-question exploration under the [charter](charter/README.md); assignments and the run-ID procedure are in [DECISIONS.md](DECISIONS.md). e1 is complete and archived at [research/coordinator/INDEX.md](../../coordinator/INDEX.md). Short synthesis and open questions: [SYNTHESIS.md](SYNTHESIS.md).
 
 e2 base for workers: `6aaa3a2b6898abd0b317aa775cd7939e7530abdd`. Shared code identity: `fe284a5d90f741aab8c1273a55b11e5352ec38c5` (unchanged through e2). All runs are p = 31, one hidden ReLU layer, AdamW lr 1e-3, full batch, data seed 31000; "common pairs" are the 483 pairs that no training set in this round contains.

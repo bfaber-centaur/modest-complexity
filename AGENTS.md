@@ -4,7 +4,7 @@ For this exploratory swarm, the coordinator integrates on `swarm/exploration` in
 
 The coordinator returns the integrated review packet and may prepare a curated PR for Bobby's review against `bubskee/modest-complexity` main. Refresh upstream first and exclude unrelated or already-merged work. No upstream merge is authorized.
 
-Active round: e2. Its charter is `research/e2/coordinator/charter/` and its assignments (owners, base commit, run-ID claims in `research/e2/plan.json`) are in `research/e2/coordinator/DECISIONS.md`; for e2 they supersede e1's run assignments and follow-up cap. Round e1 is complete (`research/coordinator/INDEX.md`).
+Active round: e3. Its charter is `research/e3/coordinator/charter/` and its assignments (owners, base commit, seeds, budget, run-ID claims in `research/e3/plan.json`) are in `research/e3/coordinator/DECISIONS.md`; for e3 they supersede earlier rounds' run assignments, budgets and cycle caps. Rounds e1 (`research/coordinator/INDEX.md`) and e2 (`research/e2/coordinator/INDEX.md`) are complete.
 
 Read `research/LAUNCH_PROMPTS.md`, `research/SWARM.md`, and `research/RED_TEAM.md`. The current launch instructions supersede older main-branch routing and skill-import recommendations. Use the locked uv environment. Keep calibration, exploratory, and confirmatory runs distinct; read PRE_RUN.md before scientific work.
 

@@ -20,6 +20,7 @@ def data(p, seed, control_seed=None, train_fraction=.3):
         for mask,part in zip(split_masks,np.split(groups,[nt,nt+nc])):
             for i,j in part: mask[i,j]=mask[j,i]=True
     masks = [np.flatnonzero(mask.ravel()) for mask in split_masks]
+    if min(map(len, masks)) == 0: raise ValueError('a split is empty; lower --train-fraction or raise p')
     y = (a+b) % p
     # Preserve exact class counts separately in every split. Random control is
     # deliberately noncommutative; no transpose pair ever crosses a split.
@@ -204,19 +205,34 @@ def run(args):
             # The split hash covers inputs, addition labels and split membership,
             # so it is identical for both tasks; the target hash identifies labels.
             hashes=dict(split_sha256=array_sha256(a,b,y,*masks),target_sha256=array_sha256(target))
+            start_sha=hashlib.sha256(Path(args.init_weights).read_bytes()).hexdigest() if args.init_weights else None
             cfg=vars(args).copy()
-            cfg.update(seeds=seeds,data_hashes=hashes,host=platform.node(),runtime=inventory(out),
+            cfg.update(seeds=seeds,data_hashes=hashes,host=platform.node(),runtime=inventory(out),init_weights_sha256=start_sha,
+                       init_rule=('U, V, W from --init-weights (init_seed unused); Adam moments zero, update count restarts at 1'
+                                  if args.init_weights else 'init(p, hidden, init_seed)'),
                        purpose=args.purpose or ('calibration' if args.seed>=900000 else 'research-prototype'),
                        diagnostic_schedule=dict(metrics_every=args.log_every,checkpoint_every=args.checkpoint_every,
-                           checkpoint_extra='last step and first train accuracy >= .99',
+                           checkpoint_extra='last step, first train accuracy >= .99 and --checkpoint-steps',checkpoint_steps=args.checkpoint_steps,
                            inline=args.diagnostics, inline_every=args.audit_every if args.diagnostics=='inline' else None))
             (out/'config.json').write_text(json.dumps(cfg,indent=2))
             if args.expect_split_sha256 and hashes['split_sha256']!=args.expect_split_sha256:
                 raise ValueError(f"split hash {hashes['split_sha256']} != expected {args.expect_split_sha256}")
-            w=init(args.p,args.hidden,seeds['init_seed']); initial=[x.copy() for x in w]
+            if args.init_weights:
+                # A continuation from given (e.g. edited) weights restarts the optimizer: its
+                # checkpoint age lives in the plan, and every step here is a new update.
+                if args.expect_init_sha256 and start_sha!=args.expect_init_sha256:
+                    raise ValueError(f'init weights hash {start_sha} != expected {args.expect_init_sha256}')
+                with np.load(args.init_weights) as z: w=[z[k] for k in 'UVW']
+                shapes=[(args.p,args.hidden),(args.p,args.hidden),(args.hidden,args.p)]
+                if [x.shape for x in w]!=shapes or any(x.dtype!=np.float64 for x in w):
+                    raise ValueError(f'init weights must be float64 with shapes {shapes}')
+            else:
+                w=init(args.p,args.hidden,seeds['init_seed'])
+            initial=[x.copy() for x in w]
             m=[np.zeros_like(x) for x in w]; v=[x.copy() for x in m]
         with timing.measure('data_write'):
             np.savez_compressed(out/'data.npz',a=a,b=b,y=target,yadd=y,train=masks[0],cal=masks[1],audit=masks[2])
+        extra={int(s) for s in args.checkpoint_steps.split(',') if s}
         with (out/'metrics.jsonl').open('w') as stream:
             for step in range(args.steps+1):
                 logging=step%args.log_every==0 or step==args.steps
@@ -247,7 +263,7 @@ def run(args):
                             row['intervention']=interventions(w,a,b,target,masks[2],seeds['diagnostic_seed'],args.shams)
                         with timing.measure('readout'):
                             row['readout_accessibility']=transfer(w,initial,a,b,y,masks,seeds['diagnostic_seed']+10000)
-                    if step%args.checkpoint_every==0 or first or step==args.steps:
+                    if step%args.checkpoint_every==0 or step in extra or first or step==args.steps:
                         with timing.measure('checkpoint_write'):
                             np.savez_compressed(out/f'checkpoint_{step:06d}.npz',U=w[0],V=w[1],W=w[2],
                                                 mU=m[0],mV=m[1],mW=m[2],vU=v[0],vV=v[1],vW=v[2],step=step)
@@ -307,6 +323,9 @@ if __name__=='__main__':
     ap.add_argument('--control-seed',type=int,help='Shuffled-label table; omitted = historical shared stream')
     ap.add_argument('--diagnostic-seed',type=int)
     ap.add_argument('--expect-split-sha256',help='Fail before training unless the split hash matches')
+    ap.add_argument('--init-weights',help='Start from U, V, W in this .npz instead of init(); Adam starts fresh')
+    ap.add_argument('--expect-init-sha256',help='Fail before training unless the --init-weights file hash matches')
+    ap.add_argument('--init-age',type=int,help='Updates the --init-weights source had taken (recorded only; steps here start at 0)')
     ap.add_argument('--run-id'); ap.add_argument('--purpose'); ap.add_argument('--session-label')
     ap.add_argument('--p',type=int,default=31)
     ap.add_argument('--train-fraction',type=float,default=.3,help='Share of grouped pairs per class in train')
@@ -314,6 +333,7 @@ if __name__=='__main__':
     ap.add_argument('--lr',type=float,default=.001); ap.add_argument('--wd',type=float,default=1.)
     ap.add_argument('--log-every',type=int,default=100); ap.add_argument('--audit-every',type=int,default=1000)
     ap.add_argument('--checkpoint-every',type=int,default=1000)
+    ap.add_argument('--checkpoint-steps',default='',help='Extra checkpoint steps, comma separated, multiples of --log-every')
     ap.add_argument('--diagnostics',choices=['inline','none'],default='inline',
                     help='inline: historical compression/top-4 intervention/readout at --audit-every')
     ap.add_argument('--shams',type=int,default=32)
@@ -324,6 +344,7 @@ if __name__=='__main__':
             ap.error('Require odd p >= 7, positive hidden/cadences/shams, and nonnegative steps')
         if not 0<args.train_fraction<=.8:
             ap.error('Require 0 < --train-fraction <= .8 (calibration keeps .1)')
-        if args.checkpoint_every%args.log_every or args.audit_every%args.log_every:
+        if args.checkpoint_every%args.log_every or args.audit_every%args.log_every or any(
+                int(s)%args.log_every for s in args.checkpoint_steps.split(',') if s):
             ap.error('Checkpoint and audit cadences must be multiples of --log-every')
         run(args)
