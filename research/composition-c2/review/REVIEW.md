@@ -6,9 +6,10 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 |---|---|---|
 | Pin `b3e8132` (common/, recovered/, verify_resume) | **CONCERN** (C1). Training may start. | §1 |
 | Time | M2 (`543ed95`, PR #55): **PASS** on every number checked. **CONCERN T1**: the late dynamics are in Adam's eps regime. CX-T1 half failed; CX-T2 held narrowly. F1 follow-up NOT CHECKED. | §2 |
-| Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd-0 follow-up NOT CHECKED. | §5 |
-| Generalization | Part A (`30c495f`) and Part B (`99c83c8`), PR #51: **PASS** on every number. Draws are real (CX-G2). CONCERN G1 bounds the iteration claim. Follow-up and NOTE NOT CHECKED. | §3 |
-| Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. **CONCERN M1** on the centroid/residual reading, from CX-M1. NOTE wording notes M2, M3. | §4 |
+| Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd 0 follow-up (`501071c`): **PASS** on every number checked; note S1 (F4 lead is 0.05–0.13). CX-S2: "nearly flat" is a slow rise in every run while logits keep growing, not a plateau. wd 0 decode and group tables NOT CHECKED. | §5 |
+| Generalization | Parts A and B, A5 and the follow-up anatomy (NOTE `6fe1435`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1, G2, G5 and G6. CX-G3: drift predicts failures within a transition in every model, but only 1.2–3.3×, so it is a partial account (note G7). Note G8. | §3 |
+| Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. CONCERN M1 on the centroid/residual reading, from CX-M1, is **addressed** in NOTE `0fe8624`, as are notes M2 and M3; that revision PASSES, including O6's scale-outside-U claim (0.67–0.98). Note M4 on one README word. | §4 |
+| Synthesis draft `eac869e` | **CONCERN SY1**: the eps qualifier overreaches for the per-step readout, 61–87% of whose gain came before the switch. Notes SY2–SY6 (one false sentence about tied transitions, missing committed checkpoints, disclosure, unchecked inputs, minor). Every other quoted number matches. | §6 |
 
 ## 1. Pin check (`b3e8132`)
 
@@ -191,6 +192,57 @@ Evidence: `rev_gen.py 30c495f 99c83c8`, `partb()`. Output in [out/rev_gen.txt](o
 
   So ¬N accuracies are per-task fractions of different sizes. With 24 rows, one row is 0.042.
 
+### NOTE (`01d1296`) and A5
+
+Evidence: `rev_gen.py 30c495f 99c83c8 543ed95`, `a5()`. It is post hoc and descriptive.
+- **G1 and G2 adopted.** The NOTE carries both, worded as suggested. It adds that rows without a held-out window also fall, to 0.64–0.93 at L = 6. That is correct and a fair bound on G1.
+- **A5, PASS.** The time lane's tied/inter `ckpt-50000` answers every row at every length 1–6 in all three seeds (my forward, every row). tied/final beyond L = 3 is 0.095–0.15. The NOTE says 0.10–0.15, which is right to rounding.
+- **G6 (note, which the NOTE could add).** The length decline was already gone at **20k**: L = 6 accuracy is 0.9996, 0.986 and 1.000. That is before every arm entered Adam's eps regime at about 25k (T1). So unlike the time lane's late catch-up, A5's removal of the decline happened in the ordinary Adam phase.
+- **G5 (note).** The NOTE says 0.62–0.71 of first wrong answers are another op applied to the right state, against "uniform 3/7 = 0.43". On the original draw, some ops send a state to the same symbol, so the per-(state, op) baseline averages 0.339 (minimum 0.286). The new draws differ, and draw 63001's sink makes it lower still. So 3/7 is an upper bound, and the stated lean is, if anything, understated.
+- **NOT CHECKED.** The task-structure table (neighbour votes, repetition patterns). The anatomy is checked below.
+
+### Follow-up anatomy and drift (NOTE `6fe1435`, merged at `fd4e21d`)
+
+Evidence: `rev_gen.py 30c495f 99c83c8 543ed95 fd4e21d`, `anatomy()`. Output in [out/rev_gen.txt](out/rev_gen.txt). The checks and CX-G3 were committed at 651de53, after I read the NOTE and `summary.json` and before the code existed. I used my own oracle, forward pass, and draws and splits recomputed from seeds. No claim here rests on my r1 arm.
+
+**PASS on every number checked.**
+- **`anatomy.csv`.** All 352 (model, transition) rows of first errors and at-risk counts at steps 4–6 equal mine.
+- **`summary.json`.** For all 11 models, these equal mine: counts by step, top-1/4/8 shares, both Spearman ρ, the other-op share, the window shares at the error and at risk, and the F1–F3 flags. So do `windows.csv` and `figures/followup.csv`.
+- **NOTE ranges.**
+
+  | measure | range |
+  |---|---|
+  | top-4 share | 0.198–0.290 |
+  | top-8 share | 0.362–0.504 |
+  | ρ(5, 6) | 0.623–0.956 |
+  | ρ(4, 5) | 0.084–0.802 |
+  | held-out window at the error | 0.313–0.411 |
+  | other op on the true state | 0.617–0.712 |
+
+  F1 holds in 0 of 11, F2 in 11 of 11 and F3 in 3 of 11.
+- **F3's baseline.** The at-risk window share is exactly 0.25 in every model. The Latin square forces this whatever the prefix filtering does, so F3 compares against the right baseline.
+- **Held-out windows (original three).** Accuracy with a window is lower by 0.011–0.101 at L = 4 and by 0.053–0.138 at L = 5–6. The held-out-prefix split at L = 6 matches the NOTE (0.810 vs 0.871, 0.498 vs 0.580, 0.654 vs 0.739). Programs without a held-out window reach 0.640–0.927 at L = 6 over the 11 models.
+- **Drift.** All 154 drift entries of `steps.csv` (22 frozen models, steps 0–6) equal mine. The NOTE's step-6 ranges are right for the original three:
+
+  | | norm | centroid distance |
+  |---|---|---|
+  | tied/inter | 1.016–1.173 | 1.026–1.188 |
+  | tied/final | 1.42–1.60 | 1.49–1.70 |
+
+  The after-first-error shares match per seed and step: recovered 0.266–0.385, follows its own error 0.379–0.414, neither 0.212–0.343.
+- **G8 (note).** The drift ranges cover the original task only, where the paragraph sits. Over all 11 models the step-6 ratios are wider:
+
+  | | norm | centroid distance |
+  |---|---|---|
+  | tied/inter | 1.02–1.27 | 1.03–1.37 |
+  | tied/final | 1.42–2.13 | 1.49–2.61 |
+
+**CX-G3, against "matches gradual degradation of the iterated continuous state". The prediction FAILED: 3 of 11 models met it, against the 9 required.** The test, within each transition, compares the error rate of rows whose incoming state h_{t−1} is furthest from its symbol's training centroid (top quartile) with the closest (bottom quartile).
+- **Direction: holds everywhere.** The more-drifted quartile fails more often in all 22 (model, step) cases. The top/bottom ratio is 1.3–3.3× at t = 5 and 1.2–2.9× at t = 6.
+- **Size: smaller than predicted.** The ratio is ≥ 2× in 7 of 11 models at t = 5 but only 3 of 11 at t = 6. In the three weakest models (`r1` s51201 and the two ops63001 s63201 runs) it is 1.2–1.4× at t = 6, and even the least-drifted quartile fails at 0.27–0.28.
+- **Reading.** Within a transition, drift tracks where failures fall in every model, but only partly. Many failures come from states no further from their centroid than successful ones. Drift as measured is therefore at most a partial account of the decline.
+- **G7 (note for the NOTE).** The NOTE already says the drift measures are descriptive and that the cause is not identified. Suggested addition: "Within a transition, rows whose incoming state has drifted further fail more often in every model (top vs bottom drift quartile 1.2–3.3×). Low-drift rows fail too, so this drift measure is at most a partial account."
+
 ## 4. Mechanisms
 
 ### M1–M4 (`817a768`, PR #52; M1–M2 files unchanged since `0949fa0`)
@@ -238,6 +290,22 @@ Evidence: `rev_mech.py 817a768 817a768`; output in [out/rev_mech.txt](out/rev_me
 
 **Design note for follow-up B (`c2-mech-residual-a1`), written before I opened its files (I had seen only the coordinator's summary).** U_i is the span of the *centered* centroids. A pure scale residual, r ∝ c_i(x), therefore lies largely outside U, in the mean-centroid direction. "The harmful residual is outside U" would then partly restate the norm effect above. Reporting the component of r along c_i(x), or along the mean centroid, separately would keep the two apart. I will check B's numbers when they land.
 
+### NOTE revision `0fe8624`
+
+Evidence: `rev_mech.py 817a768 817a768 0fe8624`. The new function is `o6_scale`, and its output is in [out/rev_mech.txt](out/rev_mech.txt). The check was recorded at 35ec5f5 before the code existed.
+
+**PASS. M1 is addressed, and M2, M3 and the post-hoc label are taken up as suggested.**
+- **O4 and Interpretation 1.** Every CX-M1 range the NOTE now quotes equals my output.
+  - For tied/inter at L = 4–6 (11 cells), (a) recovers 0.01–0.22 and (b) 0.25–0.63.
+  - For per-step and tied/final at (3, 3), (a) recovers 0.64–0.86. At (2, 2) it recovers 0.10–0.59.
+  - "A quarter to two thirds" is the right reading of (b).
+- **Interpretation 2.** It now says the class-mean claim is close to true by construction, gives the (2, 2) and (3, 3) recoveries, and places the limit beside the claim. This is M2.
+- **Interpretation 3.** It now gives the U-swap rates per condition (0.50–0.59, 0.35–0.38, 0.26–0.29), which equal O6's table. It drops "share of the causal effect". This is M3.
+- **O6.** It now labels `c2-mech-energy-a1` post hoc.
+- **O6's new sentence.** "A pure scale residual lies largely outside U" holds, and my prediction held. At depth 2, the share of ‖c(x)‖² outside U is 0.67–0.90 in tied/inter, 0.76–0.97 in per-step readout and 0.82–0.98 in tied/final, so above 0.5 for every symbol in all 9 runs.
+
+**M4 (note, README).** The README's centroid paragraph says the deviation from the class mean that goes with long-length errors "is largely overall scale". Norm matching recovers 25–63% of the gap, median 0.42. The NOTE's "a quarter to two thirds" and "a large part" are the bounded forms. "Largely" in the README is a little stronger than the numbers.
+
 ## 5. Sharing
 
 ### M2 (`83b3303`, PR #54)
@@ -258,4 +326,60 @@ Evidence: [rev_share.py](rev_share.py) with `83b3303`; output in [out/rev_share.
 - So the "every seed" wording does not depend on the exact endpoint.
 - All four cells, TT included, were still rising from 8k to 10k (+0.03 to +0.14), as the NOTE says.
 
-**NOT CHECKED.** The decode and readout tables, the per-group optimizer tables, and the wd-0 follow-up.
+**NOT CHECKED.** The decode and readout tables and the per-group optimizer tables.
+
+### Follow-up at wd 0 (`501071c`, NOTE M4)
+
+Evidence: [rev_share.py](rev_share.py) `83b3303 501071c`, functions `wd0` and `wd0_note`; output in [out/rev_share.txt](out/rev_share.txt). The checks and CX-S2 were committed at 69ed8e2 before I opened any wd-0 file. The list of NOTE numbers to recompute was committed at 3be6632, after CX-S2 ran. The wd 0 runs are the lane's. The "wd 0 − wd 0.1" column and every TU comparison at wd 0.1 rest on my r1 arm. No wd 0 checkpoint is committed, so everything here is recomputed from the logged rows.
+
+**PASS on every number checked.**
+- **Recipes.** All 12 runs have wd 0 and otherwise their wd 0.1 recipe: step weights `1 1 1`, the cell's scheme, lr 1e-3, the original task, the ID's seed, 10,000 updates, width 128, no resume.
+- **Same initial function.** Each run's step-0 row equals its wd 0.1 counterpart's, including `held_final_pred` (r1's rows for TT and TU).
+- **Endpoints.** Held-out and ¬N from each last-row prediction string, with my oracle and ¬N recount, equal the logged values.
+- **NOTE tables.** The held-out / ¬N / wd 0 − wd 0.1 table, the five paired contrasts per seed, and the wd 0.1 interaction (+0.297 to +0.562) all match to the printed precision.
+- **Predictions.** F1 matches (fit by 350–600 updates). So do F2 (−0.55 to −0.60) and F3 (spread 0.086–0.148 against 0.367–0.484).
+- **Trajectories.** Held-out at 1,000 is 0.227–0.344. The last-2,000 change is −0.008 to +0.031 at wd 0, against +0.031 to +0.141 at wd 0.1. At 10k, N is 0.430–0.663 and ¬N at most 3/42.
+- **Figure CSVs.** All 2,412 rows of `followup_trajectories.csv` and all 24 rows of `followup_endpoints.csv` equal the logged rows and my recount. That includes the parameter counts, the fit step and the five-in-a-row 0.95 step.
+- **Optimizer.** The 10k row has no `diag`, so I used the 9,950 rows. They are consistent with the NOTE's 10k values: median √v̂ 5.9e-6 to 2.0e-5, a fraction below eps of 0.020–0.088 from 500 on, update norm 8.4e-4 to 4.9e-3, and minimum train margin 8.7–10.5. The TT s51200 transition norm at wd 0.1, computed from the recovered checkpoint (A, B, bh), is 19.07, matching the NOTE's 19.1. Its wd 0 value (29.0) is read from `groups_wd0.csv` only.
+
+**Note S1 (F4 wording).** TT is highest on 3 of 3 seeds. But its lead over the next-best cell is 0.047–0.133, not "0.05–0.15". The 0.15 is TT − UT at seed 51202, where TU (0.320) is the runner-up. Suggested fix: "by 0.05–0.13 over the next-best cell".
+
+**CX-S2, against "without decay, no cell composes within 10k".** Its first half FAILED and its second half held. Neither half touches the 10k claim itself, which stands. Together they show that "nearly flat" is not a plateau.
+- *First half, FAILED.* I predicted that held-out would change by at most 0.03 from 5k to 10k in every run. It rose in 11 runs and held level in one. Three runs exceeded 0.03: TT s51202 +0.055, UT s51201 +0.039, UT s51202 +0.031.
+- *1k to 10k.* Over this stretch, held-out rose in all 12 runs, by +0.016 to +0.109 (median +0.059). Answers change slowly, 0.06–0.27 held-out predictions per evaluation on average and at most 3, but in one direction.
+- *Second half, held in 12 of 12 runs.* The median train margin grew 31–38% from 5k to 9,950 (I used 9,950 because the 10k row has no `diag`). Held-out CE rose 13–25% from 5k to 10k. So the logits keep scaling up, and the remaining wrong held-out answers become more confident.
+- *Suggested NOTE wording.* "Then barely moves" and "nearly flat" should become something like "then rises slowly (+0.02 to +0.11 from 1,000 to 10,000, in every run)". The Reading's closing caveat already says that a flat stretch is not a demonstrated plateau. The data say more: the stretch is not flat, and the 10k values are not where these runs stop.
+
+**NOT CHECKED.** The wd 0 decode table (`decode_table_wd0.csv`, `followup_decode_wd0.png`), the readout table and every `groups_wd0.csv` array. All need the local-only wd 0 checkpoints.
+
+## 6. Synthesis draft (`eac869e`)
+
+Every quoted number was checked against the lane NOTEs, REVIEW.md and my script outputs in `out/`, and the claims were read for scope. No new measurement.
+
+**CONCERN (wording), no BLOCK.** The time rows are pending F1.
+
+**Numbers that match.**
+- **Scope.** 384/128/42 rows; 3.84M and 19.2M row presentations.
+- **(a) table.** All crossings, the censored arm and the 50k values (`out/rev_time.txt`). "3–4× longer". The gap shrank 15–28% and CE fell (CX-T1). Eps timing 24.1–25.1k and 27.8–29.7k. Two of three per-step crossings and all ¬N crossings fall in the regime, as does 56–70% of tied/final's gain. Distances 0.65–1.05 at 50k, and V3 on h1 0.81 / 0.97 / 0.84.
+- **(b).** The table (`out/rev_share.txt`), fit by 350–700 updates, the four contrasts, the interaction (+0.30 to +0.56), and every wd 0 number including TT's 0.05–0.13 lead and CX-S2.
+- **(c).** 4,086 of 4,096. The 10k, 20k and 50k length table. G1's 0.01–0.14 and the top-4 share of 0.20–0.29. New tasks: 0.98–1.00, ¬N 0.88–1.00, 8 of 8 pairs, tied/final 0.42–0.56 with at most 2 ¬N rows. New-task L = 6 is 0.58–0.88, from `windows.csv`, which I checked.
+- **(d).** S ≥ 0.93, S_cent ≥ 0.939, 25–63% against 1–22%, and 88–97%. The 50k drift is 0.99–1.00×.
+- **Elsewhere.** The MLPs' 14–25% (r1 synthesis). Crossings at 7.7–9.2k. Peak RSS 45 MiB. 28 recovered files and 36 time checkpoints.
+
+**SY1, CONCERN: the eps qualifier in (a) overreaches for the per-step readout.** (a) says that "closes with time" includes a change of optimizer regime and "is not a continuation of the early Adam dynamics".
+- For tied/final that holds: 56–70% of its gain came after the switch.
+- For the per-step readout, 61–87% of its 10k→50k held-out gain came *before* the median √v̂ crossed eps (§2 T1). Only its last approach to criterion (two of three crossings) and its ¬N crossings fall in the regime.
+- Suggested wording: "For the per-step readout most of the gain came before the switch, but two of its three crossings and all ¬N crossings fall after it. For tied/final 56–70% of the gain came after it." Next question 1 is worded correctly ("crossings").
+
+**Notes.**
+- **SY2 (factual).** "Every RNN here shares its transition across steps" is false for UT and UU. Suggested: "Every RNN here applies one transition per op".
+- **SY3 (factual).** The list of committed checkpoints omits the sharing lane's six UT/UU `ckpt-10000` and the generalization lane's 16 new-task `ckpt-10000`. I rescored both sets from Git.
+- **SY4 (disclosure).** The per-step-readout arm, in (a) row 2 and every TU number in (b) at wd 0.1, is my r1 arm, reviewed by me. Scope should say so once.
+- **SY5 (unchecked inputs).** Two quoted numbers rest on tables I marked NOT CHECKED: UT's 0.75–0.84 off-diagonal decoding (the sharing decode table) and the U-swap rates 0.26–0.59 against ≤ 0.13 (mechanisms). Both equal their NOTEs.
+- **SY6 (minor).**
+  - "All of it on neighbour-answerable rows" (c): one new-task tied/final run answers 2 of its 32 ¬N rows, so "almost all".
+  - UU has 2.9× TT's parameters, not 2.8×.
+  - (d)'s "this fits the drift" could carry CX-G3's bound: within a transition, drift accounts for failures only partly (1.2–3.3×).
+  - The reviewer row should read 7.4 / 25 min, PRs #50, #53 and #56–#59.
+- **Scope.** Apart from SY1, no claim reaches past the tested tasks, recipe and budgets. The short answers carry "under this recipe and these budgets", and (c) says "within what was tested".
+

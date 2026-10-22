@@ -48,4 +48,14 @@ CX-M1 cells with S_cent - S >= 0.05: S, S_cent, share of donors symbol-present, 
   tied/final              51202 i3 j3 L3: S 0.830 S_cent 1.000; symbol-present 0.400, S on them 0.976; norm-matched 0.830; closed (a) +0.86 (b) +0.00
 FAIL CX-M1 prediction (tied/inter): in every such cell (a) closes < 1/2 and (b) < 1/4 of the gap
 PASS follow-up B: residual dose (5 values) and inside/outside-U accuracies, recomputed with centroids and U fit here on training rows, equal residual.csv (756 entries)  [max |diff| 0.0e+00]
+INFO O6 tied/inter              51200: share of |c(x)|^2 outside U, over the 8 symbols: 0.672-0.900
+INFO O6 tied/inter              51201: share of |c(x)|^2 outside U, over the 8 symbols: 0.726-0.887
+INFO O6 tied/inter              51202: share of |c(x)|^2 outside U, over the 8 symbols: 0.731-0.871
+INFO O6 per-step readout/inter  51200: share of |c(x)|^2 outside U, over the 8 symbols: 0.760-0.913
+INFO O6 per-step readout/inter  51201: share of |c(x)|^2 outside U, over the 8 symbols: 0.805-0.928
+INFO O6 per-step readout/inter  51202: share of |c(x)|^2 outside U, over the 8 symbols: 0.811-0.970
+INFO O6 tied/final              51200: share of |c(x)|^2 outside U, over the 8 symbols: 0.867-0.967
+INFO O6 tied/final              51201: share of |c(x)|^2 outside U, over the 8 symbols: 0.815-0.958
+INFO O6 tied/final              51202: share of |c(x)|^2 outside U, over the 8 symbols: 0.822-0.976
+PASS NOTE O6 "a pure scale residual lies largely outside U": share outside U > 0.5 for every depth-2 centroid in all 9 runs  [minimum 0.672]
 1 FAILED: ['CX-M1 prediction (tied/inter): in every such cell (a) closes < 1/2 and (b) < 1/4 of the gap']
