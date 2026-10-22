@@ -36,7 +36,7 @@ Chance is 0.125. The "all" column at L = 3 is 75% training rows; the held-out va
 
 **What the longer programs are** (task facts, `gen_task.py`). The four ops generate all of S8. At L = 4 all 256 products are distinct and none equals a function of length ≤ 3. Collisions start at L = 5 (18 programs in collision groups) and grow at L = 6 (372). At L = 6, 4,086 of 4,096 programs are new functions; only 10 compute a function seen at length ≤ 3, which is too few to compare. So lengths 4–6 are new syntax *and*, almost always, new input-output functions on this draw.
 
-**tied/inter keeps answering past the trained depth, and degrades with length.**
+**At 10k, tied/inter keeps answering past the trained depth, and degrades with length.**
 - Accuracy is 0.93–0.99 at L = 4 and 0.56–0.86 at L = 6, in the same seed order as at length 3: 51201 is the weakest, and it was also the seed with 5 held-out errors at L = 3.
 - The per-step error rate rises with depth in every seed. It is the share of rows still correct after step t−1 that go wrong at step t. For 51200 it is 0.6% at step 4, 4.6% at step 5 and 11.6% at step 6; for 51201, 6.9%, 21.9% and 32.8%.
 - **Held-out windows (reviewer G1, confirmed here in `runs/c2-gen-followup-anatomy-a1/windows.csv`).** Programs that contain any held-out length-3 window, at any position, are less accurate in every seed: by 0.01–0.10 at L = 4 and by 0.05–0.14 at L = 5–6. Programs whose length-3 *prefix* is held out are lower too (L = 6: 0.81 vs 0.87, 0.50 vs 0.58, 0.65 vs 0.74).
@@ -92,7 +92,7 @@ In draw 63001 all four ops send symbol 2 to symbol 1. The draw rule allows this,
 - Length curves at 10k (frozen, bottom row of the figure): tied/inter is 0.93–1.00 at L = 4 and 0.58–0.88 at L = 6. tied/final is 0.11–0.17 at every L ≥ 4.
 - **Task versus init.** Within a draw, the same init gives similar length curves on both splits. Init 63201 is better at L = 6 on draw 63000 (0.85–0.88 vs 0.62–0.65); the two inits are about equal on draw 63001 (0.58–0.62). Three seeds on the original span 0.56–0.86. With 2 inits per split, this shows that both task and init move the L = 6 number; it does not apportion the variance.
 
-### Follow-up: where the first errors fall
+### Follow-up: where the first errors fall (10k models)
 
 Figure: [figures/followup.png](figures/followup.png) (`figures/followup.csv`; per-transition table `runs/c2-gen-followup-anatomy-a1/anatomy.csv`). This describes inputs, meaning which transitions fail first. It is not a mechanism.
 
@@ -106,9 +106,9 @@ Figure: [figures/followup.png](figures/followup.png) (`figures/followup.csv`; pe
 **Length.**
 - Under r1's recipe at 10k updates, the shared-transition, shared-readout model trained with intermediate labels keeps executing programs one to three ops longer than any it was trained on. Its accuracy declines with each added op; no length shows a cliff.
 - Continued training on length-3 programs alone removed that decline on the original task: at 50k updates all three seeds are exact through length 6. Length generalization kept improving after held-out length-3 accuracy had reached 0.96–1.00, as held-out length-3 accuracy itself kept improving after the training set was fit. This is tested only on the original task and only through length 6; the new-task runs were not continued.
-- The decline is broad. First errors spread over many transitions (top four of 32 carry 20–29%), the same transitions keep failing as length grows, and the per-step error rate rises with depth. This matches gradual degradation of the iterated continuous state more than a few broken transitions. It does not identify the cause. The drift measures are descriptive, and the mechanisms lane owns whether the state is reusable under intervention.
+- At 10k the decline is broad. First errors spread over many transitions (top four of 32 carry 20–29%), the same transitions keep failing as length grows, and the per-step error rate rises with depth. This matches gradual degradation of the iterated continuous state more than a few broken transitions. It does not identify the cause. The drift measures are descriptive, and the mechanisms lane owns whether the state is reusable under intervention.
 - At 10k, "a reusable step function" overstates the result (reviewer G1). What the 10k data support is narrower: the model extends past depth 3, with lower accuracy on programs that contain a held-out 3-op window. The whole decline is not explained by those windows, though: programs without one also fall to 0.64–0.93 at L = 6. At 50k the window effect has no room to appear (every row is correct through L = 6).
-- Every tied/inter model maps each (symbol, op) correctly when its state is re-encoded between steps, and P2 iterates perfectly. Those references show that the length decline is a property of the continuous iteration these networks learned, not of the one-step knowledge. They are references, not evidence of what the network discovered.
+- Every 10k tied/inter model maps each (symbol, op) correctly when its state is re-encoded between steps, and P2 iterates perfectly. Those references show that the 10k length decline is a property of the continuous iteration these networks had learned by then, not of the one-step knowledge. They are references, not evidence of what the network discovered.
 - tied/final shows no transfer beyond length 3 under this recipe, at 10k or at 50k, even as its length-3 held-out accuracy rises. Its readout was trained on h3 only, and the states it reaches beyond step 3 are further from the trained region. This is a finite-budget observation, not a demonstration that final-only training cannot produce it.
 
 **Task robustness.**
