@@ -162,3 +162,35 @@ There is one follow-up, chosen after the nine continuations and the first figure
 **R2. Written 2026-10-22 04:21Z, again before any continuation record had been read.** The reviewer's own suggestion for T0.1 (REVIEW.md §2) arrived after R1.
 - **Prediction stability.** Its condition that no held-out prediction changes over the last 1,000 updates is added to the "gap persists" rule, alongside R1's 40k-to-50k tolerance.
 - **CE subset.** Its ¬N cross-entropy is not logged; `c2train.py` logs CE over all 128 held-out rows. So R1's held-out final CE tolerance stands in for it.
+
+## Follow-up F1: extend `tt-final` to 100,000 updates
+
+Proposed 2026-10-22 04:33Z, after the nine continuations and the first figure (PR #55). It waits for the coordinator's approval before any run.
+
+**Choice.** This is the default rule above.
+- **Why `tt-final`.** It is the only unresolved arm.
+  - All three seeds are censored at 50,000.
+  - Each is still rising: held-out final went 0.46/0.52/0.49 at 30k, 0.52/0.58/0.55 at 40k, and 0.56/0.70/0.66 at 50k.
+  - Held-out predictions still change over the last 1,000 updates in two of the three seeds.
+- **The other arms.** `tt-inter` and `tu-inter` meet the "speed within 50k" rule, so they need no extension.
+- **No optimizer branch.** The rule's alternative is meant for a plateau with optimizer signs, and `tt-final` has not plateaued.
+- **The eps regime.** One diagnostic does point at the optimizer: in every run, Adam's √v̂ is below eps for every coordinate from about 28,000 updates on. So the whole extension runs in that eps-dominated regime. That is what this recipe does when run longer; it is not a changed optimizer.
+
+**Runs.** `c2-time-tt-final-ext-s5120{0,1,2}-a1` each resume `runs/c2-time-tt-final-s5120{0,1,2}-a1/ckpt-50000.npz`, cited by the SHA-256 in that run's `MANIFEST.json`.
+- **Recipe.** The same recipe and explicit flags: `--step-weights 0 0 1 --readout tied --lr 0.001 --wd 0.1`.
+- **Length and logging.** To 100,000 total updates, with `--diag`.
+- **Checkpoints.** At 75,000 and 100,000; both are committed.
+- **Joining check.** The step-50,000 row of each extension must equal that of its 50k run.
+- **Cost.** 3 × 50,000 updates at about 3.5 ms is about 6 minutes with two jobs, so the lane total would be about 18.5 of 40 minutes.
+
+**Predictions** (written before any extension run).
+- All three seeds keep rising, but more slowly than a straight line from 30k–50k would give. A straight line would put them at about 0.81, 1.0 and 1.0 at 100k.
+- Held-out final at 100,000 is between 0.70 and 0.95.
+- At most one seed meets the threshold by 100,000.
+- ¬N at 100,000 is between 0.2 and 0.6.
+- Wrong predictions stay ≥ 85% compatible with a same-prefix neighbour's label.
+- Low confidence.
+
+**Reading.** The arm is classified at 100,000 with the same rules and tolerances, applied over 90,000–100,000 instead of 40,000–50,000.
+- If no seed crosses, the supervision gap stands at 100k under this recipe. That is still a finite-budget observation in an eps-dominated regime, not an asymptote.
+- If seeds cross, the gap is slower learning under this recipe within 100k. What the eps regime contributes would still be untested, because this follow-up does not separate it.
