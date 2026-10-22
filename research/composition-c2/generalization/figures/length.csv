@@ -1,0 +1,91 @@
+run_id,ckpt_step,condition,init_seed,length,subset,n_rows,n_programs,accuracy,source
+r1-comp-rnn-final-s51200-a1,10000,final,51200,1,all,32,4,0.125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51200-a1,10000,final,51200,2,all,128,16,0.1484375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51200-a1,10000,final,51200,3,all,512,64,0.818359375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51200-a1,10000,final,51200,3,held-out programs,128,16,0.2734375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51200-a1,10000,final,51200,4,all,2048,256,0.13623046875,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51200-a1,10000,final,51200,5,all,8192,1024,0.1234130859375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51200-a1,10000,final,51200,6,all,32768,4096,0.1263427734375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51201-a1,10000,final,51201,1,all,32,4,0.09375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51201-a1,10000,final,51201,2,all,128,16,0.1484375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51201-a1,10000,final,51201,3,all,512,64,0.828125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51201-a1,10000,final,51201,3,held-out programs,128,16,0.3125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51201-a1,10000,final,51201,4,all,2048,256,0.11962890625,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51201-a1,10000,final,51201,5,all,8192,1024,0.1146240234375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51201-a1,10000,final,51201,6,all,32768,4096,0.12628173828125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51202-a1,10000,final,51202,1,all,32,4,0.0625,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51202-a1,10000,final,51202,2,all,128,16,0.0859375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51202-a1,10000,final,51202,3,all,512,64,0.830078125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51202-a1,10000,final,51202,3,held-out programs,128,16,0.3203125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51202-a1,10000,final,51202,4,all,2048,256,0.13623046875,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51202-a1,10000,final,51202,5,all,8192,1024,0.1182861328125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-final-s51202-a1,10000,final,51202,6,all,32768,4096,0.123809814453125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51200-a1,10000,inter,51200,1,all,32,4,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51200-a1,10000,inter,51200,2,all,128,16,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51200-a1,10000,inter,51200,3,all,512,64,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51200-a1,10000,inter,51200,3,held-out programs,128,16,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51200-a1,10000,inter,51200,4,all,2048,256,0.99365234375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51200-a1,10000,inter,51200,5,all,8192,1024,0.949951171875,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51200-a1,10000,inter,51200,6,all,32768,4096,0.8555908203125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51201-a1,10000,inter,51201,1,all,32,4,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51201-a1,10000,inter,51201,2,all,128,16,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51201-a1,10000,inter,51201,3,all,512,64,0.990234375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51201-a1,10000,inter,51201,3,held-out programs,128,16,0.9609375,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51201-a1,10000,inter,51201,4,all,2048,256,0.92626953125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51201-a1,10000,inter,51201,5,all,8192,1024,0.7442626953125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51201-a1,10000,inter,51201,6,all,32768,4096,0.5595703125,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51202-a1,10000,inter,51202,1,all,32,4,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51202-a1,10000,inter,51202,2,all,128,16,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51202-a1,10000,inter,51202,3,all,512,64,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51202-a1,10000,inter,51202,3,held-out programs,128,16,1.0,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51202-a1,10000,inter,51202,4,all,2048,256,0.98291015625,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51202-a1,10000,inter,51202,5,all,8192,1024,0.875244140625,runs/c2-gen-frozen-orig-a2/length.csv
+r1-comp-rnn-inter-s51202-a1,10000,inter,51202,6,all,32768,4096,0.717926025390625,runs/c2-gen-frozen-orig-a2/length.csv
+oracle (per-row loop),,reference,,1,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+P2 iterated (r1-comp-interp-s51200-a1),,reference,,1,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),,reference,,1,all,,,0.125,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),,reference,,1,all,,,0.09375,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),,reference,,1,all,,,0.0625,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),,reference,,1,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),,reference,,1,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),,reference,,1,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+oracle (per-row loop),,reference,,2,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+P2 iterated (r1-comp-interp-s51200-a1),,reference,,2,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),,reference,,2,all,,,0.109375,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),,reference,,2,all,,,0.1171875,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),,reference,,2,all,,,0.109375,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),,reference,,2,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),,reference,,2,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),,reference,,2,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+oracle (per-row loop),,reference,,3,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+P2 iterated (r1-comp-interp-s51200-a1),,reference,,3,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),,reference,,3,all,,,0.119140625,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),,reference,,3,all,,,0.12890625,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),,reference,,3,all,,,0.126953125,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),,reference,,3,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),,reference,,3,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),,reference,,3,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+oracle (per-row loop),,reference,,4,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+P2 iterated (r1-comp-interp-s51200-a1),,reference,,4,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),,reference,,4,all,,,0.1259765625,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),,reference,,4,all,,,0.1318359375,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),,reference,,4,all,,,0.12744140625,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),,reference,,4,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),,reference,,4,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),,reference,,4,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+oracle (per-row loop),,reference,,5,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+P2 iterated (r1-comp-interp-s51200-a1),,reference,,5,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),,reference,,5,all,,,0.1275634765625,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),,reference,,5,all,,,0.1241455078125,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),,reference,,5,all,,,0.127685546875,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),,reference,,5,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),,reference,,5,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),,reference,,5,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+oracle (per-row loop),,reference,,6,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+P2 iterated (r1-comp-interp-s51200-a1),,reference,,6,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51200-a1),,reference,,6,all,,,0.125213623046875,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51201-a1),,reference,,6,all,,,0.123687744140625,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-final-s51202-a1),,reference,,6,all,,,0.124420166015625,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51200-a1),,reference,,6,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51201-a1),,reference,,6,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv
+own one-step map re-encoded (r1-comp-rnn-inter-s51202-a1),,reference,,6,all,,,1.0,runs/c2-gen-frozen-orig-a2/references.csv

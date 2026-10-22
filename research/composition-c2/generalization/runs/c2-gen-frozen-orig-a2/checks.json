@@ -1,0 +1,91 @@
+{
+ "r1-comp-rnn-final-s51200-a1": {
+  "held_final_pred": "22536210626472310526030217066452742126110644254503164210654040765427611450505267427126604572310610013723567123044315740537523240",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "/home/user/modest-complexity/research/composition-c2/recovered/r1-comp-rnn-final-s51200-a1/ckpt-10000.npz",
+  "sha256": "e035a2e4312f722c645d88578304ea68fbb6ea66954d07e4937c0bc3ba061837",
+  "step": 10000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "r1-comp-rnn-final-s51201-a1": {
+  "held_final_pred": "33530271426452311727040117146452545066010113260747663210231030265423612421517467427027604572310626374720267463444215540630537140",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "/home/user/modest-complexity/research/composition-c2/recovered/r1-comp-rnn-final-s51201-a1/ckpt-10000.npz",
+  "sha256": "557bfac4f59db0a8197cb622134f54c7c670d98a3db684f7c74b395f995a4fe6",
+  "step": 10000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "r1-comp-rnn-final-s51202-a1": {
+  "held_final_pred": "22506277227452314726340117066452732026011104262305164210230140265423612027506467423156602572010666413720267463444215771630533540",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "/home/user/modest-complexity/research/composition-c2/recovered/r1-comp-rnn-final-s51202-a1/ckpt-10000.npz",
+  "sha256": "27d9719073600694f92f27e14613c9b77c7475b3c773bc46856ec104c0bb4aa4",
+  "step": 10000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "r1-comp-rnn-inter-s51200-a1": {
+  "held_final_pred": "23704651615432070736124507316425723156403214560715473260137640252047635121607345413725602375104615674320367451024532701630725614",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "/home/user/modest-complexity/research/composition-c2/recovered/r1-comp-rnn-inter-s51200-a1/ckpt-10000.npz",
+  "sha256": "046f4c250d8c7aacc9999437f0223fc029cee6e2cbae6c1644b282e20b9f8010",
+  "step": 10000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "r1-comp-rnn-inter-s51201-a1": {
+  "held_final_pred": "23704651615432070726024507316423723156403214560715473260137640252047635121607245413725602375104615674320367451024332701630725614",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "/home/user/modest-complexity/research/composition-c2/recovered/r1-comp-rnn-inter-s51201-a1/ckpt-10000.npz",
+  "sha256": "d83221c12ff2c2a7d41a7b39218978fedd0f68c78a099361c66f64d30e4a965e",
+  "step": 10000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "r1-comp-rnn-inter-s51202-a1": {
+  "held_final_pred": "23704651615432070736124507316425723156403214560715473260137640252047635121607345413725602375104615674320367451024532701630725614",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "/home/user/modest-complexity/research/composition-c2/recovered/r1-comp-rnn-inter-s51202-a1/ckpt-10000.npz",
+  "sha256": "413f8dd926a736e81eddb8c3b2ec68217e152038ac13bff58115a7e87fd6f79a",
+  "step": 10000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "references": {
+  "p2_sha256": "bedf8ed3b8532f51bc9ed4354431bd5223031d501894416432dc0c0eb9e7defd",
+  "own_one_step_transitions_correct": {
+   "r1-comp-rnn-final-s51200-a1": 4,
+   "r1-comp-rnn-final-s51201-a1": 3,
+   "r1-comp-rnn-final-s51202-a1": 2,
+   "r1-comp-rnn-inter-s51200-a1": 32,
+   "r1-comp-rnn-inter-s51201-a1": 32,
+   "r1-comp-rnn-inter-s51202-a1": 32
+  }
+ }
+}
