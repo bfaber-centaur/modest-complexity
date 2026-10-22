@@ -585,7 +585,7 @@ def followup_figure():
     tra = read_csv(FIGS/'scaf_followup_transient.csv') if (FIGS/'scaf_followup_transient.csv').exists() else []
     rows_k = ['sched', 'held', 'notN', 'L6', 'train', 'readout', 'diag', 'vhat', 'transient']
     titles = dict(sched='intermediate-loss weight; Adam reset at 1k in A′, B′', held='held-out length-3 final accuracy (128 rows)',
-                  notN='held-out ¬N accuracy (42 rows)', L6='frozen: L = 6 (solid marker), L = 4 (open marker), all programs',
+                  notN='held-out ¬N accuracy (42 rows)', L6='frozen at checkpoints: L = 6 (solid), L = 4 (open); lines join checkpoints',
                   train='train final CE', readout='shared readout on training h1 and h2: the lower of the two accuracies',
                   diag='global L2 of the update', vhat='Adam √v̂, median; eps dashed',
                   transient=['update L2 over 1,000–1,500 (logged every 50): reset dashed, carried solid',
@@ -615,8 +615,9 @@ def followup_figure():
                 plot(ax['diag'], 'update_norm'); plot(ax['vhat'], 'sqrt_vhat_median')
                 fr = sorted((r for r in fro if r['arm'] == arm and int(r['seed']) == seed), key=lambda r: r['step'])
                 if fr:
-                    ax['L6'].plot([r['step'] for r in fr], [r['L6'] for r in fr], color=c, ls=ls, lw=1.3, marker=MARKER[seed], ms=4)
-                    ax['L6'].plot([r['step'] for r in fr], [r['L4'] for r in fr], color=c, ls=ls, lw=.8, marker=MARKER[seed], ms=4, mfc='none')
+                    link = dict(ls=ls) if j == 0 else dict(ls='none')   # the zoom shows checkpoints only, no interpolation
+                    ax['L6'].plot([r['step'] for r in fr], [r['L6'] for r in fr], color=c, lw=1.3, marker=MARKER[seed], ms=4, **link)
+                    ax['L6'].plot([r['step'] for r in fr], [r['L4'] for r in fr], color=c, lw=.8, marker=MARKER[seed], ms=4, mfc='none', **link)
         for r in thr:
             if r['measure'] == 'held_final' and r['crossing_step'] != '':
                 ax['held'].scatter([r['crossing_step']], [THRESHOLD], marker='v', s=40, color=FU_STYLE[r['arm']][0], edgecolor='k', lw=.5, zorder=5)
