@@ -9,7 +9,7 @@ import sys
 import tempfile
 import unittest
 import numpy as np
-from experiment import adam, array_sha256, data, forward, init, lossgrad, objective_metrics
+from experiment import adam, array_sha256, data, decay_parts, forward, init, lossgrad, objective_metrics
 from instrumentation import THREAD_VARS
 
 ROOT = Path(__file__).parent
@@ -94,6 +94,90 @@ class OptimizerTests(unittest.TestCase):
             for x, r in zip(w, ref):
                 np.testing.assert_allclose(x, r, rtol=1e-11, atol=1e-14)
         self.assertGreater(max(np.abs(x-init(p, h, 3)[i]).max() for i, x in enumerate(w)), 1e-2)
+
+
+class DecayProjectionTests(unittest.TestCase):
+    """Decoupled decay restricted by a per-unit frequency projection (e4 mechanisms intervention)."""
+    p, h, lr, wd = 31, 8, .001, 1.
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        r = np.random.default_rng(5)
+        self.k, self.live = r.integers(1, self.p//2 + 1, self.h), r.random(self.h) < .8
+        self.file = Path(self.tmp.name)/'projection.npz'
+        np.savez(self.file, k=self.k, live=self.live)
+        self.w = [r.normal(size=(self.p, self.h)), r.normal(size=(self.p, self.h)), r.normal(size=(self.h, self.p))]
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_without_projection_the_step_is_bitwise_unchanged(self):
+        # The pre-patch step, verbatim: decay in place first, then the Adam update.
+        def old(w, g, m, v, t, lr, wd):
+            for i in range(3):
+                m[i] *= .9; m[i] += .1*g[i]
+                v[i] *= .999; v[i] += .001*g[i]**2
+                update = -lr*(m[i]/(1-.9**t))/(np.sqrt(v[i]/(1-.999**t))+1e-8)
+                w[i] *= 1-lr*wd
+                w[i] += update
+        a, b = np.indices((self.p, self.p)).reshape(2, -1); y = (a + b) % self.p
+        w1 = [x.copy() for x in self.w]; w2 = [x.copy() for x in self.w]
+        m1, v1, m2, v2 = ([np.zeros_like(x) for x in self.w] for _ in range(4))
+        for t in range(1, 21):
+            adam(w1, lossgrad(w1, a, b, y)[1], m1, v1, t, self.lr, self.wd, measure=t % 2 == 0)
+            old(w2, lossgrad(w2, a, b, y)[1], m2, v2, t, self.lr, self.wd)
+        for x1, x2 in zip(w1 + m1 + v1, w2 + m2 + v2):
+            np.testing.assert_array_equal(x1, x2)
+
+    def test_projection_keeps_cosine_and_sine_at_k_and_drops_dc(self):
+        P = decay_parts(self.file, self.p, self.h, 'reference')
+        c = 2*np.pi*np.arange(self.p)/self.p
+        u = np.stack([np.cos(k*c + j) + 3. for j, k in enumerate(self.k)], 1)  # any phase at k, plus DC
+        expect = np.where(self.live, u - 3., 0.)
+        np.testing.assert_allclose(P[0](u), expect, atol=1e-12)
+        np.testing.assert_allclose(P[2](u.T), expect.T, atol=1e-12)
+        for x, f in zip(self.w, P):
+            np.testing.assert_allclose(f(f(x)), f(x), atol=1e-12)  # a projection
+
+    def test_restricted_decay_moves_only_its_part(self):
+        # With zero gradient and moments the Adam update is zero, so only the decay acts.
+        P = decay_parts(self.file, self.p, self.h, 'reference')
+        for on, kept, scaled in (('rest', lambda f, x: f(x), lambda f, x: x - f(x)),
+                                 ('reference', lambda f, x: x - f(x), lambda f, x: f(x))):
+            w = [x.copy() for x in self.w]
+            zeros = [np.zeros_like(x) for x in w]
+            adam(w, zeros, [z.copy() for z in zeros], [z.copy() for z in zeros], 1, self.lr, self.wd,
+                 decay_part=decay_parts(self.file, self.p, self.h, on))
+            for x0, x1, f in zip(self.w, w, P):
+                np.testing.assert_allclose(kept(f, x1), kept(f, x0), atol=1e-12)
+                np.testing.assert_allclose(scaled(f, x1), (1 - self.lr*self.wd)*scaled(f, x0), atol=1e-12)
+
+    def test_short_run_records_and_checks_the_projection(self):
+        digest = hashlib.sha256(self.file.read_bytes()).hexdigest()
+        env = {**os.environ, **{k: '1' for k in THREAD_VARS}}
+        def run(name, expect):
+            out = Path(self.tmp.name)/name
+            return out, subprocess.run([sys.executable, str(ROOT/'experiment.py'), '--out', str(out), '--hidden', str(self.h),
+                                        '--steps', '20', '--log-every', '10', '--checkpoint-every', '10', '--diagnostics', 'none',
+                                        '--data-seed', '31000', '--init-seed', '30000', '--control-seed', '32000', '--purpose', 'test',
+                                        '--decay-projection', str(self.file), '--decay-on', 'rest',
+                                        '--expect-decay-projection-sha256', expect], env=env, capture_output=True)
+        out, proc = run('restricted', digest)
+        self.assertEqual(proc.returncode, 0, proc.stderr.decode()[-500:])
+        cfg = json.loads((out/'config.json').read_text())
+        self.assertEqual((cfg['decay_projection_sha256'], cfg['decay_on']), (digest, 'rest'))
+        with np.load(out/'data.npz') as d:
+            tr = d['train']; a, b, y = d['a'][tr], d['b'][tr], d['y'][tr]
+        w = init(self.p, self.h, 30000)
+        m = [np.zeros_like(x) for x in w]; v = [np.zeros_like(x) for x in w]
+        part = decay_parts(self.file, self.p, self.h, 'rest')
+        for t in range(1, 21):
+            adam(w, lossgrad(w, a, b, y)[1], m, v, t, self.lr, self.wd, decay_part=part)
+        with np.load(out/'checkpoint_000020.npz') as z:
+            for x, key in zip(w + m + v, ['U', 'V', 'W', 'mU', 'mV', 'mW', 'vU', 'vV', 'vW']):
+                np.testing.assert_array_equal(x, z[key])
+        _, proc = run('restricted-bad', '0'*64)
+        self.assertNotEqual(proc.returncode, 0)
 
 
 class ShortRunTests(unittest.TestCase):
