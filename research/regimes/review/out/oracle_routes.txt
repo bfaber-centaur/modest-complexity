@@ -1,0 +1,24 @@
+PASS domain is all 1024 distinct ±1 rows of length 10
+PASS lane labels equal parity of positions 0-2 (plain Python)
+PASS lane s equals position 3
+PASS a and c are bijections onto the 8 rule patterns and 64 contexts
+PASS index(a, c, s) addresses the matching row
+PASS 256 training bases come from exactly 32 contexts × all 8 rule patterns
+PASS held-out = every input whose context is not a training context (512 inputs)
+PASS no base crosses the split under any condition or s value
+PASS held-out set closed under flipping s and under flipping any rule bit
+PASS reliable / reversed environments are s = y / s != y on held-out bases, 256 each
+PASS rho1: target = parity, realized rho = 1-0/32 exactly, labels and s 128/128, 0 exceptions per rule pattern
+PASS rho31of32: target = parity, realized rho = 1-1/32 exactly, labels and s 128/128, 1 exceptions per rule pattern
+PASS rho15of16: target = parity, realized rho = 1-2/32 exactly, labels and s 128/128, 2 exceptions per rule pattern
+PASS rho7of8: target = parity, realized rho = 1-4/32 exactly, labels and s 128/128, 4 exceptions per rule pattern
+PASS rho3of4: target = parity, realized rho = 1-8/32 exactly, labels and s 128/128, 8 exceptions per rule pattern
+PASS rho1of2: target = parity, realized rho = 1-16/32 exactly, labels and s 128/128, 16 exceptions per rule pattern
+PASS exceptions nested across rho
+PASS conditions differ only in s on exception bases
+PASS shortcut_only: rho1of2 inputs, target = s, s independent of y and of each rule bit
+PASS each irrelevant bit is exactly independent of y on the training set
+INFO rho1of2: exceptions per training context range 2-6 of 8 (all-or-none would make exception status a context feature)
+PASS rho7of8: lane metrics equal a separate calculation on random margins (14 metrics)  [unmatched: lane [], mine []]
+PASS shortcut_only: lane metrics equal a separate calculation on random margins (14 metrics)  [unmatched: lane [], mine []]
+ALL PASS

@@ -36,3 +36,23 @@ All four regimes need the same thing: a small classifier on binary or one-hot in
 - **Follow-up.** A lane may run its one adaptive follow-up without waiting for the coordinator, once M2 is pushed and the follow-up's motivation and prediction are committed.
 - **Merging.** The coordinator merges lane PRs into `swarm/regimes` under Bobby's standing approval to integrate worker PRs at its own judgment. It merges after review, or with "review pending" in INDEX.
 - **Final PR.** The expedition's final PR for Bobby will be from `swarm/regimes` and will not be merged by the coordinator.
+
+## D6 (2026-10-22) Reviewer's shared-code concerns: no mid-flight change to `common/`
+
+The reviewer passed `common/` at `0c7bd19` (PR #39, merged as `c6b8bc7`) with three usage concerns.
+- **C0.3, relative `--root` outside the repository root.** It is real but unreachable with PLAN §3's commands, which run from the root. Changing `common/` now would move every lane's base, so it is not fixed in r1. The rule instead: run `run_jobs.py` from the repository root.
+- **C0.1, a head that is trainable but absent from targets.** Lanes must exclude a head from `trainable`, or reset the optimizer with wd = 0, before claiming that the head is untouched.
+- **C0.2, unfreeze without reset.** Lanes must call `adam_state` at any unfreeze and say so in the config.
+
+These two are forwarded to R2 (frozen features) and R3 (phases, readouts). R3's M0 design (`3369031`) already satisfies both for its initial comparison.
+
+## D7 (2026-10-22) C0.1 and C0.2 go through the reviewer, not lane messages
+
+This supersedes D6's "forwarded to R2 and R3". The reviewer checks C0.1 and C0.2 per lane (REVIEW.md §1–§4), so no separate lane message was sent. Both initial designs already avoid the patterns:
+- R2 (`db574da`): reset at every phase start; frozen readouts train only `new`; no unfreeze.
+- R3 (`3369031`): reset at every phase; the inactive head is excluded from `trainable`; wd 0.
+
+All four M0 designs had arrived by 02:42 UTC ([MILESTONES.md](MILESTONES.md)). None needed a coordinator change. Recipes differ across lanes on purpose, each lane's own choice:
+- R1 uses wd 0.1; R2, R3 and R4 use wd 0.
+- R2 uses lr 3e-3.
+Cross-regime comparisons of training speed are therefore not meaningful.

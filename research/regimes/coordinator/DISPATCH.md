@@ -28,12 +28,12 @@ Each text is the template below with ROLE, FILE and DIR filled in from the table
 
 ## Thread and branch assignments
 
-Filled in after launch.
+All five were started at 02:34 UTC with these launch texts and Bobby's request attached. Branches are filled in as the workers push.
 
 | # | thread id | designated branch |
 |---|---|---|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTU8s1uzfPigWN1q5DxvtmMS` | `claude/project-thread-xb3nfz` |
+| 2 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTHrQdbqxgJH98bLPYsM9cdd` | `claude/project-thread-y589c6` |
+| 3 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTATNHjgSg2dD5z5YPwf1EmL` | `claude/project-thread-fbrzec` |
+| 4 | `cmsg_01APdvkRg6kVtZy2e9JoDcdT7BUSAAopwVV2LKJYAZoQTB` | `claude/project-thread-d3kg6e` |
+| 5 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTAKMwUsYk2djqx7Pz1rukHx` | `claude/project-thread-wvait2` |
