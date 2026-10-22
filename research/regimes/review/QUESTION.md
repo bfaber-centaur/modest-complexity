@@ -139,3 +139,21 @@ Each status names what it affects.
   - In between is reported as partial. I also report whether V3 read off h2 decodes step2 (a code shared across positions arising anyway).
 - *Also checked without prediction:* every NOTE number, the 73% and ~35% base rates, the interchange pair selection, and the follow-up's pre-registration order.
 - *Budget.* 4 runs of about 40 s with 2 workers, about 1.5 min.
+
+**2026-10-22 03:24, R4 M4 (`d2f154f`), before computing.**
+- *Target.* NOTE follow-up item 4 and Limitations: "the slowing tracks the optimizer stalling". The evidence cited is the median √v̂ falling to about 1e-14, below Adam's eps = 1e-8, and 15–23% of training rows reaching float64 saturation.
+- *Counterexample.* The displacement collapse may not need the optimizer at all. With √v̂ ≪ eps, Adam's step is about (lr/eps)·m̂, which is gradient descent with a fixed step. The collapse would then be the gradient's own decay as the smallest training margins grow, a property of the loss and data. The median coordinate may also not be the one that moves the weights. Separately, saturated rows (margin > 36.7) may carry a negligible share of the gradient however they round.
+- *Test (analysis only).* Use the published Adam states (`step20000.npz`, `final.npz` at 200k) of every follow-up run. For each, compute:
+  - the next Adam step;
+  - the same step with eps = 0;
+  - the GD-like step (lr/eps)·m̂;
+  - the share of the step's squared norm carried by coordinates with √v̂ ≥ eps;
+  - the share of the exact-arithmetic gradient weight Σ(1 − p_target) carried by saturated rows. 1 − p is computed as 1/(1 + e^m), which does not round to 0.
+- *Predictions if the NOTE's reading holds:*
+  - at 200k, ≥ 95% of the step's squared norm is on coordinates with √v̂ < eps;
+  - the step is within 10% of (lr/eps)·m̂;
+  - the eps = 0 step is ≥ 100× larger.
+  If so, the stall is the eps regime acting on a decaying gradient, and an eps-free or normalized optimizer would not stall.
+- *Prediction if the counterexample holds:* ≥ 25% of the step's squared norm is on coordinates with √v̂ ≥ eps at 200k. The collapse is then not set by eps.
+- *Saturation.* I predict that saturated rows carry < 1e-4 of Σ(1 − p) at 200k, so saturation is not a material cause. ≥ 1% would make it one.
+- *Also checked without prediction.* That step20000.npz equals the initial final.npz, that the a1 partials equal the a2 reruns, that the registry handles the interruption honestly, that every follow-up table number matches, and whether the figures use flip rates as independent evidence.
