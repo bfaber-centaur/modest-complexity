@@ -686,6 +686,35 @@
    ],
    "timeout": 180,
    "purpose": "Part B (QUESTION.md): new task ops63001-ls63103, tied/final, init 63201"
+  },
+  {
+   "run_id": "c2-gen-frozen-rep-a1",
+   "argv": [
+    "research/composition-c2/generalization/gen_eval.py",
+    "--out",
+    "{out}",
+    "--run-dirs",
+    "research/composition-c2/generalization/runs/c2-gen-inter-ops63000-ls63100-s63200-a1",
+    "research/composition-c2/generalization/runs/c2-gen-final-ops63000-ls63100-s63200-a1",
+    "research/composition-c2/generalization/runs/c2-gen-inter-ops63000-ls63100-s63201-a1",
+    "research/composition-c2/generalization/runs/c2-gen-final-ops63000-ls63100-s63201-a1",
+    "research/composition-c2/generalization/runs/c2-gen-inter-ops63000-ls63101-s63200-a1",
+    "research/composition-c2/generalization/runs/c2-gen-final-ops63000-ls63101-s63200-a1",
+    "research/composition-c2/generalization/runs/c2-gen-inter-ops63000-ls63101-s63201-a1",
+    "research/composition-c2/generalization/runs/c2-gen-final-ops63000-ls63101-s63201-a1",
+    "research/composition-c2/generalization/runs/c2-gen-inter-ops63001-ls63102-s63200-a1",
+    "research/composition-c2/generalization/runs/c2-gen-final-ops63001-ls63102-s63200-a1",
+    "research/composition-c2/generalization/runs/c2-gen-inter-ops63001-ls63102-s63201-a1",
+    "research/composition-c2/generalization/runs/c2-gen-final-ops63001-ls63102-s63201-a1",
+    "research/composition-c2/generalization/runs/c2-gen-inter-ops63001-ls63103-s63200-a1",
+    "research/composition-c2/generalization/runs/c2-gen-final-ops63001-ls63103-s63200-a1",
+    "research/composition-c2/generalization/runs/c2-gen-inter-ops63001-ls63103-s63201-a1",
+    "research/composition-c2/generalization/runs/c2-gen-final-ops63001-ls63103-s63201-a1",
+    "--step",
+    "10000"
+   ],
+   "timeout": 300,
+   "purpose": "Part B: frozen length 1-6 evaluation of the 16 replication runs (committed ckpt-10000) on their own tasks; no training"
   }
  ]
 }
