@@ -35,6 +35,15 @@ P2_RUN = 'r1-comp-interp-s51200-a1'
 P2_SHA = 'bedf8ed3b8532f51bc9ed4354431bd5223031d501894416432dc0c0eb9e7defd'  # r1 MANIFEST.json, RECOVERY.json
 
 
+def fwd(p, ops, s):
+    """c2rnn.forward for a tied/tied model, any length. c2rnn's default step map is 1..L, which
+    fails its own range check past L = 3 even when both groups are tied (pin note in README); tied
+    groups ignore the map, so the explicit map [1, 2, 3, 3, ...] that test_c2 exercises is passed."""
+    assert c2rnn.scheme(p) == dict(transition=True, readout=True), 'tied/tied only'
+    L = np.asarray(ops).reshape(len(ops), -1).shape[1]
+    return c2rnn.forward(p, ops, s=s, step_map=[min(t, c2task.TRAIN_LENGTH) for t in range(1, L+1)])
+
+
 def recovered_entries(step=10000):
     """The six tied/tied r1 runs (inter, final) from recovered/, hashes from RECOVERY.json."""
     rec = json.loads((C2/'recovered'/'RECOVERY.json').read_text())['files']
@@ -93,7 +102,7 @@ def evaluate(p, T):
     for L in range(1, MAX_LEN+1):
         progs = c2task.programs(L)
         d = c2task.rows(P, progs)
-        ok = c2rnn.forward(p, d['ops'], s=d['s'])[1][-1].argmax(1) == d['states'][:, -1]
+        ok = fwd(p, d['ops'], s=d['s'])[1][-1].argmax(1) == d['states'][:, -1]
         final_acc[L] = float(ok.mean())
         add(L, 'all', ok, len(progs))
         okp = ok.reshape(len(progs), c2task.N_SYM)  # rows are program-major, starts 0..7 within
@@ -102,7 +111,7 @@ def evaluate(p, T):
             add(3, 'train programs', okp[is_tr].ravel(), int(is_tr.sum()))
             add(3, 'held-out programs', okp[~is_tr].ravel(), int((~is_tr).sum()))
             dh = c2task.rows(P, held)
-            okh = c2rnn.forward(p, dh['ops'], s=dh['s'])[1][-1].argmax(1)
+            okh = fwd(p, dh['ops'], s=dh['s'])[1][-1].argmax(1)
             checks['held_final_pred'] = ''.join(map(str, okh))
             okh = okh == dh['states'][:, -1]
             add(3, 'held-out N', okh[nbr], len(held)); add(3, 'held-out notN', okh[~nbr], len(held))
@@ -128,7 +137,7 @@ def step_analysis(p, T, final_acc, checks):
     """Per-step measures on all length-6 rows (QUESTION.md measures 3-4)."""
     P = T['P']
     d = c2task.rows(P, c2task.programs(MAX_LEN))
-    H, logits = c2rnn.forward(p, d['ops'], s=d['s'])
+    H, logits = fwd(p, d['ops'], s=d['s'])
     pred = np.stack([z.argmax(1) for z in logits], 1)  # (n, 6)
     ok = pred == d['states']
     acc = ok.mean(0)
@@ -137,7 +146,7 @@ def step_analysis(p, T, final_acc, checks):
     first = np.where(ok.all(1), 0, (~ok).argmax(1) + 1)  # 0 = never wrong
     # Drift: centroids of training-row h3 by true final symbol.
     tr = c2task.rows(P, T['train'])
-    h3 = c2rnn.forward(p, tr['ops'], s=tr['s'])[0][3]
+    h3 = fwd(p, tr['ops'], s=tr['s'])[0][3]
     cent = np.stack([h3[tr['states'][:, -1] == y].mean(0) for y in range(c2task.N_SYM)])
     ref_norm = np.median(np.linalg.norm(h3, axis=1))
     ref_dist = np.median(np.linalg.norm(h3 - cent[tr['states'][:, -1]], axis=1))
@@ -171,7 +180,7 @@ def references(T, entries):
         p, _, _ = load_checked(e['path'], e['sha256'])
         s, o = np.repeat(np.arange(c2task.N_SYM), c2task.N_OP), np.tile(np.arange(c2task.N_OP), c2task.N_SYM)
         F = np.zeros((c2task.N_OP, c2task.N_SYM), int)
-        F[o, s] = c2rnn.forward(p, o[:, None], s=s)[1][0].argmax(1)
+        F[o, s] = fwd(p, o[:, None], s=s)[1][0].argmax(1)
         one_step[e['run_id']] = F
     for L in range(1, MAX_LEN+1):
         progs = c2task.programs(L)

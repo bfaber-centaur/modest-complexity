@@ -1,0 +1,2 @@
+{"time": "2026-10-22T04:07:29+00:00", "host": "vm", "session_label": "c2-gen-cloud-1", "run_id": "c2-gen-frozen-orig-a1", "status": "running", "command": ["/home/user/modest-complexity/.venv/bin/python", "research/composition-c2/generalization/gen_eval.py", "--out", "runs/c2/c2-gen-frozen-orig-a1", "--recovered", "--references"], "timeout": 300}
+{"time": "2026-10-22T04:07:29+00:00", "host": "vm", "session_label": "c2-gen-cloud-1", "run_id": "c2-gen-frozen-orig-a1", "status": "failed", "reason": "exit code 1", "returncode": 1, "wall_seconds_including_startup": 0.165}
