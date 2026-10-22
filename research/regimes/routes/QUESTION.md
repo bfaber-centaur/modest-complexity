@@ -117,6 +117,37 @@ The reference signatures are the following.
 - **Timeouts.** About 3× the calibrated time, at most 900 s. Capped and failed runs are kept and shown.
 - **Follow-up.** One adaptive follow-up, chosen after the first figure: longer training or width, in whichever ρ range the figure shows to be unsettled. Its motivation and prediction go under "Follow-up" below and are pushed before it runs.
 
-## Follow-up
+## Follow-up (written after M2 at f0f68f7, before any follow-up run)
 
-Not yet chosen.
+**Motivation.** The first figure shows that route dependence is still moving at T = 20,000 for ρ = 31/32, 15/16 and 7/8.
+- **Rule growth comes late.** Every ρ > 1/2 fits its training set by 366–603 updates. The rule's contribution grows mostly after that, so the reliability "threshold" at T depends on T.
+- **What the follow-up tests.** Whether the rule keeps taking over with longer training, at the reliabilities where it had not yet won, and whether ρ = 1 stays pure shortcut.
+
+**A confounder found before running.** The step-20,000 checkpoints of seed 54200 (ρ = 1, 31/32, 15/16, 7/8, 1/2) show the following.
+- **Gradients have fallen below Adam's denominator.**
+  - The median current |gradient| is 1e-11 to 2e-10.
+  - The median √v̂ is 1.5–2.8e-8, close to Adam's eps = 1e-8.
+  - So late Adam steps are already much smaller than lr. Gradients decay faster than v̂ forgets them (β2 = 0.999), and eps adds to the denominator.
+- **The float64 limit is near.** The largest training margin is 36.2, just below the point (about 36.7) where float64 rounds the target probability to exactly 1 and the target-logit gradient becomes exactly 0. No training row is saturated yet.
+- **Consequence.** Beyond T, a flattening curve could come from the optimizer and arithmetic slowing down rather than from a settled preference.
+
+**Design**
+- **Runs.** The same recipe and seeds, with 10× longer training (200,000 updates), for ρ = 1, 31/32 and 15/16 × init seeds 54200–54202. That is 9 runs, IDs `r1-route-long-<cond>-s<seed>-a1`, with 150 log points.
+- **Read-only diagnostics** added to `train.py` and logged at each step:
+  - the parameter norm;
+  - the net parameter displacement per update since the previous log step;
+  - the minimum and median training margin;
+  - the fraction of training rows with float64-saturated target probability;
+  - the median √v̂.
+- **Bitwise check.** Each run saves `step20000.npz`, which must equal the initial run's `final.npz` parameters bitwise. That checks that the added logging did not change training.
+- **Cost.** About 140 s per run, so about 10.5 min at two at a time. The lane total would then be about 13.5 of 25 min.
+
+**Predictions** (stated before running)
+1. **ρ = 15/16.** The rule share Δrule / (|Δs| + |Δrule|) keeps rising past 0.5 (it was 0.40–0.48 at T). Reversed accuracy crosses 0.5 for all three seeds before 200,000 updates, unless the numerics stall first (prediction 4).
+2. **ρ = 31/32.** The rule share keeps rising from 0.10–0.16, but reversed accuracy stays below 0.5 at 200,000. Low confidence.
+3. **ρ = 1.** The rule share stays below 0.05, because without exceptions no training example's loss is reduced more by the rule than by s.
+4. **Numerics.** The displacement per update falls by at least 10× between 20,000 and 200,000. The saturated fraction becomes non-zero, so the curves flatten on the log axis.
+   - Any plateau after the displacement has collapsed is reported as optimizer- and precision-limited, not as a settled route preference.
+   - Distinguishing observation: a rule share that still rises while the displacement per update is still near its value at T supports continued takeover. A rule share that freezes as the displacement collapses is uninformative about the asymptote.
+
+**Separation.** The follow-up's results go in a separate figure (`figures/followup_long_*`) and a separate NOTE.md section. They are never merged into the initial-comparison figure.
