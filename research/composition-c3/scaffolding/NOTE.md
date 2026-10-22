@@ -96,6 +96,7 @@ These hold for this task, recipe, horizon and seeds.
 **Design.** Declared in QUESTION.md's addendum (84dc657) before any follow-up run, and approved by the coordinator after the first figure. Pin `82cef77` (DECISIONS D10, reviewer PASS, REVIEW.md §4).
 - **Arms.** A′ keep and B′ drop are each run from r1 tied/inter `ckpt-1000`. A fresh Adam state (both moments and the bias-correction count) is set just before the update at 1,000, and the weights are carried.
 - **Comparison.** Each is compared at equal total updates with the reused carried arms A and B, and with D. Six runs, none failed: 16.8 of 20 min (README).
+- **Figure note.** In [figures/scaf_followup.png](figures/scaf_followup.png), the frozen-length panel's title says lines join checkpoints; that holds for the full-range panel. The 900–6,000 zoom draws the 1k and 3k checkpoints as markers only (coordinator note, reviewer's optional nit, REVIEW §6).
 
 **Checks** (`followup_checks.json`).
 - **The reused carried arms are matched controls.** Under the re-pin with no reset, the 1k→3k check runs reproduce A in every r1 key at every logged row (three seeds). They also reproduce B in every key, `diag` included, with identical `ckpt-3000` arrays (s51200).
@@ -116,7 +117,7 @@ These hold for this task, recipe, horizon and seeds.
 | B′ drop, reset | 12,250 / 14,100 / 16,350 | 12,550 / 17,950 / 18,600 |
 
 - **At the fixed times**, B′ − B is ≥ 0 for every measure and seed, and positive on every measure at 10k. On held-out L3 at 10k it is +0.055 / +0.125 / +0.125, and on L6 at 20k it is +0.25 / +0.33 / +0.18.
-- **A′ − A** is between −0.06 and +0.09 on every measure and time.
+- **A′ − A** is between −0.06 and +0.09 on every measure at the fixed times from 10k on (keep has no 3k checkpoint; reviewer nit N-Y5, applied by the coordinator).
 - **Their difference** on L6 at 20k is +0.25 / +0.31 / +0.18.
 - **Ordering.** B′ still lags A and A′ in every seed. D is far below all four.
 

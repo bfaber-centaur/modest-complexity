@@ -1,6 +1,6 @@
 # Composition follow-ups c3: synthesis
 
-**Status.** Final draft for Bobby. Every lane result it cites is reviewed (REVIEW §1–§5). The reviewer has not read this synthesis itself; see *Not independently checked* at the end.
+**Status.** Final draft for Bobby. Every lane result it cites is reviewed (REVIEW §1–§5), and the reviewer passed this synthesis with nits, which are applied here (REVIEW §6).
 
 **Scope of every claim.**
 - **Task.** The original task and split (`ops51000-ls51100`), with three paired init seeds (51200–51202). The correction follow-up adds eight tied/final bases from four new task draws.
@@ -12,7 +12,7 @@ Lane notes: [correction](../correction/NOTE.md), [scaffolding](../scaffolding/NO
 
 ## 1. What an oracle-free correction achieved
 
-**Setting.** The bases are the frozen 10k checkpoints of the two weaker c2 arms: per-step readout with intermediate labels, and tied/final.
+**Setting.** The bases are the frozen 10k checkpoints of the two weaker c2 arms: per-step readout with intermediate labels (the reviewer's r1 arm; REVIEW.md), and tied/final.
 - A correction is applied to h_2 only, followed by the unchanged step 3.
 - Arms: identity (A); a small map trained toward the true symbol's training centroid (B); the same map trained to reconstruct h_2 (C); a linear decoder followed by the decoded symbol's centroid (D); and the true symbol's centroid, an oracle reference (E).
 - At evaluation, B, C and D see only h_2.
@@ -33,7 +33,7 @@ Lane notes: [correction](../correction/NOTE.md), [scaffolding](../scaffolding/NO
   - The step that fails is reading the symbol across prefixes. The decoder reads eval-prefix symbols at 0.53–0.66 (per-step) and 0.22–0.31 (tied/final), against 1.00 on fit prefixes.
   - The centroids are not the problem: E uses the same fit centroids and stays at 0.84–1.00.
   - B is not purely a decoder plus a centroid (reviewer C6), but it stays below A.
-- **Robustness (reviewer).** The gain bins hold across three other map draws and three other probe draws (CX-C1). A validation-tuned ridge decoder recovers at most 6% of the grouped gain (CX-C2).
+- **Robustness (reviewer).** The gain bins hold across three other map draws and three other probe draws (CX-C1). A validation-tuned ridge decoder recovers at most 6% of the grouped gain on the 11 tied/final bases (CX-C2).
 - **Bound.** Each grouped fit has 64 prefixes (8 per symbol) in a 128-dimensional state. So the failure bounds *this adapter under this exposure*, not whether the symbol is linearly available. The per-step bases' own V2, trained on all 128 prefixes, reads every prefix's symbol at 1.00 (a post-hoc reference, not an arm). With 16 prefixes per symbol at depth 2, no grouped split can fit on many more.
 
 **Reading.**
@@ -60,13 +60,13 @@ Lane notes: [correction](../correction/NOTE.md), [scaffolding](../scaffolding/NO
 - **Even 1,000 updates of intermediate labels made a lasting difference.** After S = 1k, drop and taper (1,000 full updates, then a 2,000-update taper) reach keep's 50k endpoint in all three seeds, including lengths 4–6. D does not within 50k. In c2, D reached 0.90–0.96 on held-out length 3 by 100k with lengths 4–6 at 0.06–0.14 (D2).
 - **The cost of removing them was time.** At S = 1k, held-out length 3 first holds ≥ 0.95 at 14,600–20,450 updates (drop) and 12,050–21,400 (taper), against keep's 7,700–9,150. The largest gaps fall at 10k–20k: drop s51202 at 10k is −0.39 on held-out and −0.86 on ¬N. At S = 10k, L6 lags keep by up to 0.34 at 20k and closes by 40k–50k.
 - **Previously supervised states stayed readable without their labels.** The shared readout on h1 and h2 stays at or above 0.92 on training rows after the switch (1.0 throughout after S = 10k). Frozen L1–L2 is ≥ 0.95 at every fixed time and 1.0 at 50k. D's readout, never trained on h1 or h2, reads them near chance.
-- **Reviewer counterexamples.** CX-S1 tested whether length-3 retention at S = 10k could hide a loss of L6 or of the h1/h2 readout; it failed (L6 within 0.0023 of keep, readout at 1.0), so persistence stands. CX-S2 held for the total parameter norm: after S = 10k it ends 4.1–4.3% below keep. But the shrinkage is in the start embedding (Ws at 0.68 of keep's norm, bs at 0.71–0.74) and the readout bias (0.55–0.78), not the readout V (0.94–0.95), and the shared transition A grows 4–5%. This is a post-hoc reviewer observation, not a mechanism.
+- **Reviewer counterexamples.** CX-S1 tested whether length-3 retention at S = 10k could hide a loss of L6 or of the h1/h2 readout; it failed (L6 within 0.0023 of keep, readout at 1.0), so persistence stands. CX-S2 held for the total parameter norm: after S = 10k it ends 4.1–4.3% below keep. But the shrinkage is in the start embedding (Ws at 0.68–0.69 of keep's norm, bs at 0.71–0.74) and the readout bias (0.55–0.78), not the readout V (0.94–0.95), and the shared transition A grows 4–5%. These group ratios were part of the pre-registered counterexample, whose "V shrinks most" half failed. It is a reviewer counterexample, not a mechanism.
 - **Taper and drop end the same.** At S = 1k the taper crosses earlier in two seeds and later in one.
 - **Optimizer.** The update norm falls after the switch. The eps regime begins at about 29k in every branch, as in keep and D.
 - **Three of the lane's six predictions failed.** It expected forgetting of the step-1/2 readout and of length transfer after S = 10k, and a stall short of keep after S = 1k. None happened by 50k.
 - **Checks.** Every branch joins r1 tied/inter exactly at S. The logged schedules and exposures match the declared ones. The frozen evaluation reproduces c2's published lengths table for keep and D. The reviewer recomputed every value from its own forward pass and passed the lane (REVIEW §3).
 
-**Follow-up: a fresh optimizer state at the switch.** A drop changes the loss, but Adam's moments carried from three-head training persist for about a thousand updates (b2 = 0.999). So the S = 1k branches were rerun from the same checkpoints with a fresh Adam state just before the update at 1,000 and the weights carried: A′ keep and B′ drop, three seeds each (pin `82cef77`, D10). They are compared with the carried A and B at equal updates. Under the new pin with no reset, the reused carried runs reproduce A and B row for row, so they are matched controls.
+**Follow-up: a fresh optimizer state at the switch.** A drop changes the loss, but Adam's moments carried from three-head training persist for about a thousand updates (b2 = 0.999). So the S = 1k branches were rerun from the same checkpoints with a fresh Adam state just before the update at 1,000 and the weights carried: A′ keep and B′ drop, three seeds each (pin `82cef77`, D10). They are compared with the carried A and B at equal updates. Under the new pin with no reset, check runs reproduce A row for row in all three seeds, and B in s51200 (including `ckpt-3000`, bitwise), so the reused carried runs serve as matched controls.
 
 | first of five logged evaluations ≥ 0.95, held-out length 3 | s51200 | s51201 | s51202 |
 |---|---|---|---|
@@ -107,16 +107,13 @@ All runs are CPU only, on the lanes' own hosts, with no rented compute. Wall tim
 
 | lane | runs | failed | wall time (budget) |
 |---|---|---|---|
-| learned correction | 6 (calibration, main and grouped, F2, post-hoc) | 0 | about 1.1 min (10 + 5) |
+| learned correction | 6 (calibration, main and grouped, F2, post-hoc) | 0 | about 1.2 min (10 + 5) |
 | temporary scaffolding | 24 (2 calibration, 12 branches, 4 matched-control checks, 6 reset runs) | 0 | 27.2 + 16.8 min (40 + 20) |
-| reviewer | 16 so far | 1 (`c3-rev-corr-a1`, the reviewer's own panel mapping; rerun as `-a2`) | 11.5 min so far (20) |
+| reviewer | 16 | 1 (`c3-rev-corr-a1`, the reviewer's own panel mapping; rerun as `-a2`) | 11.5 min (20), including reads-only checks run outside `run_jobs` |
 | coordinator | 3 (1 verification, 2 calibration) | 0 | about 1 min (10) |
 
 Every run is in its lane's `plan.json` and append-only `registry.jsonl`, including the failed one. Training updates: 534k in the 12 scaffolding branches, 294k in the reset runs, plus 8k in the checks.
 
-## Not independently checked
+## Review of this synthesis
 
-- **This synthesis text.** The coordinator wrote it from the reviewed lane notes and REVIEW §1–§5. The reviewer was ready to read it, but the coordinator's thread reached its daily cross-thread message limit before the request could be sent.
-- **Wording applied after review.** The reviewer's own remedies were applied without a second read: the scaffolding lane's commit `511a381` (W-F1, W-F2, and the follow-up figure's zoom showing frozen checkpoints without joining lines; no numbers changed; merged by the coordinator from PR #69, which the lane then closed as superseded) and the coordinator's scope fix to the correction NOTE's 13–33% sentence.
-- **A call-site fix.** Re-pin `82cef77` added an argument to `c3train.check_source`, which broke the correction lane's `corr_core.load_base` at the integrated head. The correction runs were made at `be41d16` and are unaffected. The coordinator fixed the call (`5b92e1b`). At the integrated head `test_corr.py` passes, and `load_base` reproduces every recorded base-check field for all 14 bases. The reviewer's `rev_c3pin.py` uses the `be41d16` signature and runs at that commit.
-
+The reviewer checked this synthesis at `05515a2` (REVIEW §6): PASS with nits N-Y1 to N-Y5, all applied. Its counterexample CX-SY1 failed. The reviewer also checked the three items earlier listed here as not independently checked: the scaffolding lane's wording commit `511a381`, the correction NOTE's scope fix `285b3dd`, and the `corr_core` call-site fix `5b92e1b` for re-pin `82cef77`. All three pass. REVIEW §6 also records two misses of the reviewer's own, both since corrected.
