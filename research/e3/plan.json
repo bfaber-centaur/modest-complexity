@@ -373,9 +373,7 @@
    "split_sha256": "b02fa6ed552cf23de6ae07a4763613a5e1d7184aba30c086e4f3a5faa3cb1f61",
    "queue_position": 24,
    "reason": "e3 dynamics initial experiment (DECISIONS D4): ladder d41001, nominal share 45%, 422 training pairs; evaluation pairs research/e3/data/eval-d41001.npz."
-  }
- ],
- "reserved": [
+  },
   {
    "run_id": "e3-me-keep-w128-i30000-a1",
    "owner": "mechanisms",
@@ -396,8 +394,9 @@
    "source_checkpoint_sha256": "326cfc1ec1583d94993b2b3b289cd3bb9081f64a0ece5060a817375aadd111b4",
    "init_age": 50000,
    "init_weights": "research/e3/mechanisms/starts/e3-me-keep-w128-i30000-a1.npz",
-   "init_weights_sha256": "PENDING",
-   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights."
+   "init_weights_sha256": "9cb87296954370e1dd4ad3d590881ceb3fe47ca18e1e34daaf4b44624a1fe066",
+   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights.",
+   "activated": "2026-10-22"
   },
   {
    "run_id": "e3-me-filt-w128-i30000-a1",
@@ -419,8 +418,9 @@
    "source_checkpoint_sha256": "326cfc1ec1583d94993b2b3b289cd3bb9081f64a0ece5060a817375aadd111b4",
    "init_age": 50000,
    "init_weights": "research/e3/mechanisms/starts/e3-me-filt-w128-i30000-a1.npz",
-   "init_weights_sha256": "PENDING",
-   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights."
+   "init_weights_sha256": "88a1e21918f4153804afc6acf8706836eb5bf29b407d30ad0e0d2584c78d257e",
+   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights.",
+   "activated": "2026-10-22"
   },
   {
    "run_id": "e3-me-sham-w128-i30000-a1",
@@ -442,9 +442,10 @@
    "source_checkpoint_sha256": "326cfc1ec1583d94993b2b3b289cd3bb9081f64a0ece5060a817375aadd111b4",
    "init_age": 50000,
    "init_weights": "research/e3/mechanisms/starts/e3-me-sham-w128-i30000-a1.npz",
-   "init_weights_sha256": "PENDING",
+   "init_weights_sha256": "92beb5467ab5e2506c2a7f64f9f1497e2b817e849312aec76a5a85708d5a71c8",
    "sham_seed": 37000,
-   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights."
+   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights.",
+   "activated": "2026-10-22"
   },
   {
    "run_id": "e3-me-keep-w128-i30001-a1",
@@ -466,8 +467,9 @@
    "source_checkpoint_sha256": "a96bc6e275fcbf7aae74163418ce9a1147249d0b746b1edddf8f9ddeaa545ad5",
    "init_age": 50000,
    "init_weights": "research/e3/mechanisms/starts/e3-me-keep-w128-i30001-a1.npz",
-   "init_weights_sha256": "PENDING",
-   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights."
+   "init_weights_sha256": "15c51c5739cd197233f5b9bcad7da02bbd97958b596d7a66016952e6c353eaa2",
+   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights.",
+   "activated": "2026-10-22"
   },
   {
    "run_id": "e3-me-filt-w128-i30001-a1",
@@ -489,8 +491,9 @@
    "source_checkpoint_sha256": "a96bc6e275fcbf7aae74163418ce9a1147249d0b746b1edddf8f9ddeaa545ad5",
    "init_age": 50000,
    "init_weights": "research/e3/mechanisms/starts/e3-me-filt-w128-i30001-a1.npz",
-   "init_weights_sha256": "PENDING",
-   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights."
+   "init_weights_sha256": "634eb302acc8c1d5921d595cbb99fae73d81fdbe7c87132187c184489ee824df",
+   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights.",
+   "activated": "2026-10-22"
   },
   {
    "run_id": "e3-me-sham-w128-i30001-a1",
@@ -512,9 +515,10 @@
    "source_checkpoint_sha256": "a96bc6e275fcbf7aae74163418ce9a1147249d0b746b1edddf8f9ddeaa545ad5",
    "init_age": 50000,
    "init_weights": "research/e3/mechanisms/starts/e3-me-sham-w128-i30001-a1.npz",
-   "init_weights_sha256": "PENDING",
+   "init_weights_sha256": "81d914d6b7f99ae2973cd02c15cfd0a791e8ea6433fef0f341eb00e3a489978b",
    "sham_seed": 37001,
-   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights."
+   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights.",
+   "activated": "2026-10-22"
   },
   {
    "run_id": "e3-me-keep-w128-i30002-a1",
@@ -536,8 +540,9 @@
    "source_checkpoint_sha256": "cb7dd55b558f77bf3f0ac8c38a02c9abfa2c280371a026882a94e0544ca73b62",
    "init_age": 50000,
    "init_weights": "research/e3/mechanisms/starts/e3-me-keep-w128-i30002-a1.npz",
-   "init_weights_sha256": "PENDING",
-   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights."
+   "init_weights_sha256": "011a47914e4afb1103614c99469633347b69af08c7800f7baf2c66a86c7553c5",
+   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights.",
+   "activated": "2026-10-22"
   },
   {
    "run_id": "e3-me-filt-w128-i30002-a1",
@@ -559,8 +564,9 @@
    "source_checkpoint_sha256": "cb7dd55b558f77bf3f0ac8c38a02c9abfa2c280371a026882a94e0544ca73b62",
    "init_age": 50000,
    "init_weights": "research/e3/mechanisms/starts/e3-me-filt-w128-i30002-a1.npz",
-   "init_weights_sha256": "PENDING",
-   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights."
+   "init_weights_sha256": "e95ebae8de1a0063450f3d06d7af6c5e5ffd254b1807a83e84883589d918138e",
+   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights.",
+   "activated": "2026-10-22"
   },
   {
    "run_id": "e3-me-sham-w128-i30002-a1",
@@ -582,9 +588,11 @@
    "source_checkpoint_sha256": "cb7dd55b558f77bf3f0ac8c38a02c9abfa2c280371a026882a94e0544ca73b62",
    "init_age": 50000,
    "init_weights": "research/e3/mechanisms/starts/e3-me-sham-w128-i30002-a1.npz",
-   "init_weights_sha256": "PENDING",
+   "init_weights_sha256": "c03e184a40b4855a355b1398f0c560d8cf8d185b4cf7446c046e2fc7acf53edf",
    "sham_seed": 37002,
-   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights."
+   "reason": "e3 mechanisms initial experiment (DECISIONS D5): 20,000 continuation updates from the edited 50k checkpoint, fresh Adam (moments zero, update count from 1), original 299 training pairs, a+b targets, lr .001, wd 1. init_seed is recorded for the source only; the weights come from init_weights.",
+   "activated": "2026-10-22"
   }
- ]
+ ],
+ "reserved": []
 }
