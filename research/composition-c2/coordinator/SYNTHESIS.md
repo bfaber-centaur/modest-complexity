@@ -1,6 +1,6 @@
 # Composition round c2: synthesis
 
-**Status.** DRAFT 2. The reviewer checked draft 1 (`review/REVIEW.md` §6: CONCERN SY1, notes SY2–SY6), and this version takes all six. The time lane's follow-up F1 (tied/final 50k → 100k) is in, as reported by the lane at `ec28b28`; its NOTE and the reviewer's check of F1 are pending ("Open items"). Every number below is quoted from a lane NOTE, a lane report or `review/REVIEW.md`; nothing here is a new measurement.
+**Status.** DRAFT 3. The reviewer checked drafts 1 and 2 (`review/REVIEW.md` §6: SY1–SY7), and this version takes all seven. The time lane's follow-up F1 (tied/final 50k → 100k) passed every review check (§2); the time NOTE is being corrected for T2–T5 ("Open items"). Every number below is quoted from a lane NOTE, a lane report or `review/REVIEW.md`; nothing here is a new measurement.
 
 **Scope of every claim.**
 - One recurrent architecture family: width 128, ReLU, one start embedding, a transition (A, B, bh) and a readout (V, bv), each either shared across the three steps ("tied") or one copy per step.
@@ -16,7 +16,7 @@ Lane notes: [time](../time/NOTE.md), [sharing](../sharing/NOTE.md), [generalizat
 
 | question | answer under this recipe and these budgets |
 |---|---|
-| (a) which gaps close with time | The per-step-readout gap closes by 50k. The final-only gap narrows to 0.90–0.96 held-out by 100k but is not closed: one seed crosses criterion, at 95k, and all three are still rising. tied/inter's length decline is gone by 20k. |
+| (a) which gaps close with time | The per-step-readout gap closes by 50k. The final-only gap at length 3 narrows to 0.90–0.96 held-out by 100k but is not closed: one seed crosses criterion, at 95k, and all three are still rising. Final-only still does not extend past length 3 at 100k. tied/inter's length decline is gone by 20k. |
 | (b) which sharing choices matter within the budget | At 10k only tied transition + tied readout composes, and the two tyings interact strongly. The effect depends on weight decay, and for the readout it is a speed difference by 50k. |
 | (c) does success transfer beyond the original table | Yes, within what was tested: to lengths 4–6 on the original draw (exact through length 6 at 50k) and to 2 new draws and 4 new splits at length 3. |
 | (d) what natural-state interventions support | In tied/inter, a state that acts as its symbol for later ops up to length 4, with deviations from the class mean (much of them scale) going with longer-length errors. The other arms' states are history-dependent. Whole-state interchange is input recombination here. |
@@ -32,8 +32,8 @@ The time lane continued the nine recovered r1 runs from their exact 10k state (w
 | tied/final (0.27–0.32) | censored at 50k; F1: 95,050 in s51201 only, the others censored at 100k | censored | 0.56 / 0.70 / 0.66, ¬N 0.12 / 0.26 / 0.14; at 100k 0.898 / 0.961 / 0.914, ¬N 0.74 / 0.88 / 0.74 |
 
 - **Per-step readouts: closes.** The 10k gap between tied and per-step readouts is a difference in time to criterion under this recipe, 3–4× longer, not an endpoint difference.
-- **Final-only: much narrower by 100k, not closed.** On held-out rows still wrong at 50k, the logit gap shrank 15–28% from 40k to 50k, and held-out cross-entropy kept falling (reviewer CX-T1). F1 continued the three runs to 100k with the recipe unchanged. Held-out accuracy reached 0.90–0.96, and ¬N 0.74–0.88, so final-only labels come to answer most rows that no neighbour copy answers. Only s51201 met the criterion. All three were still rising (+0.02 to +0.06 over the last 10k, held-out CE down 28–52%), so the arm stays unresolved within 100k.
-- **Length: tied/inter's decline closes.** At 10k, tied/inter falls to 0.56–0.86 at length 6. At 50k all three seeds answer every row of every length 1–6. The decline was already gone at 20k (reviewer G6). tied/final stays at 0.10–0.15 beyond length 3 at 50k.
+- **Final-only: much narrower by 100k, not closed.** On held-out rows still wrong at 50k, the logit gap shrank 15–28% from 40k to 50k, and held-out cross-entropy kept falling (reviewer CX-T1). F1 continued the three runs to 100k with the recipe unchanged. Held-out accuracy reached 0.90–0.96, and ¬N 0.74–0.88, so final-only labels come to answer most rows that no neighbour copy answers. Only s51201 met the criterion. All three were still rising (+0.02 to +0.06 over the last 10k, held-out CE down 28–52%), so the arm stays unresolved within 100k. The rise is specific to length 3. At 100k the shared readout reads h1 and h2 at 0.00–0.19 (chance 0.125), and lengths 4–6 score 0.06–0.14 (reviewer CX-T4). So final-only reaches high held-out length-3 accuracy without the iterated step function that tied/inter has by 10k–20k.
+- **Length: tied/inter's decline closes.** At 10k, tied/inter falls to 0.56–0.86 at length 6. At 50k all three seeds answer every row of every length 1–6. The decline was already gone at 20k (reviewer G6). tied/final stays at 0.10–0.15 beyond length 3 at 50k, and at 0.06–0.14 at 100k.
 - **Two qualifiers on "time" (reviewer T1, CX-T2).**
   - In every arm, median Adam √v̂ falls below eps at 24.1–25.1k, and every coordinate follows by 27.8–29.7k. Past that point the update behaves like momentum gradient descent at an effective rate lr/eps, balanced against decay. For the per-step readout, most of the gain (61–87%) came before the switch, but two of its three crossings and all of its ¬N crossings fall after it. For tied/final, 56–70% of the 10k→50k gain came after it, and all of F1 runs in it. So for tied/final especially, "closes with time" includes a change of optimizer regime and is not a continuation of the early Adam dynamics. tied/inter's length decline was gone before the regime began.
   - The per-step-readout catch-up partly re-ties the readouts. ‖V_k − V_3‖/‖V_3‖ fell from about 1.1 to 0.65–1.05, and V3 reads h1 at 0.81 / 0.97 / 0.84 at 50k.
@@ -68,7 +68,7 @@ The sharing lane ran the 2×2 of transition and readout tying, all with intermed
 
 - At 10k, accuracy is lower on programs that contain a held-out length-3 window at any position (by 0.01–0.14, reviewer G1). First errors are spread over many transitions, not a few broken ones (the top 4 of 32 carry 0.20–0.29).
 - Each 10k tied/inter model maps every (symbol, op) pair correctly when its state is re-encoded through a discrete symbol between steps. What declined with length at 10k was the iteration of the continuous state, not one-step knowledge.
-- tied/final does not extend at 10k or 50k (0.10–0.15 beyond length 3).
+- tied/final does not extend at 10k, 50k or 100k (0.06–0.15 beyond length 3).
 
 **New draws and splits (16 new 10k runs).** 2 new permutation draws × 2 splits × 2 inits, each checked for coverage, no train/held-out overlap and identifiability.
 - tied/inter reaches 0.98–1.00 held-out at length 3, with 0.88–1.00 on ¬N rows. tied/inter beats tied/final in 8 of 8 pairs. tied/final answers at most 2 of 32 ¬N rows.
@@ -90,7 +90,7 @@ All interventions are on the recovered 10k checkpoints of tied/inter, per-step-r
 ## Three kinds of evidence, kept apart
 
 - **Architectural inductive bias.** Every RNN here applies one transition per op, and all but the sharing lane's UT and UU share it across steps; r1's MLPs reached 14–25% held-out. Within the RNNs, the sharing grid shows that at 10k the tied-transition-plus-tied-readout package composes and the others do not yet, with large parameter-count and decay confounds. With time, the per-step readout catches up under wd 0.1, and the untied-transition cells were not continued. The structural assumptions that make composition easy here are also why the result extends rather than reproduces Liška et al.
-- **Extra labels.** Intermediate labels (step weights 1 1 1) against final-only (0 0 1), with the same tied architecture: inter composes within 10k on the original task (crossings at 7.7–9.2k) and on all 8 new-task pairs; final-only has not by 100k on the original (0.90–0.96, still rising, one seed at criterion), and transfers nothing past length 3 at 50k (100k was not evaluated at longer lengths). By 100k final-only answers most ¬N rows too (0.74–0.88), so within this budget the extra labels changed how fast composition came on the original table, and whether it extended past length 3 at 50k. Whether final-only would reach the same endpoint is untested. Two cautions. Every held-out intermediate prefix occurs in training, so intermediate-head accuracy is not an unseen-prefix test. And inter gives three labelled positions per row against one, so "labels" also means more gradient signal per row.
+- **Extra labels.** Intermediate labels (step weights 1 1 1) against final-only (0 0 1), with the same tied architecture: inter composes within 10k on the original task (crossings at 7.7–9.2k) and on all 8 new-task pairs; final-only has not by 100k on the original (0.90–0.96, still rising, one seed at criterion), and transfers nothing past length 3 at 50k or 100k (0.06–0.15). By 100k final-only answers most ¬N rows too (0.74–0.88). So within this budget, the extra labels changed how fast held-out length-3 accuracy came, and whether the model extended past length 3 at all: by 100k final-only reaches high length-3 accuracy with no length transfer. Whether final-only would ever reach tied/inter's endpoint is untested. Two cautions. Every held-out intermediate prefix occurs in training, so intermediate-head accuracy is not an unseen-prefix test. And inter gives three labelled positions per row against one, so "labels" also means more gradient signal per row.
 - **Mechanistic evidence.** It comes only from the mechanisms lane's interventions on 10k checkpoints. Those support "a reusable state up to length 4 in tied/inter" and "history-dependent states in the other two arms". Whole-state interchange reduces to recombined inputs, and the class-mean interventions use the true symbol. Decoding tables (sharing, mechanisms) are descriptive throughout. Nothing here shows that any network implements an explicit symbolic state machine.
 
 ## Next questions (at most three)
@@ -116,5 +116,5 @@ Committed checkpoints: the 28 recovered r1 files (`recovered/`), the time lane's
 
 ## Open items before this is final
 
-- Time: the NOTE (with T1, CX-T1, CX-T2 and F1); the reviewer's check of F1 and the NOTE; merge PR #55.
+- Time: NOTE fixes T2–T5 (wording and one table column, no new runs); merge PR #55.
 - Left NOT CHECKED by the reviewer to save budget: the sharing lane's wd 0 decode and group tables (local-only checkpoints), and the inputs named in SY5.
