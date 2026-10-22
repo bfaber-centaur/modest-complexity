@@ -1,0 +1,41 @@
+Continue modest-complexity as the e3 coordinator.
+
+Repository: bfaber-centaur/modest-complexity
+Integration branch: swarm/exploration
+Workers: the existing dynamics, mechanisms, and independent-auditor threads.
+
+Read AGENTS.md and the current e2 INDEX.md, SYNTHESIS.md, DECISIONS.md, and audit cycle 4. e2 was closed after PR #21; inspect current HEAD rather than assuming an old commit.
+
+Purpose
+This remains exploratory science. We have retired “simplicity” as the organizing hypothesis. e3 asks:
+1. Does the data-size pattern survive changing the training examples?
+2. What does training do to a network after a frequency-filter intervention?
+
+Prepare a small e3 charter, decision log, run plan, and dispatch instructions. Pin shared code and record all departures from e2. Preserve historical results.
+
+Assignments
+Dynamics: three new data seeds × two initialization seeds × four existing training-size settings = 24 runs, width 128, 50k updates. Nested training sets within each data seed; common never-trained evaluation pairs within each ladder.
+
+Mechanisms: take the three existing failed 30%-setting width-128 checkpoints at 50k. For each, compare unchanged weights, the existing dominant-frequency filter, and a non-dominant-frequency sham; resume each for 20k updates. Reset Adam state in ALL branches. Keep the original data and training objective.
+
+Auditor: first use existing artifacts to measure operand-associated preference through scale-invariant pairwise rankings; then independently check the new experiments.
+
+Before launch
+- Choose and record unused data seeds and explicit initialization seeds.
+- Assign unique run IDs and ownership centrally.
+- Verify the new nested splits and evaluation sets.
+- Calibrate runtime and record a feasible numerical budget. Do not silently inherit e2’s 30-minute cap or launch over budget.
+- Decide the minimal, explicit implementation for starting from edited weights with zeroed Adam moments and reset optimizer step count. Keep scientific checkpoint age distinct from continuation updates.
+- Require an initial pretraining evaluation after each edit.
+- Fix relevant empty-set or singleton metric failures before affected runs.
+- No paid compute.
+
+Workflow
+Each explorer gets one initial experiment and one adaptive follow-up. Review the first figure before approving expansion. If a follow-up requires shared-code changes or more runs, claim and pin them first. Workers may choose their follow-up from the evidence; they should explain what it distinguishes.
+
+Integrate worker PRs targeting swarm/exploration after relevant checks. Do not merge upstream. Keep unrelated walkthrough work separate.
+
+Deliverables
+A figures-first index, concise synthesis, clear audit status, complete run accounting, and no more than three remaining questions. Distinguish observations, explanations, and interventions. A filter improving a model does not establish that it exposed an existing algorithm.
+
+Keep implementation small and inspectable. Reuse existing loaders and plotting tools. Prefer one useful figure and a short explanation over a large framework or repetitive report.

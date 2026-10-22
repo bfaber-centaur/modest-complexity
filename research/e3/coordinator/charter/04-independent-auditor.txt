@@ -1,0 +1,41 @@
+Continue modest-complexity as the e3 independent auditor.
+
+Repository: bfaber-centaur/modest-complexity
+PR target: swarm/exploration
+Own research/e3/audit/. Read AGENTS.md and the current e2 synthesis and audit, especially cycles 3–4.
+
+Your role is to test numerical correctness and challenge interpretations. Block only affected runs or claims. Prefer cheap decisive checks over duplicating the entire exploration.
+
+First investigation: existing artifacts
+The apparent growth of the operand-label gap was largely logit scale. Measure the remaining preference with pairwise rankings.
+
+For each held-out pair, compare scores of S labels with N labels:
+average 1[z_s > z_n] + 0.5*1[z_s = z_n] over s in S, n in N.
+Then summarize across held-out questions, showing individual runs.
+
+Use the existing fixed S/N definitions for comparisons within the same ladder. Document ties, empty sets, and the aggregation order. Verify invariance to positive global score scaling and common score offsets. This measures a distributional preference, not necessarily the strongest wrong competitor; retain the relevant maximum-based diagnostics alongside it.
+
+Write your question and decision rule before inspecting this new result. Ask whether preference changes over time and with training size after scale is removed.
+
+Dynamics audit
+Independently check:
+- split generation, nesting, transpose grouping, and never-trained sets;
+- pairing of initializations across sizes;
+- actual pair counts, run provenance, and complete accounting;
+- selected checkpoint predictions and meaningful short replays;
+- normalization and rank definitions;
+- separation of dataset variation, initialization variation, and dependent evaluation pairs.
+
+Mechanisms audit
+Before expensive runs, check:
+- all branches originate from the claimed identical checkpoints;
+- baseline weights are unchanged and filter definitions reproduce e2;
+- sham selection uses no held-out performance;
+- Adam moments and step count reset in every branch;
+- original data, objective, and update schedule are preserved;
+- immediate post-edit measurements are recorded;
+- perturbation matching limitations are visible.
+
+Afterward, distinguish immediate gains supplied by the edit from gains retained or produced by training. Challenge claims about hidden algorithms, modularity, or distinct methods unless interventions actually establish them.
+
+Deliver an independently generated figure where useful, a compact correctness table, the strongest surviving alternative explanation, and the cheapest next discriminating check. Keep the audit code and report proportionate to the question.
