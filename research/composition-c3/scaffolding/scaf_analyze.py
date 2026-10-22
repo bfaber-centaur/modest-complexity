@@ -36,6 +36,7 @@ SEEDS = (51200, 51201, 51202)
 SWITCH = {1000: '1k', 10000: '10k'}
 KINDS = {'drop': 1, 'taper': 2000}
 FIXED = (1000, 10000, 20000, 30000, 40000, 50000)
+RESET, RESET_AT = {'keep-reset': 'keep', 'drop-reset': 'drop'}, 1000   # follow-up arm -> its carried match
 END, EVERY, THRESHOLD, SUSTAIN, DEGRADE = 50000, 50, 0.95, 5, 0.05
 R1_KEYS = ('train', 'held', 'held_final_pred')
 SMALL = ('config.json', 'metrics.jsonl', 'runtime.json')
@@ -95,6 +96,8 @@ def schedule(arm, S=None):
         return dict(before=[1., 1., 1.], switch_step=None, after=None, taper=1)
     if arm == 'final':
         return dict(before=[0., 0., 1.], switch_step=None, after=None, taper=1)
+    if arm in RESET:
+        return dict(schedule(RESET[arm], S if RESET[arm] == 'drop' else None), reset_at=RESET_AT)
     return dict(before=[1., 1., 1.], switch_step=S, after=[0., 0., 1.], taper=KINDS[arm])
 
 
@@ -253,52 +256,67 @@ def compatibility_rows(arm, S, seed, rows):
             for t in ckpt_steps(arm, S) if t in logged]
 
 
+def traj_rows(arm, S, seed, rows):
+    sched, traj = schedule(arm, S), []
+    for r in rows:
+        w = r.get('step_weights') or c3train.weights_at(r['step'], sched)
+        sub = r.get('held_subset') or subsets(r['held_final_pred'])
+        d = r.get('diag', {})
+        v = d.get('adam_sqrt_vhat', {})
+        traj.append(dict(arm=arm, S=S or '', seed=seed, step=r['step'], w_inter=w[0],
+                         **{f'train_{h}_{m}': r['train'][h][m] for h in HEADS for m in ('acc', 'ce')},
+                         weighted_train_loss=sum(wk*r['train'][h]['ce'] for wk, h in zip(w, HEADS)),
+                         held_final_acc=r['held']['final']['acc'], held_final_ce=r['held']['final']['ce'],
+                         held_N_acc=sub['N'], held_notN_acc=sub['notN'],
+                         grad_norm=d.get('grad_norm', ''), update_norm=d.get('update_norm', ''),
+                         sqrt_vhat_median=v.get('median', ''), sqrt_vhat_max=v.get('max', ''), frac_below_eps=v.get('frac_below_eps', ''),
+                         train_margin_min=d.get('train_final_margin', {}).get('min', ''),
+                         train_margin_median=d.get('train_final_margin', {}).get('median', '')))
+    return traj
+
+
+def measure_arm(arm, S, seed, rows=None):
+    """Trajectory, threshold, optimizer, compatibility and frozen rows of one arm and seed."""
+    rows = rows or rows_of(arm, seed, S)
+    traj, thr, fro = traj_rows(arm, S, seed, rows), [], []
+    # Thresholds are read on the whole trajectory from init: a branch's rows follow r1 tied/inter's rows before S,
+    # so a crossing before the switch (S = 10k) is the keep arm's crossing.
+    full = rows if S is None else [r for r in r1_rows('inter', seed) if r['step'] < S] + rows
+    steps = [r['step'] for r in full]
+    for name, acc in (('held_final', [r['held']['final']['acc'] for r in full]),
+                      ('held_notN', [(r.get('held_subset') or subsets(r['held_final_pred']))['notN'] for r in full])):
+        t = first_sustained(steps, acc)
+        thr.append(dict(arm=arm, S=S or '', seed=seed, measure=name, first_step=steps[0], last_step=steps[-1],
+                        crossing_step=t if t is not None else '', censored=t is None, before_switch=t is not None and S is not None and t < S,
+                        value_at_switch=acc[steps.index(S)] if S else '', value_at_end=acc[-1]))
+    logged = {r['step']: r for r in rows}
+    for step in ckpt_steps(arm, S):
+        path = ckpt_path(arm, seed, step, S)
+        if not path.exists():
+            continue
+        e = frozen(nets.load(path)[0])
+        assert step not in logged or e['held_final_pred'] == logged[step]['held_final_pred'], (arm, S, seed, step)
+        fro.append(dict(arm=arm, S=S or '', seed=seed, step=step, **{k: v for k, v in e.items() if k != 'held_final_pred'}))
+    return dict(traj=traj, thr=thr, fro=fro, opt=[optimizer_row(arm, S, seed, rows)], comp=compatibility_rows(arm, S, seed, rows))
+
+
+def collect(arm_list):
+    out = dict(traj=[], thr=[], fro=[], opt=[], comp=[])
+    for arm, S, seed in arm_list:
+        for k, v in measure_arm(arm, S, seed).items():
+            out[k] += v
+    return out
+
+
 def measure():
     FIGS.mkdir(exist_ok=True)
-    traj, fro, thr, opt, comp = [], [], [], [], []
-    for arm, S, seed in arms():
-        sched = schedule(arm, S)
-        rows = rows_of(arm, seed, S)
-        for r in rows:
-            w = r.get('step_weights') or c3train.weights_at(r['step'], sched)
-            sub = r.get('held_subset') or subsets(r['held_final_pred'])
-            d = r.get('diag', {})
-            v = d.get('adam_sqrt_vhat', {})
-            traj.append(dict(arm=arm, S=S or '', seed=seed, step=r['step'], w_inter=w[0],
-                             **{f'train_{h}_{m}': r['train'][h][m] for h in HEADS for m in ('acc', 'ce')},
-                             weighted_train_loss=sum(wk*r['train'][h]['ce'] for wk, h in zip(w, HEADS)),
-                             held_final_acc=r['held']['final']['acc'], held_final_ce=r['held']['final']['ce'],
-                             held_N_acc=sub['N'], held_notN_acc=sub['notN'],
-                             grad_norm=d.get('grad_norm', ''), update_norm=d.get('update_norm', ''),
-                             sqrt_vhat_median=v.get('median', ''), sqrt_vhat_max=v.get('max', ''), frac_below_eps=v.get('frac_below_eps', ''),
-                             train_margin_min=d.get('train_final_margin', {}).get('min', ''),
-                             train_margin_median=d.get('train_final_margin', {}).get('median', '')))
-        # Thresholds are read on the whole trajectory from init: a branch's rows follow r1 tied/inter's rows before S,
-        # so a crossing before the switch (S = 10k) is the keep arm's crossing.
-        full = rows if S is None else [r for r in r1_rows('inter', seed) if r['step'] < S] + rows
-        steps = [r['step'] for r in full]
-        for name, acc in (('held_final', [r['held']['final']['acc'] for r in full]),
-                          ('held_notN', [(r.get('held_subset') or subsets(r['held_final_pred']))['notN'] for r in full])):
-            t = first_sustained(steps, acc)
-            thr.append(dict(arm=arm, S=S or '', seed=seed, measure=name, first_step=steps[0], last_step=steps[-1],
-                            crossing_step=t if t is not None else '', censored=t is None, before_switch=t is not None and S is not None and t < S,
-                            value_at_switch=acc[steps.index(S)] if S else '', value_at_end=acc[-1]))
-        opt.append(optimizer_row(arm, S, seed, rows))
-        comp += compatibility_rows(arm, S, seed, rows)
-        logged = {r['step']: r for r in rows}
-        for step in ckpt_steps(arm, S):
-            path = ckpt_path(arm, seed, step, S)
-            if not path.exists():
-                continue
-            e = frozen(nets.load(path)[0])
-            assert step not in logged or e['held_final_pred'] == logged[step]['held_final_pred'], (arm, S, seed, step)
-            fro.append(dict(arm=arm, S=S or '', seed=seed, step=step, **{k: v for k, v in e.items() if k != 'held_final_pred'}))
-    write_csv(FIGS/'scaf_main.csv', traj)
-    write_csv(FIGS/'scaf_frozen.csv', fro)
-    write_csv(FIGS/'scaf_threshold.csv', thr)
-    write_csv(FIGS/'scaf_retention.csv', retention(fro))
-    write_csv(FIGS/'scaf_optimizer.csv', opt)
-    write_csv(FIGS/'scaf_compatibility.csv', comp)
+    m = collect(arms())
+    write_csv(FIGS/'scaf_main.csv', m['traj'])
+    write_csv(FIGS/'scaf_frozen.csv', m['fro'])
+    write_csv(FIGS/'scaf_threshold.csv', m['thr'])
+    write_csv(FIGS/'scaf_retention.csv', retention(m['fro']))
+    write_csv(FIGS/'scaf_optimizer.csv', m['opt'])
+    write_csv(FIGS/'scaf_compatibility.csv', m['comp'])
 
 
 def retention(fro):
@@ -434,18 +452,203 @@ def figure():
     print('wrote', FIGS/'scaf_main.png')
 
 
+# ---- follow-up: reset vs carried Adam state at S = 1,000 (QUESTION.md addendum) -------------------
+
+def verify_id(arm, seed):
+    return f'c3-scaf-verify-carried-{arm}-at1k-s{seed}-a1'
+
+
+def fu_arms():
+    """A keep, A' keep-reset, B drop, B' drop-reset at S = 1k, and D final-only; reset arms only where run."""
+    out = [(a, None, s) for a in ('keep', 'final') for s in SEEDS] + [('drop', RESET_AT, s) for s in SEEDS]
+    return out + [(a, RESET_AT, s) for a in RESET for s in SEEDS if (RUNS/run_id(a, RESET_AT, s)/'metrics.jsonl').exists()]
+
+
+def arrays_equal(a, b):
+    pa, sa_, _ = nets.load(a); pb, sb, _ = nets.load(b)
+    same = lambda x, y: x.keys() == y.keys() and all(np.array_equal(x[k], y[k]) for k in x)
+    return same(pa, pb) and same(sa_['m'], sb['m']) and same(sa_['v'], sb['v']) and sa_['t'] == sb['t']
+
+
+def followup_check():
+    """Matched-control checks (no reset under the re-pin equals the reused carried arm, row for row) and, per
+    reset run: join at 1k, logged step weights, recorded reset step, exposure and the Adam count after the reset."""
+    out = dict(carried_checks={}, reset_runs={})
+    for seed in SEEDS:
+        rows = read_jsonl(RUNS/verify_id('keep', seed)/'metrics.jsonl')
+        if rows:
+            r1 = {r['step']: r for r in r1_rows('inter', seed)}
+            out['carried_checks'][verify_id('keep', seed)] = dict(
+                logged=len(rows), steps=[rows[0]['step'], rows[-1]['step']], equals_r1_rows=all(same_r1_keys(r, r1[r['step']]) for r in rows))
+    rows = read_jsonl(RUNS/verify_id('drop', 51200)/'metrics.jsonl')
+    if rows:
+        ref = {r['step']: r for r in rows_of('drop', 51200, RESET_AT)}
+        out['carried_checks'][verify_id('drop', 51200)] = dict(
+            logged=len(rows), steps=[rows[0]['step'], rows[-1]['step']], equals_branch_rows=all(r == ref[r['step']] for r in rows),
+            ckpt_3000_equals_branch=arrays_equal(RUNS/verify_id('drop', 51200)/'ckpt-3000.npz', ckpt_path('drop', 51200, 3000, RESET_AT)))
+    for arm, match in RESET.items():
+        for seed in SEEDS:
+            rid = run_id(arm, RESET_AT, seed)
+            rows = rows_of(arm, seed, RESET_AT)
+            if rows is None:
+                continue
+            cfg = json.loads((RUNS/rid/'config.json').read_text())
+            sched = schedule(arm, RESET_AT)
+            r1 = {r['step']: r for r in r1_rows('inter', seed)}
+            t3 = nets.load(RUNS/rid/'ckpt-3000.npz')[1]['t']
+            n = [sum(c3train.weights_at(t, sched)[k] != 0 for t in range(RESET_AT, END)) for k in range(3)]
+            out['reset_runs'][rid] = dict(
+                join_equals_r1=same_r1_keys(rows[0], r1[RESET_AT]), recorded_reset_at=cfg['schedule'].get('reset_at'),
+                n_step_weights_differ=sum(r['step_weights'] != c3train.weights_at(r['step'], sched) for r in rows),
+                exposure_matches=cfg['exposure']['labels_this_run']['updates_with_weight'] == n,
+                adam_count_at_3000=t3, adam_count_expected=3000 - RESET_AT,
+                recipe=dict(lr=cfg['lr'], wd=cfg['wd'], hidden=cfg['hidden'], scheme=cfg['scheme'], source_run=cfg['resumed_from']['source']['run_id']))
+    (HERE/'followup_checks.json').write_text(json.dumps(out, indent=1)+'\n')
+    keys = ('equals_r1_rows', 'equals_branch_rows', 'ckpt_3000_equals_branch', 'join_equals_r1', 'recorded_reset_at',
+            'n_step_weights_differ', 'exposure_matches', 'adam_count_at_3000')
+    print(json.dumps({k: {i: {x: v[x] for x in v if x in keys} for i, v in d.items()} for k, d in out.items()}, indent=1))
+
+
+FU_MEASURES = ('held_L3', 'held_notN', 'L4', 'L5', 'L6')
+
+
+def reset_effects(fro):
+    """Per seed, measure and fixed time from 3k: A, A', B, B', D, the two reset effects and their difference.
+    At 50k each arm pair gets the 5-point status of the addendum's rules."""
+    at = {(r['arm'], r['seed'], r['step']): r for r in fro}
+    out = []
+    for seed in SEEDS:
+        for m in FU_MEASURES:
+            for t in (3000,) + FIXED[1:]:
+                v = {a: at.get((a, seed, t), {}).get(m) for a in ('keep', 'keep-reset', 'drop', 'drop-reset', 'final')}
+                if v['keep-reset'] is None and v['drop-reset'] is None:
+                    continue
+                d = lambda x, y: x - y if x is not None and y is not None else ''
+                row = dict(seed=seed, measure=m, step=t, A=v['keep'], A_reset=v['keep-reset'], B=v['drop'], B_reset=v['drop-reset'], D=v['final'],
+                           d_reset_keep=d(v['keep-reset'], v['keep']), d_reset_drop=d(v['drop-reset'], v['drop']))
+                row['difference'] = d(row['d_reset_drop'] if row['d_reset_drop'] != '' else None, row['d_reset_keep'] if row['d_reset_keep'] != '' else None)
+                row['B_reset_minus_D'] = d(v['drop-reset'], v['final'])
+                for k in ('d_reset_keep', 'd_reset_drop'):
+                    row[k + '_status'] = '' if t != END or row[k] == '' else ('below carried' if row[k] <= -DEGRADE + 1e-12 else
+                                                                            'above carried' if row[k] >= DEGRADE - 1e-12 else 'within 5 pp')
+                out.append(row)
+    return out
+
+
+def transient(traj):
+    """Update L2 of reset runs over 1,000-1,500 against the carried match at the same step (keep's from the check runs)."""
+    u = {(r['arm'], int(r['seed']), r['step']): r['update_norm'] for r in traj if r['update_norm'] != ''}
+    out = []
+    for seed in SEEDS:
+        for arm, match in RESET.items():
+            for t in range(RESET_AT, RESET_AT + 550, 50):
+                a, b = u.get((arm, seed, t)), u.get((match, seed, t))
+                if a is not None and b is not None:
+                    out.append(dict(seed=seed, arm=arm, step=t, update_norm=a, carried=b, ratio=a/b))
+    return out
+
+
+def followup_measure():
+    FIGS.mkdir(exist_ok=True)
+    m = collect(fu_arms())
+    for seed in SEEDS:   # keep's diag over 1k-3k from the carried-keep check run (its r1 keys equal r1's rows)
+        rows = read_jsonl(RUNS/verify_id('keep', seed)/'metrics.jsonl')
+        if rows:
+            extra = {r['step']: r for r in traj_rows('keep', None, seed, rows)}
+            m['traj'] = [extra.get(r['step'], r) if r['arm'] == 'keep' and int(r['seed']) == seed else r for r in m['traj']]
+    write_csv(FIGS/'scaf_followup.csv', m['traj'])
+    write_csv(FIGS/'scaf_followup_frozen.csv', m['fro'])
+    write_csv(FIGS/'scaf_followup_threshold.csv', m['thr'])
+    write_csv(FIGS/'scaf_followup_optimizer.csv', m['opt'])
+    write_csv(FIGS/'scaf_followup_compatibility.csv', m['comp'])
+    write_csv(FIGS/'scaf_followup_effects.csv', reset_effects(m['fro']))
+    write_csv(FIGS/'scaf_followup_transient.csv', transient(m['traj']))
+
+
+FU_STYLE = {'keep': (COLOR['keep'], '-'), 'keep-reset': (COLOR['keep'], (0, (5, 2))), 'drop': (COLOR['drop'], '-'),
+            'drop-reset': (COLOR['drop'], (0, (5, 2))), 'final': (COLOR['final'], '-')}
+FU_LABEL = {'keep': "A keep, moments carried", 'keep-reset': "A′ keep, Adam reset at 1k", 'drop': 'B drop at 1k, moments carried',
+            'drop-reset': "B′ drop at 1k, Adam reset at 1k", 'final': 'D final-only from init'}
+
+
+def followup_figure():
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    traj, fro, thr = (read_csv(FIGS/f'scaf_followup{x}.csv') for x in ('', '_frozen', '_threshold'))
+    rows_k = ['sched', 'held', 'notN', 'L6', 'train', 'readout', 'diag', 'vhat']
+    titles = dict(sched='intermediate-loss weight; Adam reset at 1k in A′, B′', held='held-out length-3 final accuracy (128 rows)',
+                  notN='held-out ¬N accuracy (42 rows)', L6='frozen: L = 6 (solid marker), L = 4 (open marker), all programs',
+                  train='train final CE', readout='shared readout on training h1 and h2: the lower of the two accuracies',
+                  diag='global L2 of the update', vhat='Adam √v̂, median; eps dashed')
+    heights = [.45, 1, 1, 1, .9, .8, .9, .9]
+    fig, axes = plt.subplots(len(rows_k), 2, figsize=(13, 24), gridspec_kw=dict(height_ratios=heights, hspace=.36, wspace=.14, top=.9))
+    xlim = [(0, END), (900, 6000)]
+    for j in range(2):
+        for a in axes[:-1, j]:
+            a.sharex(axes[-1, j]); a.tick_params(labelbottom=False)
+        ax = dict(zip(rows_k, axes[:, j]))
+        for arm, (c, ls) in FU_STYLE.items():
+            for seed in SEEDS:
+                tr = [r for r in traj if r['arm'] == arm and int(r['seed']) == seed]
+                if not tr:
+                    continue
+                kw = dict(color=c, ls=ls, lw=1.3, marker=MARKER[seed], ms=3.5, markevery=max(1, len(tr)//8) if j == 0 else 10)
+                def plot(a, key, src=tr, **k2):
+                    xy = [(r['step'], r[key]) for r in src if r[key] != '']
+                    if xy:
+                        a.plot(*zip(*xy), **{**kw, **k2})
+                plot(ax['sched'], 'w_inter')
+                plot(ax['held'], 'held_final_acc'); plot(ax['notN'], 'held_notN_acc')
+                plot(ax['train'], 'train_final_ce')
+                low = [dict(step=r['step'], v=min(r['train_step1_acc'], r['train_step2_acc'])) for r in tr]
+                plot(ax['readout'], 'v', src=low)
+                plot(ax['diag'], 'update_norm'); plot(ax['vhat'], 'sqrt_vhat_median')
+                fr = sorted((r for r in fro if r['arm'] == arm and int(r['seed']) == seed), key=lambda r: r['step'])
+                if fr:
+                    ax['L6'].plot([r['step'] for r in fr], [r['L6'] for r in fr], color=c, ls=ls, lw=1.3, marker=MARKER[seed], ms=4)
+                    ax['L6'].plot([r['step'] for r in fr], [r['L4'] for r in fr], color=c, ls=ls, lw=.8, marker=MARKER[seed], ms=4, mfc='none')
+        for r in thr:
+            if r['measure'] == 'held_final' and r['crossing_step'] != '':
+                ax['held'].scatter([r['crossing_step']], [THRESHOLD], marker='v', s=40, color=FU_STYLE[r['arm']][0], edgecolor='k', lw=.5, zorder=5)
+        for k in ('held', 'notN', 'L6', 'readout'):
+            ax[k].axhline(THRESHOLD, color='0.45', lw=.9, ls=(0, (4, 3))); ax[k].axhline(1/8, color='0.65', lw=.8, ls=':')
+            ax[k].set_ylim(-.02, 1.04)
+        ax['vhat'].axhline(1e-8, color='0.3', lw=1, ls=(0, (4, 3)))
+        for k in ('train', 'diag', 'vhat'):
+            ax[k].set_yscale('log')
+        for k, a in ax.items():
+            a.axvline(RESET_AT, color='0.3', lw=1.1); a.set_xlim(*xlim[j]); a.grid(alpha=.25, lw=.5)
+            a.set_title(titles[k], loc='left', fontsize=9)
+        ax['sched'].set_title(('all updates · ' if j == 0 else 'zoom 900–6,000 · ') + titles['sched'], loc='left', fontsize=10, fontweight='bold')
+        ax['vhat'].set_xlabel('total updates from init (switch and reset at 1,000 marked)', fontsize=9)
+    handles = [Line2D([], [], color=c, ls=ls, lw=2, label=FU_LABEL[a]) for a, (c, ls) in FU_STYLE.items()]
+    handles += [Line2D([], [], color='0.3', marker=MARKER[s], lw=0, label=f'init seed {s}') for s in SEEDS]
+    handles += [Line2D([], [], color='0.3', marker='v', lw=0, label='first of 5 logged evals ≥ 0.95')]
+    fig.legend(handles=handles, loc='upper center', ncol=5, fontsize=8, frameon=False, bbox_to_anchor=(.5, .948))
+    fig.suptitle('c3 scaffolding follow-up: Adam state reset vs carried at S = 1,000, in keep and in drop; tied/tied RNN, original task,\n'
+                 'three init seeds, unchanged recipe; keep\'s 1k–3k diagnostics from the no-reset check runs, r1 logged none before 10k',
+                 y=.972, fontsize=11)
+    for ext in ('png', 'svg'):
+        fig.savefig(FIGS/f'scaf_followup.{ext}', dpi=120, bbox_inches='tight')
+    print('wrote', FIGS/'scaf_followup.png')
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
     p = sub.add_parser('publish'); p.add_argument('--root', type=Path, required=True); p.add_argument('--ids', nargs='+', required=True)
     p.add_argument('--commit-checkpoints', nargs='*', default=[])
-    for c in ('check', 'measure', 'figure'):
+    cmds = {'check': check, 'measure': measure, 'figure': figure,
+            'followup-check': followup_check, 'followup-measure': followup_measure, 'followup-figure': followup_figure}
+    for c in cmds:
         sub.add_parser(c)
     a = ap.parse_args()
     if a.cmd == 'publish':
         publish(a.root, a.ids, set(a.commit_checkpoints))
     else:
-        dict(check=check, measure=measure, figure=figure)[a.cmd]()
+        cmds[a.cmd]()
 
 
 if __name__ == '__main__':

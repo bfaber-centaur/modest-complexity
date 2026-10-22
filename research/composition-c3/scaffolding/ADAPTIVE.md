@@ -23,3 +23,9 @@ These are implementation details of measures QUESTION.md already declares.
 - **Change.** The threshold is now read on each branch's trajectory from init: r1 tied/inter's rows before S, followed by the branch's rows. Before, it was read from S only, which reported a "crossing" at S = 10,000 for branches already above 0.95 there.
 - **Why it is not outcome-driven.** This is the c2 time lane's convention ("a crossing before 10,000 is read from r1's record"), which QUESTION.md adopts by name. `scaf_threshold.csv` marks such crossings `before_switch` and also gives the value at S.
 - **What it changes.** Nothing at S = 1k: every crossing is after S, so the result is the same either way. At S = 10k, the held-out crossings become keep's (7,700 / 9,150 / 8,200). ¬N in s51201 crosses after S under both readings: 11,300 for drop, 11,150 for taper.
+
+## 2026-10-22 06:15Z, before any follow-up run: carried-keep checks for every seed
+
+- **Change.** Two check runs were added: `c3-scaf-verify-carried-keep-at1k-s51201-a1` and `-s51202-a1`, each running 1k→3k under the re-pin with no reset, about 13 s each. This extends the addendum's matched-control check to all three seeds of the keep arm.
+- **Why.** r1 logged no `diag` before 10k. Without these runs, the carried keep arm has no update norm at 1,000–3,000 to compare with A′, which follow-up prediction 3 needs.
+- **What it does not change.** The interpretation rules and the six follow-up runs are unchanged. The added cost is under 1 minute of the 20.
