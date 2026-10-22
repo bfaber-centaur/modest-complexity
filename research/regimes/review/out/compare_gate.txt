@@ -1,0 +1,11 @@
+PASS replay of lane part/52200 reproduces final.csv to its 6 printed digits (fine-tuned and readout, every n)
+fine-tuned (train branch) and frozen readout, test x4=1 accuracy; replicates 52200/52201/52202
+train   n= 16 gate 0.52/0.51/0.54 | fresh 0.59/0.50/0.57 rel 0.70/0.54/0.84 part 0.53/0.50/0.53 unrel 0.56/0.51/0.55 split 0.67/0.52/0.53 | gate-fresh -0.07/+0.01/-0.04 gate-part -0.02/+0.01/+0.01 gate-unrel -0.04/-0.00/-0.02
+train   n= 32 gate 0.53/0.55/0.50 | fresh 0.57/0.54/0.61 rel 0.70/0.71/0.94 part 0.59/0.71/0.74 unrel 0.56/0.52/0.56 split 0.67/0.55/0.61 | gate-fresh -0.04/+0.01/-0.11 gate-part -0.06/-0.16/-0.24 gate-unrel -0.02/+0.03/-0.06
+train   n= 64 gate 0.62/0.67/0.57 | fresh 0.77/0.76/0.74 rel 0.91/0.90/0.98 part 0.78/0.94/0.94 unrel 0.67/0.67/0.64 split 0.81/0.83/0.70 | gate-fresh -0.15/-0.09/-0.17 gate-part -0.16/-0.27/-0.37 gate-unrel -0.05/+0.00/-0.07
+train   n=128 gate 0.96/0.96/0.88 | fresh 0.98/0.96/0.97 rel 1.00/1.00/1.00 part 1.00/1.00/1.00 unrel 0.85/0.95/0.85 split 0.97/1.00/0.96 | gate-fresh -0.02/+0.00/-0.09 gate-part -0.04/-0.04/-0.12 gate-unrel +0.11/+0.01/+0.03
+readout n= 16 gate 0.54/0.51/0.51 | fresh 0.62/0.50/0.56 rel 0.69/0.61/0.86 part 0.51/0.49/0.54 unrel 0.52/0.48/0.55 split 0.67/0.50/0.54 | gate-fresh -0.08/+0.00/-0.04 gate-part +0.03/+0.02/-0.02 gate-unrel +0.02/+0.02/-0.04
+readout n= 32 gate 0.55/0.50/0.52 | fresh 0.56/0.52/0.64 rel 0.77/0.81/0.95 part 0.60/0.57/0.60 unrel 0.54/0.47/0.57 split 0.59/0.49/0.57 | gate-fresh -0.01/-0.02/-0.12 gate-part -0.05/-0.07/-0.08 gate-unrel +0.01/+0.03/-0.05
+readout n= 64 gate 0.60/0.49/0.55 | fresh 0.67/0.59/0.66 rel 0.90/0.88/0.96 part 0.62/0.75/0.70 unrel 0.57/0.48/0.51 split 0.64/0.67/0.62 | gate-fresh -0.07/-0.10/-0.12 gate-part -0.03/-0.25/-0.15 gate-unrel +0.03/+0.02/+0.04
+readout n=128 gate 0.59/0.55/0.57 | fresh 0.68/0.66/0.66 rel 0.99/0.99/0.98 part 0.77/0.68/0.83 unrel 0.58/0.50/0.57 split 0.83/0.67/0.70 | gate-fresh -0.10/-0.12/-0.08 gate-part -0.18/-0.14/-0.26 gate-unrel +0.01/+0.05/+0.00
+ALL PASS

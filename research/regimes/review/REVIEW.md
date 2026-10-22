@@ -6,7 +6,7 @@ Reviewer's plan and pre-stated counterexamples: [QUESTION.md](QUESTION.md). Stat
 |---|---|---|
 | §0 shared code | PASS, with three usage concerns (C0.1–C0.3) | 2026-10-22, common at `0c7bd19` |
 | §1 R1 composition | M1 oracle/split PASS; design notes; M2 not yet | 2026-10-22, lane `ff9b721` |
-| §2 R2 shared subcomputation | M1 PASS; M2 readout recomputed exactly; counterexample holds: frozen y1 features carry all three pairwise XORs equally, z not privileged (C2.4); fine-tuning degrades even the same-task control at n ≤ 32 (C2.3) | 2026-10-22, lane `55d6787` |
+| §2 R2 shared subcomputation | **M4: no BLOCK; mergeable.** Counterexamples: z not privileged in y1 features (C2.4); the gate-bit explanation of fine-tuned transfer is refuted by a gate-only arm (C2.5). Two NOTE edits suggested (C2.5, C2.6) | 2026-10-22, lane `f493c1a` |
 | §3 R3 history and recovery | M1 oracle/split/metrics/branch hashes PASS; C0.1/C0.2 avoided | 2026-10-22, lane `f71c84f` |
 | §4 R4 competing routes | M1 PASS; M2 numbers recomputed PASS; counterexample: route choice at ρ = 15/16 is mostly base-specific, not context-level (C4.1, wording) | 2026-10-22, lane `f0f68f7` |
 
@@ -122,6 +122,41 @@ Evidence: [recompute_shared.py](recompute_shared.py), output in [out/recompute_s
 - *Reading.* y1 pretraining makes all pairwise XORs of x1, x2 and x3 linearly available, as y1's symmetry predicts. The `rel` > `part` readout advantage therefore says that y1's features contain *a* family that includes z. It does not say that z is privileged or that y2 reuses a designated z.
 - *Affects:* any NOTE claim that frozen-feature transfer identifies z.
 - The lane's follow-up (`1d9d240`, a {x1,x2} pair task without z) is the right next step. The mechanism analysis should report z next to x1⊕x3 and x2⊕x3, as QUESTION.md plans.
+
+### M4 (`f493c1a`, NOTE.md and follow-up `split`)
+
+Evidence: the `final.csv` paired differences recomputed by script, the reviewer runs below, and [compare_gate.py](compare_gate.py), with output in [out/compare_gate.txt](out/compare_gate.txt).
+
+| checklist item | status | evidence and what it affects |
+|---|---|---|
+| Oracle and split | PASS | §2 M1. The `split` label (2·(x1⊕x3⊕x5) + (x2⊕x6⊕x7)) is a 4-class code with no x1⊕x2 term, as stated. |
+| Loss and metrics | PASS | `head_metrics`' balanced accuracy now averages over the classes present, which is correct for the 4-class `pre` head. The readout was reproduced exactly (M2). |
+| Data and compute exposure | PASS, with a stated caveat | Every pretraining arm gets 2,000 updates on the same 512-row pool, followed by an Adam reset. `split` carries 2 bits of label per row against 1 for the others, and 4 y2-irrelevant input bits. NOTE.md lists both under Limitations. |
+| Intervention semantics | PASS | NOTE obs. 6 states correctly that a uniform class-mean shift along a z direction cannot flip a linear readout of z⊕x3. It also states that a y2 network's own z direction flipping y2 only where x4 = 1 holds for every y2 solver. The steering result is reported as uninformative about reuse, which is the right reading. |
+| Checkpoints and optimizer | PASS | `pre` is frozen in phase 2, Adam is reset at each phase, and the readout has its own state (M1). `pretrained.npz` leaves the `new` head at its initialization (M2). |
+| Figures support claims | PASS, one numeric slip (C2.6) | All paired ranges in NOTE obs. 2–4 were recomputed from `final.csv`. Each matches to rounding except one (C2.6). |
+| Counterexamples | done | C2.4 (symmetry, M2) and C2.5 (gate-only arm, below). |
+
+**C2.5 (CONCERN, wording) — counterexample run: "fine-tuned transfer points at sharing the gate bit x4" is refuted.** The prediction was stated in QUESTION.md (Revisions) before running.
+- *Runs.* `r1-rev-share-gate-s5220{0,1,2}-a1` pretrain on g = x3⊕x4⊕x5, which shares only x4 with y2. They use R2's own `train.py` at `f493c1a`, unedited, through [arm_shared.py](arm_shared.py), with the lane's replicate seeds reused on purpose for pairing.
+- *Wrapper check.* A replay of the lane's `part`/52200 run (`r1-rev-share-replay-part-s52200-a1`) reproduces `final.csv` to its 6 printed digits, fine-tuned and readout, at every n. Phase 1 reached 1.00 test accuracy on g, with flips only on x3, x4 and x5.
+- *Result,* fine-tuned test accuracy on x4 = 1, replicates 52200/52201/52202:
+
+  | n | gate | gate − fresh | gate − part | gate − unrel |
+  |---|---|---|---|---|
+  | 32 | 0.53/0.55/0.50 | −0.04/+0.01/−0.11 | −0.06/−0.16/−0.24 | −0.02/+0.03/−0.06 |
+  | 64 | 0.62/0.67/0.57 | −0.15/−0.09/−0.17 | −0.16/−0.27/−0.37 | −0.05/+0.00/−0.07 |
+
+  The frozen readout is also at or below `fresh`: −0.07 to −0.12 at n = 64–128.
+- *Reading.* Sharing the gate bit alone gives no transfer; `gate` behaves like `unrel`. The other branch, "fewer y2-irrelevant pretraining bits", is not monotone either. With irrelevant-bit counts in brackets, fine-tuned gain over `fresh` at n = 64 is about +0.13 for `part` (1), −0.14 for `gate` (2), −0.10 for `unrel` (3), and about +0.03 for `split` (4).
+- What the data support is narrower: `part`'s fine-tuned benefit needs x2 *together with* x4 in one parity. Neither single factor named in the NOTE accounts for it, and at n ≤ 32 fine-tuning also degrades pretrained features (C2.3).
+- *Suggested NOTE edit.* In "Reading → Fine-tuning", replace the two named explanations with: "not explained by the gate bit alone (reviewer gate-only arm) or by the irrelevant-bit count alone".
+
+**C2.6 (minor numeric).** NOTE obs. 2 gives `split` − `rel` as "−0.19 to −0.38" at n = 32, 64 and 128. Recomputed from `final.csv`, the range is −0.16 to −0.38. Replicate 52200 at n = 128 is −0.159, and at n = 32 it is −0.186. Every difference is still negative, so the claim's direction is unaffected.
+
+**Reading of NOTE obs. 5 ("frozen-readout success tracks linear z availability").** For a linear head, reading y2 = z∧x4 on the x4 = 1 half *is* reading z linearly, so this is close to true by construction. The informative part is which pretraining makes z linearly available. By C2.4, y1 makes all three of its pairwise XORs available equally. The NOTE's "(with its sibling XORs)" and "not singled out" already say this.
+
+**Verdict.** No BLOCK. The NOTE's claims are supported by its figures and tables, and its limitations name the right confounds. Two edits are suggested (C2.5, C2.6). Neither changes a run, a figure or the frozen-feature conclusion. Mergeable as is, with these edits noted, or after them.
 
 ## §3 R3 training history and recovery
 
