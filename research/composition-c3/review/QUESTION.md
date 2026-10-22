@@ -30,6 +30,29 @@ Code under test is imported read-only or run as a subprocess. The forward pass, 
 
 Verdict rule: BLOCK if any of P1–P3, P5 or P9 fails in a way that changes what a branch or correction computes. CONCERN if a check fails without changing results, or a recipe pairing that should be refused is accepted. Otherwise PASS.
 
+## 2. Correction lane (PR #63 at `c3f03cd`)
+
+I have read its QUESTION.md (`3e3f73d` and the addenda through `95052f5`), ADAPTIVE.md and `corr_core.py`, and nothing else from the lane. I have not opened `accuracy.csv`, `fits.csv`, `states.csv`, `checks.json`, the figures, README or NOTE. Two results reached me before this entry: the coordinator's relay and ADAPTIVE both say that D beats A once on grouped held rows (per-step s51201, 0.625 against 0.562), and that per-step V2 reads every prefix's h_2 at 1.00.
+
+**Checks** (script `rev_corr.py`, run as `c3-rev-corr-a1` through `run_jobs.py`). My forward pass and oracle come from the c2 review (`rev_pin.py`). The prefix sets, split, centroids, map training and measures are mine, written from the QUESTION text. The probe is c2's pinned `c2probe.fit_probe`, reviewed in c2.
+
+| # | check | prediction |
+|---|---|---|
+| C1 | Bases. The six D4 files and the eight F2 files hash to RECOVERY.json or MANIFEST.json, and step 10,000. `params_sha256` of each loaded file equals the lane's before and after records | all equal |
+| C2 | Sets. There are 128 prefixes, 16 per symbol. My grouped split, from the QUESTION rule (prefix index lex(op1, op2)·8 + s; within each symbol in order, one generator `default_rng(71300)`; cut 8/4/4), equals the lane's. Every prefix's 4 rows (3 training, 1 held) sit in one group, and the groups are disjoint. Eval = 32 held + 96 training rows | equal, and leak-free. The same is checked per F2 task |
+| C3 | My recomputation of every arm × base × evaluation × row set in the lane's accuracy table (original and F2). A and E use my forward and my unique-prefix centroids. D uses `c2probe.fit_probe(H_fit, x_fit, 71301)` and my centroids. B and C are my own map code (128 → 64 → 128 ReLU, W1 He-normal then W2 LeCun-normal from `default_rng(71200)`, zero biases, Adam via `nets.adam_step`, lr 1e-3, 2,000 updates, MSE averaged over prefixes and units) | A, D and E exact. B and C within 1 row of each row set (identical if my draw order is theirs) |
+| C4 | Also on my side: nearest-centroid symbol accuracy of the corrected state, centroid error, decoder accuracy, gain recovered (E − A ≥ 0.1 only), and train-row accuracy, against whatever of these the lane reports | equal, to rounding |
+| C5 | Leakage, from the code. At evaluation B, C and D receive h_2 only; E alone uses the true symbol. Grouped centroids, map, decoder and calibration use fit (and val for calibration) prefixes only. The eval prefixes enter nothing that is fit or chosen | holds |
+| C6 | Decoder-plus-centroid accounting. Per base and evaluation, is B ≤ D + 1/32 on held rows? And per row: of the rows where B's corrected state has the wrong nearest-centroid symbol, how many does B still answer correctly? | B ≤ D + 1/32 everywhere. B answers ≤ 1/8 of its wrong-symbol rows (chance), so its gain is the decoded symbol |
+
+**Counterexamples** (committed before I open any lane result).
+- **CX-C1, the map draw.** I refit B with three map draws of my own (73010, 73011, 73012), everything else fixed, and refit the decoder with probe seeds 73020–73022. The lane's per-base claim is the bin of gain recovered: below 20%, 20–60%, or above 60% (where E − A ≥ 0.1). Prediction: in both evaluations, that bin is unchanged across my three draws in at least 5 of the 6 original bases. If it changes in more, the single map and probe draws do not carry the lane's per-base statements.
+- **CX-C2, the decoder.** This would weaken a negative grouped result. Two decoders that the lane did not try, both fit on fit prefixes only:
+  1. nearest centroid (fit centroids);
+  2. ridge regression to one-hot symbols, with λ chosen from {1e-3, 1e-2, 1e-1, 1, 10} on val prefixes only.
+
+  Each is followed by c(x̂). Prediction: on grouped eval prefixes, neither raises decoder accuracy by more than 0.15 over the lane's probe, or held-row final accuracy by more than 0.1, in any tied/final base (original or F2). If one does, then "the adapter fails on new prefixes" is about the unregularized probe, not about what h_2 carries linearly.
+
 ## Revisions
 
 ### 05aac5a + runs (05:23–05:24), before any analysis of them
