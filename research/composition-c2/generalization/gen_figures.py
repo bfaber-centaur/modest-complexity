@@ -97,7 +97,7 @@ def length_figure():
 
 R1_RUNS = HERE.parents[1]/'regimes'/'composition'/'runs'
 FROZEN_REP = HERE/'runs'/'c2-gen-frozen-rep-a1'
-INIT_STYLE = {63200: ('#2a78d6', 'o'), 63201: ('#eb6834', 's')}
+INIT_STYLE = {63200: ('#eda100', 'D'), 63201: ('#e87ba4', 'v')}  # validated categorical slots 4-5: distinct from the r1 seeds
 
 
 def trajectories():
@@ -149,7 +149,7 @@ def replication_figure():
         w = csv.DictWriter(f, list(traj[0])); w.writeheader(); w.writerows(traj)
 
     fig, axes = plt.subplots(3, len(tasks), figsize=(2.75*len(tasks), 8.2), sharey=True)
-    style = dict(SEED_STYLE, **INIT_STYLE)
+    style = {**SEED_STYLE, **INIT_STYLE}
     for j, task in enumerate(tasks):
         for i, key in enumerate(('held_final', 'notN')):
             ax = axes[i, j]

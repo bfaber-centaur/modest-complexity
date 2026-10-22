@@ -99,3 +99,21 @@ Order: this file → Part A (frozen; allowed once this file is pushed) → M1/M2
 ## Adaptive choices
 
 Recorded separately in [ADAPTIVE.md](ADAPTIVE.md) as they happen.
+
+## Follow-up (proposed 2026-10-22 ~04:25Z, after Part A and Part B, before any follow-up measurement; awaiting coordinator approval)
+
+**Question.** Where does reusable iteration first fail? In all 11 tied/inter models (3 original, 8 new-task) accuracy is ≥ 0.93 at length 4 and falls to 0.56–0.88 by length 6, and the per-step error rate rises with depth. Are the first errors at steps 4–6 concentrated on a few (state, op) transitions, i.e. specific transitions that break once the state comes from a later position, or spread across transitions as diffuse accumulation?
+
+**Design (frozen, no training, no new runs of the network beyond forward passes).** The 11 tied/inter `ckpt-10000` files already evaluated. Exhaustive length-6 rows on each model's own task. For every row whose first wrong step t* is 4, 5 or 6, record the transition at t*: the true state before step t* and the op at t*. In exhaustive rows the state before any step is uniform over the 8 symbols and the op uniform over 4 (each prefix is a permutation applied to all starts), so with diffuse errors each of the 32 transitions carries 1/32 of first errors.
+
+**Measures.**
+1. Concentration: share of a model's first errors (steps 4–6 pooled) carried by its 1, 4 and 8 most frequent transitions (diffuse expectation 1/32, 4/32, 8/32), with the full 32-entry table per model.
+2. Consistency across depth: Spearman correlation, over the 32 transitions, between the first-error rate at step 5 and at step 6 (step 4 has few errors in some models; reported where it has at least 20).
+3. Wrong answers at the first error: share equal to another op applied to the true state, `P[k'](x)` with k' ≠ k (3 of the 7 wrong symbols, so 3/7 if errors were uniform over wrong symbols). Descriptive.
+
+**Predictions.**
+- **F1.** In every one of the 11 models, the 4 most frequent transitions carry ≥ 50% of first errors at steps 4–6.
+- **F2.** The step-5 and step-6 first-error rates over the 32 transitions correlate positively (Spearman ρ > 0.5) in at least 9 of 11 models.
+- If F1 fails broadly (top-4 share near 4/32), the decline is diffuse accumulation rather than a few broken transitions.
+
+Run ID `c2-gen-followup-anatomy-a1` (`gen_followup.py`), elapsed cost about 1 minute. This stays a frozen evaluation; it does not test whether the hidden state is a reusable semantic state (the mechanisms lane's interchange question) and does not fit anything on longer programs.

@@ -9,7 +9,8 @@
   "file": "ckpt-2000.npz",
   "bytes": 440579,
   "sha256": "fa4af45ca98e600ecc788636d7b2a5bd9dedfa69defe68b3b26548767ff7cd0d",
-  "committed": true
+  "committed": false,
+  "note": "calibration only; not committed"
  },
  {
   "file": "config.json",

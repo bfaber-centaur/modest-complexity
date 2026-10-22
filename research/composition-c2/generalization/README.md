@@ -41,10 +41,34 @@ uv run --locked python research/composition-c2/generalization/gen_figures.py len
 
 Figure: [figures/length.png](figures/length.png) (`.svg`, source `figures/length.csv`).
 
+## Part B: replication on new tasks
+
+```bash
+uv run --locked python research/composition-c2/generalization/gen_task.py --draw > research/composition-c2/generalization/tasks.json
+$R --workers 1 --ids c2-gen-calib-inter-s900130-a1
+$R --workers 2 --ids $(python3 -c "import json; print(' '.join(r['run_id'] for r in json.load(open('research/composition-c2/generalization/plan.json'))['runs'] if '-ops63' in r['run_id']))")
+uv run --locked python research/composition-c2/generalization/gen_publish.py --root runs/c2 c2-gen-calib-inter-s900130-a1 <the 16 IDs>
+$R --workers 1 --ids c2-gen-frozen-rep-a1      # reads the committed run directories
+cp runs/c2/c2-gen-frozen-rep-a1/* research/composition-c2/generalization/runs/c2-gen-frozen-rep-a1/
+uv run --locked python research/composition-c2/generalization/gen_figures.py replication
+```
+
+- **Draws** (`tasks.json`, committed before training): seeds 63000 and 63001 were both accepted by the rule; split seeds 63100–63103 all accepted. No rejected draw or split. Tasks `ops63000-ls63100`, `ops63000-ls63101`, `ops63001-ls63102`, `ops63001-ls63103`. In draw 63001 all four ops send symbol 2 to symbol 1; this is allowed by the rule and raises its 3-of-4-slot neighbour vote to 0.41 (0.08–0.12 on the other draws).
+- **Calibration** (`c2-gen-calib-inter-s900130-a1`, 2,000 updates, one job alone): 4.1 ms/update, peak RSS 50 MiB. Part B runs took 39–44 s each with two concurrent jobs (about 4.2 ms/update).
+- **Runs:** all 16 complete, none capped or failed. Each `runs/<ID>/` holds config.json (full recipe: every flag explicit, reviewer C1), metrics.jsonl (every 50 updates, with `--diag`), runtime.json, stdout.log, ckpt-10000.npz (weights + Adam state) and MANIFEST.json (ckpt-0 by hash only; it is the deterministic init of the recorded seed). The calibration checkpoint is listed by hash and not committed.
+- `c2-gen-frozen-rep-a1`: every check holds for all 16 (length-3 prediction strings and accuracies equal each run's own logged step-10000 row; causality identity exact).
+
+Figure: [figures/replication.png](figures/replication.png) (`.svg`; sources `figures/replication.csv`, `figures/replication_trajectories.csv`). The original-task column is drawn from r1's published metrics (¬N scored from the logged prediction strings).
+
 ## Budget (25 min elapsed, D6)
 
-| run | status | wall s (runner) |
+Elapsed wall time with at least one job running, from the registry (union of run intervals):
+
+| runs | status | elapsed s |
 |---|---|---|
 | c2-gen-frozen-orig-a1 | failed (exit 1) | 0.2 |
 | c2-gen-frozen-orig-a2 | complete | 7.1 |
-| **total** | | **7.3 s of 1,500 s** |
+| c2-gen-calib-inter-s900130-a1 | complete | 8.6 |
+| 16 Part B runs, two workers | all complete | 337.6 |
+| c2-gen-frozen-rep-a1 | complete | 14.2 |
+| **total** | | **367.6 s (6.1 min) of 1,500 s** |
