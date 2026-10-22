@@ -48,6 +48,7 @@ All numbers are paired per replicate, at the final step, from `figures/final.csv
    - y1-pretrained features encode z, x1⊕x3 and x2⊕x3 all at 1.00. The untrained network scores 0.80–0.84, `part` 0.80–0.93, `unrel` 0.68–0.71.
    - `split` scores 0.96/0.89/0.87. Its best replicate also has its best frozen readout (0.97 at n = 512, against 0.78 and 0.82).
    - Across arms and replicates, frozen-readout success tracks linear z availability. That is decodability plus readout success, not a demonstration of use.
+   - The reviewer independently reproduced the frozen readout exactly from the published `pretrained.npz` files (REVIEW.md §2).
 6. **Steering did not show reuse.** Moving each input to the other z class mean along a mean-difference direction:
    - Never changed y1 in the y1 network, at either layer, in any replicate. A uniform shift along a z direction cannot flip a linear readout of z⊕x3, so this test could not detect y1's use of z.
    - In every y2-trained network (all arms), the network's own layer-2 z direction flips y2 on 0.99–1.00 of x4 = 1 inputs and on 0.00–0.22 of x4 = 0 inputs. That holds for every y2 solver, not specifically for reuse. Its own layer-1 direction flipped nothing, except in one `unrel` replicate (0.46 of x4 = 1).
@@ -61,7 +62,12 @@ All numbers are paired per replicate, at the final step, from `figures/final.csv
 
 ## Reading
 
-- **Frozen features.** The data favor "y1 pretraining builds a linearly available z (with its sibling XORs), and a linear y2 readout uses it". Controls with the same exposure, the same shared bits (`split`) or the same overlap count (`part`) do not reproduce it. This matches outcome 4, but the selective intervention that would separate 4a from 4b failed to be informative.
+- **Frozen features.** y1 pretraining makes every pairwise XOR of x1, x2, x3 linearly available, and a linear readout of y2 = z∧x4 exploits the one it needs.
+  - Controls with the same exposure, the same shared bits (`split`) or the same overlap count (`part`) do not reproduce it.
+  - Nothing singles out z. The reviewer's symmetry counterexample (review/REVIEW.md §2, C2.4, head e73e529) found the identical readout of (x1⊕x3)∧x4 and (x2⊕x3)∧x4 on the same frozen y1 features scores like y2: 0.96–1.00 at n ≥ 128 on every replicate. That fits the probes in observation 5.
+  - So the transfer is "reuse of an XOR of y1's bits", not evidence that the y1 network computes z = x1⊕x2 as its intermediate.
+  - Outcome 4 holds only in this weak sense. The selective intervention that would separate 4a from 4b was not informative.
+- **Fine-tuning at n ≤ 32 is a weak measure.** Phase 2 degrades even the same-task control there (observation 4; reviewer C2.3), so frozen readout is the cleaner comparison.
 - **Fine-tuning.** The rel advantage is not specific to z: `part` matches it. `split` does not, which points at sharing the gate bit x4, or at fewer y2-irrelevant pretraining bits (`split` trains on four, `rel` and `part` on one), and not at the pair {x1, x2}.
 - **Not shown.** That the fine-tuned network computes y2 through the representation y1 built.
 
