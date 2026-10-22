@@ -1,0 +1,16 @@
+PASS MANIFEST.sha256: all 96 entries match the published bytes
+PASS 24 runs: final.npz rescored with independent code equals the last metrics row and routes_at_T.csv  [worst relative diff 0.0e+00]
+PASS 21 initial-comparison runs at T = 20000 (7 conditions x seeds 54200-54202)
+INFO rho31of32: flip_s>=0.95 first at [22, 41, 27]; train fit at [404, 494, 494] (reversed there [0.004, 0.0, 0.0]); reversed>0.5 first at [None, None, None] (train loss [None, None, None]); final delta_rule [4.7, 4.5, 7.2] delta_s [39.4, 38.9, 37.1]
+INFO rho31of32: delta_rule change from step ~2000 to 20000: [4.4, 4.1, 6.7]
+INFO rho15of16: flip_s>=0.95 first at [22, 37, 27]; train fit at [494, 603, 546] (reversed there [0.062, 0.055, 0.035]); reversed>0.5 first at [None, None, None] (train loss [None, None, None]); final delta_rule [20.9, 18.2, 19.6] delta_s [22.8, 27.3, 26.3]
+INFO rho15of16: delta_rule change from step ~2000 to 20000: [16.7, 15.0, 15.4]
+INFO rho7of8: flip_s>=0.95 first at [22, 37, 27]; train fit at [447, 603, 546] (reversed there [0.105, 0.113, 0.117]); reversed>0.5 first at [4036, 2989, 3651] (train loss ['8.8e-05', '3.2e-04', '1.5e-04']); final delta_rule [27.6, 27.5, 27.9] delta_s [11.8, 12.0, 12.6]
+INFO rho7of8: delta_rule change from step ~2000 to 20000: [20.5, 19.9, 20.3]
+INFO rho3of4: flip_s>=0.95 first at [25, 41, 30]; train fit at [366, 494, 447] (reversed there [0.316, 0.332, 0.305]); reversed>0.5 first at [546, 667, 737] (train loss ['2.0e-02', '2.3e-02', '1.3e-02']); final delta_rule [32.6, 31.9, 32.6] delta_s [5.5, 4.7, 5.2]
+INFO rho3of4: delta_rule change from step ~2000 to 20000: [21.3, 21.2, 22.1]
+PASS identity: flip_s = 1 - reversed and flip_rule = reversed whenever reliable = 1 (1089 logged rows)
+INFO r1-route-rho15of16-s54200-a1: reversed acc 0.422; variance share context 0.25, rule pattern 0.07, interaction 0.68 (shuffled null about 0.12 / 0.03); contexts all-correct 1, all-wrong 2 of 32; per-pattern acc [0.41, 0.66, 0.56, 0.34, 0.25, 0.5, 0.38, 0.28]
+INFO r1-route-rho15of16-s54201-a1: reversed acc 0.246; variance share context 0.21, rule pattern 0.07, interaction 0.72 (shuffled null about 0.12 / 0.03); contexts all-correct 0, all-wrong 6 of 32; per-pattern acc [0.34, 0.31, 0.44, 0.22, 0.12, 0.25, 0.22, 0.06]
+INFO r1-route-rho15of16-s54202-a1: reversed acc 0.344; variance share context 0.23, rule pattern 0.10, interaction 0.68 (shuffled null about 0.12 / 0.03); contexts all-correct 0, all-wrong 2 of 32; per-pattern acc [0.34, 0.5, 0.66, 0.28, 0.25, 0.19, 0.31, 0.22]
+ALL PASS

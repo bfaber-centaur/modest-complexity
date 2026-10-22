@@ -76,6 +76,24 @@ def main(commit):
         # Is the rule's contribution still rising over the last decade of updates?
         late = [(t[-1]['delta_rule'] - next(r for r in t if r['step'] >= 2000)['delta_rule']) for t in tr]
         print(f'INFO {cond}: delta_rule change from step ~2000 to 20000: {[round(x, 1) for x in late]}')
+    rows_all = [r for v in main_runs.values() for r in v[1] if r['acc_reliable'] == 1.]
+    check(f'identity: flip_s = 1 - reversed and flip_rule = reversed whenever reliable = 1 ({len(rows_all)} logged rows)',
+          all(abs(r['flip_s'] - (1 - r['acc_reversed'])) < 1e-12 and abs(r['flip_rule'] - r['acc_reversed']) < 1e-12 for r in rows_all))
+    # Counterexample (QUESTION.md, Revisions): at rho = 15/16, does reversed-environment
+    # correctness vary by held-out context or by rule pattern?
+    rev = np.array([held[i] and dec[i][1] != dec[i][3] for i in range(len(X))])
+    ctxs = sorted({dec[i][2] for i in range(len(X)) if rev[i]}); pats = sorted({dec[i][0] for i in range(len(X))})
+    for rid in sorted(r for r, v in main_runs.items() if v[0] == 'rho15of16'):
+        z = np.load(io.BytesIO(F[f'runs/{rid}/final.npz']))
+        logit = np.maximum(X @ z['p.W1'] + z['p.b1'], 0) @ z['p.W_y'] + z['p.b_y']
+        ok = {(dec[i][2], dec[i][0]): int((logit[i, 1] > logit[i, 0]) == dec[i][3]) for i in np.flatnonzero(rev)}
+        R = np.array([[ok[(c, a)] for a in pats] for c in ctxs], float)
+        m = R.mean(); tot = ((R - m)**2).sum()
+        sc = 8*((R.mean(1) - m)**2).sum()/tot; sp = 32*((R.mean(0) - m)**2).sum()/tot
+        print(f'INFO {rid}: reversed acc {m:.3f}; variance share context {sc:.2f}, rule pattern {sp:.2f}, '
+              f'interaction {1-sc-sp:.2f} (shuffled null about 0.12 / 0.03); contexts all-correct '
+              f'{int((R.mean(1) == 1).sum())}, all-wrong {int((R.mean(1) == 0).sum())} of {len(ctxs)}; '
+              f'per-pattern acc {np.round(R.mean(0), 2).tolist()}')
 
 
 if __name__ == '__main__':

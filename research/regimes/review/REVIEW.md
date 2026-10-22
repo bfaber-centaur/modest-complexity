@@ -8,7 +8,7 @@ Reviewer's plan and pre-stated counterexamples: [QUESTION.md](QUESTION.md). Stat
 | §1 R1 composition | M1 oracle/split PASS; design notes; M2 not yet | 2026-10-22, lane `ff9b721` |
 | §2 R2 shared subcomputation | M1 oracle/split/metrics PASS; two CONCERNs on reading (C2.1, C2.2) | 2026-10-22, lane `c4939c2` |
 | §3 R3 history and recovery | M1 oracle/split/metrics/branch hashes PASS; C0.1/C0.2 avoided | 2026-10-22, lane `f71c84f` |
-| §4 R4 competing routes | M1 oracle/split PASS; all 14 logged metrics PASS | 2026-10-22, lane `4872093` |
+| §4 R4 competing routes | M1 PASS; M2 numbers recomputed PASS; counterexample: route choice at ρ = 15/16 is mostly base-specific, not context-level (C4.1, wording) | 2026-10-22, lane `f0f68f7` |
 
 ## §0 Shared code (`research/regimes/common/`)
 
@@ -113,5 +113,36 @@ Reviewed at lane `4872093`: QUESTION.md, task.py and train.py; the runs since ar
 | Split by base | PASS | The 256 training bases are exactly the 32 training contexts × 8 rule patterns. Held-out is every input with an unseen context (512). No base crosses the split under any condition or s value. Held-out is closed under s flips and rule-bit flips. |
 | Exceptions and pairing | PASS | For every ρ: realized ρ = 1 − k/32 exactly, labels and s 128/128, and k exceptions per rule pattern. Exceptions nest across ρ, and conditions differ only in s on exception bases. Shortcut-only uses the ρ = 1/2 inputs with target s, which is independent of y and of each rule bit. Each irrelevant bit is exactly independent of y in training. Exceptions per training context at ρ = 1/2 range over 2–6 of 8, so exception status is not a context feature. |
 | Loss and metric calculations | PASS | All 14 logged metrics (train, conforming and exception accuracy; reliable, reversed and independent; flip, signed and absolute deltas for s, rule and irrelevant bits) equal a separate pair-by-pair calculation on random margins, for ρ = 7/8 and shortcut-only. `train.py` logs before the update at each logged step, so step 0 is the initialization. |
-| Exposure | PASS (design) | 256 rows × T updates in every condition. Same init, same parameter count, wd 0, one head. |
-| Interventions, figures | NOT YET CHECKED | |
+| Exposure | PASS | 256 rows × 20,000 updates in every condition, with the same init, the same 1,666 parameters, wd 0 and one head. Confirmed in the 21 published configs. |
+
+### M2 (`f0f68f7`, first figure)
+
+Evidence: [recompute_routes.py](recompute_routes.py), output in [out/recompute_routes.txt](out/recompute_routes.txt).
+
+| item | status | evidence and what it affects |
+|---|---|---|
+| Published artifacts | PASS | All 96 entries of `runs/MANIFEST.sha256` match the published bytes. The registry has 24 `running` and 24 `complete` events, with none failed, capped or missing. The plan entries for the main runs were committed (33706fa, 02:42:04) 9 s before the first launch (02:42:13). That is commit time, so push order is not verifiable from git. |
+| Key numbers recomputed | PASS | For all 24 runs, `final.npz` was read with plain `np.load`, run through a forward pass written here and scored with the separate metric code from §4 M1. The results equal the last metrics row and `routes_at_T.csv` exactly (worst difference 0). |
+| README trajectory claims | PASS, with one wording note | Re-derived from `metrics.jsonl`. Shortcut flip ≥ 0.95 first at 22–41 updates for every ρ > 1/2. Training set fit at 366–603. Reversed accuracy at the fit: 0.00, 0.035–0.062, 0.105–0.117 and 0.31–0.33. ρ = 3/4 crosses 0.5 at 546–737 with train loss 1.3–2.3e-2. *Note:* README's "ρ = 7/8 crosses 0.5 at 2,989–3,651, loss 1–3e-4" uses "reaches 0.5"; seed 54200 sits at exactly 0.500 at 3,651. Strictly above 0.5, the range is 2,989–4,036 at loss 0.9–3.2e-4. Not material. |
+| Flip-rate identity | PASS | Whenever reliable accuracy is 1, flip_s = 1 − reversed and flip_rule = reversed. This holds in all 1,089 such logged rows, and it follows exactly from the pair construction: each s pair and each rule pair has one reliable and one reversed member. The lane's conclusion is right: the signed logit deltas are the informative dependence measure. |
+| Intervention semantics | PASS | Input-level flips on held-out pairs only. s pairs are oriented (s = 0, s = 1) and rule pairs (y = 0, y = 1), so a positive signed delta means the margin moves the way that route predicts. Irrelevant pairs keep only held-out endpoints. As the lane says, these describe what the function depends on, not how it is represented. At ρ = 1 every reversed input is off the training distribution (QUESTION.md says so). |
+| Checkpoints and optimizer | PASS | One phase, Adam from a fresh state, and `final.npz` holds weights plus Adam state. The follow-up's bitwise check of `step20000.npz` against the published `final.npz` is the right test. I check it at M4. |
+| Figure supports text | PASS, minor | Inspected `routes_over_training.png` and `routes_at_T.png`. Every claim in the README's M2 list is visible in them. *Minor:* the purple exception-base train-accuracy traces in the first column have no legend entry. They are labeled only in `routes_at_T.png`. |
+
+**C4.1 (CONCERN, wording) — counterexample to "which route wins depends on the held-out context" (ρ = 15/16).** The prediction was stated in QUESTION.md (Revisions) before computing.
+- *Method.* For each seed I took the 32 held-out contexts × 8 rule-patterns matrix of reversed-environment correctness and split its variance into main effects and interaction. Shuffled-null expectations are 31/255 = 0.12 for the context share and 7/255 = 0.03 for the pattern share.
+- *Result.*
+
+  | seed | context share | pattern share | interaction | contexts all-correct / all-wrong |
+  |---|---|---|---|---|
+  | 54200 | 0.25 | 0.07 | 0.68 | 1 / 2 of 32 |
+  | 54201 | 0.21 | 0.07 | 0.72 | 0 / 6 of 32 |
+  | 54202 | 0.23 | 0.10 | 0.68 | 0 / 2 of 32 |
+
+- *Reading.* Context matters about 2× more than the null and more than rule pattern (about 2–3× its null). But most of the variance is base-specific (context × pattern), and almost no context goes entirely one way.
+- So neither my counterexample (pattern-level choice) nor the strong form of the lane's claim (context-level choice) holds. "Which route wins depends on the individual held-out base, more on its context than on its rule pattern" is what the data support.
+- *Affects:* that one sentence in the README, and the NOTE if it repeats it. Nothing else.
+
+**Observations to pass on (not findings).**
+- **ρ = 1/2 rule-only.** s is exactly independent of y in training, yet the shortcut flip rate rises transiently to about 0.6–0.7 around 100–300 updates before collapsing to 0 (figure, row 6, column 3). s is used transiently, plausibly as a memorization feature, before the rule wins. The README does not mention it.
+- **Late-phase dynamics are optimizer-specific.** The rule's growth after the fit (500 → 20,000 updates, at train loss 1e-2 down to 1e-9) happens in the regime where Adam's normalized steps keep moving the weights while gradients shrink. The lane's own follow-up diagnostics (√v̂ near eps, float64 saturation near) show this. Statements about which route "training selects" late should name the recipe (full-batch Adam, lr 1e-3, wd 0), as QUESTION.md's confounder list already does.
