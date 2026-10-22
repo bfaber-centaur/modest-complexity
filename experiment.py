@@ -65,17 +65,34 @@ def lossgrad(w,a,b,y):
     return float(loss),[gu,gv,gw]
 
 
-def adam(w,g,m,v,t,lr,wd,measure=False):
+def decay_parts(path, p, h, on):
+    """The part of U, V and W that decays when decay is restricted by a projection file holding
+    per-unit frequencies k (1..p//2) and a live mask. P keeps each live unit's component at
+    frequency k[j], both cosine and sine (+-k[j]), along the token axis of U and V and the label
+    axis of W; DC and all other frequencies are 'the rest'. on='rest' decays w - P(w), on='reference'
+    decays P(w)."""
+    with np.load(path) as z: k,live=z['k'],z['live']
+    if k.shape!=(h,) or live.shape!=(h,) or live.dtype!=bool or not np.all((1<=k)&(k<=p//2)):
+        raise ValueError(f'{path}: need k in 1..{p//2} and a boolean live mask, one per unit')
+    keep=np.zeros((p//2+1,h)); keep[k,np.arange(h)]=live
+    P=lambda x: np.fft.irfft(np.fft.rfft(x,axis=0)*keep,n=p,axis=0)
+    parts=[P,P,lambda x: P(x.T).T]
+    return parts if on=='reference' else [lambda x,f=f: x-f(x) for f in parts]
+
+
+def adam(w,g,m,v,t,lr,wd,measure=False,decay_part=None):
+    """AdamW step; decay_part (from decay_parts) restricts the decoupled decay to part of each matrix."""
     a2=d2=dot=0.
     for i in range(3):
         m[i] *= .9; m[i] += .1*g[i]
         v[i] *= .999; v[i] += .001*g[i]**2
         update = -lr*(m[i]/(1-.9**t))/(np.sqrt(v[i]/(1-.999**t))+1e-8)
         if measure:
-            decay = -lr*wd*w[i]
+            decay = -lr*wd*(w[i] if decay_part is None else decay_part[i](w[i]))
             a2 += float(np.sum(update**2)); d2 += float(np.sum(decay**2))
             dot += float(np.sum(update*decay))
-        w[i] *= 1-lr*wd
+        if decay_part is None: w[i] *= 1-lr*wd
+        else: w[i] -= lr*wd*decay_part[i](w[i])
         w[i] += update
     if measure:
         return dict(adaptive_norm=float(np.sqrt(a2)), decay_norm=float(np.sqrt(d2)),
@@ -207,8 +224,10 @@ def run(args):
             hashes=dict(split_sha256=array_sha256(a,b,y,*masks),target_sha256=array_sha256(target))
             start_file=args.init_weights or args.resume
             start_sha=hashlib.sha256(Path(start_file).read_bytes()).hexdigest() if start_file else None
+            decay_sha=hashlib.sha256(Path(args.decay_projection).read_bytes()).hexdigest() if args.decay_projection else None
             cfg=vars(args).copy()
             cfg.update(seeds=seeds,data_hashes=hashes,host=platform.node(),runtime=inventory(out),
+                       decay_projection_sha256=decay_sha,
                        init_weights_sha256=start_sha if args.init_weights else None,
                        resume_sha256=start_sha if args.resume else None,
                        init_rule=('U, V, W from --init-weights (init_seed unused); Adam moments zero, update count restarts at 1'
@@ -224,6 +243,9 @@ def run(args):
                 raise ValueError(f"split hash {hashes['split_sha256']} != expected {args.expect_split_sha256}")
             if start_file and args.expect_init_sha256 and start_sha!=args.expect_init_sha256:
                 raise ValueError(f'start file hash {start_sha} != expected {args.expect_init_sha256}')
+            if decay_sha and args.expect_decay_projection_sha256 and decay_sha!=args.expect_decay_projection_sha256:
+                raise ValueError(f'decay projection hash {decay_sha} != expected {args.expect_decay_projection_sha256}')
+            decay_part=decay_parts(args.decay_projection,args.p,args.hidden,args.decay_on) if args.decay_projection else None
             shapes=[(args.p,args.hidden),(args.p,args.hidden),(args.hidden,args.p)]
             start=0
             if args.init_weights:
@@ -256,7 +278,7 @@ def run(args):
                         tr=masks[0]
                         loss,g=lossgrad(w,a[tr],b[tr],target[tr])
                         if not np.isfinite(loss): raise FloatingPointError('nonfinite loss; retain failed run')
-                        update=adam(w,g,m,v,step,args.lr,args.wd,measure=logging)
+                        update=adam(w,g,m,v,step,args.lr,args.wd,measure=logging,decay_part=decay_part)
                     completed=step
                 if logging:
                     with timing.measure('evaluation'):
@@ -346,6 +368,9 @@ if __name__=='__main__':
     ap.add_argument('--train-fraction',type=float,default=.3,help='Share of grouped pairs per class in train')
     ap.add_argument('--hidden',type=int,default=128); ap.add_argument('--steps',type=int,default=50000)
     ap.add_argument('--lr',type=float,default=.001); ap.add_argument('--wd',type=float,default=1.)
+    ap.add_argument('--decay-projection',help='Restrict the decoupled decay with this per-unit frequency file (see decay_parts)')
+    ap.add_argument('--decay-on',choices=['rest','reference'],help='With --decay-projection: what decays')
+    ap.add_argument('--expect-decay-projection-sha256',help='Fail before training unless the --decay-projection file hash matches')
     ap.add_argument('--log-every',type=int,default=100); ap.add_argument('--audit-every',type=int,default=1000)
     ap.add_argument('--checkpoint-every',type=int,default=1000)
     ap.add_argument('--checkpoint-steps',default='',help='Extra checkpoint steps, comma separated, multiples of --log-every')
@@ -359,6 +384,8 @@ if __name__=='__main__':
             ap.error('Require odd p >= 7, positive hidden/cadences/shams, and nonnegative steps')
         if args.resume and (args.init_weights or args.diagnostics!='none'):
             ap.error('--resume excludes --init-weights and needs --diagnostics none (no initial weights to compare)')
+        if bool(args.decay_projection)!=bool(args.decay_on):
+            ap.error('--decay-projection and --decay-on go together')
         if not 0<args.train_fraction<=.8:
             ap.error('Require 0 < --train-fraction <= .8 (calibration keeps .1)')
         if args.checkpoint_every%args.log_every or args.audit_every%args.log_every or any(
