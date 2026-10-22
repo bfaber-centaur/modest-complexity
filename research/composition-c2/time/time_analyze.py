@@ -285,7 +285,7 @@ def figure():
     traj, thr = read_csv(FIGS/'time_main.csv'), read_csv(FIGS/'time_threshold.csv')
     series = lambda arm, s, key: [(r['step'], r[key]) for r in traj if r['arm'] == arm and r['seed'] == s and r[key] != '']
     fig = plt.figure(figsize=(12.5, 14.5))
-    gs = fig.add_gridspec(4, 2, height_ratios=[1.25, 1, 1, 1], hspace=.42, wspace=.2)
+    gs = fig.add_gridspec(4, 2, height_ratios=[1.25, 1, 1, 1], hspace=.42, wspace=.2, top=.9)
     top = fig.add_subplot(gs[0, :])
     ax = {k: fig.add_subplot(gs[i, j], sharex=top) for k, (i, j) in
           dict(notN=(1, 0), N=(1, 1), ce=(2, 0), margin=(2, 1), norms=(3, 0), vhat=(3, 1)).items()}
@@ -323,10 +323,19 @@ def figure():
         a.axhline(THRESHOLD, color='0.45', lw=1, ls=(0, (4, 3)))
         a.axhline(1/8, color='0.65', lw=.8, ls=':')
         a.set_ylim(-.02, 1.04)
-    vfrac = [r['frac_sqrt_vhat_below_eps'] for r in traj if r['frac_sqrt_vhat_below_eps'] != '']
+    def first_below(key):
+        out = []
+        for arm in ARMS:
+            for s in SEEDS:
+                t = next((int(x) for x, y in series(arm, s, key) if y < 1e-8), None)
+                if t is not None:
+                    out.append(t)
+        return out
+    med, mx = first_below('sqrt_vhat_median'), first_below('sqrt_vhat_max')
     ax['vhat'].axhline(1e-8, color='0.3', lw=1, ls=(0, (4, 3)))
-    ax['vhat'].text(.99, .04, f'eps = 1e-8; fraction of coordinates with √v̂ < eps: max {max(vfrac) if vfrac else float("nan"):.2g} over all logged updates',
-                    transform=ax['vhat'].transAxes, ha='right', fontsize=8, color='0.25')
+    ax['vhat'].text(.99, .96, 'eps = 1e-8 (dashed)' + (f'\nmedian √v̂ < eps from {min(med):,}–{max(med):,}' if med else '') +
+                    (f'\nevery coordinate < eps from {min(mx):,}–{max(mx):,}\n({len(mx)} of 9 runs; first logged update)' if mx else ''),
+                    transform=ax['vhat'].transAxes, ha='right', va='top', fontsize=8, color='0.25')
     for k in ('ce', 'norms', 'vhat'):
         ax[k].set_yscale('log')
     for a in (top, *ax.values()):
@@ -351,9 +360,9 @@ def figure():
     handles += [Line2D([], [], color='0.3', marker='v', lw=0, label='first of 5 logged evals ≥ 0.95'),
                 Line2D([], [], color='0.3', marker='>', markerfacecolor='white', lw=0, label='censored (never sustained ≥ 0.95)'),
                 Line2D([], [], color='0.45', ls=(0, (4, 3)), label='0.95 threshold'), Line2D([], [], color='0.65', ls=':', label='chance 1/8')]
-    fig.legend(handles=handles, loc='upper center', ncol=3, fontsize=8, frameon=False, bbox_to_anchor=(.5, .995))
+    fig.legend(handles=handles, loc='upper center', ncol=3, fontsize=8, frameon=False, bbox_to_anchor=(.5, .975))
     fig.suptitle('c2 time lane: three RNN arms continued from r1 ckpt-10000 to 50,000 updates, unchanged recipe; logged every 50 updates',
-                 y=1.015, fontsize=11)
+                 y=.99, fontsize=11)
     for ext in ('png', 'svg'):
         fig.savefig(FIGS/f'time_main.{ext}', dpi=130, bbox_inches='tight')
     print('wrote', (FIGS/'time_main.png').relative_to(REPO))
