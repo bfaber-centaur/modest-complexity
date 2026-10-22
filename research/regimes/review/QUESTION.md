@@ -67,9 +67,9 @@ Each status names what it affects.
 
 ## Revisions
 
-(Counterexample refinements are recorded here, dated, before they are run.)
+(Counterexample refinements are recorded here, dated, before they are run. Correction, 03:10: the first four entries were labelled with clock estimates that ran 8 to 19 minutes ahead; they now carry their commit times. Each commit precedes the runs it plans, as `registry.jsonl` shows.)
 
-**2026-10-22 ~03:00, R4, after reading M2 (`f0f68f7`) and before computing.**
+**2026-10-22 02:52 (commit 40dc5ea), R4, after reading M2 (`f0f68f7`) and before computing.**
 - *Revised target.* The lane's M2 reading has three parts:
   - every ρ > 1/2 passes through a shortcut phase;
   - exceptions are fit by memorization first;
@@ -82,7 +82,7 @@ Each status names what it affects.
 - *Prediction if the counterexample holds:* the pattern share is comparable or larger.
 - *Also checked.* The identity "flip_s = 1 − reversed and flip_rule = reversed whenever reliable = 1", over every logged row.
 
-**2026-10-22 ~03:05, R2, after reading M2 (`55d6787`) and before computing.**
+**2026-10-22 02:54 (commit 4b7d070), R2, after reading M2 (`55d6787`) and before computing.**
 - *Revised target.* The M2 summary reads the frozen y1 features as giving a linear y2 readout of 0.98–1.00 at n ≥ 128, with +0.15 to +0.35 over `part` at n = 32–128. The tempting reading is that y1 pretraining builds *our* z = x1⊕x2.
 - *Counterexample.* y1 = x1⊕x2⊕x3 is symmetric in x1, x2 and x3. A y1 network may therefore support the gated readout for any of the three pairwise XORs, and z is not privileged.
 - *Test (analysis only, published `pretrained.npz` of the three `rel` runs).*
@@ -93,7 +93,7 @@ Each status names what it affects.
 - *Prediction if z is privileged:* the y2 readout exceeds the y2' and y2'' readouts by ≥ 0.1 at n ≥ 128 on each replicate.
 - *Prediction if the counterexample holds:* all three are within about 0.05 of each other, so frozen-feature transfer says "pairwise XORs of y1's bits are linearly available", not "z".
 
-**2026-10-22 ~03:12, R2 M4 (`f493c1a`), before running.**
+**2026-10-22 02:58 (commit a285cfe; runs launched 02:58:21), R2 M4 (`f493c1a`), before running.**
 - *Target.* NOTE.md's fine-tuning reading: `part` matches `rel` and `split` gives nothing, which "points at sharing the gate bit x4, or at fewer y2-irrelevant pretraining bits".
 - *Counterexample arm `gate`.* Pretrain on g = x3⊕x4⊕x5. It shares only the gate bit x4 with y2: no x1, no x2. It has two y2-irrelevant bits, x3 and x5, which puts it between `part`/`rel` (one) and `unrel` (three).
 - *Recipe.* The lane's exact train.py at `f493c1a`, loaded read-only, with g added to its label table in memory. The three lane replicates' init and data seeds are reused on purpose so the arm is paired with theirs. This is a new configuration, not a new independent seed.
@@ -104,7 +104,7 @@ Each status names what it affects.
   - if sharing x2 is what `part` adds: `gate` is below `part` on all three replicates.
 - *Budget.* 4 runs of about 10 s each.
 
-**2026-10-22 ~03:20, R3 M4 (`a23bdd8`), before running.**
+**2026-10-22 03:01 (commit d875f95; runs launched 03:01:55), R3 M4 (`a23bdd8`), before running.**
 - *Target.* NOTE obs. 2: A stays linearly decodable after B. A fresh readout on the frozen end-of-B trunk gets 0.91–1.00, against 0.49–0.79 on a B-only trunk and 0.58–0.63 untrained.
 - *Counterexample.* The A-then-B trunk could be generically richer, not A-specific. After two parity tasks, its units may make any 3-bit parity linearly readable, including ones never trained.
 - *Test.* The end-of-B checkpoints are local-only in the lane, so I replay the B phase from each published ckA. The runs are `r1-rev-hist-replay-{rel,unrel}-d{1000,10000}-s5320{0,1,2}-a1`, using the lane's `history.py` at `a23bdd8`, unedited.
@@ -117,3 +117,25 @@ Each status names what it affects.
 - *Prediction if it is generic:* C1 on end-of-B trunks rises toward A's level.
 - *Expectation for C2.* It may be high on related-B trunks, because both A and Brel contain x0⊕x1. That would say what is shared, not that A survived.
 - *Budget.* 12 runs, about 1 min with 2 workers.
+
+**2026-10-22 03:12, R1 M4 (`de0ef92`), before computing or running.**
+- *Targets.* NOTE.md has two readings.
+  - (i) The MLP "mostly answers with a seen neighbour's answer", so its above-chance held-out accuracy (`final` 0.14–0.17, `inter` 0.20–0.25) is not composition.
+  - (ii) A shared transition plus intermediate states supervised through one shared readout gave near-perfect zero-shot composition (`rnn-inter` 0.96–1.00). The NOTE disclaims separating the two parts.
+- *Counterexample 1 (analysis only; the R1 plan above).* Held-out success may be concentrated on rows a neighbour-copying heuristic already answers.
+  - Split held-out rows by whether the true answer equals the final label of some training row that differs in exactly one op slot (N), or not (¬N). A pure neighbour-copier scores 0 on ¬N by construction.
+  - Data: the logged `held_final_pred` at step 10,000 of all 15 MLP and RNN runs, scored against my oracle's labels.
+  - *Prediction if `rnn-inter` composes:* its ¬N accuracy is ≥ 0.9 on every seed and within about 0.05 of its N accuracy.
+  - *Prediction if the counterexample holds:* `rnn-inter`'s ¬N accuracy is well below its N accuracy (< 0.5).
+  - *For the MLP and `rnn-final` I expect the opposite:* ¬N accuracy near 0 (≤ 0.05), which would support reading (i). If MLP `inter` has ¬N accuracy ≥ 0.2, reading (i) understates partial composition.
+- *Counterexample 2 (runs): is the shared readout needed?* This was the coordinator's question; the NOTE names it as a next question.
+  - Arm `rnn-untied`: the lane's `train.py` at `de0ef92`, loaded read-only and unedited except that h1, h2, h3 get their own readouts V1, V2, V3, each initialized as a copy of the lane's V.
+  - The start is identical to the lane's `rnn-inter` of the same seed. The lane seeds 51200–51202 are reused on purpose so the arm is paired with theirs; this is a new configuration, not a new independent seed.
+  - Only the tying changes. That adds 2,064 readout parameters (19,208 → 21,272); data, labels, updates and optimizer are unchanged.
+  - *Wrapper checks, before training.* At init the untied logits and trunk gradients equal the lane's bitwise, with V1 + V2 + V3 gradients = the lane's V gradient. A central-difference check on a small random untied net passes.
+  - *Replay check.* The tied mode on seed 51200 must reproduce the lane's published `metrics.jsonl` line for line.
+  - *Prediction if the shared readout is needed:* held-out final ≤ 0.5 at 10,000 updates on all three seeds, near `rnn-final` (0.27–0.32).
+  - *Prediction if the shared transition plus intermediate supervision suffices:* ≥ 0.8 on all three seeds, near `rnn-inter`.
+  - In between is reported as partial. I also report whether V3 read off h2 decodes step2 (a code shared across positions arising anyway).
+- *Also checked without prediction:* every NOTE number, the 73% and ~35% base rates, the interchange pair selection, and the follow-up's pre-registration order.
+- *Budget.* 4 runs of about 40 s with 2 workers, about 1.5 min.

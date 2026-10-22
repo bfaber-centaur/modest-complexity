@@ -34,11 +34,11 @@ uv run --locked python research/regimes/review/check_history_m4.py a23bdd8 58cb3
 | date (UTC) | item | wall | running total |
 |---|---|---|---|
 | 2026-10-22 02:40 | check_common.py (code checks; 2 s of it is a sleep) | 3.5 s | 0.1 min |
-| 2026-10-22 03:00 | four oracle scripts (enumeration, no training; R1 includes an 8! search) | < 2 s each | 0.2 min |
-| 2026-10-22 03:05 | recompute_routes.py (rescoring 24 published checkpoints) | 0.7 s | 0.2 min |
-| 2026-10-22 03:08 | recompute_shared.py (36 linear readouts × 2,000 updates on published features) | 17.3 s | 0.5 min |
-| 2026-10-22 03:15 | runner: `r1-rev-share-gate-s5220{0,1,2}-a1`, `r1-rev-share-replay-part-s52200-a1` (2 workers) | 18.4 s | 0.8 min |
-| 2026-10-22 03:22 | runner: 12 × `r1-rev-hist-replay-*` (B phase from published ckA, 2 workers) | 25.3 s | 1.2 min |
-| 2026-10-22 03:23 | specificity_history.py (54 readouts × 2,000 updates on replayed trunks) | 18.6 s | 1.5 min |
+| 2026-10-22 02:49 | four oracle scripts (enumeration, no training; R1 includes an 8! search) | < 2 s each | 0.2 min |
+| 2026-10-22 02:52 | recompute_routes.py (rescoring 24 published checkpoints) | 0.7 s | 0.2 min |
+| 2026-10-22 02:55 | recompute_shared.py (36 linear readouts × 2,000 updates on published features) | 17.3 s | 0.5 min |
+| 2026-10-22 02:58 | runner: `r1-rev-share-gate-s5220{0,1,2}-a1`, `r1-rev-share-replay-part-s52200-a1` (2 workers) | 18.4 s | 0.8 min |
+| 2026-10-22 03:02 | runner: 12 × `r1-rev-hist-replay-*` (B phase from published ckA, 2 workers) | 25.3 s | 1.2 min |
+| 2026-10-22 03:03 | specificity_history.py (54 readouts × 2,000 updates on replayed trunks) | 18.6 s | 1.5 min |
 
 Host for the checks above: 4 visible CPUs, Intel Xeon 2.10 GHz, CPython 3.12.14 and NumPy from the locked environment, one BLAS thread.
