@@ -1,0 +1,5 @@
+r1-rev-comp-rnn-untied-s51200-a1 [('all', 1.0), ('fit', 1.0), ('val', 1.0), ('eval', 1.0)]
+r1-rev-comp-rnn-untied-s51201-a1 [('all', 1.0), ('fit', 1.0), ('val', 1.0), ('eval', 1.0)]
+r1-rev-comp-rnn-untied-s51202-a1 [('all', 1.0), ('fit', 1.0), ('val', 1.0), ('eval', 1.0)]
+/home/user/modest-complexity/.venv/lib/python3.12/site-packages/numpy/__config__.py:155: UserWarning: Install `pyyaml` for better output
+  warnings.warn("Install `pyyaml` for better output", stacklevel=1)
