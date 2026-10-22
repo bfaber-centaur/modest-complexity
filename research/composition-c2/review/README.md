@@ -5,7 +5,7 @@
 - [rev_pin.py](rev_pin.py): pin check of `b3e8132`, plus D10. Its output is [out/rev_pin.txt](out/rev_pin.txt).
 - [rev_gen.py](rev_gen.py): generalization lane checks at a lane commit, and CX-G1. Its output is [out/rev_gen.txt](out/rev_gen.txt).
 - [rev_time.py](rev_time.py): time lane checks at a lane commit, and CX-T1/CX-T2. Its output is [out/rev_time.txt](out/rev_time.txt).
-- [rev_share.py](rev_share.py): sharing lane checks at a lane commit, and CX-S1. Its output is [out/rev_share.txt](out/rev_share.txt).
+- [rev_share.py](rev_share.py): sharing lane checks at a lane commit, CX-S1, and the wd 0 follow-up with CX-S2. Its output is [out/rev_share.txt](out/rev_share.txt).
 - [rev_mech.py](rev_mech.py): mechanisms lane checks at a lane commit, and CX-M1. Its output is [out/rev_mech.txt](out/rev_mech.txt).
 - [plan.json](plan.json), [registry.jsonl](registry.jsonl): reviewer runs (IDs `c2-rev-`, seeds 65000–65999). Outputs are local in `runs/c2/` (gitignored). [runs/](runs/MANIFEST.sha256) holds their small files and a manifest.
 
@@ -20,7 +20,7 @@ uv run --locked python research/regimes/common/run_jobs.py --plan research/compo
 uv run --locked python research/composition-c2/review/rev_pin.py runs/c2 > research/composition-c2/review/out/rev_pin.txt
 uv run --locked python research/composition-c2/review/rev_gen.py 30c495f 99c83c8 543ed95 > research/composition-c2/review/out/rev_gen.txt
 uv run --locked python research/composition-c2/review/rev_mech.py 817a768 817a768 > research/composition-c2/review/out/rev_mech.txt
-uv run --locked python research/composition-c2/review/rev_share.py 83b3303 > research/composition-c2/review/out/rev_share.txt
+uv run --locked python research/composition-c2/review/rev_share.py 83b3303 501071c > research/composition-c2/review/out/rev_share.txt
 uv run --locked python research/composition-c2/review/rev_time.py 543ed95 > research/composition-c2/review/out/rev_time.txt
 ```
 
@@ -41,5 +41,6 @@ uv run --locked python research/composition-c2/review/rev_time.py 543ed95 > rese
 | before 5893f9f (04:31) | `rev_gen.py` with Part B and CX-G2 | 20.4 s | 3.7 min |
 | before 7ab43ed (04:34) | `rev_time.py` (time M2, CX-T1, CX-T2), two passes, plus a one-off read of the logged eps-regime steps | 2.0 + 1.7 + 1 s | 3.8 min |
 | before c321113 (04:37) | A5 checks: two one-off reads (about 6 s), then `rev_gen.py` with `a5()` | 6 + 42.8 s | 4.6 min |
+| after 3be6632 (04:42) | `rev_share.py` with the wd 0 follow-up: one crash (no `diag` in the 10k row), the CX-S2 pass, the NOTE-check pass, a one-off read of the table values, and a final pass after fixing two rounding tolerances in my checks | 0.7 + 0.9 + 1.2 + 1 + 1.1 s | 4.7 min |
 
 Times from 04:16 on were first written as clock guesses that ran 3–9 minutes ahead. They were replaced with the commit that recorded each run.

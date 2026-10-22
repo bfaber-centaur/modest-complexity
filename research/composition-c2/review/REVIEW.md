@@ -6,7 +6,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 |---|---|---|
 | Pin `b3e8132` (common/, recovered/, verify_resume) | **CONCERN** (C1). Training may start. | §1 |
 | Time | M2 (`543ed95`, PR #55): **PASS** on every number checked. **CONCERN T1**: the late dynamics are in Adam's eps regime. CX-T1 half failed; CX-T2 held narrowly. F1 follow-up NOT CHECKED. | §2 |
-| Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd-0 follow-up NOT CHECKED. | §5 |
+| Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd 0 follow-up (`501071c`): **PASS** on every number checked; note S1 (F4 lead is 0.05–0.13). CX-S2: "nearly flat" is a slow rise in every run while logits keep growing, not a plateau. wd 0 decode and group tables NOT CHECKED. | §5 |
 | Generalization | Parts A and B and A5 (PR #51, NOTE at `01d1296`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1 and G2. Notes G5 and G6. Follow-up anatomy numbers NOT CHECKED. | §3 |
 | Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. **CONCERN M1** on the centroid/residual reading, from CX-M1. NOTE wording notes M2, M3. | §4 |
 
@@ -267,4 +267,28 @@ Evidence: [rev_share.py](rev_share.py) with `83b3303`; output in [out/rev_share.
 - So the "every seed" wording does not depend on the exact endpoint.
 - All four cells, TT included, were still rising from 8k to 10k (+0.03 to +0.14), as the NOTE says.
 
-**NOT CHECKED.** The decode and readout tables, the per-group optimizer tables, and the wd-0 follow-up.
+**NOT CHECKED.** The decode and readout tables and the per-group optimizer tables.
+
+### Follow-up at wd 0 (`501071c`, NOTE M4)
+
+Evidence: [rev_share.py](rev_share.py) `83b3303 501071c`, functions `wd0` and `wd0_note`; output in [out/rev_share.txt](out/rev_share.txt). The checks and CX-S2 were committed at 69ed8e2 before I opened any wd-0 file. The list of NOTE numbers to recompute was committed at 3be6632, after CX-S2 ran. The wd 0 runs are the lane's. The "wd 0 − wd 0.1" column and every TU comparison at wd 0.1 rest on my r1 arm. No wd 0 checkpoint is committed, so everything here is recomputed from the logged rows.
+
+**PASS on every number checked.**
+- **Recipes.** All 12 runs have wd 0 and otherwise their wd 0.1 recipe: step weights `1 1 1`, the cell's scheme, lr 1e-3, the original task, the ID's seed, 10,000 updates, width 128, no resume.
+- **Same initial function.** Each run's step-0 row equals its wd 0.1 counterpart's, including `held_final_pred` (r1's rows for TT and TU).
+- **Endpoints.** Held-out and ¬N from each last-row prediction string, with my oracle and ¬N recount, equal the logged values.
+- **NOTE tables.** The held-out / ¬N / wd 0 − wd 0.1 table, the five paired contrasts per seed, and the wd 0.1 interaction (+0.297 to +0.562) all match to the printed precision.
+- **Predictions.** F1 matches (fit by 350–600 updates). So do F2 (−0.55 to −0.60) and F3 (spread 0.086–0.148 against 0.367–0.484).
+- **Trajectories.** Held-out at 1,000 is 0.227–0.344. The last-2,000 change is −0.008 to +0.031 at wd 0, against +0.031 to +0.141 at wd 0.1. At 10k, N is 0.430–0.663 and ¬N at most 3/42.
+- **Figure CSVs.** All 2,412 rows of `followup_trajectories.csv` and all 24 rows of `followup_endpoints.csv` equal the logged rows and my recount. That includes the parameter counts, the fit step and the five-in-a-row 0.95 step.
+- **Optimizer.** The 10k row has no `diag`, so I used the 9,950 rows. They are consistent with the NOTE's 10k values: median √v̂ 5.9e-6 to 2.0e-5, a fraction below eps of 0.020–0.088 from 500 on, update norm 8.4e-4 to 4.9e-3, and minimum train margin 8.7–10.5. The TT s51200 transition norm at wd 0.1, computed from the recovered checkpoint (A, B, bh), is 19.07, matching the NOTE's 19.1. Its wd 0 value (29.0) is read from `groups_wd0.csv` only.
+
+**Note S1 (F4 wording).** TT is highest on 3 of 3 seeds. But its lead over the next-best cell is 0.047–0.133, not "0.05–0.15". The 0.15 is TT − UT at seed 51202, where TU (0.320) is the runner-up. Suggested fix: "by 0.05–0.13 over the next-best cell".
+
+**CX-S2, against "without decay, no cell composes within 10k".** Its first half FAILED and its second half held. Neither half touches the 10k claim itself, which stands. Together they show that "nearly flat" is not a plateau.
+- *First half, FAILED.* I predicted that held-out would change by at most 0.03 from 5k to 10k in every run. It rose in 11 runs and held level in one. Three runs exceeded 0.03: TT s51202 +0.055, UT s51201 +0.039, UT s51202 +0.031.
+- *1k to 10k.* Over this stretch, held-out rose in all 12 runs, by +0.016 to +0.109 (median +0.059). Answers change slowly, 0.06–0.27 held-out predictions per evaluation on average and at most 3, but in one direction.
+- *Second half, held in 12 of 12 runs.* The median train margin grew 31–38% from 5k to 9,950 (I used 9,950 because the 10k row has no `diag`). Held-out CE rose 13–25% from 5k to 10k. So the logits keep scaling up, and the remaining wrong held-out answers become more confident.
+- *Suggested NOTE wording.* "Then barely moves" and "nearly flat" should become something like "then rises slowly (+0.02 to +0.11 from 1,000 to 10,000, in every run)". The Reading's closing caveat already says that a flat stretch is not a demonstrated plateau. The data say more: the stretch is not flat, and the 10k values are not where these runs stop.
+
+**NOT CHECKED.** The wd 0 decode table (`decode_table_wd0.csv`, `followup_decode_wd0.png`), the readout table and every `groups_wd0.csv` array. All need the local-only wd 0 checkpoints.
