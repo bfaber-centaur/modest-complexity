@@ -1,0 +1,19 @@
+PASS X row i is the binary expansion of i, x1 least significant
+PASS lane label y1 equals independent rewrite; positives 512/1024
+PASS lane label y2 equals independent rewrite; positives 256/1024
+PASS lane label part equals independent rewrite; positives 512/1024
+PASS lane label unrel equals independent rewrite; positives 512/1024
+PASS on the x4 = 1 half of the domain y2 = z exactly and is balanced
+PASS x4-only predictor: 0.75 accuracy, 0.833 balanced accuracy over the domain  [0.8333]
+PASS seed 52100: pool/test = the two halves of one permutation, disjoint, covering the domain
+PASS seed 52100: lane coverage of (x1,x2,x4) per n equals recount  [{8: 4, 16: 7, 32: 8, 64: 8, 128: 8, 256: 8, 512: 8}]
+INFO seed 52100: test x4=1 rows 258, y2 positives 128 (majority 0.504); best z-blind 1-2 bit lookup fitted on pool scores 0.496 with bits (9,); D_n x4=1 rows: n=8:4, n=16:8, n=32:20, n=64:38
+PASS seed 52101: pool/test = the two halves of one permutation, disjoint, covering the domain
+PASS seed 52101: lane coverage of (x1,x2,x4) per n equals recount  [{8: 6, 16: 8, 32: 8, 64: 8, 128: 8, 256: 8, 512: 8}]
+INFO seed 52101: test x4=1 rows 256, y2 positives 124 (majority 0.516); best z-blind 1-2 bit lookup fitted on pool scores 0.484 with bits (10,); D_n x4=1 rows: n=8:3, n=16:7, n=32:20, n=64:34
+PASS seed 52102: pool/test = the two halves of one permutation, disjoint, covering the domain
+PASS seed 52102: lane coverage of (x1,x2,x4) per n equals recount  [{8: 8, 16: 8, 32: 8, 64: 8, 128: 8, 256: 8, 512: 8}]
+INFO seed 52102: test x4=1 rows 250, y2 positives 120 (majority 0.520); best z-blind 1-2 bit lookup fitted on pool scores 0.480 with bits (10,); D_n x4=1 rows: n=8:4, n=16:8, n=32:15, n=64:29
+PASS head_metrics: accuracy, balanced accuracy and cross-entropy equal a per-row loop
+PASS no test input is in any pool (phase 1 trains on the pool only, per train.py)
+ALL PASS

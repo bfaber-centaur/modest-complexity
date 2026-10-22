@@ -1,0 +1,19 @@
+PASS L is a Latin square
+PASS no op is the identity, an involution, or equal to another
+INFO cycle types [[5, 2, 1], [5, 3], [8], [5, 1, 1, 1]] fixed points [[4], [], [], [1, 3, 5]] orders [10, 15, 8, 5]
+PASS cycle types / fixed points / orders as QUESTION.md table
+PASS no pair of ops commutes
+PASS 16 length-2 and 64 length-3 products are all distinct
+PASS no held-out program equals any shorter program (lengths 1-2) either
+PASS every op 12x at every position; every ordered pair 3x at slot pairs (1,2), (2,3), (1,3)
+PASS all 32 (state, op) transitions at each position; all 128 (s,a,b) prefixes and (step1,b,c) contexts
+INFO held-out repetition pattern Counter({'distinct': 6, 'a=c': 3, 'b=c': 3, 'a=b': 3, 'aaa': 1})
+INFO baselines {'identity': 0.102, 'single_a': 0.062, 'drop_1': 0.125, 'single_b': 0.102, 'drop_2': 0.125, 'single_c': 0.062, 'drop_3': 0.125, 'best_subset_lookup': 0.125, 'neighbour_vote': 0.077, 'nearest_program_oracle': 0.453}
+PASS every baseline in QUESTION.md reproduced to 3 decimals
+INFO tuples of permutations reproducing all 48 training final tables: 1 (equal to P: True)
+PASS lane draw_ops() equals the QUESTION.md tables, first seed accepted
+PASS lane split: same square, same 48 train / 16 held-out programs
+PASS lane enumerates 576 distinct 4x4 Latin squares
+PASS lane train rows: step1/step2/final labels and slot one-hot encoding match (384 rows)
+PASS lane held rows: step1/step2/final labels and slot one-hot encoding match (128 rows)
+ALL PASS
