@@ -81,3 +81,14 @@ The reviewer's branch is merged up to `aed5003`. No BLOCK was raised in any regi
 **Runs.** 180 lane and reviewer runs in all: 178 complete, 2 failed (R4, container restart, rerun as a2), none capped.
 
 **Deliverable.** [SYNTHESIS.md](SYNTHESIS.md). No second adaptive run was launched in any lane. Where a lane named one, it appears as a recommended next experiment and was not run.
+
+## D9 (2026-10-22) Parent branch merged in after close; review PR
+
+After D8, `swarm/exploration` (e4 closed at its D17, head `1e7068c`) was merged into `swarm/regimes` at `29591d2`, so that a review PR into `swarm/exploration` merges cleanly. The only conflict was CLAUDE.md, resolved by keeping e4's closing text and adding an r1 pointer.
+
+This merge does not affect any r1 result:
+- Every r1 run predates it.
+- The only parent code r1 uses is `experiment.array_sha256` and `launch_runs.read_events`, and e4 changed neither.
+- `common/` tests pass after the merge.
+
+The review PR is for Bobby, and the coordinator does not merge it.
