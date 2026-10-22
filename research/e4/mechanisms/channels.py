@@ -5,7 +5,10 @@ Objects: the e3 continuation runs from the three filtered start files (B) at wei
 0, and the unedited runs (A) as reference, on their published checkpoints (manifest-verified by
 research/e3/mechanisms/continuation.py); and the six D7 dense replays of B (updates 0-5,000), on
 every checkpoint, read from the local run directory after each file matches its published manifest
-hash (`source` column: e3 or replay). Per checkpoint:
+hash (`source` column: e3 or replay); and the six D15 intervention runs (`source` intervention,
+`decay_on` rest or reference: decoupled decay restricted away from, or onto, the reference parts),
+checked against their claimed decay settings and against this analysis's reference frequencies.
+Per checkpoint:
 
 - behaviour on the 483 common never-trained pairs: accuracy and the D6 pairwise measures;
 - an exact split of the logits z = h W (h = relu(U[a] + V[b]), no biases) into three channels:
@@ -52,6 +55,7 @@ SOURCES = (30000, 30001, 30002)
 RUNS = {('filt', 1): 'e3-me-filt-w128-i{s}-a1', ('filt', 0): 'e3-me-filt-wd0-w128-i{s}-a1',
         ('keep', 1): 'e3-me-keep-w128-i{s}-a1'}
 REPLAYS = {('filt', 1): 'e4-me-filt-wd1-replay-w128-i{s}-a1', ('filt', 0): 'e4-me-filt-wd0-replay-w128-i{s}-a1'}
+INTERVENTION = ('e4-me-filt-wd1-xref-w128-i{s}-a1', 'e4-me-filt-wd1-onlyref-w128-i{s}-a1')  # D15, decay_on rest / reference
 
 
 def hidden(w, a, b):
@@ -187,12 +191,19 @@ def analyse(sources):
         meta, d, ws = e3.check_run(run_dir, r)
         sets = e3.ladder_sets(d['a'], d['b'], e3.tr30, e3.tr50, e3.COMMON, P)
         k_ref, _, live = e3.dominant(ws)
+        if 'decay_on' in r:  # restricted decay: config as claimed, projection = this analysis's reference
+            config = json.loads((run_dir/'config.json').read_text())
+            if (config['decay_on'], config['decay_projection_sha256']) != (r['decay_on'], r['decay_projection_sha256']):
+                raise ValueError(f'{run_dir.name}: decay settings differ from the plan')
+            with np.load(ROOT/r['decay_projection']) as z:
+                if not (np.array_equal(z['k'], k_ref) and np.array_equal(z['live'], live)):
+                    raise ValueError(f'{run_dir.name}: projection file differs from the update-0 reference')
         manifest, paths = checkpoints(run_dir, local_dir)
         gates100 = e3.gates(load(paths[REFERENCE_STEP]), d)[:, live]
         arm = 'keep' if '-keep-' in r['run_id'] else 'filt'
         for step, path in paths.items():
-            rows.append(dict(source=source, run_id=r['run_id'], arm=arm, wd=r['wd'], init_seed=r['init_seed'],
-                             step=step, **measures(load(path), d, k_ref, live, sets, gates100)))
+            rows.append(dict(source=source, run_id=r['run_id'], arm=arm, wd=r['wd'], decay_on=r.get('decay_on', ''),
+                             init_seed=r['init_seed'], step=step, **measures(load(path), d, k_ref, live, sets, gates100)))
         inputs.append(dict(source=source, run_id=r['run_id'], checkpoints=list(paths), live_units=int(live.sum()),
                            producing_code_commit=manifest['producing_code_commit'],
                            producing_tree_dirty=manifest['producing_tree_dirty']))
@@ -205,11 +216,12 @@ def sources(local):
     e4_plan = {r['run_id']: {**e4['common'], **r} for r in e4['runs']}
     out = [('e3', ROOT/'research/e3/mechanisms/runs'/pattern.format(s=s), None, e3_plan[pattern.format(s=s)])
            for pattern in RUNS.values() for s in SOURCES]
-    for pattern in REPLAYS.values():
-        for s in SOURCES:
-            run_id = pattern.format(s=s)
-            if (HERE/'runs'/run_id).exists():
-                out.append(('replay', HERE/'runs'/run_id, local/run_id, e4_plan[run_id]))
+    for source, patterns in (('replay', REPLAYS.values()), ('intervention', INTERVENTION)):
+        for pattern in patterns:
+            for s in SOURCES:
+                run_id = pattern.format(s=s)
+                if (HERE/'runs'/run_id).exists():
+                    out.append((source, HERE/'runs'/run_id, local/run_id, e4_plan[run_id]))
     return out
 
 
