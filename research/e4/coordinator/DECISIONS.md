@@ -310,3 +310,31 @@ The mechanisms lane's patch is merged as PR #37 at `8108d8b`. Its shared-code co
 - Storage is as D7: only the D5 states are committed, and every checkpoint is hashed.
 
 **At update 0.** The lane points out that P(W) = W and that the rest of U and V is their DC. So the reference-only arm starts by decaying almost everything except the U and V DC. The exempt arm starts by decaying only that DC, then the off-reference parts as they grow. The reading in INTERVENTION.md stands.
+
+## D16 (2026-10-22) Audit control X0 for the exempt-reference result
+
+The mechanisms intervention (PR #40, `34b89fd`, audit pending) showed two things. When the reference parts are exempt from decay (xref), B reaches 0.998–1.000 common accuracy at 5,000 updates. When only the reference parts decay (onlyref), B collapses faster than under uniform wd 1. The lane named its own strongest alternative: the exemption is task-informed, so the result may be built in.
+
+**The control.** The auditor proposed control X0 and stated its rule in QUESTION.md addendum 4 (`0c45b39`) before any run. The coordinator claims its 12 runs with purpose `control`. Each run uses xref (`decay_on` rest), wd 1, 5,000 updates and fresh Adam, at the D15 pin `8108d8b`. Checkpoints are every 1,000 plus 100, 300 and 500, all published. The queue is a seeded interleaving (`default_rng(20261027)`).
+
+| arm | run IDs | start | projection |
+|---|---|---|---|
+| I | `e4-au-init-xref-w128-i<s>-a1` | the untrained init, no start file | its own update-0 k_j |
+| RF | `e4-au-rf-xref-w128-i<s>-a1` | the C1 random-feature start files | the same files as I; gate: the RF dominant() equals the init k_j |
+| A | `e4-au-keep-xref-w128-i<s>-a1` | the unedited e3 keep start files | B's own projection files; gate: A's dominant() and live mask equal B's |
+| S | `e4-au-filt-xrefsham-w128-i<s>-a1` | the B start files | k_j permuted across units (seed 41100; 10% of units keep their own k) |
+
+**Checks.** The coordinator re-hashed the six new projection files as fetched from the auditor's branch, and each start file. The RF and A start hashes equal those recorded in the auditor's `decay_projection.json`.
+
+**Rule, per seed.**
+
+| common accuracy at 5,000 | verdict |
+|---|---|
+| ≥ 0.90 | rescued |
+| ≤ 0.30 | not rescued |
+| between | intermediate |
+
+- If I is rescued, "built in" is SUPPORTED LOCALLY.
+- If only B is rescued, "built in" is CONTRADICTED.
+
+**Cost.** About 2 min elapsed. That brings the auditor to about 7 of its 25 min.
