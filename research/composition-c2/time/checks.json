@@ -6,7 +6,8 @@
    3000
   ],
   "logged": 41,
-  "differing_steps": []
+  "differing_steps": [],
+  "recipe_differs": {}
  },
  "c2-time-verify-tu-inter-s51200-a1": {
   "source": "research/regimes/review/runs/r1-rev-comp-rnn-untied-s51200-a1",
@@ -15,7 +16,8 @@
    3000
   ],
   "logged": 41,
-  "differing_steps": []
+  "differing_steps": [],
+  "recipe_differs": {}
  },
  "c2-time-verify-tt-final-s51200-a1": {
   "source": "research/regimes/composition/runs/r1-comp-rnn-final-s51200-a1",
@@ -24,6 +26,7 @@
    3000
   ],
   "logged": 41,
-  "differing_steps": []
+  "differing_steps": [],
+  "recipe_differs": {}
  }
 }

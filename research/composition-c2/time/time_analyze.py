@@ -73,15 +73,27 @@ def same_r1_keys(rows, published):
     return [r['step'] for r in rows if r['step'] not in pub or any(r[k] != pub[r['step']][k] for k in R1_KEYS)]
 
 
+def recipe_vs_source(cfg, src):
+    """Fields of a c2 continuation's recipe that differ from its r1 source run's config.json (reviewer C1:
+    --resume checks only the hash and the tying scheme)."""
+    want = dict(task_id=c2task.task_id(src['task_seed'], src['split_seed']), transition='tied',
+                readout='untied' if src.get('reviewer', {}).get('mode') == 'untied' else 'tied',
+                step_weights=[1., 1., 1.] if src['condition'] == 'inter' else [0., 0., 1.],
+                hidden=src['hidden'][0], lr=src['lr'], wd=src['wd'], eval_every=src['eval_every'], init_seed=src['init_seed'])
+    return {k: [cfg.get(k), v] for k, v in want.items() if cfg.get(k) != v}
+
+
 def check():
     out = {}
     for arm in ARMS:
         pub = read_jsonl(source_dir(arm, 51200)/'metrics.jsonl')
         rows = read_jsonl(RUNS/f'c2-time-verify-{arm}-s51200-a1'/'metrics.jsonl')
         if rows is not None:
-            out[f'c2-time-verify-{arm}-s51200-a1'] = dict(
-                source=SOURCE[arm].format(s=51200), steps=[rows[0]['step'], rows[-1]['step']], logged=len(rows),
-                differing_steps=same_r1_keys(rows, pub))
+            vid = f'c2-time-verify-{arm}-s51200-a1'
+            out[vid] = dict(source=SOURCE[arm].format(s=51200), steps=[rows[0]['step'], rows[-1]['step']], logged=len(rows),
+                            differing_steps=same_r1_keys(rows, pub),
+                            recipe_differs=recipe_vs_source(json.loads((RUNS/vid/'config.json').read_text()),
+                                                            json.loads((source_dir(arm, 51200)/'config.json').read_text())))
         for s in SEEDS:
             rows = read_jsonl(RUNS/run_id(arm, s)/'metrics.jsonl')
             if rows is None:
@@ -89,7 +101,9 @@ def check():
             pub = read_jsonl(source_dir(arm, s)/'metrics.jsonl')
             out[run_id(arm, s)] = dict(source=SOURCE[arm].format(s=s), first_step=rows[0]['step'], last_step=rows[-1]['step'],
                                        logged=len(rows), join_step_differs=bool(same_r1_keys(rows[:1], pub)),
-                                       subset_recomputed_equal=subsets(rows[0]['held_final_pred']) == rows[0]['held_subset'])
+                                       subset_recomputed_equal=subsets(rows[0]['held_final_pred']) == rows[0]['held_subset'],
+                                       recipe_differs=recipe_vs_source(json.loads((RUNS/run_id(arm, s)/'config.json').read_text()),
+                                                                       json.loads((source_dir(arm, s)/'config.json').read_text())))
     (HERE/'checks.json').write_text(json.dumps(out, indent=1)+'\n')
     print(json.dumps(out, indent=1))
 
