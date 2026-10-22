@@ -16,6 +16,8 @@ uv run --locked python research/regimes/review/oracle_composition.py ff9b721 > r
 uv run --locked python research/regimes/review/oracle_shared.py c4939c2 > research/regimes/review/out/oracle_shared.txt
 uv run --locked python research/regimes/review/oracle_history.py f71c84f > research/regimes/review/out/oracle_history.txt
 uv run --locked python research/regimes/review/oracle_routes.py 4872093 > research/regimes/review/out/oracle_routes.txt
+uv run --locked python research/regimes/review/recompute_routes.py f0f68f7 > research/regimes/review/out/recompute_routes.txt
+uv run --locked python research/regimes/review/recompute_shared.py 55d6787 > research/regimes/review/out/recompute_shared.txt
 ```
 
 ## Budget tally (20 min of numerical execution)
@@ -24,5 +26,7 @@ uv run --locked python research/regimes/review/oracle_routes.py 4872093 > resear
 |---|---|---|---|
 | 2026-10-22 02:40 | check_common.py (code checks; 2 s of it is a sleep) | 3.5 s | 0.1 min |
 | 2026-10-22 03:00 | four oracle scripts (enumeration, no training; R1 includes an 8! search) | < 2 s each | 0.2 min |
+| 2026-10-22 03:05 | recompute_routes.py (rescoring 24 published checkpoints) | 0.7 s | 0.2 min |
+| 2026-10-22 03:08 | recompute_shared.py (36 linear readouts × 2,000 updates on published features) | 17.3 s | 0.5 min |
 
 Host for the checks above: 4 visible CPUs, Intel Xeon 2.10 GHz, CPython 3.12.14 and NumPy from the locked environment, one BLAS thread.

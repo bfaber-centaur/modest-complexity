@@ -6,7 +6,7 @@ Reviewer's plan and pre-stated counterexamples: [QUESTION.md](QUESTION.md). Stat
 |---|---|---|
 | §0 shared code | PASS, with three usage concerns (C0.1–C0.3) | 2026-10-22, common at `0c7bd19` |
 | §1 R1 composition | M1 oracle/split PASS; design notes; M2 not yet | 2026-10-22, lane `ff9b721` |
-| §2 R2 shared subcomputation | M1 oracle/split/metrics PASS; two CONCERNs on reading (C2.1, C2.2) | 2026-10-22, lane `c4939c2` |
+| §2 R2 shared subcomputation | M1 PASS; M2 readout recomputed exactly; counterexample holds: frozen y1 features carry all three pairwise XORs equally, z not privileged (C2.4); fine-tuning degrades even the same-task control at n ≤ 32 (C2.3) | 2026-10-22, lane `55d6787` |
 | §3 R3 history and recovery | M1 oracle/split/metrics/branch hashes PASS; C0.1/C0.2 avoided | 2026-10-22, lane `f71c84f` |
 | §4 R4 competing routes | M1 PASS; M2 numbers recomputed PASS; counterexample: route choice at ρ = 15/16 is mostly base-specific, not context-level (C4.1, wording) | 2026-10-22, lane `f0f68f7` |
 
@@ -89,6 +89,39 @@ Reviewed at lane `c4939c2`: QUESTION.md, task.py and train.py, with smoke/calibr
 - The primary metric's chance line is 0.5. On the test x4 = 1 rows (250–258 per seed) the majority class scores 0.504–0.520.
 - The best z-blind lookup on any one bit or any pair other than (x1, x2), fitted on the pool, scores 0.480–0.496.
 - So 0.5 is right to within about 0.02.
+
+### M2 (`55d6787`, first figure)
+
+Evidence: [recompute_shared.py](recompute_shared.py), output in [out/recompute_shared.txt](out/recompute_shared.txt), and the lane's `figures/final.csv`.
+
+| item | status | evidence and what it affects |
+|---|---|---|
+| Key numbers recomputed | PASS | The frozen-feature readout was rebuilt here from each `rel` replicate's published `pretrained.npz`: init `new` head copy, Adam lr 3e-3, 2,000 updates on unstandardized last-layer features. It equals the lane-logged test x4 = 1 accuracy at n = 32, 64, 128 and 512 exactly (max difference 0). The `new` head in `pretrained.npz` equals its initialization, so phase 1 did not touch it. |
+| Exposure across controls | PASS (design) | rel, part, unrel and same all get 2,000 phase-1 updates on the 512-row pool, followed by an Adam reset and 2,000 phase-2 updates on D_n. The readout uses the same updates and lr on fixed features. |
+| Figure supports text | PASS, see C2.3 | Inspected `transfer.png`. Every replicate is shown, along with train accuracy, the majority and chance lines, and the missing/capped status ("none"). |
+
+**C2.3 (CONCERN): fine-tuning at small n degrades pretrained features, including for the same-task positive control.** This answers the coordinator's question.
+- In `final.csv` at n = 32, fine-tuned `same` ends at 0.79, 0.89 and 0.99 on the test x4 = 1 half, while its frozen readout is 1.00 on all three replicates.
+  - The n = 32 trajectory panel shows `same` reaching about 0.97 and then declining over phase 2.
+  - At n = 16 the figures are 0.70, 0.60 and 0.83 fine-tuned against 0.74, 1.00 and 1.00 frozen.
+- `rel` fine-tuned at n = 32 (0.70, 0.71, 0.94) is below its readout (0.77, 0.81, 0.95) on all three replicates.
+- So at n ≤ 32 the fine-tuned comparison mixes "what transferred" with "what phase 2 (Adam reset, lr 3e-3) destroys on a few examples".
+- *Affects:* reading "part ≈ rel under fine-tuning at n = 32–64" as no z-specific transfer. The frozen readout is the cleaner transfer measure at small n. Fine-tuned results at n ≥ 64 are not affected in the same way: rel fine-tuned is at least as high as its readout there.
+
+**C2.4 (CONCERN, interpretation) — counterexample to "y1 pretraining builds our z" holds.** The prediction was stated in QUESTION.md (Revisions) before computing.
+- *Test.* On the same frozen y1 features, the same readout was fitted for y2' = (x1⊕x3)∧x4 and y2'' = (x2⊕x3)∧x4.
+- *Result.* Test x4 = 1 accuracy by readout target (three replicates):
+
+  | n | y2 | y2' | y2'' |
+  |---|---|---|---|
+  | 128 | 0.98–0.99 | 0.96–1.00 | 0.98–0.99 |
+  | 512 | 0.99–1.00 | 1.00 | 0.98–1.00 |
+
+  - At n = 32–64 the order changes from replicate to replicate. At n = 32 the best target is y2'' (0.80) for 52200, y2' (0.90) for 52201, and y2 (0.95) for 52202.
+  - Untrained features give 0.52–0.90 for all three targets.
+- *Reading.* y1 pretraining makes all pairwise XORs of x1, x2 and x3 linearly available, as y1's symmetry predicts. The `rel` > `part` readout advantage therefore says that y1's features contain *a* family that includes z. It does not say that z is privileged or that y2 reuses a designated z.
+- *Affects:* any NOTE claim that frozen-feature transfer identifies z.
+- The lane's follow-up (`1d9d240`, a {x1,x2} pair task without z) is the right next step. The mechanism analysis should report z next to x1⊕x3 and x2⊕x3, as QUESTION.md plans.
 
 ## §3 R3 training history and recovery
 
