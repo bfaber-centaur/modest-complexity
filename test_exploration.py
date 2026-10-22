@@ -212,6 +212,34 @@ class ShortRunTests(unittest.TestCase):
         self.assertEqual(json.loads((out/'runtime.json').read_text())['status'], 'failed')
         self.assertFalse((out/'checkpoint_000000.npz').exists())
 
+    def test_resume_continues_training_exactly(self):
+        # Resuming run 'a' at update 100 must reproduce its uninterrupted updates 200 and 300:
+        # weights, moments and every logged metric apart from wall-clock fields.
+        start = self.runs['a']/'checkpoint_000100.npz'
+        digest = hashlib.sha256(start.read_bytes()).hexdigest()
+        out = Path(self.tmp.name)/'resumed'
+        env = {**os.environ, **{k: '1' for k in THREAD_VARS}}
+        proc = subprocess.run([sys.executable, str(ROOT/'experiment.py'), '--out', str(out), '--hidden', '16',
+                               '--steps', '300', '--log-every', '100', '--checkpoint-every', '100',
+                               '--diagnostics', 'none', '--data-seed', '31000', '--init-seed', '30000',
+                               '--control-seed', '32000', '--purpose', 'test', '--resume', str(start),
+                               '--expect-init-sha256', digest], env=env, capture_output=True)
+        self.assertEqual(proc.returncode, 0, proc.stderr.decode()[-500:])
+        self.assertEqual(json.loads((out/'config.json').read_text())['resume_sha256'], digest)
+        for step in (100, 200, 300):
+            with np.load(out/f'checkpoint_{step:06d}.npz') as z:
+                for k, x in self.load('a', step).items():
+                    np.testing.assert_array_equal(z[k], x)
+        clock = ('seconds', 'elapsed_after_diagnostics')
+        rows = [{k: v for k, v in json.loads(r).items() if k not in clock} for r in
+                (out/'metrics.jsonl').read_text().splitlines()]
+        original = {r['step']: r for r in ({k: v for k, v in json.loads(r).items() if k not in clock} for r in
+                    (self.runs['a']/'metrics.jsonl').read_text().splitlines())}
+        self.assertEqual([r['step'] for r in rows], [100, 200, 300])
+        self.assertIsNone(rows[0].pop('optimizer_update'))  # no update is taken at the resumed step
+        self.assertEqual(rows[0], {k: v for k, v in original[100].items() if k != 'optimizer_update'})
+        self.assertEqual(rows[1:], [original[200], original[300]])
+
 
 if __name__ == '__main__':
     unittest.main()
