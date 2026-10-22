@@ -1,6 +1,6 @@
 # e3 mechanisms: figures first
 
-Question, arms, matching rule and expected outcomes: [QUESTION.md](QUESTION.md) (`5bfa578`). Assignment: DECISIONS D5. Session `e3-me-cloud-1`, branch `claude/project-thread-psralm`. The start files passed the audit gate (D10); the continuation packet below is not audited yet. Reading: [INTERPRETATION.md](INTERPRETATION.md).
+Question, arms, matching rule and expected outcomes: [QUESTION.md](QUESTION.md) (`5bfa578`). Assignment: DECISIONS D5. Session `e3-me-cloud-1`, branch `claude/project-thread-psralm`. The start files passed the audit gate (D10). Packet 1 was audited in [audit investigation 3](../audit/AUDIT.md) (auditor branch `d27530a`): every software check passed, and the observations below carry its three wording corrections. Follow-up 1 is not audited yet. Reading: [INTERPRETATION.md](INTERPRETATION.md).
 
 ## Start files and the update-0 report (before any continuation update)
 
@@ -90,9 +90,10 @@ Chance is 1/31 ≈ 0.032.
 2. **B, first ~100 updates: training raised held-out accuracy above what the edit gave.** These are two separate effects:
    - The edit itself took common accuracy from 0.000 / 0.000 / 0.004 to 0.431 / 0.540 / 0.580 at update 0, before any update.
    - Training after the edit then added another 0.25–0.30, reaching 0.735 / 0.789 / 0.863 at update 100. The edit did not produce this rise.
+   - The audit's independent replay at one-update resolution puts the common-pair peaks at 0.743 / 0.797 / 0.872, at updates 87 / 68 / 70. That is +0.26 to +0.31 over update 0; the checkpoint at 100 sits 0.008–0.009 below the peaks.
    - Dense audit accuracy (544 pairs, which include the 483) peaks at 0.746 / 0.798 / 0.884 at updates 80 / 70 / 70.
    - That is just after train accuracy first reaches 1.0 (updates 70 / 50 / 40), when train cross-entropy is about 0.2.
-3. **B, afterwards: the gain is then erased.**
+3. **B, afterwards: the accuracy gain is then erased.** This is erasure in accuracy only; observation 7 shows a rank trace that stays.
    - Common accuracy is 0.62–0.74 at update 300, 0.22–0.27 at 1000, 0.02–0.03 at 5000 and 0.010–0.031 at 20,000, which is chance.
    - Audit accuracy drops below its update-0 value at updates 490–600, and below half of it at 880–1090.
    - After update 5000 it never exceeds 0.053.
@@ -109,13 +110,15 @@ Chance is 1/31 ≈ 0.032.
    - The share at each unit's 50k dominant frequency rises from about 0 to 0.24–0.31.
    - 73–81% of units change dominant frequency.
    - Input concentration returns to 0.39–0.42, about A's level.
-7. **At update 20,000, B keeps a rank preference for a+b over unrelated labels, but not over operand-associated ones.**
+7. **At update 20,000, B's accuracy gain is gone but a rank trace of the edit remains. The larger part of the trace is over operand-associated labels.**
+   - P(a+b over S) is 0.39–0.45, against 0.14–0.18 for A and 0.15 for C: B's correct label still outranks 39–45% of the labels seen with an operand in training. This has been flat since update 5,000 (0.40–0.44 there). The trace is not large enough to beat the strongest operand label, so accuracy is at chance.
    - P(a+b over N) is 0.87–0.88, against 0.69–0.74 for A and 0.66–0.70 for C.
    - The median σ-margin over N is +0.22 to +0.41, against −0.29 to −0.44 for A and −0.36 to −0.51 for C.
-   - P(a+b over S) is only 0.39–0.45 (A 0.14–0.18, C 0.15). a+b is ranked below most labels seen with an operand in training, so accuracy is at chance.
    - P(S over N), the preference for operand-associated over unrelated labels, also comes back. The edit lowered it from 0.94–0.95 to 0.58–0.59 in B and 0.75–0.76 in C. By update 1000 training had restored it to 0.91–0.92 in B and 0.96–0.97 in C; at 20,000 it is 0.92–0.95 in all nine runs.
-8. **Neither edited branch returns to its source.**
-   - At update 20,000, B is 1.11–1.15 from update 0 and 0.92–0.96 from the 50k source.
+8. **Erasure does not return B to A; B ends as a different fitted network of the same kind.**
+   - At update 20,000, B is 1.11–1.15 from update 0. Its distance from the 50k source, which A barely leaves, grows from 0.76–0.78 at update 0 to 0.92–0.96 while it is erased.
+   - The audit measured argmax agreement with A at 20,000: 0.42–0.50 for B and 0.49–0.56 for C. That is about what independent A runs share with each other (0.49).
+   - Like A, B again prefers operand labels: P(S over N) is 0.92–0.93 (observation 7).
    - C is 1.19–1.32 from update 0 and 0.71–0.85 from the source.
 9. **The three seeds agree.** All three B branches rise and then erase, with peak and erasure times within about 100 updates of each other. All three C branches stay at chance.
 
@@ -123,6 +126,7 @@ Chance is 1/31 ≈ 0.032.
 
 - **Replicates.** There are three checkpoints from one split at one width. They share their evaluation pairs, so pairs are not independent replicates. There is no rerun of any run.
 - **The reset.** Every branch includes the optimizer reset. A shows the reset alone does not move a converged memorizer, but B and C mix recovery from the edit with fresh-moment Adam steps.
+- **The rise may be tied to the restart's step size** (the audit's narrower alternative). Fresh Adam takes steps of about ±lr per coordinate whatever the gradient's size, and the rise happens in exactly those first updates. A starts at a loss of 3.6e-6, so it cannot show whether large early steps matter from a damaged point. Follow-up 1 kept the same reset, so it does not separate this either. Replaying B's first few hundred updates at lr 1e-4, or with plain gradient descent, would. That was not run in this lane.
 - **The sham.** C is input-energy-matched only. Its immediate damage is larger (train accuracy 0.43–0.48 against 0.69–0.79) and its W displacement smaller. Its later train recovery means C and B differ in more than which frequencies were kept.
 - **Measurement density.**
   - The common-set, preference and frequency measures exist only at 11–12 checkpoints per run.
