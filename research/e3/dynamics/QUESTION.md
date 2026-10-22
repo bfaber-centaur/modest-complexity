@@ -36,3 +36,38 @@ Per ladder, on that ladder's pairs never trained at 50% (each ladder its own set
 ## Q1 outcome (2026-10-22, after the 24 initial runs)
 
 Pointer only; the evidence is in [README.md](README.md). The first expected pattern matched at this resolution: in every ladder and init, more training pairs never hurt, and the bands at each setting match the e2 ladder. Ladder-to-ladder spread in accuracy is no larger than the init spread. The one exception is the graded margin at 40%, where data seed 41002 is ahead on both inits. The 45% runs are still rising at 50,000 updates. Not yet audited.
+
+## Q2 (2026-10-22, follow-up proposal, before any follow-up run)
+
+Written after the coordinator's review of packet 1 (DECISIONS D14), before any follow-up computation.
+
+### Why these runs
+
+The ladders agree, so the follow-up continues intermediate runs. Two things in packet 1 are unresolved by a 50,000-update horizon:
+
+1. **Every 45% run is still rising.** Accuracy went up 0.067 to 0.112 between updates 30,000 and 50,000. So the 50,000-update step location, and the 0.142 init difference in 41001, may be timing rather than outcome.
+2. **The only ladder effect is at 40%, and it is graded.** 41002 leads on the σ-margin for both inits (mean 0.65 σ, against 0.17 σ for 41001, the lowest), while accuracy is near zero everywhere and the margins are still rising.
+
+### Selection (all chosen before running; none on held-out results beyond those stated)
+
+- **45%:** all six e3 runs (three ladders × two inits), continued from update 50,000 to 150,000. All are selected so that no rising or flat run is picked out.
+- **40%:** the ladders with the highest and the lowest mean σ-margin at 50,000 (41002 and 41001), both inits, continued from 50,000 to 100,000. This is four runs.
+- **Not continued:** 30% and 50% (one is at chance and one is near its ceiling), 41003 40% (between the two), and the 31000 runs (produced at earlier commits; they would not fit the 25-minute allowance).
+
+### Expected patterns and what each would mean
+
+- **45% approaches the 50% level (0.88 to 0.91) by 150,000.** The 50,000-update step location is largely a horizon effect, and any statement of location has to name its horizon.
+- **45% flattens clearly below that level.** For example, a change of less than 0.03 between 100,000 and 150,000 while still below 0.8. Then at these counts the training-set size limits the accuracy reached in this horizon, not only its timing.
+- **The 45% init differences shrink.** For example, 41001 goes from 0.142 to below 0.05. Then init mostly shifts timing. If the differences persist, init changes the outcome at this count.
+- **At 40%, 41002 starts rising in accuracy by 100,000 while 41001 stays near zero.** The margin lead is a timing lead tied to which pairs are trained. If both stay near zero while their margins rise in parallel, the lead stays graded within this horizon. If both rise, the step keeps moving toward fewer pairs with training.
+
+### Measurement
+
+The same `ladder.py` measures on the same eval sets. Checkpoints are kept every 1,000 updates, and the shared definitions are unchanged.
+
+### Failure modes
+
+- The longer horizon is still finite.
+- Two inits per ladder.
+- Rising margins at 40% may need far longer than 100,000 updates to show in accuracy.
+- A continuation from saved Adam moments must equal an uninterrupted run. That needs a test before it is trusted.
