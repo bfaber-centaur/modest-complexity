@@ -311,6 +311,70 @@
     "--runs",
     "runs/c3"
    ]
+  },
+  {
+   "run_id": "c3-rev-reset-drop-cont1200-s51200-a1",
+   "timeout": 120,
+   "argv": [
+    "research/composition-c3/common/c3train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "51200",
+    "--updates",
+    "1400",
+    "--switch-step",
+    "1000",
+    "--switch-weights",
+    "0",
+    "0",
+    "1",
+    "--reset-optimizer-at",
+    "1000",
+    "--resume",
+    "runs/c3/c3-rev-reset-drop-s51200-a1/ckpt-1200.npz",
+    "--resume-sha256",
+    "fa0d18c2df2c41e9bff4d2f84c8599bb2741d26f3ee42ef0a0e155764de76f1c",
+    "--resume-config",
+    "runs/c3/c3-rev-reset-drop-s51200-a1/config.json",
+    "--diag",
+    "--run-id",
+    "c3-rev-reset-drop-cont1200-s51200-a1",
+    "--purpose",
+    "reviewer re-pin check RP5: resume of c3-rev-reset-drop-s51200-a1 from its ckpt-1200 with the same flags"
+   ]
+  },
+  {
+   "run_id": "c3-rev-reset-drop-cont1000-s51200-a1",
+   "timeout": 120,
+   "argv": [
+    "research/composition-c3/common/c3train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "51200",
+    "--updates",
+    "1400",
+    "--switch-step",
+    "1000",
+    "--switch-weights",
+    "0",
+    "0",
+    "1",
+    "--reset-optimizer-at",
+    "1000",
+    "--resume",
+    "runs/c3/c3-rev-reset-drop-s51200-a1/ckpt-1000.npz",
+    "--resume-sha256",
+    "96a354c836079aa1b855e3fa278826001a5a66e93c0755f551038306518193ba",
+    "--resume-config",
+    "runs/c3/c3-rev-reset-drop-s51200-a1/config.json",
+    "--diag",
+    "--run-id",
+    "c3-rev-reset-drop-cont1000-s51200-a1",
+    "--purpose",
+    "reviewer re-pin check RP5: resume of c3-rev-reset-drop-s51200-a1 from its ckpt-1000 with the same flags"
+   ]
   }
  ]
 }

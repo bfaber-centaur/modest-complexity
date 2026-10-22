@@ -152,3 +152,7 @@ Three things in the first pass need entries before the second pass.
     - Main: B 79–100% of the gain, D = E, C < A.
     - Grouped: every learned arm below A; B −110% to −13%, D −90% to −7%; training rows 0.19–0.62; decoder 0.19–0.44; E 0.91–1.00.
 
+
+### 5ce9d97 + four runs (06:13, 12.8 s), before any comparison
+
+- The four c3train runs finished. The two continuation entries (RP5) are now in the plan with the hashes of `c3-rev-reset-drop-s51200-a1`'s `ckpt-1200` and `ckpt-1000`. Same predictions.
