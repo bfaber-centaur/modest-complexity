@@ -5,14 +5,14 @@ Bobby's packet: [charter/](charter/) (verbatim). Decisions, assignments, budgets
 | item | where | status |
 |---|---|---|
 | integration branch | `swarm/composition-c2` from `swarm/exploration` `5c0129b` | open |
-| shared code pin | [`common/`](../common/) at the pin commit below | reviewer check pending |
+| shared code pin | [`common/`](../common/) at the pin commit below | reviewer: CONCERN C1, no BLOCK (D9) |
 | recovered r1 checkpoints | [`recovered/`](../recovered/) (27 original files, hashes matched) | done (D2) |
 | resume and no-change verification | [verify_resume.out](verify_resume.out), runs in [runs/](runs/) | identical (D2) |
-| time lane | `time/` | not started |
-| sharing lane | `sharing/` | not started |
-| generalization lane | `generalization/` | not started |
-| mechanisms lane | `mechanisms/` | not started |
-| reviewer | `review/` | not started |
+| time lane | `time/` | M1 |
+| sharing lane | `sharing/` | M0 |
+| generalization lane | `generalization/` | M0 |
+| mechanisms lane | `mechanisms/` | M0 |
+| reviewer | `review/` | pin checked (PR #50) |
 | final draft PR to `swarm/exploration` | | not opened |
 
-Pin commit: `b3e8132` (shared code `common/` as of that commit). Later coordinator commits touch only `coordinator/` unless DECISIONS records a re-pin.
+Pin commit: `b3e8132` (shared code `common/` as of that commit). Later coordinator commits change only `coordinator/` and add files to `recovered/` (D9) unless DECISIONS records a re-pin.
