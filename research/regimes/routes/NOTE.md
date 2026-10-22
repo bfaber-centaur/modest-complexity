@@ -33,10 +33,11 @@ Rule share = Δrule / (|Δs| + |Δrule|). Every run reaches train accuracy 1.0 a
 
 1. **Shortcut first, at every ρ > 1/2.** Shortcut flip rate reaches 0.95 at 22–41 updates, with reliable accuracy 1 and reversed accuracy near 0. That is the shortcut-only signature, reached on the same timescale as the shortcut-only control.
 2. **The training set is fit before the rule wins.** Training accuracy, exceptions included, reaches 1.0 at 366–603 updates. At that moment reversed accuracy is 0.00 (31/32), 0.04–0.06 (15/16), 0.11–0.12 (7/8) and 0.30–0.33 (3/4).
-3. **The rule takes over after the fit, slowly.** Reversed accuracy crosses 0.5 at 546–737 updates for ρ = 3/4 (train loss 1–2·10⁻²) and at 2,989–3,651 updates for ρ = 7/8 (train loss 1–3·10⁻⁴). It has not crossed by T at 15/16 or 31/32, where Δrule is still rising.
-4. **Outcome by the categories set in advance.** At T, ρ = 1 matches outcome 1 (shortcut only). ρ = 31/32 is shortcut-dominated with memorized exceptions at the prediction level, but has a small positive rule contribution at the logit level. ρ = 15/16 is a context-dependent mixture (outcome 4): both signed changes are large, reversed accuracy is intermediate, and the irrelevant-bit flip rate is 0.11–0.14, so which route wins depends on the held-out context. ρ = 7/8 and 3/4 match outcome 3 (early shortcut, later rule). There is no clean reliability threshold independent of T.
+3. **The rule takes over after the fit, slowly.** Reversed accuracy crosses 0.5 at 546–737 updates for ρ = 3/4 (train loss 1–2·10⁻²) and at 2,989–4,036 updates for ρ = 7/8 (strictly above 0.5; train loss 0.9–3.2·10⁻⁴). It has not crossed by T at 15/16 or 31/32, where Δrule is still rising.
+4. **Outcome by the categories set in advance.** At T, ρ = 1 matches outcome 1 (shortcut only). ρ = 31/32 is shortcut-dominated with memorized exceptions at the prediction level, but has a small positive rule contribution at the logit level. ρ = 15/16 is a mixture (outcome 4): both signed changes are large, reversed accuracy is intermediate, and the irrelevant-bit flip rate is 0.11–0.14. Which route wins varies from one held-out base to another, more with its context than with its rule pattern. The reviewer's variance split of reversed-environment correctness (REVIEW.md §4, C4.1) gives a base-specific context × pattern interaction of 0.68–0.72, context 0.21–0.25 and pattern 0.07–0.10; almost no context goes entirely one way. ρ = 7/8 and 3/4 match outcome 3 (early shortcut, later rule). There is no clean reliability threshold independent of T.
 5. **The three seeds agree closely.** Across seeds the trajectories differ mostly in timing by a few tens of updates; the largest spread at T is reversed accuracy 0.25–0.42 at ρ = 15/16.
-6. **Rule-only keeps a small positive Δs (0.50–0.74) at T in all three seeds**, about 2% of Δrule, although s is exactly uncorrelated with y in its training set. The sign is shared across init seeds, so it probably comes from the single data draw. In that draw, products of s with an irrelevant bit do correlate with y (|corr| up to 0.14), which a network can exploit on training contexts. This explanation is untested.
+6. **Rule-only uses s transiently.** Although s is exactly uninformative there, the shortcut flip rate rises to about 0.6–0.7 around 100–300 updates and then collapses to 0 as the rule is learned. One plausible reading, untested, is that s serves as a memorization feature before the rule wins.
+7. **Rule-only keeps a small positive Δs (0.50–0.74) at T in all three seeds**, about 2% of Δrule, although s is exactly uncorrelated with y in its training set. The sign is shared across init seeds, so it probably comes from the single data draw. In that draw, products of s with an irrelevant bit do correlate with y (|corr| up to 0.14), which a network can exploit on training contexts. This explanation is untested.
 
 ## Follow-up: 10× longer training (adaptive, separate)
 
@@ -46,33 +47,34 @@ Motivation and predictions were pushed before running (QUESTION.md "Follow-up", 
 |---|---|---|---|---|
 | ρ = 1 | 0.00 → 0.00 | ≤ 0.003 → ≤ 0.003 | 1.1–1.3e-4 → 7.1–7.6e-7 | 0.00 |
 | ρ = 31/32 | 0.03–0.06 → 0.04–0.08 | 0.10–0.16 → 0.12–0.19 | 2.7–3.1e-4 → 1.7–1.8e-6 | 0.17–0.20 |
-| ρ = 15/16 | 0.25–0.42 → 0.40–0.63 | 0.40–0.48 → 0.46–0.54 | 2.7–3.1e-4 → 1.9e-6 | 0.15–0.23 |
+| ρ = 15/16 | 0.25–0.42 → 0.40–0.63 | 0.40–0.48 → 0.46–0.54 | 2.7–3.1e-4 → 1.9e-6 | 0.14–0.23 |
 
 Against the predictions:
 1. **ρ = 15/16: partly wrong.** The rule share kept rising and the rule gained, but reversed accuracy crossed 0.5 for only one seed (54200, at about 28k updates, 0.63 at 200k). The other two reached 0.40 and 0.44.
 2. **ρ = 31/32: as predicted.** The rule share rose slightly, and reversed accuracy stayed below 0.1.
 3. **ρ = 1: as predicted.** The rule share stayed ≤ 0.003; there is no rule at the logit level without exceptions.
-4. **Numerics: as predicted, and decisive.**
+4. **Numerics: the stall happened as predicted; one of its predicted causes, saturation, turned out not to matter.**
    - The parameter displacement per update fell about 10× between 20k and about 39k updates, and about 150× by 200k.
-   - The median √v̂ fell from about 2e-8 at 20k to about 1e-14, so Adam's eps dominates its denominator.
-   - 15–23% of training rows at ρ < 1 reached float64 saturation, where the target-logit gradient is exactly zero.
+   - The median √v̂ fell from about 2e-8 at 20k to 1–2e-13 at ρ = 31/32 and 15/16, and about 1e-14 at ρ = 1, by 200k.
+   - The reviewer checked this directly (REVIEW.md §4 M4): at 200k no coordinate has √v̂ ≥ eps, and the step is exactly (lr/eps)·m̂. Adam has become fixed-step gradient descent, so its steps shrink with the loss gradient, which falls as the smallest training margin grows. An eps-free Adam step would be about 10⁴ times larger.
+   - 14–23% of training rows at ρ < 1 reached float64 saturation. This is immaterial (reviewer, C4.3): those rows carry under 1e-6 of the gradient weight Σ(1 − p), and only their target-logit component rounds to zero.
    - At ρ = 15/16, most of the post-T rule-share gain came before about 39k: +0.04–0.05, against +0.01–0.02 over the next 160k updates. Reversed accuracy gained 0.07–0.12 and then 0.03–0.09.
-   - After that the curves only creep, while the displacement per update falls another 15×. The slowing tracks the optimizer stalling; it is not evidence of a settled preference.
+   - After that the curves only creep, while the displacement per update falls another 15×. The slowing tracks Adam's fixed-step regime and the decaying gradient; it is not evidence of a settled preference.
 
-**What this adds.** Ten times more training moves the picture only slightly: ρ = 15/16 drifts from slightly shortcut-leaning to evenly split, and the ends do not move. With this recipe, which route training ends on is mostly decided in the first roughly 40k updates, after which the optimizer barely moves. The asymptotic preference under continued margin growth is not observable here. The follow-up therefore cannot say whether ρ = 15/16 or 31/32 would eventually go to the rule.
+**What this adds.** Ten times more training moves the picture only slightly: ρ = 15/16 drifts from slightly shortcut-leaning to evenly split, and the ends do not move. With this recipe (full-batch Adam, lr 1e-3, eps 1e-8, no weight decay), which route training ends on is mostly decided in the first roughly 40k updates, after which the weights barely move. The asymptotic preference under continued margin growth is not observable here. The follow-up therefore cannot say whether ρ = 15/16 or 31/32 would eventually go to the rule.
 
 ## Limitations
 
-- **One data draw.** All runs share one split and one exception draw; the three seeds vary initialization only. Observation 6 is a reminder that the draw can leave a signature.
+- **One data draw.** All runs share one split and one exception draw; the three seeds vary initialization only. Observation 7 is a reminder that the draw can leave a signature.
 - **One recipe.** One width, depth, encoding, learning rate and optimizer, with no weight decay and full batches. Weight decay and minibatch noise are known levers on which solution is reached and were not varied.
 - **Prediction flip rates are not independent measures here.** Whenever held-out reliable accuracy is 1, shortcut flip = 1 − reversed accuracy and rule flip = reversed accuracy exactly. The signed logit changes carry the extra information.
 - **Input interventions only.** The flips show what the function depends on near held-out inputs, not how either route is represented or computed. A rising Δrule is consistent with a parity computation but is not proof of one.
 - **Off-distribution environments.** At ρ = 1 the network never sees s ≠ y, so the reversed environment is a stress test outside its training distribution.
-- **Late training is numerically delicate.** By T, the median current gradient (about 1e-10) is far below the median √v̂ (1.5–2.8·10⁻⁸) and Adam's eps (10⁻⁸), and the largest training margins approach the float64 saturation point. Late changes are slowed by the optimizer, not only by the loss landscape. The follow-up shows that past about 40k updates training has nearly stopped.
+- **Late training is numerically delicate.** By T, the median current gradient (about 1e-10) is far below the median √v̂ (1.5–2.8·10⁻⁸) and Adam's eps (10⁻⁸). After the fit, the rule's growth happens in the regime where Adam's normalized steps keep moving the weights while gradients shrink; by 200k Adam is fixed-step gradient descent and the weights barely move. Every statement here about what training "selects" late belongs to this recipe. Float64 saturation also appears, but it is immaterial (C4.3).
 
 ## Next question
 
-Wherever the rule wins, it wins after the training set is already fit, while the training loss is small and shrinking. So the "which route" answer here may belong to the late-phase optimizer as much as to the data.
+Wherever the rule wins, it wins after the training set is already fit, while the training loss is small and shrinking. So the "which route" answer here may belong to the late-phase optimizer (full-batch Adam, lr 1e-3, no weight decay) as much as to the data.
 
 **Next question.** Is the post-fit takeover a property of the loss and data, or of Adam's late-phase behavior?
 

@@ -26,7 +26,7 @@ PANELS = [  # (title, [(metric, color, label)], y-limits or None)
     ('held-out accuracy (target y)', [('acc_reliable', C['reliable'], 'reliable (s = y)'),
                                       ('acc_independent', C['independent'], 'independent'),
                                       ('acc_reversed', C['reversed'], 'reversed (s = 1 − y)')], (-.03, 1.03)),
-    ('prediction flip rate, held-out', [('flip_s', C['s'], 'flip s'), ('flip_rule', C['rule'], 'flip a rule bit'),
+    ('prediction flip rate, held-out\n(once reliable acc. = 1: flip s = 1 − reversed acc., flip rule = reversed acc.)', [('flip_s', C['s'], 'flip s'), ('flip_rule', C['rule'], 'flip a rule bit'),
                                         ('flip_irr', C['irr'], 'flip an irrelevant bit')], (-.03, 1.03)),
     ('logit-margin change, held-out', [('delta_s', C['s'], 'signed, flip s'), ('delta_rule', C['rule'], 'signed, flip a rule bit'),
                                        ('absdelta_irr', C['irr'], '|Δ|, flip an irrelevant bit')], None),
@@ -103,8 +103,10 @@ def over_training(runs, conditions, updates, out, title):
                 ax.text(.02, .5, '\n'.join(bad), transform=ax.transAxes, color='red', fontsize=8)
             ax.tick_params(labelsize=7)
     for j in range(len(PANELS)):
+        # Explicit handles, because row 1 (rho = 1) has no exception-base trace to label.
         # Placed where row 1's curves leave the panel empty (checked on the exported PNG).
-        axes[0, j].legend(fontsize=7, loc='upper left' if j == 3 else 'upper right',
+        handles = [plt.Line2D([], [], color=c, lw=1.1, label=label) for _, c, label in PANELS[j][1]]
+        axes[0, j].legend(handles=handles, fontsize=7, loc='upper left' if j == 3 else 'upper right',
                           bbox_to_anchor=None if j == 3 else (1, .93), framealpha=.85)
     seed_handles = [plt.Line2D([], [], color='k', ls=STYLE[s], lw=1.1, label=f'init seed {s}') for s in SEEDS]
     fig.legend(handles=seed_handles, loc='upper right', ncol=3, fontsize=8, frameon=False)

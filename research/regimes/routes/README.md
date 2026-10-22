@@ -85,12 +85,12 @@ All three seeds are drawn as individual traces. [figures/routes_at_T.png](figure
 Observations at T = 20,000, with each range covering the three seeds:
 - **ρ = 1** and **shortcut-only** show a pure shortcut signature: held-out reversed accuracy 0.00, shortcut flip 1.00, and a signed rule Δmargin of 0.03–0.13 against a shortcut Δmargin of 38–40.
 - **ρ = 31/32.** Predictions follow the shortcut (reversed accuracy 0.03–0.06), and the 8 exceptions are fit (train accuracy 1.0). The rule's logit contribution is small but positive and growing: Δrule = 4.5–7.2 against Δs = 37–39.
-- **ρ = 15/16** is mixed. Reversed accuracy is 0.25–0.42, Δs = 23–27 against Δrule = 18–21, and the irrelevant-bit flip rate is 0.11–0.14, so which route wins depends on the held-out context.
+- **ρ = 15/16** is mixed. Reversed accuracy is 0.25–0.42, Δs = 23–27 against Δrule = 18–21, and the irrelevant-bit flip rate is 0.11–0.14. Which route wins varies from one held-out base to another, more with its context than with its rule pattern. The reviewer's variance split of reversed-environment correctness (REVIEW.md §4, C4.1) gives a base-specific context × pattern interaction of 0.68–0.72, context 0.21–0.25 and pattern 0.07–0.10; almost no context goes entirely one way.
 - **ρ = 7/8** has mostly switched to the rule: reversed accuracy 0.95–0.98, Δrule = 28 against Δs = 12.
 - **ρ = 3/4 and ρ = 1/2.** Reversed accuracy is 1.00. The residual Δs is 4.7–5.5 at 3/4 and 0.5–0.7 at 1/2.
 - **Dynamics.** Every condition with ρ > 1/2 first passes through a shortcut phase, with shortcut flip ≥ 0.95 at 22–41 updates.
   - **Fit.** The training set, exceptions included, is fully fit at 366–603 updates. At that point reversed accuracy is still low: 0.00 at 31/32, 0.04–0.06 at 15/16, 0.11–0.12 at 7/8 and 0.30–0.33 at 3/4.
-  - **Rule majority.** Reversed accuracy crosses 0.5 at 546–737 updates for ρ = 3/4, when train loss is 1–2·10⁻². For ρ = 7/8 it crosses at 2,989–3,651 updates, when train loss is 1–3·10⁻⁴. It has not crossed by T for 15/16 or 31/32.
+  - **Rule majority.** Reversed accuracy crosses 0.5 at 546–737 updates for ρ = 3/4, when train loss is 1–2·10⁻². For ρ = 7/8 it rises strictly above 0.5 at 2,989–4,036 updates, when train loss is 0.9–3.2·10⁻⁴. It has not crossed by T for 15/16 or 31/32.
   - **Still moving.** The rule's contribution is still rising at T for ρ = 31/32, 15/16 and 7/8, so the apparent reliability threshold at T depends on T.
 - **Flip-rate identity.** Whenever reliable accuracy is 1, shortcut flip = 1 − reversed accuracy and rule flip = reversed accuracy. The prediction-level flip rates then add nothing beyond the environment accuracies. The logit-level signed deltas are the more informative dependence measure.
 
@@ -100,6 +100,6 @@ Observations at T = 20,000, with each range covering the three seeds:
 - accuracy;
 - the signed logit-margin changes;
 - the rule share Δrule / (|Δs| + |Δrule|), drawn only once |Δs| + |Δrule| > 0.5;
-- the numerics diagnostics: parameter displacement per update, median √v̂ against Adam's eps, and the saturated fraction of training rows.
+- the numerics diagnostics: parameter displacement per update, median √v̂ against Adam's eps, and the saturated fraction of training rows. That fraction turned out to be immaterial (REVIEW.md §4, C4.3).
 
 Every follow-up run's step-20,000 checkpoint is bitwise equal, in weights, Adam moments and t, to the initial run's `final.npz` ([figures/followup_bitwise_check.json](figures/followup_bitwise_check.json)). The added logging did not change training. Interpretation is in [NOTE.md](NOTE.md).
