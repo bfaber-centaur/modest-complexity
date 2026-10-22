@@ -52,6 +52,16 @@
    ],
    "timeout": 600,
    "purpose": "follow-up B (approved by coordinator 04:18Z): residual dose, inside/outside centroid span, held-out subspace interchange; nine 10k checkpoints; seed 64302"
+  },
+  {
+   "run_id": "c2-mech-energy-a1",
+   "argv": [
+    "research/composition-c2/mechanisms/mech_energy.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 300,
+   "purpose": "post-hoc descriptive (ADAPTIVE.md 04:23): residual energy in U vs the follow-up random subspaces; negative coordinates of split states"
   }
  ]
 }

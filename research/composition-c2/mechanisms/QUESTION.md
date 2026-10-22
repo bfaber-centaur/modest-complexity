@@ -122,7 +122,7 @@ Liška, Kruszewski and Baroni (2018), [arXiv:1802.06467](https://arxiv.org/abs/1
 
 The interchange framing follows the general causal-abstraction literature. This lane makes no novelty claim and has not done a targeted literature check.
 
-## Follow-up (proposed after M2, 2026-10-22; awaiting coordinator approval)
+## Follow-up (proposed after M2, 2026-10-22; approved by the coordinator 04:18Z as written)
 
 **What M2 showed** (README, M2 observations): in all three conditions, replacing a state by its training-row class mean (the semantic centroid) does better than the natural state where the natural state fails:
 - tied/inter at L = 5–6;

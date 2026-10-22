@@ -1,0 +1,20 @@
+[
+ {
+  "file": "checks.json",
+  "bytes": 7302,
+  "sha256": "78db0dd4e940a88554996b9acd98fb2ad4a4b527a4652c13f081ea5081e641e1",
+  "committed": true
+ },
+ {
+  "file": "energy.csv",
+  "bytes": 6330,
+  "sha256": "25cd5035d96f236757194d78b328da8db89afa7af3083edf2a2c086b1040458f",
+  "committed": true
+ },
+ {
+  "file": "stdout.log",
+  "bytes": 472,
+  "sha256": "6a36da5076c8cac7c24a92a2aef868583d2c45a4ceb03b856c9d09694291eee2",
+  "committed": true
+ }
+]

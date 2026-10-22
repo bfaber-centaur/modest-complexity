@@ -14,9 +14,11 @@
 | `mech_eval.py` | M1: reproduce r1's published metrics line for all 27 checkpoints |
 | `mech_interchange.py` | M2–M4: interchange over all pairs, consistency, centroid patches, controls, geometry and in-run checks |
 | `mech_probe.py` | D5 decode table (`c2probe.decode_table` unchanged, probe seed 64300) |
+| `mech_residual.py` | follow-up: residual dose, residual split inside/outside the centroid span U, held-out subspace interchange |
+| `mech_energy.py` | post-hoc descriptive: residual energy in U against the same random subspaces, and negative coordinates |
 | `mech_collect.py` | copies run outputs into `runs/RUN_ID/` with `MANIFEST.json` |
-| `mech_figure.py` | `figures/interchange.*` (primary) and `figures/centroid.*` (supporting) |
-| `test_mech.py` | 6 tests, own process |
+| `mech_figure.py` | `figures/interchange.*` (primary), `figures/centroid.*` (supporting) and `figures/followup.*` |
+| `test_mech.py` | 7 tests, own process |
 
 ## Commands
 
@@ -24,11 +26,14 @@ From the repository root, with uv 0.12.23 (PLAN §3) and `uv sync --locked --gro
 
 ```bash
 uv run --locked python -m unittest -v research/composition-c2/common/test_c2.py         # 10 tests, own process
-uv run --locked python -m unittest -v research/composition-c2/mechanisms/test_mech.py   # 6 tests, own process
+uv run --locked python -m unittest -v research/composition-c2/mechanisms/test_mech.py   # 7 tests, own process
 R="uv run --locked python research/regimes/common/run_jobs.py --plan research/composition-c2/mechanisms/plan.json --root runs/c2 --registry research/composition-c2/mechanisms/registry.jsonl --session-label c2-mech-cloud-1"
 $R --workers 2 --ids c2-mech-calib-a1
 $R --workers 2 --ids c2-mech-eval-a1 c2-mech-interchange-a1 c2-mech-probe-a1
 uv run --locked python research/composition-c2/mechanisms/mech_collect.py --root runs/c2 c2-mech-calib-a1 c2-mech-eval-a1 c2-mech-interchange-a1 c2-mech-probe-a1
+$R --workers 2 --ids c2-mech-residual-a1     # follow-up, after approval
+$R --workers 2 --ids c2-mech-energy-a1       # post-hoc descriptive
+uv run --locked python research/composition-c2/mechanisms/mech_collect.py --root runs/c2 c2-mech-residual-a1 c2-mech-energy-a1
 uv run --locked python research/composition-c2/mechanisms/mech_figure.py
 ```
 
@@ -42,8 +47,10 @@ The budget is 15 min of elapsed time with a job running (DECISIONS D6). Host lab
 | `c2-mech-eval-a1` | complete | 0.5 | M1, 27 checkpoints |
 | `c2-mech-interchange-a1` | complete | 50.1 | M2–M4, 27 checkpoints |
 | `c2-mech-probe-a1` | complete | 12.6 | D5 tables, nine 10k checkpoints |
+| `c2-mech-residual-a1` | complete | 34.2 | follow-up B, nine 10k checkpoints |
+| `c2-mech-energy-a1` | complete | 0.3 | post-hoc descriptive: residual energy in U, negative coordinates |
 
-- **Elapsed with a job running:** about 1.2 min of 15. The second batch ran concurrently with two workers, so it counts as about 50 s.
+- **Elapsed with a job running:** about 1.8 min of 15. The second batch ran concurrently with two workers, so it counts as about 50 s.
 - **Not counted:** tests and figure rendering, each under 10 s.
 - **No failed or capped runs.** The registry is append-only.
 
@@ -86,7 +93,7 @@ L = 0 has only 8 rows: the readout applied to h_0.
 - **Held-out histories (i = 3).** The agreement between held-out-history and training-history donors is close to the within-group C, for example 0.75 / 0.41 / 0.58 at L = 6 in tied/inter.
 
 **Semantic-centroid patches.** These are not input recombinations, and they show the effect that whole-state interchange cannot.
-- **tied/inter.** S_cent ≥ 0.94 in all 48 cells, including L = 6, where natural states give 0.56–0.86. The class-mean state carries the answer across every tested position and length. The history-specific part of the natural state goes with the long-length errors.
+- **tied/inter.** S_cent ≥ 0.939 in all 48 cells (16 per seed), including L = 6, where natural states give 0.56–0.86. The class-mean state carries the answer across every tested position and length. The history-specific part of the natural state goes with the long-length errors.
 - **per-step readout.** At (2, 2), the depth-2 centroid followed by op 3 is correct for all 32 (symbol, op) pairs in all three seeds (1.00). Natural depth-2 states give 0.88–0.91 overall and 0.52–0.63 on held-out programs. `V3` reads the depth-2 centroid's symbol at 0.88 / 1.00 / 1.00, against 0.52–0.58 for natural h_2.
 - **tied/final.**
   - At (2, 2) the centroid gives 0.88 / 0.88 / 0.97, against 0.27–0.32 for natural states on held-out programs.
@@ -128,6 +135,18 @@ L = 0 has only 8 rows: the readout applied to h_0.
 |  | margin ≥ 0.5 | held |
 | 7 | snapshots: ckpt-0 off-diagonal near chance | held (0.00–0.25) |
 |  | ckpt-1000 tied/inter low off the diagonal | held for L ≥ 4 (0.20–0.24); L ≤ 2 is already 1.00 |
+
+## Follow-up (M3, approved by the coordinator 04:18Z)
+
+`c2-mech-residual-a1` (`mech_residual.py`, seed 64302) ran as specified in QUESTION.md "Follow-up". `c2-mech-energy-a1` (`mech_energy.py`) is a post-hoc descriptive check; see ADAPTIVE.md.
+
+**Figure.** [figures/followup.png](figures/followup.png) (`.svg`, `.csv`).
+
+**Cross-checks.**
+- λ = 1 gives the natural predictions exactly in all nine checkpoints.
+- λ = 0 over all 512 rows equals M2's S_cent(2, 2) exactly (1.00 ×6, then 0.875 / 0.875 / 0.969 for tied/final).
+
+**Results.** These are in [NOTE.md](NOTE.md), O5–O6.
 
 ## Reviewer handoff (M2)
 
