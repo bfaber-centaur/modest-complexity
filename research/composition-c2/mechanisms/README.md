@@ -93,7 +93,7 @@ L = 0 has only 8 rows: the readout applied to h_0.
 - **Held-out histories (i = 3).** The agreement between held-out-history and training-history donors is close to the within-group C, for example 0.75 / 0.41 / 0.58 at L = 6 in tied/inter.
 
 **Semantic-centroid patches.** These are not input recombinations, and they show the effect that whole-state interchange cannot.
-- **tied/inter.** S_cent ≥ 0.939 in all 48 cells (16 per seed), including L = 6, where natural states give 0.56–0.86. The class-mean state carries the answer across every tested position and length. The history-specific part of the natural state goes with the long-length errors.
+- **tied/inter.** S_cent ≥ 0.939 in all 48 cells (16 per seed), including L = 6, where natural states give 0.56–0.86. The class-mean state carries the answer across every tested position and length. The reviewer's CX-M1 (`review/REVIEW.md` §4) found that rescaling natural donors to the centroid's norm recovers 25–63% of this gain at L = 4–6. So the deviation from the class mean that goes with the long-length errors is largely overall scale, not purely history-specific; see NOTE.md O4.
 - **per-step readout.** At (2, 2), the depth-2 centroid followed by op 3 is correct for all 32 (symbol, op) pairs in all three seeds (1.00). Natural depth-2 states give 0.88–0.91 overall and 0.52–0.63 on held-out programs. `V3` reads the depth-2 centroid's symbol at 0.88 / 1.00 / 1.00, against 0.52–0.58 for natural h_2.
 - **tied/final.**
   - At (2, 2) the centroid gives 0.88 / 0.88 / 0.97, against 0.27–0.32 for natural states on held-out programs.

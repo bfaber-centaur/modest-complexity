@@ -47,6 +47,10 @@
   - At depth 1 the mean does worse than natural: 0.65–0.77 against 0.82–0.83.
   - Off the diagonal, both stay at chance.
 - **Controls.** Permuted-donor and per-unit-marginal states hit the target at 0.00–0.28 in cells with ≥ 32 combinations, near chance of 1/8.
+- **What the class-mean gain consists of** (reviewer counterexample CX-M1, `review/REVIEW.md` §4). It covers every cell where S_cent − S ≥ 0.05 and asks how much of the gap two changes to the natural donors recover: (a) keeping only donors nearest their own symbol's training centroid, and (b) rescaling each donor to its centroid's norm.
+  - **tied/inter, L = 4–6 (11 cells).** (a) recovers 1–22%, so the gain there is not injecting the right symbol. (b) recovers 25–63%, so a large part of what the class mean fixes is the state's overall scale.
+  - **per-step readout and tied/final, held-out depth-3 states, cell (3, 3).** (a) recovers 64–86%, so the gain there is mostly the injected symbol.
+  - **The same two arms, cell (2, 2).** (a) recovers 10–59%.
 
 **O5. Follow-up: residual dose** ([figures/followup.png](figures/followup.png), `c2-mech-residual-a1`). The patched state is c(x) + λ·(h − c(x)), on held-out programs. It stays in the ReLU state set (a convex combination of two non-negative states).
 
@@ -59,12 +63,12 @@
 - **Monotone.** Accuracy rises monotonically in every seed as the residual shrinks.
 - **Training programs.** In per-step readout they stay ≥ 0.99 at every λ. In tied/final they *fall* from 1.00 to 0.88–0.97 as λ → 0, so some training rows need their history residual.
 
-**O6. Follow-up: where the residual lives is unresolved** (`c2-mech-residual-a1`, `c2-mech-energy-a1`). U is the 7-dimensional span of the centered training centroids at depth 2.
+**O6. Follow-up: where the residual lives is unresolved** (`c2-mech-residual-a1`, plus the post-hoc descriptive check `c2-mech-energy-a1`). U is the 7-dimensional span of the centered training centroids at depth 2. U is centered, so a pure scale residual (r ∝ c(x)) lies largely outside it. A "harmful residual outside U" would therefore partly restate the scale effect in O4.
 - **Keeping one part of the residual hurts.** Keeping only the part inside U, or only the part outside it, does worse on held-out programs than keeping the whole residual, in every condition:
   - tied/inter: 0.60–0.68 inside U and 0.69–0.80 outside, against 0.96–1.00 for the whole residual;
   - per-step readout: 0.41–0.53 inside and 0.31–0.36 outside, against 0.52–0.63;
   - tied/final: 0.30–0.42 inside and 0.13–0.16 outside, against 0.27–0.32.
-- **Why the controls do not settle it.**
+- **Why the controls do not settle it** (post-hoc check `c2-mech-energy-a1`).
   - The split states leave the ReLU state set: 7–12% (inside) and 16–21% (outside) of their coordinates are negative, against none for natural and class-mean states.
   - U holds 22–31% of the residual energy, against 5–7% for the dimension-matched random subspaces.
 - **Held-out subspace interchange** (14,336 pairs per checkpoint). Swapping only the donor's U-coordinates into held-out-program bases moves the answer to the donor's target in:
@@ -81,14 +85,18 @@
 
 ## Interpretation (bounded by these tasks, this recipe and these checkpoints)
 
-1. **tied/inter: a reusable semantic state, to a degree.** Under whole-state and class-mean interventions, states from any depth and history act as their symbol for later ops up to L = 4 (natural, S ≥ 0.93), and at every tested length as class means. The natural state is a class mean plus a history residual. In the Euclidean sense that residual is larger than the distance between classes (spread 1.2–2.8). It is harmless for short continuations and goes with the errors at L = 5–6; shrinking it removes them. This supports "reusable semantic state, with history variation that matters at longer lengths than training". It does not show that the network computes with an explicitly symbolic state: the class mean is our construction and uses the true symbol.
+1. **tied/inter: a reusable semantic state, to a degree.**
+   - **Natural states.** Under whole-state interchange, states from any depth and history act as their symbol for later ops up to L = 4 (S ≥ 0.93).
+   - **Class means.** Replacing a state by its training class mean fixes most cross-length failures in tied/inter. Matching only the donor's norm recovers a quarter to two thirds of that gain (CX-M1). The residual h − c(x) is therefore not a purely history-specific direction; a large part of it is overall scale.
+   - **Dose.** Shrinking the residual removes the L = 5–6 errors (O5).
+   - **Reading.** This supports "reusable semantic state up to L = 4; beyond the trained length, deviations from the class mean, much of them in scale, go with the errors".
+   - **Limit.** It does not show that the network computes with an explicitly symbolic state. The class mean is our construction and uses the true symbol.
 2. **per-step readout and tied/final: history-dependent computation.**
    - **Position.** Natural states are not reusable across positions. Only the readout index each was trained with reads them, and cross-length success is near chance.
-   - **Held-out programs.** Within the trained length, the failures go with the history residual at depth 2. The class mean there, followed by op 3, gives the right answer for every (symbol, op) pair in per-step readout and for 88–97% of them in tied/final.
-   - **Reading.** These networks contain, in their class-mean geometry, a state that the shared transition maps correctly. What they do on unseen programs is dominated by history-specific variation. This fits r1's finding that their wrong answers are neighbour labels.
-   - **Limit.** It does not show that they "know" the symbol and are distracted. The mean is an intervention the network cannot perform itself.
+   - **Held-out programs.** Within the trained length, replacing the depth-2 state by its class mean fixes the held-out failures: op 3 then gives the right answer for every (symbol, op) pair in per-step readout and for 88–97% of them in tied/final. Part of that gain is injecting the right symbol: at (2, 2), nearest-centroid donors recover 10–59% of it, and at (3, 3) 64–86% (CX-M1).
+   - **Reading, with its limit.** At depth 2 every (symbol, op 3) pair occurs in training, and the class mean is an average of training states that the network maps correctly. So "the transition maps the class mean correctly" is close to true by construction. Nor is it something the network can do itself: the mean is our intervention, and it uses the true symbol. The bounded reading is that on unseen programs these networks' natural states are dominated by variation away from the class mean, which fits r1's finding that their wrong answers are neighbour labels. It does not show that they "know" the symbol and are distracted.
 3. **Which part of the residual matters is unresolved.** The linear decomposition is confounded by off-manifold states and by controls that are matched in dimension, not in size.
-   - **What U does show.** The centroid span carries a substantial, condition-ordered but incomplete share of the symbol's causal effect on held-out bases.
+   - **What the U swap shows.** Swapping the U coordinates moves 0.50–0.59 (tied/inter), 0.35–0.38 (per-step) and 0.26–0.29 (tied/final) of held-out answers to the donor's target. Dimension-matched random subspaces move ≤ 0.13, but they carry less energy, so these rates are not a measured share of the causal effect.
    - **What a negative result cannot show.** A negative subspace result here would not rule out a nonlinear or redundant code.
 4. **Strong length-3 accuracy alone does not settle the question,** as the charter says. Tied/inter's held-out length-3 accuracy is near 1, and its natural states still fail at L = 6. The per-step and final-only arms fail at length 3, yet hold a usable class-mean state.
 
@@ -106,6 +114,8 @@
 The task family is lookup-table composition (Liška, Kruszewski and Baroni 2018, arXiv:1802.06467). This note reproduces nothing from it and claims no novelty; no targeted literature check was done.
 
 ## Reviewer handoff
+
+The reviewer checked 817a768 in `review/REVIEW.md` §4 (PR #56). Every number it checked passed. Its wording points are addressed in this version: CX-M1 in O4 and Interpretation 1, M2 in Interpretation 2, M3 in Interpretation 3, and the post-hoc label in O6.
 
 1. **O2 equivalence.** `test_mech.py` (`test_patch_is_recombined_forward`, plus the per-step-transition guard) and `checks.json` for all 27 checkpoints. Is "adds no evidence beyond recombined evaluation" stated correctly and not overstated?
 2. **Pair aggregation** (`pairs.csv`). The claim that same-state S equals all-pairs S, the `both_correct` subset, and the held-out-history split.
