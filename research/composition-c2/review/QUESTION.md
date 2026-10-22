@@ -74,6 +74,11 @@ The TU cell is my r1 arm (disclosure above). Checks, with code written here:
 
 (Dated, before the matching analysis or run.)
 
+- **After CX-S2 ran, sharing NOTE follow-up numbers** (recorded in the commit that adds this entry, before the code below exists). CX-S2 and the three checks above ran first: recipes, pairing and endpoints PASS; CX-S2's first half FAILED, its second half held (REVIEW.md §5). I have now read the NOTE's follow-up section (`501071c`). These are recomputations of its stated numbers, with no new prediction beyond "they match".
+  - **From the logged rows.** The held-out, ¬N and wd 0 − wd 0.1 table; the paired contrasts and interaction; F2–F4; held-out at 1,000 and the change over the last 2,000 updates at both recipes; N at 10k; the first step where all three training heads are at 1.0. Also the held-out change from 1,000 to 10,000, against "then barely moves".
+  - **Figure CSVs.** `followup_endpoints.csv` and `followup_trajectories.csv` against the logged rows.
+  - **Optimizer.** The 10k row carries no `diag`, so I read the 9,950 row: median √v̂, the fraction below eps from 500 on, the update norm and the minimum train margin. The NOTE's "at 10k" values come from `groups_wd0.csv`, built from local-only checkpoints. I check that file against the NOTE, and its arrays are NOT CHECKED.
+
 - **04:38, sharing wd-0 follow-up** (69ed8e2). This is post hoc in one respect. It was written after the coordinator's one-line summary, which said held-out at 10k was 0.30–0.45, ¬N ≤ 0.07, and "nearly flat after 1–4k, not eps-limited". It was written before opening any wd-0 file.
   - **Checks.** The recipes (wd 0, everything else as at wd 0.1). The step-0 rows equal the wd-0.1 runs' per seed. The endpoints recomputed from the logged prediction strings with my ¬N recount. No checkpoints are committed.
   - **CX-S2, against "without decay, no cell composes within 10k".** "Nearly flat" could be an argmax property while the function still moves.
