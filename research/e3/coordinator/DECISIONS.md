@@ -233,3 +233,20 @@ PR #25 was integrated. The lane pushed its expectation at `ad6e923` before runni
 **Reading, labelled as such.** Within 20,000 updates, decay is necessary for the fast erasure. The cross-entropy drive alone erodes the gain only slowly, by 0.20–0.25 from the peak. Why decay erases it is open. One candidate explanation, untested: under decay at this training share, the operand-label memorizer is the cheaper solution.
 
 The mechanisms lane has used its initial experiment and its one follow-up (D8). Its budget is about 5.5 of 25 minutes.
+
+## D13 (2026-10-22) Audit of mechanisms packet 1 integrated; one audit probe approved
+
+PR #23 was integrated. It contains audit investigations 2 and 3: the gate, the dynamics splits, and mechanisms packet 1.
+
+**Packet 1 software checks: PASS.** All 104 checkpoints were recomputed, and the replays agree within 5e-11.
+
+**Packet 1 interpretations:**
+- The rise and fall of B are robust. At one-update resolution the peak is 0.743, 0.797 and 0.872, reached 18–37 updates after train accuracy first reaches 1.
+- The edit supplies 0.43–0.58. Training then adds 0.26–0.31 and removes it again in accuracy, but not in ranks: at 20k, P(a+b over S) is 0.39–0.45 for B against 0.14–0.18 for A and C.
+- "Return toward the memorizer" is CONTRADICTED as a return to A. B's argmax agreement with A is 0.42–0.50, and its distance from A grows.
+- It is SUPPORTED LOCALLY as B becoming a fitted network that prefers operand labels again, with P(S over N) at 0.92–0.93.
+
+**Audit probe approved.** The probe asks whether B's early rise comes from fitting frequency-concentrated features or from fresh Adam's first steps of size about ±lr. It replays B's first 300 updates from the same three start files at lr 1e-4, and separately with plain gradient descent.
+- The probe uses the auditor's own code, takes a few seconds per replay, and counts against the audit budget (D7).
+- These are diagnostic replays, not plan runs, so they get no run IDs. Their outputs and the decision rule, stated before running, go under `research/e3/audit/`.
+- They are listed in the run accounting as audit probes.
