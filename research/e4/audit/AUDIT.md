@@ -7,7 +7,7 @@ Software results are PASS / FAIL / NOT CHECKED. Readings are SUPPORTED LOCALLY /
 | QUESTION section | status |
 |---|---|
 | 1. Control C1: random-feature starts through the B protocol | done, below |
-| 2. Mechanisms decomposition (M1–M4, R1–R4, C2) | NOT CHECKED yet; waiting for the lane's code and first figure |
+| 2. Mechanisms decomposition (M1–M4, R1–R4, C2; addenda 1–2) | done, below (lane PR #35 at `52f25d0`) |
 | 3. Dynamics runs (Y1–Y7) and interventions | NOT CHECKED yet; waiting for the D6 runs |
 
 ## Control C1: does the rise and collapse need anything the failed runs learned? (QUESTION §1)
@@ -118,4 +118,79 @@ uv run --locked python launch_runs.py --plan research/e4/plan.json --root runs/e
 for r in runs/e4/e4-au-rf-*-a1; do uv run --locked python publish_run.py $r research/e4/audit/runs --steps 0,10,30,100,300,1000,2000,5000,10000,15000,20000; done
 uv run --locked python research/e4/audit/c1_check.py research/e4/audit/results
 uv run --locked --group analysis python research/e4/audit/plot_c1.py research/e4/audit/figures/c1 research/e4/audit/results
+```
+
+## Mechanisms channel split (QUESTION §2, addenda 1–2; lane packet PR #35, `52f25d0`)
+
+![channels](figures/channels.png)
+
+Vector version: [channels.svg](figures/channels.svg).
+
+Look before reading:
+- Left: how far do the thick lines (reference channel alone) sit above the thin ones (full network) after 2,000, compared with the grey lines (A) and the crosses (a permuted basis)?
+- Middle: do orange (random-feature start) and dark blue (B) channels move together?
+- Right: what happens to the share the decayed start can make up (●), and to the direction (□)?
+
+**What was run.** [channels_check.py](channels_check.py) is my implementation of the lane's design (`d584af7`). It covers every published state of B (wd 1 and 0), A, C (wd 1 and 0) and the six C1 runs. [lane_check.py](lane_check.py) runs the lane's own `channels.py`:
+- against mine;
+- on the C1 runs, which the coordinator assigned to me (D14 item 4);
+- for the basis checks of addendum 2.
+
+The rules were fixed before computing: addendum 1 (`2d81d64`) and addendum 2 (`4e459bf`). When addendum 2 was written, my own channels had already been computed (it says so).
+
+**Software checks, all PASS.**
+
+| # | check | result |
+|---|---|---|
+| M1 | Reconstruction identity | offset + reference + off-reference = label-centred logits to 1.7e-15 relative, in every state (mine). The lane's `channels()` equals mine to 7.3e-16 on 175 states (B, A, C1). The label-axis DC is a per-pair constant (spread 2e-16). No unit is dead at update 0, so the lane's live-unit rule changes nothing |
+| M2 | Basis and labels | k_j read from the update-0 weights equals e2 `dominant()` of the 50k source (the frequency the filter kept) for all three sources; the wd 0 start gives the same k_j. μ uses training inputs only. Task-informed: the lane's alignment and coherence (a+b−c mode, over all 961 pairs including training pairs) |
+| M3 | Invariances | Accuracy, P measures and the σ-margin change by at most 6.7e-16 under ×3.7, under a random per-pair constant, and under (2U, 2V, 3W). Linear margins scale by exactly 6 under the last. The lane's channel margins (logits) and weight-part norms are scale-dependent. Its accuracies and P measures are not |
+| M4 | Decay is a uniform factor | One `experiment.adam` update with zero gradient gives exactly (1 − lr·wd)·w for wd 1, 0.3, 0.1 and 0 (bitwise). −log ρ_t = E(t) to 1.4e-14 |
+
+**The lane's readings.**
+
+| lane reading | verdict | evidence |
+|---|---|---|
+| The label offset (Janati's mean term) is not involved in the decline | SUPPORTED LOCALLY | From update 100 on, removing μ·W changes accuracy by at most 0.041 in B and 0.031 in C1 (from 300). Its mean margins are at most 0.017 of the RMS logit. At update 0, removing it lifts accuracy by up to 0.23 in B and in C1. So a channel with near-zero mean margin can move the argmax a lot (R4) |
+| "Outvoted, not erased": the reference channel alone still gets about half the common pairs right after the collapse | SUPPORTED LOCALLY as a statement about the readout at the reference frequencies, with three qualifications (below) | At 5,000 and 20,000, B's reference-only accuracy is 0.47–0.52, against A's 0.16–0.28. That is 0.22–0.36 above A in every seed, and the normalised margins do not overlap (C2 rule met). Permuting k_j across units gives 0.034–0.047 (median of 8, max 0.077), so the basis does not manufacture it |
+| What decay changes, compared with wd 0, is mostly the reference part | AMBIGUOUS: it depends on the scale | In raw logits the wd 1 − wd 0 difference at 2,000 is 3.5–3.8 in the reference channel and 0.6–0.7 in the off-reference one (lane). But the wd 0 networks are 1.65× larger in ‖(U, V)‖·‖W‖ (1,372–1,409 against 836–851), which inflates their raw margins. Per unit of that product (a scale no channel enters, post hoc), the differences are 1.6–1.7 (reference) and 1.3 (off-reference). The off-reference channel is then 2.5× larger at wd 1. Normalising by the RMS logit instead couples the channels: any growth in one shrinks the others |
+| The useful component's loss is not mainly weight shrinkage, since its input weights keep their norm | AMBIGUOUS | The norms hold, but decay acts on those weights exactly on schedule (M4: ρ = 0.15 from 100 to 2,000). They keep their norm because the gradient replaces them. On the readout side, the decayed start can be at most 15–16% of ‖W_ref‖ at 2,000 and 0.8% at 5,000. Benchmarked against passive decay from update 100 (R1), the reference channel's S-margin at 2,000 is 26–36× larger. The channel is actively rebuilt, not passively shrinking |
+| Phase alignment and coherence at the a+b mode: not seen | AMBIGUOUS: the index could not show it | The lane's index over all 961 pairs gives A (0% held-out) 0.98–0.99, as high as B. On the 483 common pairs, B's coherence goes 0.97–0.98 at 100 → 0.94–0.96 at 2,000 → 0.91–0.93 at 20,000, and A's is 0.81–0.85. That is a modest decline, not a large decoherence. A full-table projection onto a+b−c gives A implied held-out accuracy 1.0 over all pairs or over training pairs, and 0.0 over common pairs. A table-level a+b mode cannot show that a computation exists |
+
+**Qualifications to "outvoted, not erased".**
+1. **Not specific to the failed runs.** The lane's own `channels.py` on the six C1 runs gives the same channels in the same order, SUPPORTED LOCALLY under addendum 2(b) in all three seeds:
+   - From 300 to 2,000 at wd 1, both channels fall, with the reference share 0.33 / 0.35 / 0.40 against B's 0.41 / 0.45 / 0.42.
+   - The offset carries under 1%.
+   - At wd 0 the reference channel rises.
+   - The reference-only accuracy at 5,000–20,000 is 0.46–0.52, against B's 0.47–0.52.
+2. **"Not erased" describes the direction, not the edited weights.** W_ref,t = ρ_t W_ref,0 + ΔW_ref,t exactly.
+   - By 5,000 the decayed start is at most 0.76–0.82% of ‖W_ref‖ in every run (s_t < 0.05; addendum 2c), so the edited readout is gone.
+   - The rebuilt readout still points along it: cosine 0.81–0.83 for B and 0.72–0.75 for C1 at 5,000, and c_t 0.62–0.71 ≫ ρ = 0.0067.
+3. **The split is per unit, not per frequency (R3).** The set of reference frequencies covers all 15 bins in every run (B, A, C, C1), so the pre-stated "in K / outside K" split is degenerate. Every off-reference component sits at some other unit's reference frequency.
+   - Only unit identity separates "competitor" from "useful signal on another unit".
+   - Functionally the off-reference channel behaves like a memorizer: alone it scores 0.00–0.004 (lane), and its margin falls against S, not against N.
+
+**Other checks.**
+- **R2.** The off-reference channel is exactly zero at update 0 by construction and grows at both wd. The evidence for "competitors overtake" is the excess at wd 1 (2.5× by 2,000 per unit norm product), not the growth itself. The lane compares against wd 0, so this is met.
+- **R4.** The exact bilinear split of the reference channel's S-margin change (B, wd 1, 100 → 2,000) depends on the order:
+  - features carry 0.90–0.99 of it if they change first, and 0.43–0.55 if the readout changes first;
+  - the readout carries 0.01–0.10 or 0.45–0.57.
+  So at least about 43% of the reference channel's fall comes through h (input weights and gates). Readout and features cannot be separated further this way, consistent with the lane's "cannot tell which".
+
+**Strongest surviving alternative.** One integrated re-fitting process, cut into two channels by the Fourier basis (the lane's own alternative). It is consistent with three findings above:
+- under decay both channels are almost entirely gradient-built by 5,000;
+- the rebuilt reference readout keeps the start's direction;
+- the same split appears when the start came from random features.
+
+**Cheapest discriminating check.** The lane's approved intervention (D14), restricting decay to or away from the reference parts. It tests whether decay acting on the reference slot is necessary, while the gradient keeps rebuilding it. My review of its shared-code patch is still to come.
+
+**Not checked here.** The lane's gate-change measure, its weight-part norms, its dense replays (the coordinator and the lane checked replay equality) and its current-frequency variant.
+
+**Budget.** About 15 s of analysis in total (channels_check 3.5 s, lane_check 3.7 s, each run twice). Cumulative about 2.3 of 25 min.
+
+**Reproduce**
+```
+uv run --locked python research/e4/audit/channels_check.py research/e4/audit/results
+uv run --locked --group analysis python research/e4/audit/lane_check.py research/e4/audit/results
+uv run --locked --group analysis python research/e4/audit/plot_channels_audit.py research/e4/audit/figures/channels research/e4/audit/results
 ```
