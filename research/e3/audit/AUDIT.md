@@ -225,3 +225,85 @@ uv run --locked --group analysis python $E/plot_mech.py $E/figures/mechanisms $E
 ```
 
 Budget: investigation 3 took about 26 s, including a first attempt of `mech_check.py` that stopped on a missing checkpoint partner after 2 s, and three renders of the figure. The audit total is about 1.1 of 30 min.
+
+# Investigation 4: the early-rise probe (D13) and the weight-decay-0 continuations
+
+Base `ba72767`. The probe's design and decision rule, and the wd-0 checks, were committed before running anything: [QUESTION-4.md](QUESTION-4.md), `c74265c`. I knew the coordinator's D12 summary of the wd-0 runs, and nothing else about them.
+
+## Figure 4
+
+![probe and weight decay 0](figures/probe.png)
+
+Look before reading: in the top left, do the three colours rise together? In the bottom left, where do the dashed blue lines end compared with the solid ones?
+
+## Probe: the early rise does not need the restart's step rule
+
+These are diagnostic replays with my own code from the three published B start files. They have no run IDs.
+
+| source | update 0 | Adam lr 1e-3 (the runs): at first train fit (update) / peak | Adam lr 1e-4: at first fit / peak | gradient descent (η): at first fit / peak |
+|---|---|---|---|---|
+| i30000 | 0.431 | 0.735 (69) / 0.743 | 0.714 (724) / 0.727 | 0.710 (82) / 0.718 (η = 0.20) |
+| i30001 | 0.540 | 0.778 (45) / 0.797 | 0.760 (480) / 0.785 | 0.774 (48) / 0.797 (η = 0.26) |
+| i30002 | 0.580 | 0.839 (33) / 0.872 | 0.818 (353) / 0.863 | 0.832 (41) / 0.859 (η = 0.25) |
+
+- **Rule result.** At the first update with train accuracy 1, the gain over update 0 is +0.28, +0.22 and +0.24 with Adam at lr 1e-4, and +0.28, +0.23 and +0.25 with gradient descent. Both are at least 0.10 in all three sources, so the pre-stated verdict is **"a property of fitting from the edited point"**.
+- **Scaling with learning rate.** With a ten-times smaller learning rate, Adam reaches train fit after about ten times as many updates (353–724 against 33–69). On the decay-time axis its curve follows the reference.
+- **Gradient descent.** Fitted at η = ‖first Adam step‖ / ‖g₀‖ = 0.20–0.26. It reaches train fit about as fast as the reference, and its rise is the same within 0.03. Its gains are all far above the 0.10 threshold, so the single step size is not a weakness here.
+- **Observed after the fact, not pre-stated.** Gradient descent with the runs' decay also produces the fall. By 3,000 updates held-out accuracy is 0.000–0.006. Over that stretch train cross-entropy rises from its minimum of 0.30–0.40 (updates 159–181) to 0.51–0.70, while train accuracy stays 1. So in this replay the fall happens while the cross-entropy drive is losing to decay, not while it is winning.
+
+## Weight-decay-0 continuations (PR #25)
+
+**Software checks: PASS.**
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| W1 | Provenance | PASS | For all six runs: one running and one complete event; 20,000 updates; wd 0 and the gated start-file hash in `config.json` and the plan; step 0 equal to the start file, with zero moments; manifest hashes match |
+| W2 | Checkpoint predictions | PASS | Logged accuracies reproduced exactly at every published checkpoint; cross-entropies within 0.04 of the tolerance |
+| W3 | Dense replay | PASS | Independent wd-0 replay of updates 1–300 matches the checkpoints within 8.1e-15 |
+
+Rerunning `mech_check.py` with the six new runs leaves every packet-1 row of its outputs byte-identical.
+
+**Interpretation rules.**
+
+| Rule | Verdict | Evidence (i30000, i30001, i30002) |
+|---|---|---|
+| 1. Decay is necessary for B's erasure within 20,000 updates | SUPPORTED LOCALLY | B at 20k: 0.561, 0.565, 0.619 at wd 0 against 0.031, 0.031, 0.010 at wd 1, a difference of 0.53–0.61 |
+| 2. The early rise is the same at both settings | SUPPORTED LOCALLY | Dense-replay peaks 0.758, 0.810, 0.874 at wd 0 against 0.743, 0.797, 0.872 at wd 1, within 0.015; peak updates differ by 7–15 |
+| 3. C at wd 0 stays at chance | SUPPORTED LOCALLY | 0.010 at update 0 and 0.000 at every later published checkpoint |
+
+**Descriptive, for B at wd 0 at 20,000 updates.**
+- P(a+b over S) is 0.89–0.92 and P(a+b over N) 0.991–0.993, so the correct label still ranks almost at the top.
+- P(S over N) is 0.87–0.88, below the fitted-network band of 0.927–0.948.
+- Argmax agreement with A is 0.17–0.19, and distance from A is 0.97–1.00. Without decay, B stays far from a memorizer in every measure.
+- Without decay, C settles at P(a+b over N) 0.50–0.55, close to the no-decay 30% runs' 0.50–0.52 (investigation 1). Its P(S over N) is 0.93–0.94.
+
+**Weight norms (‖U, V, W‖ at updates 0 → 1,000 → 20,000).**
+- A stays at 60.
+- B goes 38–39 → 39–40 → 57 at wd 1, and 38–39 → 50–51 → 75–76 at wd 0.
+- C goes 39–41 → 39 → 57 at wd 1, and 39–41 → 52–53 → 78–79 at wd 0.
+
+Under decay, both edited arms grow back toward A's norm while they lose held-out accuracy. That bears on the lane's untested candidate that under decay the memorizer is the cheaper solution. It does not test it: the wd-0 runs never settle at a norm, so the two solutions are not compared at equal fit.
+
+## Interpretations
+
+| Claim | Verdict | Evidence and scope |
+|---|---|---|
+| B's early rise is produced by training from the edited point, not by fresh Adam's ±lr steps | SUPPORTED LOCALLY | Pre-stated probe rule met under both alternative step rules, with gains of +0.22 to +0.28 at first fit, against +0.24 to +0.30 in the runs |
+| Decay is necessary for the fast erasure (D12) | SUPPORTED LOCALLY | Rule 1. Gradient descent with decay erases while its train cross-entropy rises (post hoc), which also points to decay rather than the cross-entropy drive |
+| The cross-entropy drive alone erodes the gain slowly (D12) | SUPPORTED LOCALLY, descriptive | At wd 0, B falls from its peak by 0.20–0.25 over 20,000 updates, with P(a+b over S) falling from 0.97–0.98 to 0.89–0.92 |
+| Under decay the operand-label memorizer is the cheaper solution (D12 candidate) | Not tested | The norms are consistent with it. A comparison at equal fit, or at the decay equilibrium, would be needed |
+
+**Strongest surviving alternative.** Any network that refits these 299 pairs from the filtered weights generalizes for a while, whatever the step rule. Decay then removes the components that carry a+b on held-out pairs before the ones that fit training pairs. Under this reading the held-out gain is a byproduct of the starting features plus the order in which decay removes components; it does not reflect a computation that the objective favours. The probe and the wd-0 runs fit this reading as well as they fit "decay favours the memorizer". Neither identifies what decay removes first.
+
+**Cheapest next discriminating check.** Decay alone cannot be the probe. The network has no biases, so shrinking every weight by the same factor leaves every argmax unchanged, and decay acts only through its interplay with the gradient. The cheaper discriminating check is a breakdown, from the published wd-1 and wd-0 checkpoints, of which components shrink between B's peak (update 100) and 2,000 updates: energy at each unit's dominant frequency against the rest, input–output alignment, and readout phases. It needs seconds of computation and no new runs. If the a+b-carrying components shrink at wd 1 and not at wd 0, while the components that fit the training pairs persist, that identifies what decay removes first.
+
+## Reproduce (investigation 4)
+
+```bash
+E=research/e3/audit
+uv run --locked python $E/mech_check.py $E/results
+uv run --locked python $E/probe.py $E/results
+uv run --locked --group analysis python $E/plot_probe.py $E/figures/probe $E/results
+```
+
+Budget: `mech_check.py` with the six new runs took 16 s, the probe 60 s and the figures about 12 s. Investigation 4 totals about 1.5 min, and the audit total is about 2.6 of 30 min.
