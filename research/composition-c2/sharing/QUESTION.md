@@ -127,7 +127,7 @@ Starting point: Liška, Kruszewski and Baroni (2018), "Memorize or generalize? S
 - *Extension.* The paper's recurrence always shares weights across time. Untying transitions and readouts in a small full-batch ReLU RNN is not done there.
 - *Novelty.* No claim is made without a targeted literature check.
 
-## Follow-up (proposed 2026-10-22 ~04:35Z, after the initial comparison; awaiting coordinator approval)
+## Follow-up (proposed 2026-10-22 04:25Z at `d8735fc`, after the initial comparison; approved by the coordinator 04:26Z, launched 04:26:52Z)
 
 **What the initial comparison left most ambiguous.** Only TT composed within 10k (0.96–1.00, ¬N 0.88–1.00). TU, UT and UU reached 0.52–0.84 and were still rising. The tyings interact strongly, and TU < UU on every seed. All cells fit by 700 updates, so every difference arises in the post-fit phase. In that phase:
 - decay is a large part of the dynamics: in tied groups the decay step is 0.44–0.94 of the Adam-direction step and opposes it (cosine −0.40 to −0.94), less closely so in per-step transition copies (0.10–0.74);

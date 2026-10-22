@@ -1,7 +1,8 @@
 """Where the sharing lane's 12 runs live, and r1-style metric rows with N / notN for each.
 
 TT and TU are the original r1 runs (published metrics, recovered checkpoints); UT and UU are
-this lane's c2train.py runs. For r1 runs, N / notN at each logged step are computed from the
+this lane's c2train.py runs. The follow-up variant 'wd0' (all four cells at wd 0) is this lane's
+c2-share-wd0-* runs for every cell. For r1 runs, N / notN at each logged step are computed from the
 logged held_final_pred and c2task.neighbour_answerable, since r1 did not log them.
 """
 import json
@@ -25,7 +26,10 @@ R1_RUN = dict(TT=REPO/'research/regimes/composition/runs/r1-comp-rnn-inter-s{}-a
 R1_ID = dict(TT='r1-comp-rnn-inter-s{}-a1', TU='r1-rev-comp-rnn-untied-s{}-a1')
 
 
-def run_id(cell, seed):
+def run_id(cell, seed, variant='main'):
+    if variant == 'wd0':
+        return f'c2-share-wd0-{cell.lower()}-s{seed}-a1'
+    assert variant == 'main', variant
     return R1_ID[cell].format(seed) if cell in R1_ID else f'c2-share-{cell.lower()}-s{seed}-a1'
 
 
@@ -46,14 +50,18 @@ def find(rid, name):
     raise FileNotFoundError(f'{rid}/{name}')
 
 
-def metrics_path(cell, seed):
+def metrics_path(cell, seed, variant='main'):
+    if variant != 'main':
+        return run_dir(run_id(cell, seed, variant))/'metrics.jsonl'
     if cell in R1_RUN:
         return Path(str(R1_RUN[cell]).format(seed))/'metrics.jsonl'
     return run_dir(run_id(cell, seed))/'metrics.jsonl'
 
 
-def checkpoint(cell, seed, step):
-    """Path of a checkpoint: recovered original for TT/TU, local or committed for UT/UU."""
+def checkpoint(cell, seed, step, variant='main'):
+    """Path of a checkpoint: recovered original for TT/TU, local or committed otherwise."""
+    if variant != 'main':
+        return find(run_id(cell, seed, variant), f'ckpt-{step}.npz')
     if cell in R1_ID:
         path = RECOVERED/R1_ID[cell].format(seed)/f'ckpt-{step}.npz'
         if not path.exists():
@@ -78,13 +86,13 @@ def subset_from_pred(row, held_final, nbr):
     return dict(N=float(ok[nbr].mean()), notN=float(ok[~nbr].mean()))
 
 
-def trajectory(cell, seed, T=None, nbr=None):
+def trajectory(cell, seed, T=None, nbr=None, variant='main'):
     """List of dicts: step, train_final, train_step1, train_step2, held_final, N, notN."""
     if T is None:
         T, nbr = task()
     held_final = c2task.rows(T['P'], T['held'])['states'][:, -1]
     out = []
-    for row in read_metrics(metrics_path(cell, seed)):
+    for row in read_metrics(metrics_path(cell, seed, variant)):
         sub = row.get('held_subset') or subset_from_pred(row, held_final, nbr)
         out.append(dict(step=row['step'], train_final=row['train']['final']['acc'], train_step1=row['train']['step1']['acc'],
                         train_step2=row['train']['step2']['acc'], held_final=row['held']['final']['acc'],

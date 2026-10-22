@@ -7,8 +7,9 @@ cells) applied to h_j (j = 1..3), accuracy against the true symbol at j, on trai
 and held-out-program rows. Programs are length 3 from the start state, so every untied copy is
 used at its own step (no step map).
 
-Writes out/decode_table.csv and out/readout_table.csv (one row per entry).
-uv run --locked python research/composition-c2/sharing/share_decode.py --steps 0 10000 [--cells TT TU]
+Writes out/decode_table.csv and out/readout_table.csv (one row per entry); with --variant wd0
+(the follow-up runs), out/decode_table_wd0.csv and out/readout_table_wd0.csv.
+uv run --locked python research/composition-c2/sharing/share_decode.py --steps 0 10000 [--cells TT TU] [--variant wd0]
 """
 import argparse
 import csv
@@ -43,6 +44,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--steps', type=int, nargs='+', default=[0, 10000])
     ap.add_argument('--cells', nargs='+', default=list(S.CELLS))
+    ap.add_argument('--variant', choices=('main', 'wd0'), default='main')
     args = ap.parse_args()
     T, _ = S.task()
     out = Path(__file__).resolve().parent/'out'; out.mkdir(exist_ok=True)
@@ -50,10 +52,10 @@ def main():
     for cell in args.cells:
         for seed in S.SEEDS:
             for step in args.steps:
-                path = S.checkpoint(cell, seed, step)
+                path = S.checkpoint(cell, seed, step, args.variant)
                 p = nets.load(path)[0]
                 assert c2rnn.scheme(p) == dict(transition=S.TIE[cell][0] == 'tied', readout=S.TIE[cell][1] == 'tied')
-                key = dict(cell=cell, seed=seed, step=step, run_id=S.run_id(cell, seed), ckpt_sha256=nets.sha256_file(path))
+                key = dict(cell=cell, seed=seed, step=step, run_id=S.run_id(cell, seed, args.variant), ckpt_sha256=nets.sha256_file(path))
                 tab = c2probe.decode_table(p, T, PROBE_SEED)
                 for i in tab['positions']:
                     for j in tab['positions']:
@@ -61,7 +63,8 @@ def main():
                                         train_fit=tab['train_fit'][i], held_acc=tab['table'][i][j]))
                 ro += [dict(key, **r) for r in readout_table(p, T)]
                 print(cell, seed, step, np.round(np.array(tab['table']), 2).tolist())
-    for name, rows in (('decode_table.csv', dec), ('readout_table.csv', ro)):
+    suffix = '' if args.variant == 'main' else f'_{args.variant}'
+    for name, rows in ((f'decode_table{suffix}.csv', dec), (f'readout_table{suffix}.csv', ro)):
         with (out/name).open('w', newline='') as f:
             w = csv.DictWriter(f, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
 
