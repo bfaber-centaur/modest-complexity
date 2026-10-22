@@ -17,8 +17,8 @@ hash (`source` column: e3 or replay). Per checkpoint:
   The channels sum to the label-centred logits (checked; maximum error recorded). Linear margins on
   the common pairs, z_{a+b} minus the mean logit over S (or N), add exactly across channels and
   are reported per channel in logit units;
-- weight amplitudes at k_j: sum over live units of |rfft| of U, V (token axis) and W (label axis)
-  at k_j, and the root energy at every other non-DC frequency;
+- weights at k_j: Frobenius norms of the parts of U, V (token axis) and W (label axis) at each
+  unit's k_j, at DC and at the other frequencies (squares add to the squared norm; checked);
 - alignment of the units' contributions to the a+b mode exp(2 pi i k (a + b - c) / p) of the
   logit table over all 961 pairs: A_j = H_j(k_j, k_j) conj(W_j(k_j)) (2D DFT of h_j at (k, k),
   1D DFT of the readout row), whose real part is the unit's support for c = a + b. Reported:
@@ -114,18 +114,22 @@ def alignment(w, k, live):
                 alignment_R=float(A.real.sum()/total), coherence=float(groups/total)), float(err/np.abs(Z).max())
 
 
-def weight_amplitudes(w, k, live):
+def weight_parts(w, k, live):
+    """Frobenius norms of each weight matrix's part at the units' reference frequencies, of its DC
+    part and of the rest (token axis for U and V, label axis for W; units without weights at update
+    0 count wholly as rest). By Parseval the squares add to the matrix's squared norm (checked)."""
+    p = w[0].shape[0]
     units = np.arange(len(k))
-    FU, FV = (np.abs(np.fft.rfft(x, axis=0)) for x in w[:2])  # (16, h)
-    FW = np.abs(np.fft.rfft(w[2], axis=1)).T                    # (16, h)
-    out = {}
-    for name, F in (('U', FU), ('V', FV), ('W', FW)):
-        ref = F[k, units]
-        off = F[1:]**2
-        off_energy = off.sum(0) - ref**2
-        out[f'{name}_ref_amplitude'] = float(ref[live].sum())
-        out[f'{name}_off_root_energy'] = float(np.sqrt(off_energy[live].sum()))
-    return out
+    out, err = {}, 0.
+    for name, x, axis in (('U', w[0], 0), ('V', w[1], 0), ('W', w[2].T, 0)):
+        e = np.abs(np.fft.rfft(x, axis=axis))**2/p
+        e[1:] *= 2                                   # p odd: every non-DC bin stands for +k and -k
+        ref = np.zeros(e.shape, bool)
+        ref[k, units] = live                         # k >= 1, so DC is never a reference bin
+        parts = dict(ref=e[ref].sum(), dc=e[0].sum(), off=e[1:][~ref[1:]].sum())
+        err = max(err, abs(sum(parts.values()) - np.sum(x**2))/np.sum(x**2))
+        out.update({f'{name}_{part}_norm': float(np.sqrt(v)) for part, v in parts.items()})
+    return out, float(err)
 
 
 def measures(w, d, k_ref, live, sets, gates100):
@@ -146,7 +150,8 @@ def measures(w, d, k_ref, live, sets, gates100):
         for name in ('ref', 'off'):
             out[f'margin_{setname}_{name}_cur'] = float(linear_margin(ch_cur[name], y, M).mean())
     al, al_err = alignment(w, k_ref, live)
-    out.update(al, alignment_identity_rel_err=al_err, **weight_amplitudes(w, k_ref, live))
+    parts, parts_err = weight_parts(w, k_ref, live)
+    out.update(al, alignment_identity_rel_err=al_err, **parts, weight_parts_identity_rel_err=parts_err)
     g = e3.gates(w, d)[:, live]
     out['gates_changed_from_update100'] = float(np.mean(g != gates100))
     out['norm'] = float(np.sqrt(sum(np.sum(x**2) for x in w)))
@@ -214,7 +219,8 @@ def main():
     ap.add_argument('--out', type=Path, default=HERE/'results')
     args = ap.parse_args()
     rows, inputs = analyse(sources(args.local))
-    worst = max(max(r['channel_identity_rel_err'], r['alignment_identity_rel_err']) for r in rows)
+    worst = max(max(r['channel_identity_rel_err'], r['alignment_identity_rel_err'], r['weight_parts_identity_rel_err'])
+                for r in rows)
     if worst > 1e-9:
         raise AssertionError(f'decomposition identity off by {worst:g}')
     args.out.mkdir(parents=True, exist_ok=True)

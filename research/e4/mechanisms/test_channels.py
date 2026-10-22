@@ -69,7 +69,11 @@ class Channels(unittest.TestCase):
         self.assertLess(err, 1e-12)
         _, err = c.alignment(w, k, live)
         self.assertLess(err, 1e-12)
+        parts, err = c.weight_parts(w, k, live)
+        self.assertLess(err, 1e-12)
+        self.assertAlmostEqual(parts['W_ref_norm']**2 + parts['W_off_norm']**2 + parts['W_dc_norm']**2, np.sum(w[2]**2))
         W_ref, W_off = c.split_readout(w[2], k, live)
+        self.assertAlmostEqual(np.sum(W_ref**2), parts['W_ref_norm']**2)  # same basis rule as the channel split
         self.assertTrue(np.allclose(W_ref[~live], 0))
         self.assertTrue(np.allclose(W_ref + W_off + w[2].mean(1, keepdims=True), w[2]))
         y = (A[c.e3.COMMON] + B[c.e3.COMMON]) % P
