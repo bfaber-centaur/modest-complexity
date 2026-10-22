@@ -2,11 +2,12 @@
 
 - [QUESTION.md](QUESTION.md): what is checked and the predictions, written before each measurement (Revisions are labelled by the commit that records them).
 - [REVIEW.md](REVIEW.md): verdicts with exact artifact references.
-- [rev_c3pin.py](rev_c3pin.py): pin check of `be41d16` (D3). It reuses the c2 reviewer's own forward, loss and oracle from `../../composition-c2/review/rev_pin.py`. Its output is [out/rev_c3pin.txt](out/rev_c3pin.txt).
+- [rev_c3pin.py](rev_c3pin.py): pin check of `be41d16` (D3). It reuses the c2 reviewer's own forward, loss and oracle from `../../composition-c2/review/rev_pin.py`. Its output is [out/rev_c3pin.txt](out/rev_c3pin.txt). It checks `be41d16` and runs at that commit. From `82cef77` on, `check_source` also takes the Adam count, so `rev_c3pin.py` stops there with a TypeError. `rev_repin.py` RP3 reruns its 41 pairings under the new signature.
 - [rev_corr.py](rev_corr.py): correction-lane recomputation, C1–C7, CX-C1, CX-C2 (run `c3-rev-corr-a2`; output [out/rev_corr.txt](out/rev_corr.txt)). [rev_corr_note.py](rev_corr_note.py) checks the NOTE's numbers ([out/rev_corr_note.txt](out/rev_corr_note.txt)).
 - [rev_repin.py](rev_repin.py): re-pin check of `82cef77` (D10), RP0–RP7 and CX-R1 (run `c3-rev-repin-a1`; output [out/rev_repin.txt](out/rev_repin.txt)).
 - [rev_scaf.py](rev_scaf.py): scaffolding-lane review, S0–S7, CX-S1 and CX-S2 (run `c3-rev-scaf-a1`; output [out/rev_scaf.txt](out/rev_scaf.txt)). [rev_scaf_note.py](rev_scaf_note.py) checks the NOTE's numbers ([out/rev_scaf_note.txt](out/rev_scaf_note.txt)).
 - [rev_scaf_fu.py](rev_scaf_fu.py): scaffolding follow-up review, F1–F4, CX-F1 and the NOTE's §F numbers (run `c3-rev-scaf-fu-a1`; output [out/rev_scaf_fu.txt](out/rev_scaf_fu.txt)). [rev_scaf_fu_posthoc.py](rev_scaf_fu_posthoc.py): post-hoc reset-effect table ([out/rev_scaf_fu_posthoc.txt](out/rev_scaf_fu_posthoc.txt)).
+- [rev_synth.py](rev_synth.py): synthesis check (SY4 run counts and wall time from the c3 registries; post-hoc keep control on logged rows; the correction call site at the head). Reads only; output [out/rev_synth.txt](out/rev_synth.txt).
 - [plan.json](plan.json), [registry.jsonl](registry.jsonl): reviewer runs (IDs `c3-rev-`; these reuse the original init seeds for pairing, and new seeds would come from 73000–73999). Outputs are local in `runs/c3/` (gitignored).
 
 ## Commands
@@ -28,6 +29,7 @@ $R --workers 1 --ids c3-rev-scaf-a1    # rev_scaf.py --lane 4512bce; stdout in r
 python3 research/composition-c3/review/rev_scaf_note.py runs/c3/c3-rev-scaf-a1
 $R --workers 1 --ids c3-rev-scaf-fu-a1   # rev_scaf_fu.py --lane 5317c54
 python3 research/composition-c3/review/rev_scaf_fu_posthoc.py runs/c3/c3-rev-scaf-fu-a1
+uv run --locked python research/composition-c3/review/rev_synth.py > research/composition-c3/review/out/rev_synth.txt   # at 05515a2 or later (runs test_corr.py)
 ```
 
 ## Budget tally (20 min of numerical execution, D8)
@@ -48,3 +50,4 @@ python3 research/composition-c3/review/rev_scaf_fu_posthoc.py runs/c3/c3-rev-sca
 | 8f2b28c (06:27) | `rev_scaf_note.py` (reads only) | 0.6 s | 10.3 min |
 | 5236c16 (06:45) | `c3-rev-scaf-fu-a1` | 72.2 s | 11.5 min |
 | after the run (06:47) | `rev_scaf_fu_posthoc.py` (reads only) | < 1 s | 11.5 min |
+| d31d228, 42210be (07:03) | `rev_synth.py` (reads only; includes `test_corr.py`), plus a first registry-only pass | 2.0 s | 11.5 min |
