@@ -170,3 +170,9 @@ Three things in the first pass need entries before the second pass.
   - CX-S1 reads h1/h2 from my rescoring of `ckpt-50000`, and also prints the lowest logged value after S. CX-S2 prints taper too, for information.
   - My N mask and row order are checked against `c2task` (S0).
 - **NOTE numbers next.** A separate read-only pass, `rev_scaf_note.py`, checks them after this run, against `rev_scaf.json` and the lane's CSVs that S4–S7 verify.
+- **`c3-rev-scaf-a1` complete (78 s).**
+  - Every recomputation check S0–S7 passes.
+  - CX-S1 failed in both parts.
+  - CX-S2 held for the norm, but failed on which group shrinks most.
+  - Output: [out/rev_scaf.txt](out/rev_scaf.txt).
+- **Next, before running it: `rev_scaf_note.py`** (reads only). It checks the NOTE's numbers O1–O8 and handoff item 2 as quoted, with ranges at the NOTE's rounding.
