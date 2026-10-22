@@ -9,6 +9,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd 0 follow-up (`501071c`): **PASS** on every number checked; note S1 (F4 lead is 0.05–0.13). CX-S2: "nearly flat" is a slow rise in every run while logits keep growing, not a plateau. wd 0 decode and group tables NOT CHECKED. | §5 |
 | Generalization | Parts A and B, A5 and the follow-up anatomy (NOTE `6fe1435`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1, G2, G5 and G6. CX-G3: drift predicts failures within a transition in every model, but only 1.2–3.3×, so it is a partial account (note G7). Note G8. | §3 |
 | Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. CONCERN M1 on the centroid/residual reading, from CX-M1, is **addressed** in NOTE `0fe8624`, as are notes M2 and M3; that revision PASSES, including O6's scale-outside-U claim (0.67–0.98). Note M4 on one README word. | §4 |
+| Synthesis draft `eac869e` | **CONCERN SY1**: the eps qualifier overreaches for the per-step readout, 61–87% of whose gain came before the switch. Notes SY2–SY6 (one false sentence about tied transitions, missing committed checkpoints, disclosure, unchecked inputs, minor). Every other quoted number matches. | §6 |
 
 ## 1. Pin check (`b3e8132`)
 
@@ -350,3 +351,35 @@ Evidence: [rev_share.py](rev_share.py) `83b3303 501071c`, functions `wd0` and `w
 - *Suggested NOTE wording.* "Then barely moves" and "nearly flat" should become something like "then rises slowly (+0.02 to +0.11 from 1,000 to 10,000, in every run)". The Reading's closing caveat already says that a flat stretch is not a demonstrated plateau. The data say more: the stretch is not flat, and the 10k values are not where these runs stop.
 
 **NOT CHECKED.** The wd 0 decode table (`decode_table_wd0.csv`, `followup_decode_wd0.png`), the readout table and every `groups_wd0.csv` array. All need the local-only wd 0 checkpoints.
+
+## 6. Synthesis draft (`eac869e`)
+
+Every quoted number was checked against the lane NOTEs, REVIEW.md and my script outputs in `out/`, and the claims were read for scope. No new measurement.
+
+**CONCERN (wording), no BLOCK.** The time rows are pending F1.
+
+**Numbers that match.**
+- **Scope.** 384/128/42 rows; 3.84M and 19.2M row presentations.
+- **(a) table.** All crossings, the censored arm and the 50k values (`out/rev_time.txt`). "3–4× longer". The gap shrank 15–28% and CE fell (CX-T1). Eps timing 24.1–25.1k and 27.8–29.7k. Two of three per-step crossings and all ¬N crossings fall in the regime, as does 56–70% of tied/final's gain. Distances 0.65–1.05 at 50k, and V3 on h1 0.81 / 0.97 / 0.84.
+- **(b).** The table (`out/rev_share.txt`), fit by 350–700 updates, the four contrasts, the interaction (+0.30 to +0.56), and every wd 0 number including TT's 0.05–0.13 lead and CX-S2.
+- **(c).** 4,086 of 4,096. The 10k, 20k and 50k length table. G1's 0.01–0.14 and the top-4 share of 0.20–0.29. New tasks: 0.98–1.00, ¬N 0.88–1.00, 8 of 8 pairs, tied/final 0.42–0.56 with at most 2 ¬N rows. New-task L = 6 is 0.58–0.88, from `windows.csv`, which I checked.
+- **(d).** S ≥ 0.93, S_cent ≥ 0.939, 25–63% against 1–22%, and 88–97%. The 50k drift is 0.99–1.00×.
+- **Elsewhere.** The MLPs' 14–25% (r1 synthesis). Crossings at 7.7–9.2k. Peak RSS 45 MiB. 28 recovered files and 36 time checkpoints.
+
+**SY1, CONCERN: the eps qualifier in (a) overreaches for the per-step readout.** (a) says that "closes with time" includes a change of optimizer regime and "is not a continuation of the early Adam dynamics".
+- For tied/final that holds: 56–70% of its gain came after the switch.
+- For the per-step readout, 61–87% of its 10k→50k held-out gain came *before* the median √v̂ crossed eps (§2 T1). Only its last approach to criterion (two of three crossings) and its ¬N crossings fall in the regime.
+- Suggested wording: "For the per-step readout most of the gain came before the switch, but two of its three crossings and all ¬N crossings fall after it. For tied/final 56–70% of the gain came after it." Next question 1 is worded correctly ("crossings").
+
+**Notes.**
+- **SY2 (factual).** "Every RNN here shares its transition across steps" is false for UT and UU. Suggested: "Every RNN here applies one transition per op".
+- **SY3 (factual).** The list of committed checkpoints omits the sharing lane's six UT/UU `ckpt-10000` and the generalization lane's 16 new-task `ckpt-10000`. I rescored both sets from Git.
+- **SY4 (disclosure).** The per-step-readout arm, in (a) row 2 and every TU number in (b) at wd 0.1, is my r1 arm, reviewed by me. Scope should say so once.
+- **SY5 (unchecked inputs).** Two quoted numbers rest on tables I marked NOT CHECKED: UT's 0.75–0.84 off-diagonal decoding (the sharing decode table) and the U-swap rates 0.26–0.59 against ≤ 0.13 (mechanisms). Both equal their NOTEs.
+- **SY6 (minor).**
+  - "All of it on neighbour-answerable rows" (c): one new-task tied/final run answers 2 of its 32 ¬N rows, so "almost all".
+  - UU has 2.9× TT's parameters, not 2.8×.
+  - (d)'s "this fits the drift" could carry CX-G3's bound: within a transition, drift accounts for failures only partly (1.2–3.3×).
+  - The reviewer row should read 7.4 / 25 min, PRs #50, #53 and #56–#59.
+- **Scope.** Apart from SY1, no claim reaches past the tested tasks, recipe and budgets. The short answers carry "under this recipe and these budgets", and (c) says "within what was tested".
+
