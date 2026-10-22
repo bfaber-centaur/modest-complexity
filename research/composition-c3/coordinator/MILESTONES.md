@@ -20,3 +20,4 @@
 - 06:20Z: reviewer PASS on the follow-up plan entries (84dc657) and on the correction wording fixes (897fa97, already in this branch). The reviewer's optional nit (the 13–33% figure holds in 8 of 14 bases; the other 6 are 5–12.5%) applied by the coordinator to correction/NOTE.md and README.md.
 - 06:29Z: scaffolding follow-up matched-control checks pass (abfa30b); the six reset runs are running. Reviewer's scaffolding review script has run (8f2b28c: S0–S7 pass, CX-S1 failed, CX-S2 half held); verdict pending.
 - 06:31Z: reviewer PASS on scaffolding M2 (PR #67 merged at d4ee445): CX-S1 failed (persistence stands), CX-S2 half held; NOTE nits N-S1–N-S3 and a figure caption line relayed to the lane for its follow-up NOTE update. Synthesis §2 updated.
+- 06:36Z: scaffolding follow-up runs complete (6 of 6, none failed); 16.8 of 20 min used, no further runs. Analysis and NOTE update next.
