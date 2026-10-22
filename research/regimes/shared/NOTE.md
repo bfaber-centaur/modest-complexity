@@ -36,7 +36,7 @@ All numbers are paired per replicate, at the final step, from `figures/final.csv
 2. **Frozen features show rel-specific transfer.** This is `figures/transfer.png`, bottom row.
    - A linear y2 head on y1 features reaches 0.98–1.00 at n ≥ 128.
    - `rel` beats `part` on every replicate at n = 32, 64 and 128: +0.17/+0.23/+0.35, +0.27/+0.14/+0.26 and +0.22/+0.30/+0.15.
-   - `rel` beats `split` on every replicate at the same n: −0.19 to −0.38 for `split` minus `rel`.
+   - `rel` beats `split` on every replicate at the same n: −0.16 to −0.38 for `split` minus `rel`.
    - `unrel` features do worse than random features: −0.09 to −0.16 against `fresh` at n = 64–128.
 3. **Fine-tuning tells a different story** (top row).
    - `rel` beats `fresh` by +0.12 to +0.32 at n = 32–64, on all replicates.
@@ -68,7 +68,10 @@ All numbers are paired per replicate, at the final step, from `figures/final.csv
   - So the transfer is "reuse of an XOR of y1's bits", not evidence that the y1 network computes z = x1⊕x2 as its intermediate.
   - Outcome 4 holds only in this weak sense. The selective intervention that would separate 4a from 4b was not informative.
 - **Fine-tuning at n ≤ 32 is a weak measure.** Phase 2 degrades even the same-task control there (observation 4; reviewer C2.3), so frozen readout is the cleaner comparison.
-- **Fine-tuning.** The rel advantage is not specific to z: `part` matches it. `split` does not, which points at sharing the gate bit x4, or at fewer y2-irrelevant pretraining bits (`split` trains on four, `rel` and `part` on one), and not at the pair {x1, x2}.
+- **Fine-tuning.** The rel advantage is not specific to z: `part` matches it, and `split` does not.
+  - The reviewer ran a gate-only arm, x3⊕x4⊕x5, with this lane's `train.py` and seeds (review/REVIEW.md §2 M4, C2.5, head cc9b510). It gives no transfer either: −0.15/−0.09/−0.17 against `fresh` at n = 64.
+  - So fine-tuned transfer is not explained by the gate bit alone, by the pair {x1, x2} alone, or by the count of y2-irrelevant pretraining bits alone. Gains over `fresh` at n = 64: `part` +0.13, `split` +0.03, `unrel` −0.10, gate −0.14.
+  - `rel` and `part` both put two of y2's three relevant bits inside one pretraining parity. That is the remaining candidate, and it is untested here.
 - **Not shown.** That the fine-tuned network computes y2 through the representation y1 built.
 
 ## Limitations
