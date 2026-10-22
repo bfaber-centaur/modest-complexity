@@ -32,3 +32,7 @@ Per ladder, on that ladder's pairs never trained at 50% (each ladder its own set
 - Nominal shares are not exact counts: the diagonal group of each class holds one ordered pair instead of two, so each ladder's actual training counts differ by a few pairs; the x axis uses actual counts.
 - Each ladder's evaluation set differs and contains about 480 pairs whose labels and operands overlap heavily; pair-level fractions are descriptions of one ladder, not samples from a population.
 - Data seed changes which groups are trained and in which order they are added together, so a location shift says the training-set identity matters without saying which property of it.
+
+## Q1 outcome (2026-10-22, after the 24 initial runs)
+
+Pointer only; the evidence is in [README.md](README.md). The first expected pattern matched at this resolution: in every ladder and init, more training pairs never hurt, and the bands at each setting match the e2 ladder. Ladder-to-ladder spread in accuracy is no larger than the init spread. The one exception is the graded margin at 40%, where data seed 41002 is ahead on both inits. The 45% runs are still rising at 50,000 updates. Not yet audited.
