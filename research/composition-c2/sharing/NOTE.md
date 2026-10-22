@@ -134,10 +134,12 @@ Figure: [figures/followup_wd0.png](figures/followup_wd0.png). Decoder table: [fi
 
   At wd 0.1 the interaction was +0.30 to +0.56.
 - **Trajectories.**
-  - Held-out accuracy at wd 0 reaches 0.23–0.34 by 1,000 updates and then barely moves.
+  - Held-out accuracy at wd 0 reaches 0.23–0.34 by 1,000 updates and then rises slowly in every run: +0.02 to +0.11 from 1k to 10k (median +0.06).
+  - Three runs rose more than 0.03 between 5k and 10k (reviewer CX-S2): TT 51202, UT 51201 and UT 51202.
   - The change over the last 2,000 updates is −0.01 to +0.03, against +0.03 to +0.14 at wd 0.1.
+  - Held-out cross-entropy rises meanwhile: from 4.0–6.6 at 1k to 6.1–12.3 at 10k.
   - Above-chance accuracy at wd 0 is almost all on N rows (N 0.43–0.66, ¬N ≤ 0.07).
-- **Optimizer.** The flat stretch is not an eps stall.
+- **Optimizer.** The slow rise is not an eps stall.
   - Across all 12 runs at 10k, the median √v̂ is 6e-6 to 2e-5, far above eps. From 500 updates on, the fraction of coordinates below eps is 2–9%, as at wd 0.1.
   - Updates do not vanish (update norm 8e-4 to 5e-3 at 10k), and the training margin keeps growing (minimum 8.7–10.5 at 10k).
   - Parameter norms grow instead of shrinking. For example, at seed 51200 the TT transition norm is 29.0 at wd 0 against 19.1 at wd 0.1 (`out/groups_wd0.csv`).
@@ -153,11 +155,11 @@ Figure: [figures/followup_wd0.png](figures/followup_wd0.png). Decoder table: [fi
 | F1 | all 12 fit by 1,000 | held (350–600) |
 | F2 | TT at wd 0 below wd 0.1 by ≥ 0.2 on every seed | held (−0.55 to −0.60) |
 | F3 | spread across cells smaller at wd 0 on every seed | held (0.09–0.15, against 0.37–0.48) |
-| F4 | TT highest at wd 0 on ≥ 2 of 3 seeds | held (3 of 3, by 0.05–0.15) |
+| F4 | TT highest at wd 0 on ≥ 2 of 3 seeds | held (3 of 3; lead over the next-best cell 0.05–0.13, which is UT at 51200/51201 and TU at 51202; reviewer S1) |
 
 **Reading** (bounded by this recipe and 10k).
 - Under this recipe, the large tying effects at 10k depend on decay. Without it, every cell stays at 0.30–0.45 held-out and answers almost none of the ¬N rows.
 - The interaction shrinks from +0.30 to +0.56 to +0.06 to +0.13.
 - TU < UU disappears: the two are within ±0.02.
-- A small TT advantage remains on every seed.
-- This does not show that decay is the mechanism of composition, or that composition is impossible without decay. The wd 0 cells are nearly flat at 10k, but a flat stretch within this budget is not a demonstrated plateau. And wd 0 changes the trajectory as a whole, not one ingredient of it.
+- A small TT advantage remains on every seed: 0.05–0.13 over the next-best cell.
+- This does not show that decay is the mechanism of composition, or that composition is impossible without decay. The wd 0 cells still rise slowly at 10k, so 10k is not a plateau, and how far they would rise is untested here. And wd 0 changes the trajectory as a whole, not one ingredient of it.
