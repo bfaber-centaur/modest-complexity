@@ -1,0 +1,395 @@
+"""c3 scaffolding lane: publish run records, check branches, evaluate checkpoints frozen, measure, draw.
+
+  uv run --locked python research/composition-c3/scaffolding/scaf_analyze.py publish --root runs/c3 --ids ID... [--commit-checkpoints ID/FILE...]
+  uv run --locked python research/composition-c3/scaffolding/scaf_analyze.py check     # joins, schedules, exposure, frozen-eval reference -> checks.json
+  uv run --locked python research/composition-c3/scaffolding/scaf_analyze.py measure   # CSVs in figures/
+  uv run --locked python research/composition-c3/scaffolding/scaf_analyze.py figure    # figures/scaf_main.{png,svg} from those CSVs
+
+Arms (QUESTION.md): A keep = r1 tied/inter 0-10k + c2-time-tt-inter 10k-50k; D final-only =
+r1 tied/final + c2-time-tt-final; B drop and C taper = this lane's branches from r1 tied/inter
+ckpt-S. Everything reads committed records and checkpoints.
+"""
+import argparse
+import csv
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import sys
+import numpy as np
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[2]
+C2 = REPO/'research'/'composition-c2'
+sys.path[:0] = [str(HERE.parent/'common'), str(C2/'common'), str(REPO/'research'/'regimes'/'common')]
+import c2rnn  # noqa: E402
+import c2task  # noqa: E402
+import c3train  # noqa: E402
+import nets  # noqa: E402
+
+RUNS, FIGS = HERE/'runs', HERE/'figures'
+R1_RUNS = REPO/'research'/'regimes'/'composition'/'runs'
+SEEDS = (51200, 51201, 51202)
+SWITCH = {1000: '1k', 10000: '10k'}
+KINDS = {'drop': 1, 'taper': 2000}
+FIXED = (1000, 10000, 20000, 30000, 40000, 50000)
+END, EVERY, THRESHOLD, SUSTAIN, DEGRADE = 50000, 50, 0.95, 5, 0.05
+R1_KEYS = ('train', 'held', 'held_final_pred')
+SMALL = ('config.json', 'metrics.jsonl', 'runtime.json')
+HEADS = ('step1', 'step2', 'final')
+
+
+def run_id(kind, S, seed, attempt=1):
+    return f'c3-scaf-{kind}-at{SWITCH[S]}-s{seed}-a{attempt}'
+
+
+def read_jsonl(path):
+    return [json.loads(x) for x in Path(path).read_text().splitlines()] if Path(path).exists() else None
+
+
+def publish(root, ids, committed_checkpoints=()):
+    for rid in ids:
+        src, dst = root/rid, RUNS/rid
+        dst.mkdir(parents=True, exist_ok=True)
+        manifest = []
+        for f in sorted(src.iterdir()):
+            committed = f.name in SMALL or f'{rid}/{f.name}' in committed_checkpoints
+            if committed:
+                shutil.copy2(f, dst/f.name)
+            manifest.append(dict(file=f.name, bytes=f.stat().st_size, sha256=hashlib.sha256(f.read_bytes()).hexdigest(), committed=committed))
+        log = root/f'{rid}.log'
+        if log.exists():
+            shutil.copy2(log, dst/'stdout.log')
+            manifest.append(dict(file='stdout.log', bytes=log.stat().st_size, sha256=hashlib.sha256(log.read_bytes()).hexdigest(), committed=True))
+        (dst/'MANIFEST.json').write_text(json.dumps(manifest, indent=1)+'\n')
+        print(rid, len(manifest), 'files')
+
+
+# ---- arms: records, checkpoints, schedules ---------------------------------------------------
+
+def r1_rows(cond, seed):
+    return read_jsonl(R1_RUNS/f'r1-comp-rnn-{cond}-s{seed}-a1'/'metrics.jsonl')
+
+
+def same_r1_keys(a, b):
+    return all(a[k] == b[k] for k in R1_KEYS)
+
+
+def rows_of(arm, seed, S=None):
+    """Logged rows of an arm from step 0 (keep, final) or from its switch S (drop, taper); None if absent."""
+    if arm in ('keep', 'final'):
+        r1 = r1_rows('inter' if arm == 'keep' else 'final', seed)
+        cont = read_jsonl(C2/'time'/'runs'/f'c2-time-tt-{"inter" if arm == "keep" else "final"}-s{seed}-a1'/'metrics.jsonl')
+        assert same_r1_keys(cont[0], r1[-1])
+        return r1 + cont[1:]
+    return read_jsonl(RUNS/run_id(arm, S, seed)/'metrics.jsonl')
+
+
+def schedule(arm, S=None):
+    if arm == 'keep':
+        return dict(before=[1., 1., 1.], switch_step=None, after=None, taper=1)
+    if arm == 'final':
+        return dict(before=[0., 0., 1.], switch_step=None, after=None, taper=1)
+    return dict(before=[1., 1., 1.], switch_step=S, after=[0., 0., 1.], taper=KINDS[arm])
+
+
+def ckpt_path(arm, seed, step, S=None):
+    cond = 'final' if arm == 'final' else 'inter'
+    if step in (0, 1000, 10000) and (arm in ('keep', 'final') or step == S):
+        return C2/'recovered'/f'r1-comp-rnn-{cond}-s{seed}-a1'/f'ckpt-{step}.npz'
+    if arm in ('keep', 'final'):
+        return C2/'time'/'runs'/f'c2-time-tt-{cond}-s{seed}-a1'/f'ckpt-{step}.npz'
+    return RUNS/run_id(arm, S, seed)/f'ckpt-{step}.npz'
+
+
+def ckpt_steps(arm, S=None):
+    if arm in ('keep', 'final'):
+        return FIXED
+    return tuple(sorted({S, S + 2000, *[t for t in FIXED if t >= S]}))
+
+
+# ---- frozen evaluation ------------------------------------------------------------------------
+
+_T = c2task.load()
+HELD = c2task.rows(_T['P'], _T['held'])
+NBR = c2task.neighbour_answerable(_T['P'], _T['train'], _T['held'])[0]
+LENGTHS = (1, 2, 3, 4, 5, 6)
+_ROWS = {}
+
+
+def length_rows(L):
+    if L not in _ROWS:
+        _ROWS[L] = c2task.rows(_T['P'], c2task.programs(L))
+    return _ROWS[L]
+
+
+def fwd(p, ops, s):
+    """Tied/tied forward of any length (tied groups ignore the step map; c2 generalization's fwd)."""
+    assert c2rnn.scheme(p) == dict(transition=True, readout=True)
+    L = np.asarray(ops).reshape(len(ops), -1).shape[1]
+    return c2rnn.forward(p, ops, s=s, step_map=[min(t, c2task.TRAIN_LENGTH) for t in range(1, L+1)])
+
+
+def frozen(p):
+    """Accuracy of the last step on every program of length 1..6 (all starts), and length-3 held-out / N / notN."""
+    out = {}
+    for L in LENGTHS:
+        d = length_rows(L)
+        out[f'L{L}'] = float(np.mean(fwd(p, d['ops'], d['s'])[1][-1].argmax(1) == d['states'][:, -1]))
+    pred = fwd(p, HELD['ops'], HELD['s'])[1][-1].argmax(1)
+    ok = pred == HELD['states'][:, -1]
+    out.update(held_L3=float(ok.mean()), held_N=float(ok[NBR].mean()), held_notN=float(ok[~NBR].mean()),
+               held_final_pred=''.join(map(str, pred)))
+    return out
+
+
+# ---- checks ------------------------------------------------------------------------------------
+
+def weights_recount(t, S, D):
+    """Independent restatement of QUESTION.md's schedule: intermediate weight of the update at step t."""
+    if t < S:
+        return 1.
+    k = t - S
+    return 0. if k >= D - 1 else 1 - (k + 1)/D
+
+
+def check():
+    out = dict(branches={}, frozen_reference={})
+    for S in SWITCH:
+        for kind, D in KINDS.items():
+            for seed in SEEDS:
+                rid = run_id(kind, S, seed)
+                rows = rows_of(kind, seed, S)
+                if rows is None:
+                    continue
+                cfg = json.loads((RUNS/rid/'config.json').read_text())
+                r1 = {r['step']: r for r in r1_rows('inter', seed)}
+                bad_w = [r['step'] for r in rows if any(abs(w - x) > 1e-12 for w, x in
+                         zip(r['step_weights'], (weights_recount(r['step'], S, D),)*2 + (1.,)))]
+                n_inter = sum(weights_recount(t, S, D) != 0 for t in range(S, END))
+                expo = cfg['exposure']['labels_this_run']
+                out['branches'][rid] = dict(
+                    first_step=rows[0]['step'], last_step=rows[-1]['step'], logged=len(rows),
+                    join_equals_r1=same_r1_keys(rows[0], r1[S]),
+                    step_weights_differ_at=bad_w[:5], n_step_weights_differ=len(bad_w),
+                    exposure_updates_recount=[n_inter, n_inter, END - S], exposure_updates_logged=expo['updates_with_weight'],
+                    exposure_matches=expo['updates_with_weight'] == [n_inter, n_inter, END - S],
+                    recipe=dict(task=cfg['task_id'], scheme=cfg['scheme'], lr=cfg['lr'], wd=cfg['wd'], hidden=cfg['hidden'],
+                                schedule=cfg['schedule'], resumed_step=cfg['resumed_from']['step'],
+                                resumed_sha256=cfg['resumed_from']['sha256'], source_run=cfg['resumed_from']['source']['run_id']))
+    # The frozen evaluation against c2 generalization's published length.csv (10k recovered, 50k time lane).
+    pub = {}
+    for name in ('c2-gen-frozen-orig-a2', 'c2-gen-frozen-50k-a1'):
+        with (C2/'generalization'/'runs'/name/'length.csv').open() as f:
+            for r in csv.DictReader(f):
+                if r['subset'] == 'all' and r['task_id'] == c2task.ORIGINAL:
+                    pub[(r['condition'], int(r['init_seed']), int(r['ckpt_step']), int(r['length']))] = float(r['accuracy'])
+    for arm, cond in (('keep', 'inter'), ('final', 'final')):
+        for seed in SEEDS:
+            for step in (10000, 50000):
+                got = frozen(nets.load(ckpt_path(arm, seed, step))[0])
+                ref = [pub.get((cond, seed, step, L)) for L in LENGTHS]
+                out['frozen_reference'][f'{arm}-s{seed}-{step}'] = dict(
+                    equal=all(r is not None and got[f'L{L}'] == r for L, r in zip(LENGTHS, ref)), ours=[got[f'L{L}'] for L in LENGTHS], published=ref)
+    (HERE/'checks.json').write_text(json.dumps(out, indent=1)+'\n')
+    print(json.dumps({k: {i: {x: v[x] for x in v if x in ('join_equals_r1', 'n_step_weights_differ', 'exposure_matches', 'equal')}
+                          for i, v in d.items()} for k, d in out.items()}, indent=1))
+
+
+# ---- measures ----------------------------------------------------------------------------------
+
+def first_sustained(steps, acc, threshold=THRESHOLD, k=SUSTAIN, every=EVERY):
+    ok = np.asarray(acc) >= threshold - 1e-12
+    for i in range(len(steps) - k + 1):
+        if ok[i:i+k].all() and steps[i+k-1] - steps[i] == (k-1)*every:
+            return int(steps[i])
+    return None
+
+
+def subsets(pred_string):
+    ok = np.array([int(c) for c in pred_string]) == HELD['states'][:, -1]
+    return dict(N=float(ok[NBR].mean()), notN=float(ok[~NBR].mean()))
+
+
+def arms():
+    """(arm, S, seed) for every arm with records: keep and final once per seed (S None), branches per S."""
+    out = [(a, None, s) for a in ('keep', 'final') for s in SEEDS]
+    out += [(k, S, s) for S in SWITCH for k in KINDS for s in SEEDS if (RUNS/run_id(k, S, s)/'metrics.jsonl').exists()]
+    return out
+
+
+def measure():
+    FIGS.mkdir(exist_ok=True)
+    traj, fro, thr = [], [], []
+    for arm, S, seed in arms():
+        sched = schedule(arm, S)
+        rows = rows_of(arm, seed, S)
+        for r in rows:
+            w = r.get('step_weights') or c3train.weights_at(r['step'], sched)
+            sub = r.get('held_subset') or subsets(r['held_final_pred'])
+            d = r.get('diag', {})
+            v = d.get('adam_sqrt_vhat', {})
+            traj.append(dict(arm=arm, S=S or '', seed=seed, step=r['step'], w_inter=w[0],
+                             **{f'train_{h}_{m}': r['train'][h][m] for h in HEADS for m in ('acc', 'ce')},
+                             weighted_train_loss=sum(wk*r['train'][h]['ce'] for wk, h in zip(w, HEADS)),
+                             held_final_acc=r['held']['final']['acc'], held_final_ce=r['held']['final']['ce'],
+                             held_N_acc=sub['N'], held_notN_acc=sub['notN'],
+                             grad_norm=d.get('grad_norm', ''), update_norm=d.get('update_norm', ''),
+                             sqrt_vhat_median=v.get('median', ''), sqrt_vhat_max=v.get('max', ''), frac_below_eps=v.get('frac_below_eps', ''),
+                             train_margin_min=d.get('train_final_margin', {}).get('min', ''),
+                             train_margin_median=d.get('train_final_margin', {}).get('median', '')))
+        steps = [r['step'] for r in rows]
+        for name, acc in (('held_final', [r['held']['final']['acc'] for r in rows]),
+                          ('held_notN', [(r.get('held_subset') or subsets(r['held_final_pred']))['notN'] for r in rows])):
+            t = first_sustained(steps, acc)
+            thr.append(dict(arm=arm, S=S or '', seed=seed, measure=name, first_step=steps[0], last_step=steps[-1],
+                            crossing_step=t if t is not None else '', censored=t is None, value_at_end=acc[-1]))
+        logged = {r['step']: r for r in rows}
+        for step in ckpt_steps(arm, S):
+            path = ckpt_path(arm, seed, step, S)
+            if not path.exists():
+                continue
+            e = frozen(nets.load(path)[0])
+            assert step not in logged or e['held_final_pred'] == logged[step]['held_final_pred'], (arm, S, seed, step)
+            fro.append(dict(arm=arm, S=S or '', seed=seed, step=step, **{k: v for k, v in e.items() if k != 'held_final_pred'}))
+    write_csv(FIGS/'scaf_main.csv', traj)
+    write_csv(FIGS/'scaf_frozen.csv', fro)
+    write_csv(FIGS/'scaf_threshold.csv', thr)
+    write_csv(FIGS/'scaf_retention.csv', retention(fro))
+
+
+def retention(fro):
+    """Per branch, measure and fixed time: value, switch state, keep, final-only and the three deltas;
+    the endpoint status uses the 5-point rule of QUESTION.md."""
+    at = {(r['arm'], r['S'], r['seed'], r['step']): r for r in fro}
+    out = []
+    for S in SWITCH:
+        for kind in KINDS:
+            for seed in SEEDS:
+                for m in ('held_L3', 'held_notN', 'L1', 'L2', 'L4', 'L5', 'L6'):
+                    sw = at.get(('keep', '', seed, S))
+                    for t in [x for x in FIXED if x >= S]:
+                        b, k, f = at.get((kind, S, seed, t)), at.get(('keep', '', seed, t)), at.get(('final', '', seed, t))
+                        if b is None:
+                            continue
+                        row = dict(arm=kind, S=S, seed=seed, measure=m, step=t, value=b[m], at_switch=sw[m], keep=k[m], final_only=f[m],
+                                   d_branch=b[m] - sw[m], d_keep=b[m] - k[m], d_final=b[m] - f[m], status='')
+                        if t == END:
+                            row['status'] = ('degraded' if row['d_keep'] <= -DEGRADE + 1e-12 else 'above keep' if row['d_keep'] >= DEGRADE - 1e-12 else 'retained')
+                        out.append(row)
+    return out
+
+
+def write_csv(path, rows):
+    if not rows:
+        print(path.relative_to(REPO), 'no rows, not written'); return
+    with path.open('w', newline='') as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader(); w.writerows(rows)
+    print(path.relative_to(REPO), len(rows), 'rows')
+
+
+# ---- figure ------------------------------------------------------------------------------------
+
+COLOR = {'keep': '#eb6834', 'drop': '#7a4fd6', 'taper': '#1baf7a', 'final': '#2a78d6'}
+LABEL = {'keep': 'A keep [1,1,1]', 'drop': 'B drop to [0,0,1] at S', 'taper': 'C taper over 2,000 from S', 'final': 'D final-only from init'}
+MARKER = dict(zip(SEEDS, 'osD'))
+
+
+def read_csv(path):
+    with path.open() as f:
+        rows = list(csv.DictReader(f))
+    keep_str = ('arm', 'status', 'measure', 'censored')
+    return [{k: (float(v) if v != '' and k not in keep_str else v) for k, v in r.items()} for r in rows]
+
+
+def figure():
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    traj, fro, thr = read_csv(FIGS/'scaf_main.csv'), read_csv(FIGS/'scaf_frozen.csv'), read_csv(FIGS/'scaf_threshold.csv')
+    rows_k = ['sched', 'held', 'notN', 'train', 'readout', 'L6', 'diag', 'vhat']
+    titles = dict(sched='intermediate-loss weight of the update', held='held-out length-3 final accuracy (128 rows)',
+                  notN='held-out ¬N accuracy (42 rows)', train='train final CE (solid), weighted train loss (dotted)',
+                  readout='lengths 1–2: shared readout on h1 (solid), h2 (dotted), training rows',
+                  L6='frozen: L = 6 (solid), L = 5 (dashed), L = 4 (dotted), all programs',
+                  diag='global L2: update (solid), gradient (dotted); keep and final-only logged from 10k', vhat='Adam √v̂: median (solid), max (dotted); eps dashed')
+    heights = [.45, 1, 1, .9, .9, 1, .9, .9]
+    fig, axes = plt.subplots(len(rows_k), 2, figsize=(13, 25), sharex=True, gridspec_kw=dict(height_ratios=heights, hspace=.32, wspace=.12, top=.885))
+    present = {(r['arm'], r['S'], int(r['seed'])) for r in traj}
+
+    def series(arm, S, seed, key, src=traj):
+        return [(r['step'], r[key]) for r in src if r['arm'] == arm and r['S'] == S and int(r['seed']) == seed and r[key] != '']
+
+    for j, S in enumerate(SWITCH):
+        ax = dict(zip(rows_k, axes[:, j]))
+        shown = [('keep', ''), ('final', ''), ('drop', float(S)), ('taper', float(S))]
+        for arm, s_key in shown:
+            for seed in SEEDS:
+                if (arm, s_key, seed) not in present:
+                    continue
+                kw = dict(color=COLOR[arm], marker=MARKER[seed], ms=4)
+                def plot(a, key, ls='-', lw=1.3, src=traj, me=None, **extra):
+                    xy = series(arm, s_key, seed, key, src)
+                    if xy:
+                        x, y = zip(*xy)
+                        a.plot(x, y, ls=ls, lw=lw, markevery=me or max(1, len(x)//8), **kw, **extra)
+                plot(ax['sched'], 'w_inter', lw=1.6)
+                plot(ax['held'], 'held_final_acc')
+                plot(ax['notN'], 'held_notN_acc')
+                plot(ax['train'], 'train_final_ce'); plot(ax['train'], 'weighted_train_loss', ls=':', lw=1)
+                plot(ax['readout'], 'train_step1_acc'); plot(ax['readout'], 'train_step2_acc', ls=':', lw=1)
+                for L, ls in ((6, '-'), (5, '--'), (4, ':')):
+                    plot(ax['L6'], f'L{L}', ls=ls, lw=1.4 if L == 6 else 1, src=fro, me=1)
+                plot(ax['diag'], 'update_norm'); plot(ax['diag'], 'grad_norm', ls=':', lw=1)
+                plot(ax['vhat'], 'sqrt_vhat_median'); plot(ax['vhat'], 'sqrt_vhat_max', ls=':', lw=1)
+        for r in thr:
+            if r['measure'] == 'held_final' and r['crossing_step'] != '' and r['S'] in ('', float(S)):
+                ax['held'].scatter([r['crossing_step']], [THRESHOLD], marker='v', s=40, color=COLOR[r['arm']], edgecolor='k', lw=.5, zorder=5)
+        for k in ('held', 'notN', 'readout', 'L6'):
+            ax[k].axhline(THRESHOLD, color='0.45', lw=.9, ls=(0, (4, 3))); ax[k].axhline(1/8, color='0.65', lw=.8, ls=':')
+            ax[k].set_ylim(-.02, 1.04)
+        ax['vhat'].axhline(1e-8, color='0.3', lw=1, ls=(0, (4, 3)))
+        for k in ('train', 'diag', 'vhat'):
+            ax[k].set_yscale('log')
+        for k, a in ax.items():
+            a.axvline(S, color='0.3', lw=1.1)
+            a.grid(alpha=.25, lw=.5); a.set_xlim(0, END)
+            a.set_title(titles[k], loc='left', fontsize=9)
+        ax['sched'].set_title(f'switch S = {S:,}   ·   ' + titles['sched'], loc='left', fontsize=10, fontweight='bold', pad=18)
+        top = ax['sched'].secondary_xaxis('top', functions=(lambda x, S=S: x - S, lambda x, S=S: x + S))
+        top.tick_params(labelsize=7); top.set_xlabel('updates since the switch', fontsize=7, labelpad=1)
+        ax['vhat'].set_xlabel('total updates from init (switch S marked)')
+        missing = [f'{k} s{s}' for k in KINDS for s in SEEDS if (k, float(S), s) not in present]
+        if missing:
+            ax['held'].text(.99, .05, 'not run: ' + ', '.join(missing), transform=ax['held'].transAxes, ha='right', fontsize=7, color='crimson')
+    handles = [Line2D([], [], color=COLOR[a], lw=2, label=LABEL[a]) for a in ('keep', 'drop', 'taper', 'final')]
+    handles += [Line2D([], [], color='0.3', marker=MARKER[s], lw=0, label=f'init seed {s}') for s in SEEDS]
+    handles += [Line2D([], [], color='0.3', marker='v', lw=0, label='first of 5 logged evals ≥ 0.95'),
+                Line2D([], [], color='0.45', ls=(0, (4, 3)), label='0.95'), Line2D([], [], color='0.65', ls=':', label='chance 1/8')]
+    fig.legend(handles=handles, loc='upper center', ncol=5, fontsize=8, frameon=False, bbox_to_anchor=(.5, .935))
+    fig.suptitle('c3 scaffolding: tied/tied RNN, intermediate supervision removed at S (drop) or tapered, against keep and final-only;\n'
+                 'original task, three init seeds, unchanged recipe, logged every 50 updates; frozen lengths at fixed checkpoints',
+                 y=.965, fontsize=11)
+    for ext in ('png', 'svg'):
+        fig.savefig(FIGS/f'scaf_main.{ext}', dpi=120, bbox_inches='tight')
+    print('wrote', (FIGS/'scaf_main.png').relative_to(REPO))
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    sub = ap.add_subparsers(dest='cmd', required=True)
+    p = sub.add_parser('publish'); p.add_argument('--root', type=Path, required=True); p.add_argument('--ids', nargs='+', required=True)
+    p.add_argument('--commit-checkpoints', nargs='*', default=[])
+    for c in ('check', 'measure', 'figure'):
+        sub.add_parser(c)
+    a = ap.parse_args()
+    if a.cmd == 'publish':
+        publish(a.root, a.ids, set(a.commit_checkpoints))
+    else:
+        dict(check=check, measure=measure, figure=figure)[a.cmd]()
+
+
+if __name__ == '__main__':
+    main()
