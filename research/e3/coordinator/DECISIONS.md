@@ -297,3 +297,20 @@ The follow-up is the lane's proposal, research/e3/dynamics/QUESTION.md Q2 (`cd12
 - A resume on a different host from the one that produced the source may differ in floating-point summation order. That is recorded, not prevented.
 
 The new shared-code identity is the commit that adds this entry. The 15 mechanisms runs and the 24 dynamics runs were produced at the earlier pin. Their code paths are unchanged: the edit only adds a branch for `--resume`, and the existing tests still pass.
+
+## D16 (2026-10-22) Dynamics follow-up integrated; launch deviation accepted
+
+PR #30 was integrated at `3289ef1`. All ten D15 resumes completed in 19.1 min, and the lane's total is about 49 of 70 min.
+
+The coordinator spot-checked two runs with separate forward code at 150k and 100k, and both matched Table 4. The resume and split hashes equal the plan.
+
+**Launch deviation.** The lane launched from its main checkout instead of a clean worktree at the pin. Every run records commit `2f0aa7a`, which differs from `72cfb5d` only in `research/e3/dynamics/QUESTION.md`; the shared code, plan and lock files are identical. Each run also has a dirty status: the launcher's own registry append. The deviation was accepted rather than relaunched under `-a2`, because the runs are exact resumes whose start hashes are recorded and can be replayed. It is stated in the lane README and in [RUNS.md](RUNS.md).
+
+**Correction.** Packet 2 withdraws packet 1's "the 45% runs are still rising at 50k" and the audit's matching rule-3 verdict, on every-100-update evidence. Both lanes have now used their initial experiment and their one follow-up.
+
+Audit investigation 5 (PR #29, `a62e308`) found:
+- software PASS;
+- the ordering and the P(S over N) fall SUPPORTED LOCALLY;
+- 41002's 40% lead as a training-set effect CONTRADICTED.
+
+The audit of packet 2 is the last open item.
