@@ -8,6 +8,7 @@
 3. The recovered TT / TU ckpt-0 weights equal c2rnn.init for their scheme and seed.
 4. N / notN from r1's logged held_final_pred reproduce the reviewer's 10k numbers, and the
    N subset has 86 rows.
+5. Once the follow-up has run: every wd 0 run starts from its wd 0.1 counterpart's weights.
 
 uv run --locked python research/composition-c2/sharing/share_checks.py
 """
@@ -67,6 +68,20 @@ for c in ('TT', 'TU'):
     check(all(r['step'] == 10000 for r in got) and all(abs(r['notN'] - e) < 0.005 for r, e in zip(got, expected[c])),
           f'{c} notN at 10k from logged predictions: {[round(r["notN"], 3) for r in got]} (reviewer {list(expected[c])})')
     say(f'   {c} held-out final / N at 10k: {[round(r["held_final"], 3) for r in got]} / {[round(r["N"], 3) for r in got]}')
+
+# Follow-up pairing: each wd 0 run starts from the same weights as its wd 0.1 counterpart, and
+# their step-0 metric rows (taken before any update) are identical.
+for c in S.CELLS:
+    for seed in S.SEEDS:
+        try:
+            p_wd0 = nets.load(S.checkpoint(c, seed, 0, 'wd0'))[0]
+        except FileNotFoundError:
+            continue
+        p_main = nets.load(S.checkpoint(c, seed, 0))[0]
+        r_wd0, r_main = S.read_metrics(S.metrics_path(c, seed, 'wd0'))[0], S.read_metrics(S.metrics_path(c, seed))[0]
+        same_rows = all(r_wd0[k] == r_main[k] for k in ('step', 'train', 'held', 'held_final_pred'))
+        check(set(p_wd0) == set(p_main) and all(np.array_equal(p_wd0[k], p_main[k]) for k in p_main) and same_rows,
+              f'seed {seed}: {S.run_id(c, seed, "wd0")} ckpt-0 weights and step-0 metrics equal {S.run_id(c, seed)}')
 
 out = Path(__file__).resolve().parent/'out'; out.mkdir(exist_ok=True)
 (out/'checks.txt').write_text('\n'.join(lines)+'\n')
