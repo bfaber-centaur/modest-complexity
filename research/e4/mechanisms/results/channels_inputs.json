@@ -3,6 +3,7 @@
   {
    "source": "e3",
    "run_id": "e3-me-filt-w128-i30000-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -24,6 +25,7 @@
   {
    "source": "e3",
    "run_id": "e3-me-filt-w128-i30001-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -45,6 +47,7 @@
   {
    "source": "e3",
    "run_id": "e3-me-filt-w128-i30002-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -65,6 +68,7 @@
   {
    "source": "e3",
    "run_id": "e3-me-filt-wd0-w128-i30000-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -86,6 +90,7 @@
   {
    "source": "e3",
    "run_id": "e3-me-filt-wd0-w128-i30001-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -107,6 +112,7 @@
   {
    "source": "e3",
    "run_id": "e3-me-filt-wd0-w128-i30002-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -127,6 +133,7 @@
   {
    "source": "e3",
    "run_id": "e3-me-keep-w128-i30000-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -147,6 +154,7 @@
   {
    "source": "e3",
    "run_id": "e3-me-keep-w128-i30001-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -167,6 +175,7 @@
   {
    "source": "e3",
    "run_id": "e3-me-keep-w128-i30002-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -187,6 +196,7 @@
   {
    "source": "replay",
    "run_id": "e4-me-filt-wd1-replay-w128-i30000-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -285,6 +295,7 @@
   {
    "source": "replay",
    "run_id": "e4-me-filt-wd1-replay-w128-i30001-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -383,6 +394,7 @@
   {
    "source": "replay",
    "run_id": "e4-me-filt-wd1-replay-w128-i30002-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -481,6 +493,7 @@
   {
    "source": "replay",
    "run_id": "e4-me-filt-wd0-replay-w128-i30000-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -579,6 +592,7 @@
   {
    "source": "replay",
    "run_id": "e4-me-filt-wd0-replay-w128-i30001-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -677,6 +691,7 @@
   {
    "source": "replay",
    "run_id": "e4-me-filt-wd0-replay-w128-i30002-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -775,6 +790,7 @@
   {
    "source": "intervention",
    "run_id": "e4-me-filt-wd1-xref-w128-i30000-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -873,6 +889,7 @@
   {
    "source": "intervention",
    "run_id": "e4-me-filt-wd1-xref-w128-i30001-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -971,6 +988,7 @@
   {
    "source": "intervention",
    "run_id": "e4-me-filt-wd1-xref-w128-i30002-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -1069,6 +1087,7 @@
   {
    "source": "intervention",
    "run_id": "e4-me-filt-wd1-onlyref-w128-i30000-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -1167,6 +1186,7 @@
   {
    "source": "intervention",
    "run_id": "e4-me-filt-wd1-onlyref-w128-i30001-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -1265,6 +1285,7 @@
   {
    "source": "intervention",
    "run_id": "e4-me-filt-wd1-onlyref-w128-i30002-a1",
+   "resume_of": "",
    "checkpoints": [
     0,
     10,
@@ -1359,13 +1380,217 @@
    "live_units": 128,
    "producing_code_commit": "23bb74a5755898b6262c998931995c3a03d153f0",
    "producing_tree_dirty": false
+  },
+  {
+   "source": "offswitch",
+   "run_id": "e4-dy-filt-wd1to0-u300-w128-i30000-a1",
+   "resume_of": "e3-me-filt-w128-i30000-a1",
+   "checkpoints": [
+    300,
+    500,
+    1000,
+    1300,
+    1500,
+    2000,
+    2500,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000,
+    11000,
+    12000,
+    13000,
+    14000,
+    15000,
+    16000,
+    17000,
+    18000,
+    19000,
+    20000
+   ],
+   "live_units": 128,
+   "producing_code_commit": "83d8b944d926c18ff7b8a132534b9a00feb09d78",
+   "producing_tree_dirty": false
+  },
+  {
+   "source": "offswitch",
+   "run_id": "e4-dy-filt-wd1to0-u300-w128-i30001-a1",
+   "resume_of": "e3-me-filt-w128-i30001-a1",
+   "checkpoints": [
+    300,
+    500,
+    1000,
+    1300,
+    1500,
+    2000,
+    2500,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000,
+    11000,
+    12000,
+    13000,
+    14000,
+    15000,
+    16000,
+    17000,
+    18000,
+    19000,
+    20000
+   ],
+   "live_units": 128,
+   "producing_code_commit": "83d8b944d926c18ff7b8a132534b9a00feb09d78",
+   "producing_tree_dirty": false
+  },
+  {
+   "source": "offswitch",
+   "run_id": "e4-dy-filt-wd1to0-u300-w128-i30002-a1",
+   "resume_of": "e3-me-filt-w128-i30002-a1",
+   "checkpoints": [
+    300,
+    500,
+    1000,
+    1300,
+    1500,
+    2000,
+    2500,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000,
+    11000,
+    12000,
+    13000,
+    14000,
+    15000,
+    16000,
+    17000,
+    18000,
+    19000,
+    20000
+   ],
+   "live_units": 128,
+   "producing_code_commit": "83d8b944d926c18ff7b8a132534b9a00feb09d78",
+   "producing_tree_dirty": false
+  },
+  {
+   "source": "offswitch",
+   "run_id": "e4-dy-filt-wd1to0-u1000-w128-i30000-a1",
+   "resume_of": "e3-me-filt-w128-i30000-a1",
+   "checkpoints": [
+    1000,
+    1300,
+    1500,
+    2000,
+    2500,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000,
+    11000,
+    12000,
+    13000,
+    14000,
+    15000,
+    16000,
+    17000,
+    18000,
+    19000,
+    20000
+   ],
+   "live_units": 128,
+   "producing_code_commit": "83d8b944d926c18ff7b8a132534b9a00feb09d78",
+   "producing_tree_dirty": false
+  },
+  {
+   "source": "offswitch",
+   "run_id": "e4-dy-filt-wd1to0-u1000-w128-i30001-a1",
+   "resume_of": "e3-me-filt-w128-i30001-a1",
+   "checkpoints": [
+    1000,
+    1300,
+    1500,
+    2000,
+    2500,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000,
+    11000,
+    12000,
+    13000,
+    14000,
+    15000,
+    16000,
+    17000,
+    18000,
+    19000,
+    20000
+   ],
+   "live_units": 128,
+   "producing_code_commit": "83d8b944d926c18ff7b8a132534b9a00feb09d78",
+   "producing_tree_dirty": false
+  },
+  {
+   "source": "offswitch",
+   "run_id": "e4-dy-filt-wd1to0-u1000-w128-i30002-a1",
+   "resume_of": "e3-me-filt-w128-i30002-a1",
+   "checkpoints": [
+    1000,
+    1300,
+    1500,
+    2000,
+    2500,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000,
+    11000,
+    12000,
+    13000,
+    14000,
+    15000,
+    16000,
+    17000,
+    18000,
+    19000,
+    20000
+   ],
+   "live_units": 128,
+   "producing_code_commit": "83d8b944d926c18ff7b8a132534b9a00feb09d78",
+   "producing_tree_dirty": false
   }
  ],
  "local_root": "/home/user/modest-complexity/runs/e4",
  "reference_step": 100,
  "max_identity_rel_err": 1.636357309872987e-15,
- "analysis_code_commit": "704939956481fac67970baebfb8afc0f587295f2",
+ "analysis_code_commit": "01072494af10df5ce162eef456c7d2537a166a8d",
  "analysis_tree_status": "",
- "analysis_script_sha256": "02f90e8f886c0481d5e3e3c25f7a9208ac671e0ab816a28d209c047b798d131b",
+ "analysis_script_sha256": "23445b12a782889d1c6be80896e39c6341b7b751bfe6eec6a1b8df28d36ef741",
  "command": "python research/e4/mechanisms/channels.py"
 }
