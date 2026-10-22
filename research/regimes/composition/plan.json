@@ -1,0 +1,391 @@
+{
+ "note": "R1 composition plan (QUESTION.md). Entries are pushed before launch. Calibration seeds 900000+ are never pooled with research runs. Timeouts: calibration r1-comp-calib-inter-s900000-a1 took 2.1 s per 1,000 updates (inter, 384 rows); 10,000 updates expected ~25 s, timeout 90 s (120 s for the 512-row P1). Follow-up RNN: calibration r1-comp-calib-rnn-inter-s900001-a1 took 4.2 s per 1,000 updates; 10,000 updates expected ~45 s, timeout 150 s.",
+ "runs": [
+  {
+   "run_id": "r1-comp-calib-inter-s900000-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "900000",
+    "--updates",
+    "1000",
+    "--run-id",
+    "r1-comp-calib-inter-s900000-a1",
+    "--purpose",
+    "calibration"
+   ],
+   "timeout": 120
+  },
+  {
+   "run_id": "r1-comp-full-s51200-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "full",
+    "--init-seed",
+    "51200",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-full-s51200-a1",
+    "--purpose",
+    "positive control P1"
+   ],
+   "timeout": 120
+  },
+  {
+   "run_id": "r1-comp-interp-s51200-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "interp",
+    "--init-seed",
+    "51200",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-interp-s51200-a1",
+    "--purpose",
+    "positive control P2"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-final-s51200-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "final",
+    "--init-seed",
+    "51200",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-final-s51200-a1"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-inter-s51200-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51200",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-inter-s51200-a1"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-shuf-s51200-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "shuf",
+    "--init-seed",
+    "51200",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-shuf-s51200-a1"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-final-s51201-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "final",
+    "--init-seed",
+    "51201",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-final-s51201-a1"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-inter-s51201-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51201",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-inter-s51201-a1"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-shuf-s51201-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "shuf",
+    "--init-seed",
+    "51201",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-shuf-s51201-a1"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-final-s51202-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "final",
+    "--init-seed",
+    "51202",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-final-s51202-a1"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-inter-s51202-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51202",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-inter-s51202-a1"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-shuf-s51202-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--condition",
+    "shuf",
+    "--init-seed",
+    "51202",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-shuf-s51202-a1"
+   ],
+   "timeout": 90
+  },
+  {
+   "run_id": "r1-comp-probe-a1",
+   "argv": [
+    "research/regimes/composition/analyze.py",
+    "probe",
+    "--root",
+    "runs/regimes",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-comp-calib-rnn-inter-s900001-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "900001",
+    "--updates",
+    "1000",
+    "--run-id",
+    "r1-comp-calib-rnn-inter-s900001-a1",
+    "--purpose",
+    "calibration"
+   ],
+   "timeout": 120
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51200-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "final",
+    "--init-seed",
+    "51200",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-rnn-final-s51200-a1",
+    "--purpose",
+    "follow-up"
+   ],
+   "timeout": 150
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51200-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51200",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-rnn-inter-s51200-a1",
+    "--purpose",
+    "follow-up"
+   ],
+   "timeout": 150
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51201-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "final",
+    "--init-seed",
+    "51201",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-rnn-final-s51201-a1",
+    "--purpose",
+    "follow-up"
+   ],
+   "timeout": 150
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51201-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51201",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-rnn-inter-s51201-a1",
+    "--purpose",
+    "follow-up"
+   ],
+   "timeout": 150
+  },
+  {
+   "run_id": "r1-comp-rnn-final-s51202-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "final",
+    "--init-seed",
+    "51202",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-rnn-final-s51202-a1",
+    "--purpose",
+    "follow-up"
+   ],
+   "timeout": 150
+  },
+  {
+   "run_id": "r1-comp-rnn-inter-s51202-a1",
+   "argv": [
+    "research/regimes/composition/train.py",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51202",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-comp-rnn-inter-s51202-a1",
+    "--purpose",
+    "follow-up"
+   ],
+   "timeout": 150
+  }
+ ]
+}
