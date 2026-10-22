@@ -232,5 +232,97 @@
    "replay_of": "e3-me-filt-wd0-w128-i30002-a1",
    "reason": "e4 mechanisms dense diagnostic replay (DECISIONS D7) of the first 5,000 updates of e3-me-filt-wd0-w128-i30002-a1, same start file and settings, with checkpoints every 10 updates to 300, every 50 from 350 to 3,000 and every 500 from 3,500 to 5,000. A replay, not a new seed: it must equal the published e3 checkpoints at every shared update. About 15 s."
   }
+ ],
+ "reserved": [
+  {
+   "run_id": "e4-au-rf-w128-i30000-a1",
+   "owner": "audit",
+   "claimed": "2026-10-22",
+   "task": "add",
+   "wd": 1.0,
+   "width": 128,
+   "init_seed": 30000,
+   "init_weights": "research/e4/audit/starts/e4-au-rf-w128-i30000-a1.npz",
+   "init_weights_sha256": "PENDING",
+   "init_age": 0,
+   "checkpoint_steps": "10,30,100,300",
+   "start_arm": "random-feature control: untrained U, V from this init; ridge W on the 299 training labels; e2 per-unit dominant-frequency filter; U, V jointly and W separately rescaled to the B start file norms",
+   "reason": "e4 audit control (DECISIONS D11): the e3 B continuation protocol (fresh Adam, lr 1e-3, 20,000 updates) from a random-feature start, wd 1. Reserved: activated with its start-file hash after the start files, their script and the pre-stated rule in research/e4/audit/QUESTION.md are pushed. About 40 s."
+  },
+  {
+   "run_id": "e4-au-rf-w128-i30001-a1",
+   "owner": "audit",
+   "claimed": "2026-10-22",
+   "task": "add",
+   "wd": 1.0,
+   "width": 128,
+   "init_seed": 30001,
+   "init_weights": "research/e4/audit/starts/e4-au-rf-w128-i30001-a1.npz",
+   "init_weights_sha256": "PENDING",
+   "init_age": 0,
+   "checkpoint_steps": "10,30,100,300",
+   "start_arm": "random-feature control: untrained U, V from this init; ridge W on the 299 training labels; e2 per-unit dominant-frequency filter; U, V jointly and W separately rescaled to the B start file norms",
+   "reason": "e4 audit control (DECISIONS D11): the e3 B continuation protocol (fresh Adam, lr 1e-3, 20,000 updates) from a random-feature start, wd 1. Reserved: activated with its start-file hash after the start files, their script and the pre-stated rule in research/e4/audit/QUESTION.md are pushed. About 40 s."
+  },
+  {
+   "run_id": "e4-au-rf-w128-i30002-a1",
+   "owner": "audit",
+   "claimed": "2026-10-22",
+   "task": "add",
+   "wd": 1.0,
+   "width": 128,
+   "init_seed": 30002,
+   "init_weights": "research/e4/audit/starts/e4-au-rf-w128-i30002-a1.npz",
+   "init_weights_sha256": "PENDING",
+   "init_age": 0,
+   "checkpoint_steps": "10,30,100,300",
+   "start_arm": "random-feature control: untrained U, V from this init; ridge W on the 299 training labels; e2 per-unit dominant-frequency filter; U, V jointly and W separately rescaled to the B start file norms",
+   "reason": "e4 audit control (DECISIONS D11): the e3 B continuation protocol (fresh Adam, lr 1e-3, 20,000 updates) from a random-feature start, wd 1. Reserved: activated with its start-file hash after the start files, their script and the pre-stated rule in research/e4/audit/QUESTION.md are pushed. About 40 s."
+  },
+  {
+   "run_id": "e4-au-rf-wd0-w128-i30000-a1",
+   "owner": "audit",
+   "claimed": "2026-10-22",
+   "task": "add",
+   "wd": 0.0,
+   "width": 128,
+   "init_seed": 30000,
+   "init_weights": "research/e4/audit/starts/e4-au-rf-w128-i30000-a1.npz",
+   "init_weights_sha256": "PENDING",
+   "init_age": 0,
+   "checkpoint_steps": "10,30,100,300",
+   "start_arm": "random-feature control: untrained U, V from this init; ridge W on the 299 training labels; e2 per-unit dominant-frequency filter; U, V jointly and W separately rescaled to the B start file norms",
+   "reason": "e4 audit control (DECISIONS D11): the e3 B continuation protocol (fresh Adam, lr 1e-3, 20,000 updates) from a random-feature start, wd 0. Reserved: activated with its start-file hash after the start files, their script and the pre-stated rule in research/e4/audit/QUESTION.md are pushed. About 40 s."
+  },
+  {
+   "run_id": "e4-au-rf-wd0-w128-i30001-a1",
+   "owner": "audit",
+   "claimed": "2026-10-22",
+   "task": "add",
+   "wd": 0.0,
+   "width": 128,
+   "init_seed": 30001,
+   "init_weights": "research/e4/audit/starts/e4-au-rf-w128-i30001-a1.npz",
+   "init_weights_sha256": "PENDING",
+   "init_age": 0,
+   "checkpoint_steps": "10,30,100,300",
+   "start_arm": "random-feature control: untrained U, V from this init; ridge W on the 299 training labels; e2 per-unit dominant-frequency filter; U, V jointly and W separately rescaled to the B start file norms",
+   "reason": "e4 audit control (DECISIONS D11): the e3 B continuation protocol (fresh Adam, lr 1e-3, 20,000 updates) from a random-feature start, wd 0. Reserved: activated with its start-file hash after the start files, their script and the pre-stated rule in research/e4/audit/QUESTION.md are pushed. About 40 s."
+  },
+  {
+   "run_id": "e4-au-rf-wd0-w128-i30002-a1",
+   "owner": "audit",
+   "claimed": "2026-10-22",
+   "task": "add",
+   "wd": 0.0,
+   "width": 128,
+   "init_seed": 30002,
+   "init_weights": "research/e4/audit/starts/e4-au-rf-w128-i30002-a1.npz",
+   "init_weights_sha256": "PENDING",
+   "init_age": 0,
+   "checkpoint_steps": "10,30,100,300",
+   "start_arm": "random-feature control: untrained U, V from this init; ridge W on the 299 training labels; e2 per-unit dominant-frequency filter; U, V jointly and W separately rescaled to the B start file norms",
+   "reason": "e4 audit control (DECISIONS D11): the e3 B continuation protocol (fresh Adam, lr 1e-3, 20,000 updates) from a random-feature start, wd 0. Reserved: activated with its start-file hash after the start files, their script and the pre-stated rule in research/e4/audit/QUESTION.md are pushed. About 40 s."
+  }
  ]
 }

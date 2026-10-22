@@ -197,3 +197,22 @@ A lane that will exceed its budget stops and asks. No paid compute is used.
 - Dense replay checkpoints are not committed (D7).
 - A single question spans all three lanes, so each lane's packet names the windows of D5 it speaks to.
 - The literature table ([LITERATURE.md](LITERATURE.md)) records retrieval gaps. Only Varma et al. (body) and Janati et al. (main text, appendices A–I) were read beyond the abstract.
+
+## D11 (2026-10-22) Audit control: random-feature starts through the B protocol (reserved)
+
+**Proposal.** The auditor proposed a control before training anything. It runs the e3 B continuation protocol from a **random-feature start**, built per init seed 30000–30002 in four steps:
+1. U and V are the untrained values from that init.
+2. W is a ridge readout fitted to the 299 training labels.
+3. The e2 per-unit dominant-frequency filter is applied, as for B.
+4. U and V are rescaled jointly, and W separately, to the matrix norms of the B start file. This is a scale-only change, so the update-0 argmax, ranks and σ-margins are unchanged.
+
+**Runs.** The runs are at wd 1 and wd 0, everything else as in D6/D7.
+
+**What it tests.** It asks whether the peak-then-collapse belongs to "filter plus training" in general, or needs what the failed runs contain. That question decides how to read any mechanism found between B's peak and its collapse.
+
+**Reserved IDs.** Six IDs are reserved in plan.json under `reserved`: `e4-au-rf[-wd0]-w128-i{30000,30001,30002}-a1`, with init_age 0 and `init_weights_sha256` PENDING. The coordinator moves them to `runs` and fills the hashes after the auditor has pushed three things:
+1. the start files under `research/e4/audit/starts/`;
+2. the script that writes them;
+3. QUESTION.md with the decision rule stated before any run.
+
+**Decision rule.** The rule uses the dynamics lane's declared decline thresholds (D5) for "collapse". A rise between 0.1 and half of B's rise is reported as inconclusive. The cost is about 2 min of the auditor's 25.
