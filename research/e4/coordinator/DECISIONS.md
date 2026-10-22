@@ -279,3 +279,34 @@ It runs only when four conditions are met:
 2. **The projection file is committed and hashed.** It records the per-unit k_j per source, chosen at update 0 without labels. The file states that P keeps both the cosine and sine components at ±k_j, and that DC belongs to "the rest". Its hash goes in the plan.
 3. **The pre-stated reading in INTERVENTION.md stands as written**, including the caveat about coupling through the loss.
 4. **The analysis of the random-feature control runs (D11–D12) goes to the auditor**, as part of its decomposition audit. The mechanisms lane stays on its intervention.
+
+## D15 (2026-10-22) Shared code re-pinned for restricted decay; mechanisms intervention claimed
+
+The mechanisms lane's patch is merged as PR #37 at `8108d8b`. Its shared-code commit is `e9cbc84`, which touches `experiment.py`, `launch_runs.py` and `test_exploration.py`.
+
+**What the patch adds**
+- `--decay-projection FILE`, `--decay-on {rest,reference}` and `--expect-decay-projection-sha256`.
+- Plan fields `decay_projection`, `decay_projection_sha256` and `decay_on`.
+- `decay_parts` computes P with a real FFT along the token axis of U and V and along the label axis of W. P keeps the cosine and sine at ±k_j for each live unit. DC and every other frequency are "the rest".
+- The restricted decay sits where the decoupled decay sat, before the Adam update, and the moments stay gradient-only.
+
+**The no-flag path**
+- Without the flags the step is still `w *= 1-lr*wd`. The only other effect is that `config.json` gains four null keys. That is metadata, not training.
+
+**Coordinator review at the PR head**
+- 18 tests pass (`test_exploration`, `test_instrumentation`).
+- A no-flag replay of `e4-me-filt-wd1-replay-w128-i30002-a1` to update 300 equals the e3 checkpoints bitwise at 10, 30, 100 and 300. The lane's own check covers i30000 to 5,000 (89 of 89 checkpoints, 501 of 501 metric rows).
+- On the i30002 start file, P is idempotent and P + (I − P) = I to 3e-16. P holds 97% of U and V's squared norm (the rest is DC) and all of W's.
+- The SHA-256 of all three projection files matches the lane's.
+
+**New pin.** The shared-code identity for e4 is now `8108d8b`. All earlier e4 runs are unaffected, because their path is bitwise unchanged.
+
+**Claimed runs.** Six runs: `e4-me-filt-wd1-{xref,onlyref}-w128-i{30000,30001,30002}-a1`.
+- Purpose `intervention`.
+- D7 wd 1 replay settings: the same start file, fresh Adam, wd 1, 5,000 updates, the D7 dense checkpoint list.
+- `decay_on` is `rest` for `xref` and `reference` for `onlyref`. The projection file and its hash are in plan.json.
+- The queue is a seeded interleaving (`default_rng(20261026)`).
+- They must be launched at `8108d8b` or later.
+- Storage is as D7: only the D5 states are committed, and every checkpoint is hashed.
+
+**At update 0.** The lane points out that P(W) = W and that the rest of U and V is their DC. So the reference-only arm starts by decaying almost everything except the U and V DC. The exempt arm starts by decaying only that DC, then the off-reference parts as they grow. The reading in INTERVENTION.md stands.
