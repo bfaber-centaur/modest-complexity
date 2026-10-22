@@ -78,7 +78,7 @@ At wd 0, the reference parts grow (U, V 31–32 → 39–41; W 25–26 → 32) a
 
 ## Proposed intervention (sent to the coordinator; nothing claimed or run)
 
-The proposal is to restrict where decay acts: B at wd 1 with decoupled decay **exempting** the reference parts (decay acts only on the off-reference and DC parts). The complementary arm decays **only** the reference parts. The design, IDs and pre-stated reading are in the coordinator message and will be recorded here once agreed.
+The proposal is to restrict where decay acts: B at wd 1 with decoupled decay **exempting** the reference parts (decay acts only on the off-reference and DC parts). The complementary arm decays **only** the reference parts. The design, IDs and pre-stated reading are in [INTERVENTION.md](INTERVENTION.md), written before any intervention code or run.
 
 ## Files
 
