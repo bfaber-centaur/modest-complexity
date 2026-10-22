@@ -8,7 +8,10 @@ Question, predictions and measures: [QUESTION.md](QUESTION.md). Adaptive choices
 |---|---|
 | `gen_task.py` | task structure (products of any length, function classes, group order, identifiability from final tables) and the new-draw rule (`--draw`) |
 | `gen_eval.py` | frozen evaluation of tied/tied checkpoints at lengths 1–6, reference systems, checks against each run's own logged metrics |
-| `gen_figures.py` | figures from committed outputs only |
+| `gen_figures.py` | figures from committed outputs only (`length`, `replication`, `followup`) |
+| `gen_publish.py` | copies finished runs into `runs/<ID>/` with a SHA-256 manifest |
+| `gen_followup.py` | the follow-up: first-error anatomy at steps 4–6 |
+| `tasks.json` | the draw rule's decision log and every new task's structure |
 | `plan.json`, `registry.jsonl` | run plan (entries committed before launch) and the runner's append-only log |
 | `runs/<run ID>/` | committed outputs of each run (failed attempts included) |
 | `figures/` | PNG + SVG + source CSV |
@@ -60,6 +63,16 @@ uv run --locked python research/composition-c2/generalization/gen_figures.py rep
 
 Figure: [figures/replication.png](figures/replication.png) (`.svg`; sources `figures/replication.csv`, `figures/replication_trajectories.csv`). The original-task column is drawn from r1's published metrics (¬N scored from the logged prediction strings).
 
+## Follow-up: first-error anatomy (approved at 99c83c8)
+
+```bash
+$R --workers 1 --ids c2-gen-followup-anatomy-a1
+cp runs/c2/c2-gen-followup-anatomy-a1/* research/composition-c2/generalization/runs/c2-gen-followup-anatomy-a1/
+uv run --locked python research/composition-c2/generalization/gen_figures.py followup
+```
+
+`c2-gen-followup-anatomy-a1` complete, 11.5 s: frozen forward passes of the 11 tied/inter `ckpt-10000` (hashes checked), outputs `anatomy.csv`, `windows.csv`, `summary.json`. Figure: [figures/followup.png](figures/followup.png) (`.svg`, `figures/followup.csv`).
+
 ## Budget (25 min elapsed, D6)
 
 Elapsed wall time with at least one job running, from the registry (union of run intervals):
@@ -71,4 +84,7 @@ Elapsed wall time with at least one job running, from the registry (union of run
 | c2-gen-calib-inter-s900130-a1 | complete | 8.6 |
 | 16 Part B runs, two workers | all complete | 337.6 |
 | c2-gen-frozen-rep-a1 | complete | 14.2 |
-| **total** | | **367.6 s (6.1 min) of 1,500 s** |
+| c2-gen-followup-anatomy-a1 | complete | 11.5 |
+| **total** | | **379.1 s (6.3 min) of 1,500 s** |
+
+No run was capped. The one failure (frozen a1) is kept with its log.

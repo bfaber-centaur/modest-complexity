@@ -5,9 +5,12 @@ length       accuracy against program length 1-6 for the recovered r1 tied/inter
              checkpoints (QUESTION.md first-figure plan), with reference systems and chance.
 replication  Part B: held-out final and notN accuracy over training, and frozen accuracy by length
              at 10k, for the original task (r1 runs) and the four new tasks; summary table.
+followup     follow-up: concentration of first errors at steps 4-6, held-out-window share of first
+             errors, and length-6 accuracy with / without a held-out window, per tied/inter model.
 
 uv run --locked python research/composition-c2/generalization/gen_figures.py length
 uv run --locked python research/composition-c2/generalization/gen_figures.py replication
+uv run --locked python research/composition-c2/generalization/gen_figures.py followup
 """
 import argparse
 import csv
@@ -205,11 +208,64 @@ def replication_figure():
     plt.close(fig)
 
 
+FOLLOWUP = HERE/'runs'/'c2-gen-followup-anatomy-a1'
+
+
+def followup_figure():
+    summ = json.loads((FOLLOWUP/'summary.json').read_text())['per_model']
+    wins = read(FOLLOWUP/'windows.csv')
+    models = list(summ)
+    style = {**SEED_STYLE, **INIT_STYLE}
+    label = lambda rid: ('original' if rid.startswith('r1-') else summ[rid]['task_id'].replace('ops', '').replace('-ls', '/')) + f"\ninit {summ[rid]['init_seed']}"
+    rows = []
+    for rid in models:
+        acc = {r['contains_held_out_window']: float(r['accuracy']) for r in wins if r['run_id'] == rid and r['length'] == '6'}
+        rows.append(dict(run_id=rid, task_id=summ[rid]['task_id'], init_seed=summ[rid]['init_seed'], top4_share=summ[rid]['top4_share'],
+                         first_error_window_is_held_out=summ[rid]['first_error_window_is_held_out'],
+                         at_risk_window_is_held_out=summ[rid]['at_risk_window_is_held_out'],
+                         length6_acc_with_held_window=acc['True'], length6_acc_without_held_window=acc['False'],
+                         source=f'runs/{FOLLOWUP.name}/summary.json, windows.csv'))
+    with open(FIGS/'followup.csv', 'w', newline='') as f:
+        w = csv.DictWriter(f, list(rows[0])); w.writeheader(); w.writerows(rows)
+    fig, axes = plt.subplots(1, 3, figsize=(13, 4.3), sharex=True)
+    x = range(len(models))
+    panels = [('top4_share', 'share of first errors (steps 4-6)\non the 4 most frequent of 32 transitions',
+               [(4/32, 'diffuse 4/32', (0, (1, 2))), (0.5, 'F1 threshold 0.5', (0, (4, 3)))]),
+              ('first_error_window_is_held_out', 'share of first errors whose last 3 ops\nform a held-out program',
+               [(0.25, 'base rate 0.25', (0, (1, 2))), (0.375, 'F3 threshold 0.375', (0, (4, 3)))])]
+    for ax, (key, ylab, lines) in zip(axes[:2], panels):
+        for i, r in enumerate(rows):
+            c, m = style[r['init_seed']]
+            ax.plot(i, r[key], marker=m, color=c, ms=8, ls='none')
+        for y, txt, ls in lines:
+            ax.axhline(y, color=GREY, lw=1, ls=ls); ax.text(len(models)-0.4, y, txt, fontsize=7, color=INK, va='bottom', ha='right')
+        ax.set_ylim(0, 0.6); ax.set_ylabel(ylab, fontsize=8.5)
+    ax = axes[2]
+    for i, r in enumerate(rows):
+        c, m = style[r['init_seed']]
+        ax.plot([i, i], [r['length6_acc_with_held_window'], r['length6_acc_without_held_window']], color=c, lw=1.2)
+        ax.plot(i, r['length6_acc_without_held_window'], marker=m, color=c, ms=8, ls='none')
+        ax.plot(i, r['length6_acc_with_held_window'], marker=m, mfc='white', mec=c, mew=1.5, ms=8, ls='none')
+    ax.set_ylim(0.4, 1.0); ax.set_ylabel('length-6 accuracy: programs without (filled)\nand with (open) a held-out 3-op window', fontsize=8.5)
+    for a in axes:
+        a.set_xticks(list(x)); a.set_xticklabels([label(r) for r in models], fontsize=6.5, rotation=90)
+        a.axvline(2.5, color='#d8d7d0', lw=0.8)
+        a.grid(axis='y', color='#e4e3dd', lw=0.6); a.set_axisbelow(True); a.tick_params(axis='y', labelsize=8)
+        for sp in ('top', 'right'):
+            a.spines[sp].set_visible(False)
+    fig.suptitle('Follow-up: first errors of the 11 frozen tied/inter models (ckpt-10000) on exhaustive length-6 programs '
+                 '(3 original, 8 new-task; c2-gen-followup-anatomy-a1)', fontsize=9, color=INK, x=0.01, ha='left')
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    for ext in ('png', 'svg'):
+        fig.savefig(FIGS/f'followup.{ext}', dpi=140)
+    plt.close(fig)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('which', choices=('length', 'replication'))
+    ap.add_argument('which', choices=('length', 'replication', 'followup'))
     args = ap.parse_args()
-    dict(length=length_figure, replication=replication_figure)[args.which]()
+    dict(length=length_figure, replication=replication_figure, followup=followup_figure)[args.which]()
 
 
 if __name__ == '__main__':
