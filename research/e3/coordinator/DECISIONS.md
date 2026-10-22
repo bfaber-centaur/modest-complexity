@@ -181,3 +181,18 @@ A lane that projects a launch past its remaining budget stops and asks; it never
 | 30 min per session | 70 / 25 / 30 / 15 min, calibrated | D7 |
 | two inquiry cycles per explorer | one initial experiment and one adaptive follow-up, with first figure reviewed | D8 |
 | restricted rank and σ-unit gap as the main normalized measures | pairwise P(S over N), P(a+b over N), P(a+b over S) as primary; max-based measures kept | D6 |
+
+## D10 (2026-10-22) Mechanisms runs activated
+
+The lane pushed the nine start files and the update-0 report on `claude/project-thread-psralm` at `42ca626` (`research/e3/mechanisms/starts/`, written by `edits.py` at `371ed43`). The coordinator recomputed the nine SHA-256 values; they match the lane's list. A's arrays are identical to the source checkpoints. B's relative displacement is 0.74–0.76 for U and V and 0.78–0.80 for W; C's is 0.74–0.76 for U and V and 0.71–0.75 for W.
+
+The audit gate passed on every item, with evidence on `claude/project-thread-id1tmm` at `a8d796d` (`research/e3/audit/results/continuation-check.json` and `start-check.json`):
+- sources;
+- A unchanged;
+- B equal to the e2 `filter_units`;
+- C weights-only and rebuilt independently;
+- optimizer reset and recipe: a 300-update arm-A continuation matches an independent zero-moment AdamW replay to 3.6e-11;
+- post-edit row;
+- visible limits.
+
+The nine entries moved from `reserved` to `runs` with `init_weights_sha256` filled in and `activated` set. The start files reach `swarm/exploration` with the lane's PR.
