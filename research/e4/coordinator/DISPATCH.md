@@ -4,7 +4,7 @@ These are the coordinator's launch messages, kept so that a session that did not
 
 Common to all three:
 
-- **e4 base:** `BASE` on `swarm/exploration`. Shared code is unchanged since `72cfb5d` (D3). Merge `swarm/exploration` into your designated branch.
+- **e4 base:** `ee028d96560a09736ab7846d95cb7a43f80c0aaf` on `swarm/exploration`. Shared code is unchanged since `72cfb5d` (D3). Merge `swarm/exploration` into your designated branch.
 - **Instructions:** your role file in [charter/](charter/README.md), then DECISIONS D1–D10 and [LITERATURE.md](LITERATURE.md).
 - **Scope:** own only `research/e4/<lane>/`. PRs target `swarm/exploration`.
 - **Windows and measures (D5):**
