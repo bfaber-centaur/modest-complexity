@@ -1,6 +1,6 @@
 # e3 independent audit
 
-Session `e2-au-cloud-1` (e3 auditor), branch `claude/project-thread-id1tmm`. Software checks are PASS / FAIL / NOT CHECKED. Interpretations are SUPPORTED LOCALLY / AMBIGUOUS / CONTRADICTED. Everything is exploratory: the e2 ladder pairs have guided analysis since e1.
+Session label `e3-au-cloud-1` (DECISIONS D2; investigation 1 was recorded as `e2-au-cloud-1` before that label existed), branch `claude/project-thread-id1tmm`. Software checks are PASS / FAIL / NOT CHECKED. Interpretations are SUPPORTED LOCALLY / AMBIGUOUS / CONTRADICTED. Everything is exploratory: the e2 ladder pairs have guided analysis since e1.
 
 # Investigation 1: operand-label preference without logit scale (existing artifacts)
 
