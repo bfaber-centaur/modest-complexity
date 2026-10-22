@@ -21,10 +21,12 @@ HERE = Path(__file__).resolve().parent
 RUNS, FIGS = HERE/'runs', HERE/'figures'
 ARMS = ['fresh', 'rel', 'part', 'unrel', 'same']
 JOINT = ['joint-rel', 'joint-unrel', 'alone-y1']
-COLORS = {'fresh': '#555555', 'rel': '#0072B2', 'part': '#E69F00', 'unrel': '#009E73', 'same': '#CC79A7',
+FOLLOWUP = ['split']  # the one adaptive follow-up (QUESTION.md), drawn apart from the initial comparison
+COLORS = {'split': '#882255', 'fresh': '#555555', 'rel': '#0072B2', 'part': '#E69F00', 'unrel': '#009E73', 'same': '#CC79A7',
           'joint-rel': '#0072B2', 'joint-unrel': '#009E73', 'alone-y1': '#D55E00'}
 LABELS = {'fresh': 'fresh init', 'rel': 'rel: y1 = x1^x2^x3', 'part': 'part: x2^x3^x4 (no z)',
-          'unrel': 'unrel: x5^x6^x7', 'same': 'same: y2 (positive control)'}
+          'unrel': 'unrel: x5^x6^x7', 'same': 'same: y2 (positive control)',
+          'split': 'follow-up split: (x1^x3^x5, x2^x6^x7), 4 classes'}
 REP_STYLE = ['-', '--', ':']
 UPDATE_NS = (32, 64)  # the two n of the against-updates panels, fixed in QUESTION.md's spirit before the main runs
 
@@ -81,7 +83,7 @@ def registry_status():
 def collect():
     """Final-step table and trajectories for every planned main run (status kept for missing ones)."""
     plan = [r['run_id'] for r in json.loads((HERE/'plan.json').read_text())['runs']
-            if parse_id(r['run_id'])[0] in ARMS + JOINT and parse_id(r['run_id'])[1] in (52200, 52201, 52202)]
+            if parse_id(r['run_id'])[0] in ARMS + JOINT + FOLLOWUP and parse_id(r['run_id'])[1] in (52200, 52201, 52202)]
     status = registry_status(); final, traj = [], []
     for run_id in plan:
         arm, seed, attempt = parse_id(run_id)
@@ -184,7 +186,7 @@ def figures(args):
               [{k: r.get(k) for k in ('run_id', 'arm', 'init_seed', 'data_seed', 'tag', 'n', 'step', 'new_train_acc',
                                       'new_test_acc', 'new_test_acc_x4is1', 'new_test_acc_x4is0', 'new_train_loss',
                                       'new_test_loss', 'pre_test_acc')}
-               for r in traj if r['tag'] in ('train', 'readout') and r['arm'] in ARMS + JOINT])
+               for r in traj if r['tag'] in ('train', 'readout') and r['arm'] in ARMS + JOINT + FOLLOWUP])
 
     # Figure 2: joint versus separate training.
     fig, axes = plt.subplots(1, 3, figsize=(14, 4.3))
@@ -221,6 +223,48 @@ def figures(args):
     fig.tight_layout(rect=(0, 0, 1, .92))
     for ext in ('png', 'svg'):
         fig.savefig(FIGS/f'joint.{ext}', dpi=130)
+    plt.close(fig)
+
+    # Follow-up figure: the split control next to the initial arms it is compared with (faded).
+    fig, axes = plt.subplots(1, 3, figsize=(16, 4.6))
+    for ax, branch, title in ((axes[0], 'train', 'fine-tune trunk + new head'),
+                              (axes[1], 'readout', 'frozen phase-1 features, new head only')):
+        for arm in ['fresh', 'rel', 'part'] + FOLLOWUP:
+            for i, s in enumerate(seeds):
+                n, y = per_n(arm, branch, 'new_test_acc_x4is1', s)
+                if n:
+                    ax.plot(np.array(n)*(1+.04*(i-1)), y, REP_STYLE[i], marker='o', ms=3 if arm in FOLLOWUP else 2,
+                            lw=1.6 if arm in FOLLOWUP else .9, alpha=1 if arm in FOLLOWUP else .45, color=COLORS[arm],
+                            label=(LABELS[arm] + ('' if arm in FOLLOWUP else ' (initial comparison)')) if i == 0 else None)
+        ax.axhline(.5, color='k', lw=.8, ls='--'); ax.set_xscale('log', base=2); ax.set_ylim(.4, 1.02)
+        ax.set_xlabel('training inputs n (D_n, nested)'); ax.set_ylabel('y2 held-out accuracy, x4 = 1 half')
+        ax.set_title(title + ': final step', fontsize=9)
+    axes[0].legend(fontsize=6.5, loc='lower right')
+    mech = FIGS/'mechanism.csv'
+    if mech.exists():
+        import csv
+        rows = [r for r in csv.DictReader(open(mech)) if r['kind'] == 'probe' and r['layer'] == '2']
+        feats = ['x1^x2', 'x1^x3', 'x2^x3', 'x1^x4', 'x5^x6']
+        groups = [('init', 'fresh', 'init', '#999999'), ('rel', 'rel', 'pretrained', COLORS['rel']),
+                  ('part', 'part', 'pretrained', COLORS['part']), ('unrel', 'unrel', 'pretrained', COLORS['unrel']),
+                  ('split (follow-up)', 'split', 'pretrained', COLORS['split'])]
+        ax = axes[2]
+        for g, (label, arm, net, color) in enumerate(groups):
+            for i, s in enumerate(seeds):
+                v = {r['feature']: float(r['value']) for r in rows if r['arm'] == arm and r['net'] == net
+                     and int(r['init_seed']) == s}
+                if v:
+                    ax.plot(np.arange(len(feats)) + (g-2)*.14, [v[f] for f in feats], ls='none', marker='os^'[i],
+                            mfc='none', color=color, label=label if i == 0 else None)
+        ax.set_xticks(range(len(feats))); ax.set_xticklabels(['z = x1^x2', 'x1^x3', 'x2^x3', 'x1^x4', 'x5^x6'])
+        ax.axhline(.5, color='k', lw=.8, ls='--'); ax.set_ylim(.4, 1.02); ax.legend(fontsize=6.5, loc='lower left')
+        ax.set_ylabel('ridge-probe test accuracy, hidden layer 2'); ax.set_title(
+            'linear decodability after phase 1 (init = untrained network)', fontsize=9)
+    fig.suptitle('R2 follow-up (adaptive, after M2): pretraining that shares the pair {x1, x2} with y2 but has no x1^x2. '
+                 'Markers/linestyles o/solid, square/dashed, triangle/dotted = replicates r0, r1, r2.', fontsize=8)
+    fig.tight_layout(rect=(0, 0, 1, .93))
+    for ext in ('png', 'svg'):
+        fig.savefig(FIGS/f'followup.{ext}', dpi=130)
     plt.close(fig)
 
     # Figure 3: input dependence (flip sensitivity) of y2 predictions and of the pretraining head.
@@ -283,17 +327,17 @@ def mechanism(args):
     out, seeds = [], [52200, 52201, 52202]
     flips = {'x1^x2': task.Z, 'x1^x3': task.PROBES['x1^x3'], 'x5^x6': task.PROBES['x5^x6']}
     x4 = task.B[:, 3] == 1
-    for arm in ('fresh', 'rel', 'part', 'unrel', 'same'):
+    for arm in ARMS + FOLLOWUP:
         for s in seeds:
             run_id = f'r1-share-{arm}-s{s}-a1'; d = RUNS/run_id
-            if not (d/'final_n512.npz').exists():
+            if not any((d/f).exists() for f in ('final_n512.npz', 'pretrained.npz')):
                 continue
             cfg = json.loads((d/'config.json').read_text())
             pool, test = task.split(cfg['data_seed'])
-            p_init = nets.init(task.N_BITS, cfg['hidden'], {'pre': 2, 'new': 2}, s)
-            with np.load(d/'final_n512.npz') as z:
-                p_fin = {k: z[k] for k in z.files}
-            net = {'init': p_init, 'final512': p_fin}
+            net = {'init': nets.init(task.N_BITS, cfg['hidden'], {'pre': 2, 'new': 2}, s)}  # trunk only is used
+            if (d/'final_n512.npz').exists():
+                with np.load(d/'final_n512.npz') as z:
+                    net['final512'] = {k: z[k] for k in z.files}
             if (d/'pretrained.npz').exists():
                 net['pretrained'] = nets.load(d/'pretrained.npz')[0]
             acts = {k: nets.forward(p, task.X)[0] for k, p in net.items()}
@@ -303,8 +347,11 @@ def mechanism(args):
                     for name, y in task.PROBES.items():
                         out.append(dict(base, kind='probe', net=k, layer=layer, feature=name,
                                         value=ridge_probe(A[layer], y, pool, test)))
+            if 'final512' not in net:  # published without its phase-2 network: probes only
+                continue
             # Steering: move each input to the other class mean along a mean-difference direction.
-            pred = {h: nets.forward(p_fin, task.X)[1][h].argmax(1) for h in ('new', 'pre')}
+            p_fin = net['final512']
+            pred = {'new': nets.forward(p_fin, task.X)[1]['new'].argmax(1)}
             rng = np.random.default_rng(52300 + s - 52200)
             sources = ['final512', 'init'] + (['pretrained'] if 'pretrained' in net else [])
             for layer in (1, 2):

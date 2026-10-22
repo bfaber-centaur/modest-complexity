@@ -1,7 +1,8 @@
 02019423714b42714fce0aef1f0b5b622ba60b17c89ff4a5ffc6d83fb2f46079  r1-share-joint-rel-s52200-a1/config.json
-026297249a32a10003d67e4d03a2607e5b057958e0cc422537e5699a3222bbb8  r1-share-same-s52202-a1/pretrained.npz
+026297249a32a10003d67e4d03a2607e5b057958e0cc422537e5699a3222bbb8  r1-share-same-s52202-a1/pretrained.npz  (local only)
 030179265d0218c30baa6441adee8321c014542977343031b4e424f1a9a5c85e  r1-share-unrel-s52201-a1/config.json
 0382d24202e668dc76e92accaf0345a9c07ea621247f154e898df10ebf64d6fb  r1-share-part-s52201-a1/pretrained.npz
+0447b85fb8497a0b7a89e9a2ed5298895a767cd420d9de64a9936275761db6a2  r1-share-split-s52201-a1/metrics.jsonl.gz
 04d9674f6d105d53cf354e9736b2fb7af1b76f6916a8346b25bc5063e14960be  r1-share-unrel-s52202-a1/metrics.jsonl.gz
 06137dddf806f58b15bd6652976fa4d9789a5a964c573cc7e47bc0be317b720e  r1-share-fresh-s52202-a1/config.json
 0628f518d0178152c41db91bc0bbfafb7ba0d97f0d155cdef5e9c48dc2aa53ac  r1-share-part-s52200-a1/metrics.jsonl.gz
@@ -11,14 +12,18 @@
 0c032f6f117e1e1e0ddec5b601deacadb836ebd599118bf66f41cc1a10cc989e  r1-share-joint-rel-s52201-a1/runtime.json
 0d1595b6770fe819c14f7ff8ab9124064377badbf52e768ca6b3627de66f1984  r1-share-fresh-s52201-a1/metrics.jsonl  (local only)
 0de662226ecc01f64596875d2f1fcc4575945712e9dbe5f063547ae6daea5e2a  r1-share-fresh-s52200-a1/final_n64.npz  (local only)
+0f22456c0910003461a8854f2a1c09be153fe167dfcaa1df2f9207958f74565e  r1-share-split-s52202-a1/config.json
 0f3c0b827406b5a64b8444d9f77f62cf7f733a20907ebac054c4d7571fa1c099  r1-share-part-s52200-a1/summary.json
+0ff20298e889f36fb87414e8d0b6926357ae0f79e16ba6cd41a249cbda3f3f3f  r1-share-split-s52200-a1/config.json
 144dc206fc3887b634aa84383c145e48993d9e105ee91c68da997f25af88b274  r1-share-fresh-s52201-a1/runtime.json
 149c567aac0dee06095b5e856d5dfdea0acd7e521be85524fb9d1c623877ff38  r1-share-fresh-s52200-a1/config.json
 17016e20fb961b778e89a0162086eea4c407eaceb4910cfa85194069803e5f26  r1-share-joint-unrel-s52200-a1/metrics.jsonl  (local only)
 1725a1661a56e9e182c14d8af87bedd955255bac20b762d86574e20db353dcbc  r1-share-unrel-s52201-a1/metrics.jsonl  (local only)
 17f137fba67aee581311407b2962988fec5fcc6a2cf3a45f0e5335b6a7764d19  r1-share-alone-y1-s52201-a1/metrics.jsonl.gz
 18cb42a98c9f6a8f5ba025db7d2d98fad2edaf3bbad985d295414e79c00a6518  r1-share-alone-y1-s52201-a1/final_n512.npz  (local only)
+19bc328243098b8725c6b94ca53b185bb2cf4055159ca7f50a01b7f9b7868512  r1-share-split-s52202-a1/metrics.jsonl  (local only)
 1b7980f9f2a2f0f758cb9e9f909f05ade5dc9548607824de5fa53bd1a109def6  r1-share-joint-rel-s52200-a1/summary.json
+1b8e9d3973a30faf4c2ecc687bae675479de0f81edb518737d6f512fdaa1df4c  r1-share-split-s52202-a1/final_n512.npz  (local only)
 1bd9f1a2390ae709a17f974cd9f36d4891f432ec183972d363e99f6cc3286f4d  r1-share-joint-unrel-s52202-a1/runtime.json
 1d8515488ddf2cceff98158151bd2d8a4b71e7a1635255d61bb711d73f078514  r1-share-same-s52201-a1/summary.json
 1fd7ca811f70fbe5fdc2899ff2132c9f32fc713563e535529b26327fd7902437  r1-share-unrel-s52201-a1/pretrained.npz
@@ -28,6 +33,7 @@
 2848621d5654181d0c3e7d49b9cbe4977a9a6e9371a5905563bfc36916e88a49  r1-share-part-s52202-a1/config.json
 29ccbc9f84047cee4021dadf5e325a82bc935b2ba5ad9acc47e1a044f7451d9f  r1-share-part-s52200-a1/config.json
 2a649f8025a41f901fc26bfa3b9a05df33b049a9612aa706a0d1e8e7222c753e  r1-share-alone-y1-s52202-a1/metrics.jsonl  (local only)
+2ac6e5fa38e3db560035e988c777e74adf1b0566dc9bae946693f08e3f7c0907  r1-share-split-s52202-a1/summary.json
 2b40b5867b2ac20b06d19ba59d998b224ccd24ed67e74e5b61ec1be64971a50e  r1-share-fresh-s52200-a1/runtime.json
 2b74c71d4c0b0ab301f1093d43c41d05def4bde401b6bc2c76c258de95cdce05  r1-share-fresh-s52200-a1/summary.json
 2c0b7894bb83b3d57f528bd64019971be2775ba28cdbc27b1ee8e6812e4bdd72  r1-share-unrel-s52202-a1/config.json
@@ -35,8 +41,10 @@
 2ef7bb329c9129f438fc88e6ba9dec2c76cefaceb3a08fff2496eedf0ecca4b4  r1-share-rel-s52201-a1/metrics.jsonl  (local only)
 3049cf25e6ebe685bace3be8af0802f4527efc53ab060bd6df9c0f6058689c24  r1-share-rel-s52202-a1/metrics.jsonl  (local only)
 30ff108a6e795e3bd0c38ca649136400872d5d48436a7fd955b6b38a4184d2f2  r1-share-joint-rel-s52202-a1/runtime.json
+328dab38f7b57d538b4b69bbdc116fbe91c2d493213ea20b07263d20c8bac09f  r1-share-split-s52202-a1/metrics.jsonl.gz
 33ae5e4223258bd998ac7bce2b5f62568a1ee69b89c136cac499b32eebbf9c34  r1-share-calib-rel-s952200-a1/pretrained.npz
 342677f44b257854bfdd6fb3951b99a9daea386efd6a9af1ced98ce52929798e  r1-share-unrel-s52202-a1/runtime.json
+357ee54a699a1cafe2b3b84a276efc23f32f3c6ddc3a8c5163965637324a7134  r1-share-split-s52201-a1/final_n64.npz  (local only)
 3719834b29952f546e330034d545622c3428bb6b065d7a35a99a33d95e55c07a  r1-share-fresh-s52202-a1/metrics.jsonl  (local only)
 39a54a19d9893169d7f59129653be131c1afd957794a0727e8b7f3765210a28b  r1-share-alone-y1-s52202-a1/config.json
 3ae075ad8fb9e6ac0eb58139e02d8e3087a06b1a46fd8fb5cf7abf5feb9e500a  r1-share-joint-rel-s52202-a1/metrics.jsonl.gz
@@ -53,12 +61,12 @@
 4408b9522ce0ba52a992a3d7335350496ceef9f8798c34b5e161eb68cfc18e4e  r1-share-joint-rel-s52201-a1/metrics.jsonl  (local only)
 4773f17990409f55ca11cc805800aa9b439d0999e79b3fdf17a3666d77e16eae  r1-share-rel-s52200-a1/pretrained.npz
 478755f99da4980b8d95cb5ac2a13cc293e78c080055e463d39f1dfe07c290c7  r1-share-rel-s52200-a1/final_n64.npz  (local only)
-4791ca9ff9f8bbc1413f135039cbd0e4c12e7fb9dd9a837fdb49fde39ff5f830  r1-share-same-s52200-a1/pretrained.npz
+4791ca9ff9f8bbc1413f135039cbd0e4c12e7fb9dd9a837fdb49fde39ff5f830  r1-share-same-s52200-a1/pretrained.npz  (local only)
 48270ec37d592b2f7e54f9e35afa8db996680f1220807cb5d388a9cb1e2ca8c0  r1-share-rel-s52201-a1/metrics.jsonl.gz
 49896ccf8441ad379b92145a149ac96bc1e805980fac4c779849c4d4d468059a  r1-share-fresh-s52202-a1/runtime.json
 4be35b570d3e24472be552fd560ff5e9d9df953fd7e0fa4d1aa48c816cdef0b4  r1-share-rel-s52201-a1/summary.json
 4d7782646241dabdebf18896aee2d09cd9cea1142ae5ac62ab6ee885ac8eb838  r1-share-fresh-s52201-a1/summary.json
-5212e6aea015ea3ac86a575e6ef91f079e1e14a749929f3eea433347d1d21c42  r1-share-same-s52201-a1/pretrained.npz
+5212e6aea015ea3ac86a575e6ef91f079e1e14a749929f3eea433347d1d21c42  r1-share-same-s52201-a1/pretrained.npz  (local only)
 528572c0f3c73b31a06094bcb3f1661bddd0f7efdfb57aeb72ad098084d3acb2  r1-share-alone-y1-s52201-a1/config.json
 536fe9f783e4ccac96203028a62e7bd3db0177fa98c7d0118e3970d51191faea  r1-share-rel-s52202-a1/final_n512.npz
 539d10f738503ee29a9b3f737bdfd19f7969f603fca0bbeb4f5b0f3bc8405d23  r1-share-alone-y1-s52202-a1/final_n512.npz  (local only)
@@ -67,15 +75,18 @@
 581b95fb8c240dcbbf730e8f42e457909202eb99bff199dd841e4508069d7002  r1-share-same-s52200-a1/final_n64.npz  (local only)
 5aeb4d81100adf73d07eb0cfed00ad6f94465f863b3f6f3747ba72f4b470e913  r1-share-part-s52201-a1/final_n512.npz
 6044aa2f092d20dfa582e081915d3f83d7e2e53e0bc61a81469dcd8a626cc2f6  r1-share-part-s52202-a1/metrics.jsonl.gz
+60c02ab161aea5d0e34b973814c845208c8128571caca6b7eb9f33aa086fb004  r1-share-split-s52200-a1/metrics.jsonl.gz
 61faa5453bc45b92f4b0a61dc89043fea9d20fa42bde3d23574fd05d1394735f  r1-share-same-s52201-a1/final_n512.npz  (local only)
 627f3728e213024cf6a84d281fc2f4169c10bd0c5eb41623534c06e0d68f86e2  r1-share-fresh-s52201-a1/metrics.jsonl.gz
 6368058d4b9054a9bd726d1ce81256a6fcb696c55694664ff1fc85429520d344  r1-share-same-s52202-a1/final_n512.npz  (local only)
 6370bf9410ca1deb696f8b502b3d9385676f28b4236b8da06e40d9633793c1ed  r1-share-alone-y1-s52200-a1/config.json
+6455680eeb8db6c31ca855323e744454ec75b0aaae7f0d5c89af5524d51648f7  r1-share-split-s52202-a1/runtime.json
 67804a3e136d87c0a1a9002b457ba606e7d85030d433c8c2b6d81e2ccaafb824  r1-share-part-s52201-a1/summary.json
 68493cb230cacd7381c16568d7a28ec1190921fe94558cd05d2895282a033c87  r1-share-rel-s52200-a1/metrics.jsonl.gz
 6914b358551d226f89b979758c72dd1f6cae8280b586b40b5dad6ff652adb4e6  r1-share-fresh-s52201-a1/final_n512.npz
 693ebfc29cffcdd2338fe7b28b2e715b4d4fab0f12fd9b2ccdb04f8cc6d3e655  r1-share-alone-y1-s52200-a1/runtime.json
 6c1e8f6e9a79e7ae1a21f4ae05bde2951e1ccb5879c738a9ee67e6f124b081da  r1-share-joint-unrel-s52201-a1/metrics.jsonl  (local only)
+6c3808c48e613eeffa0fb3f454dd82bf840c1a737518849e477db38a61170411  r1-share-split-s52201-a1/runtime.json
 6eda75fddde3c9283509a9ee1d21c3ddbbc1b3e0cd670b673cf94776e356fcf3  r1-share-calib-rel-s952200-a1/metrics.jsonl  (local only)
 6f2fdf81b52d97fe51dd591502eaed2e796e020f57a19d02fba8e3e7fb565f3b  r1-share-calib-rel-s952200-a1/runtime.json
 729f68396b3afc744d3f237254543e625d19b98f3081dd12b2cdc1af465b9b79  r1-share-joint-unrel-s52202-a1/metrics.jsonl.gz
@@ -95,16 +106,23 @@
 7fcbc9d0ba74192e492c2864284965020473de18c5793bec9ebf6efcc1794d21  r1-share-calib-rel-s952200-a1/config.json
 7fde906a7cb16d2c53af12f532caf4eafb04ac4e347087cbd8f6e097dd9f1f95  r1-share-smoke-a1/metrics.jsonl.gz
 81ecb72c48486414a68538f8a69fb60b101c7908a704cad43792cb2a91cebbda  r1-share-alone-y1-s52202-a1/runtime.json
+82018e6230e9f85c7a3e5623e96ec7bb77ed736e348aff17df4fd7c7102f01d6  r1-share-split-s52202-a1/final_n64.npz  (local only)
+861317bd6a89cbfb286b015dc76c2dde47eef62059fcfe73ca52b8cb565139f4  r1-share-split-s52200-a1/pretrained.npz
+8b2c30b7792d58f2c06e4f132fa9bbfbd2c380d56941545491872347849705e5  r1-share-split-s52201-a1/config.json
 8c2f370ba0ec5aea9f2a9259b27390d0509679a4317d39fbe32461fafb5abc4c  r1-share-part-s52202-a1/summary.json
 8d49be7f29f0ba5236ba5c08999bde26c5fb0e3c323c76d3492b04b5e4a7cca4  r1-share-smoke-a1/summary.json
 8e9ffe0bdf36777a560534ea1ad26041bb31d87e69338c1dff8f09d9402aa3e1  r1-share-alone-y1-s52200-a1/final_n512.npz  (local only)
 8f9c7321cfa5c33ff665244c739ea2a309ac4e7ae3c8eefe1c0438aca7f062e4  r1-share-rel-s52201-a1/config.json
+901d2914519ac9348b2803f3a3bb1ca731405e2fb39cad13a194de842af1054c  r1-share-split-s52200-a1/final_n64.npz  (local only)
 9124efefd85e3e48f50c4ecd99e61a8c9f2c65e8b2e46b4f1efb9efb51d0e5ef  r1-share-same-s52202-a1/metrics.jsonl.gz
+92f5c200cdf8f56f9d4b5274171d118025f3597bd92008c85f47d0158de4e602  r1-share-split-s52201-a1/pretrained.npz
 932ad63810f5c913fd648e86dcb2b11332226a76fa6c39aaf265df8f7658114f  r1-share-joint-unrel-s52201-a1/metrics.jsonl.gz
 934ea48cfae3ae53b1e2a92c13ff04b66e2fd21ee6a4d5bbb7d6872591aa94f3  r1-share-part-s52202-a1/metrics.jsonl  (local only)
 955a8b486b4efbeeae3e7a9ce680cc62d50efac322bc5e6e4fe6539dd13bbbef  r1-share-joint-rel-s52200-a1/runtime.json
 96e571d04eeae9f26869d7ca7a61cf0a32e002d42a671f5a1e2557cab6f62459  r1-share-unrel-s52201-a1/runtime.json
 9b9554061dd00b5f54aea2acfe4ce27edd7442bdcb2c7cd3207d571ce03489b1  r1-share-joint-rel-s52200-a1/final_n64.npz  (local only)
+9ba7bb2273f94582a65fbd8b15842d3a6d3ee80798ca30c6ee9b06e1ff877a5e  r1-share-split-s52200-a1/summary.json
+9bb2596546aee77b39074a567ed45ff86bf79991740884427a42e934c2618e5f  r1-share-split-s52201-a1/metrics.jsonl  (local only)
 9bcbaa5d2e7723c5e48652e25e6e7af1bdbf41d1094e76655e7c16d8dd6fd9ad  r1-share-rel-s52202-a1/pretrained.npz
 9d7c6c576e3cf252c01e835e8333ff5f75881b2e7c132ecda364b95c768c11e9  r1-share-same-s52201-a1/metrics.jsonl.gz
 9dc83a0010a1f2e761e1f8a9a100f5a56fb38e5830ef55251543cd9f71f567b4  r1-share-joint-rel-s52201-a1/metrics.jsonl.gz
@@ -126,6 +144,8 @@ ae605081afb74711a6e62770d263d598a2d0ca0f6b34cf9007e9a740908acdaf  r1-share-part-
 ae82e809930f28005535422a66c6482172e02b4fbd993562c44b8f303205f425  r1-share-same-s52200-a1/metrics.jsonl.gz
 af7f650c29eaeaa865c3fd78a3da4f13deb5c0539d36bc915ab67b92f6ac01d1  r1-share-smoke-a1/pretrained.npz
 b1b1f1619a7d29cde724f7f6c9082daa3cc9a001aacd1128d8f2fdf94f0491a4  r1-share-same-s52202-a1/final_n64.npz  (local only)
+b20507df001e6b47abd1612cd3e4d6afb48a8414ae062bb7a582a6bc541d5f9f  r1-share-split-s52201-a1/summary.json
+b28d3fbbe73dbf3a2fab478b3d1a7714f8cc5372119a3cb36bc972271e4bf510  r1-share-split-s52200-a1/final_n512.npz  (local only)
 b39538eeb0ee1ded60e9e5b4a01df54572a45e174aa8c4dd9f5a34a7262fb17d  r1-share-part-s52201-a1/final_n64.npz  (local only)
 b41ed044118cc6e0b74ddc0de801ed957cba89bf81c53923134cab6a2b8a17fc  r1-share-rel-s52202-a1/summary.json
 b5f6bfe0f9335ab149fc3c872de0008be3aff1f348d784b3be2338bcde2ef51f  r1-share-joint-rel-s52202-a1/config.json
@@ -133,12 +153,15 @@ b726eaf78e70ed47069817b530cdbe51d9522236787d8b77ccf063cff45c6ef1  r1-share-unrel
 b7fd8fcbd1ddaa1c94e8feb92a964f51cdbabf09f2845e43c03b424052ba6030  r1-share-part-s52200-a1/metrics.jsonl  (local only)
 b9f3fba4192c7bb72e488b354c156db18785e735cf9668fe3a5268b620575cf0  r1-share-alone-y1-s52201-a1/final_n64.npz  (local only)
 ba4819480f7cdf2d182a5118037192c7d1a52b0e321c9e17a7b4fcf76bd9e09d  r1-share-alone-y1-s52200-a1/metrics.jsonl  (local only)
+bb45f9ad6daf5f4d8c3d2194863ca6a7a3fbd2538b4be58db173bc3c87b7bbf0  r1-share-split-s52201-a1/final_n512.npz  (local only)
 bb8efb186fec1614348e4672ad40d9001da4d3062c04575d73e25384035ce7bb  r1-share-fresh-s52200-a1/metrics.jsonl  (local only)
 bd3f2de63b20b90259356fcc8bc5239c7234a62d544b2a4e1decb5db6b7537fa  r1-share-joint-unrel-s52200-a1/metrics.jsonl.gz
 c1671189609ed74c535f8ab488a8c677f98fe4ccc9f86abaee66ca75fdb0ac6f  r1-share-same-s52200-a1/metrics.jsonl  (local only)
+c2850c7d5b1d99e1afbdfb44ede51d6139ccef9b541966fa11f5e67474728356  r1-share-split-s52200-a1/metrics.jsonl  (local only)
 c33b4148009d00b043e5464553a2e9a7920a083979c3464aafc49f6369ae130e  r1-share-alone-y1-s52201-a1/summary.json
 c446885b8a03b93b65bffeec2bb634ba4cde11ff267557ec095db254d18e530a  r1-share-same-s52200-a1/summary.json
 c47d22dccad66a31ef20edb15a0cc4dd1e573ffb22f8fcbf057d6c8dfdeaca82  r1-share-unrel-s52200-a1/pretrained.npz
+c56eb45d9ca0c0b0ba0bbd176ef4d5e6b30a57735fc7ad5a8c5752f30670f6b7  r1-share-split-s52202-a1/pretrained.npz
 c58579f612b825265bfa31c1c9bc7e83e8b64da7316e67de0283aa757ea468d8  r1-share-alone-y1-s52201-a1/metrics.jsonl  (local only)
 c5e10804417b3844abe7955df722f7320c713942ee7cc6d043412ac160af4185  r1-share-fresh-s52202-a1/final_n512.npz
 c7a230539209017c381414fd1463dc542bebc931cc00d70089b678136657b4c4  r1-share-joint-unrel-s52202-a1/summary.json
@@ -190,6 +213,7 @@ f5083a8af6b0c81e59b28aa384f50fc95981eaad480be2a568f026d0cbf51353  r1-share-joint
 f7b88d667856485751948a5e69e50b48c55a4417f0df39650e9e41438111151e  r1-share-rel-s52200-a1/summary.json
 f8523f2ad85a7cd279f0764eef8ca2a75582703c6d27dff74e137bb0120ba44d  r1-share-part-s52201-a1/metrics.jsonl.gz
 f9a4a13d42bb305135d8a5856c74c5679902bb15646652d5848a551604a524fd  r1-share-unrel-s52201-a1/metrics.jsonl.gz
+fabfce134e80277f6acc5a13fa25f33c727ca38fcf0d7c2f0336b094663910eb  r1-share-split-s52200-a1/runtime.json
 fbef8efb189cba7cc373d50f0b11c48167f2012de9c128bc9e2737809bc26868  r1-share-part-s52202-a1/final_n512.npz
 fc473cee18c62bb61b6dd9ab534e56073de419ac7b95e24cd2a8a58a380045fd  r1-share-rel-s52202-a1/config.json
 fd42c00958a63adc70ab071c91adca21512fa698cc2188ffbbd25d18db98dd82  r1-share-alone-y1-s52200-a1/summary.json
