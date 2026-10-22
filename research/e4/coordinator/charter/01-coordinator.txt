@@ -1,0 +1,42 @@
+Continue modest-complexity as the e4 coordinator.
+
+Repository: bfaber-centaur/modest-complexity
+Integration/PR target: swarm/exploration. Use the existing four Claude threads.
+Read AGENTS.md and the current research/e3/coordinator/INDEX.md, SYNTHESIS.md, DECISIONS.md, and relevant audit findings. Inspect current HEAD; do not assume an older commit. Preserve historical artifacts and unrelated walkthrough work. No upstream merge or paid compute.
+
+Purpose: exploratory science, checked for correctness and ready for human review. We have retired simplicity as the organizing hypothesis. The question is: between the post-filter accuracy peak and collapse, what changes in the computation, and which changes cause the loss of correct answers?
+
+Starting evidence (verify against the repo): at p=31, width 128, a single hidden ReLU layer, full-batch AdamW, lr .001, 299 training pairs, the dominant-frequency weight edit lifts three failed models from about 0% to 43–58% held-out accuracy. Further training raises this to 74–87% within roughly 100 updates, then original decay=1 brings accuracy near chance by 5k. With decay=0, accuracy remains 56–62% at 20k, though it declines from its peak. A rank trace remains after collapse; the collapsed network is not the original network. The early rise survives a smaller learning rate and a gradient-descent probe. These are local observations, not evidence of a universal mechanism.
+
+Competing explanations: useful components shrink/disappear; competing contributions overwhelm them; feature/readout alignment or ReLU gating changes; combinations or an alternative you identify. Do not force a winner.
+
+Important limitations: our filter changes weights and ReLU gates. It may supply useful structure rather than expose an untouched subnetwork. Random-feature controls showed PARTIAL gains (14–30%), not gains matching trained filtered models. Raw logit growth is not increasing relative preference. AdamW decay is decoupled: do not silently interpret it as ordinary gradient descent on cross-entropy plus an L2 penalty. Weight norm alone is not function complexity.
+
+Working rules: short QUESTION.md before new measurements, stating prior observations, alternatives, and distinguishing outcomes. Existing checkpoints first; one useful figure before expansion. Reuse the locked environment and existing code. Keep implementations small and inspectable. Unique run IDs and shared-code changes go through the coordinator. Report all seeds, missing/capped runs, and selection rules. Explorers get one grounded investigation and one adaptive follow-up, with new directions recorded before running. Treat repeated checkpoints and replays as dependent observations. Deliver concise figures-first findings with source tables, regeneration commands, and explicit limits.
+
+Your task
+Set up e4 and help the workers choose experiments that distinguish explanations. Own research/e4/coordinator/, the charter, decision log, shared-code pin, and central run claims. Dispatch the existing dynamics, mechanisms, and audit threads after setup.
+
+Literature first, with a purpose
+Read the relevant experiment/method sections, not just abstracts:
+1. Varma et al., Explaining grokking through circuit efficiency (2023): https://arxiv.org/abs/2309.02390
+2. Janati et al., Post-Grokking Collapse at the Representation–Readout Interface in Muon-Trained Transformers (2026 preprint): https://arxiv.org/abs/2608.07436
+Optional if frequency competition becomes central:
+3. Ding, Guo, Michaud, Liu, Tegmark, Survival of the Fittest Representation (2024): https://arxiv.org/abs/2405.17420
+4. He et al., On the Mechanism and Dynamics of Modular Addition (2026 preprint): https://arxiv.org/abs/2602.16849
+
+Write a compact correspondence table: their intervention/architecture, ours, transferable prediction, assumption that needs checking. Ungrokking and semi-grokking are precedents, not discoveries of this project. Do not claim the recent papers' mechanisms explain our result merely because curves resemble each other. If a paper cannot be retrieved, mark the gap rather than inventing its content.
+
+Assignments
+Mechanisms: inspect existing decay/no-decay trajectories from edited start through peak to collapse; propose one targeted intervention.
+Dynamics: inspect existing curves first, then a small paired decay-strength experiment.
+Auditor: challenge definitions/decompositions and independently check numerical work; construct the strongest cheap counterexample to the favored interpretation.
+
+Before launch
+Inventory exact available checkpoint times and optimizer state. A checkpoint near the observed peak is not the exact peak. If dense replay is required, mark it diagnostic or claim it as a run as appropriate; do not silently treat approximated states as published originals. Pin shared code and any changed continuation semantics. Agree on fixed time windows, measurement definitions, evaluation sets, and initial run counts. Calibrate and explicitly set feasible numerical budgets; do not inherit old caps automatically. At most two concurrent processes per worker with one BLAS thread each unless documented evidence supports a change.
+
+Default dynamics scope: the same three filtered e3 starting checkpoints, fresh optimizer state as in e3, original data/lr, intermediate decay strengths 0.1 and 0.3 for 20k updates (six new trajectories). Existing decay=0 and 1 are endpoints if code and settings are comparable. Review any proposed change before running. Endpoint interventions and any staged decay schedule must be labeled separately.
+
+Require first figures before granting follow-ups. An inconclusive decomposition is a valid result; do not authorize a large sweep to compensate for an unclear question. Integrate worker PRs only after relevant checks. Correct overstatements in the new synthesis without rewriting historical evidence.
+
+End with one compact review packet: observations, which explanations survived/failed, what remains confounded, run accounting, and no more than three next questions. No declaration of a new algorithm or novelty without direct evidence and comparison to the literature.

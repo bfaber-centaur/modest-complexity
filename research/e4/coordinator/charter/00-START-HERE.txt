@@ -1,0 +1,9 @@
+E4: What changes between the accuracy peak and collapse?
+
+Send 01-coordinator.txt to the existing coordinator first. Once it has prepared and pushed the pinned e4 setup, send 02, 03, and 04 to the existing mechanisms, dynamics, and auditor threads. Each prompt is self-contained. These are instructions for your Claude swarm; this package launches nothing.
+
+The round is exploratory: one grounded investigation and one adaptive follow-up per explorer, existing checkpoints before new training. The coordinator owns seeds, shared code, run claims, budgets, and integration on swarm/exploration. No upstream merge or paid compute.
+
+Paper URLs are embedded in the prompts; PDFs are not bundled. Workers should read relevant primary methods, state retrieval gaps, and avoid importing claims without matching assumptions.
+
+Expected first deliverable: a small figure explaining what each candidate mechanism predicts, followed by an intervention that could change the explanation. Final output: figures-first review, audit status, and a concise synthesis. Neither success nor a preferred story is required.
