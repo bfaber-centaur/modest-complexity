@@ -5,7 +5,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | item | verdict | evidence |
 |---|---|---|
 | Pin `b3e8132` (common/, recovered/, verify_resume) | **CONCERN** (C1). Training may start. | §1 |
-| Time | NOT CHECKED (waiting for results) | |
+| Time | M0 read: two wording notes (T0.1, T0.2). Results NOT CHECKED. | §2 |
 | Sharing | NOT CHECKED | |
 | Generalization | NOT CHECKED | |
 | Mechanisms | NOT CHECKED | |
@@ -48,3 +48,23 @@ Evidence: [rev_pin.py](rev_pin.py), with output in [out/rev_pin.txt](out/rev_pin
   - In each lane review, I compare every resumed run's recipe with its source's (`resumed_from.meta.condition`, or the source `config.json`).
 
 **Host calibration** (not a check): 5.53 ms per update for tied/tied with weights 0 0 1, one job, peak RSS 41 MiB. The r1 R1 host gave 3.9 and the coordinator's 7.5–8.5. Hosts differ by about 2×, so budgets should be calibrated on each host.
+
+## 2. Time
+
+### M0 (`b7d1ab6`), pre-registration only
+
+**Checked and correct.**
+- The threshold is ≥ 122 of 128 rows, and ≥ 40 of 42 for ¬N.
+- Censoring: the last window that can complete starts at 49,800.
+- The per-step readouts add 2,064 parameters.
+- The source table: `tt-final` runs with `0 0 1`, and `tu-inter` with `--readout untied`. So C1 is handled in the text. The plan still holds only the verify entries.
+- The joining check and the on-host continuation check with `--diag` are both planned before the main runs.
+
+**T0.1 (note): the "gap persists" rule has no tolerance.**
+- It needs churn "≈ 0" but gives no tolerance.
+- It also leaves out held-out CE, although measure 5 defines a stable function as no churn *and* flat held-out CE.
+- I suggest fixing both before results. For example: no held-out prediction changes over the last 1,000 updates, and ¬N CE changes by less than a stated amount over the last 10,000.
+
+**T0.2 (note): the "speed" rule's ¬N condition has no time.** It needs ¬N ≥ 0.90 but does not say when: at 50,000, or sustained like the main threshold.
+
+My counterexamples (CX-T1, CX-T2) and checks are in QUESTION.md §2.1 and Revisions, written before results.

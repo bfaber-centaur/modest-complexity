@@ -26,8 +26,27 @@ Evidence: [rev_pin.py](rev_pin.py), with output in [out/rev_pin.txt](out/rev_pin
 
 Each lane's QUESTION.md is read when its M0 lands. My counterexample for each is recorded under Revisions below before I open its result tables.
 
+### 2.1 Time (M0 `b7d1ab6`)
+
+The `tu-inter` source runs are my r1 arm (disclosure above). Checks on the lane's published files and committed checkpoints, with code written here:
+1. **Recipe against source (C1).** For every run in `registry.jsonl`, compare `config.json` (step weights, readout, task, lr, wd, `resumed_from` hash and `meta.condition`) with its source's recipe.
+2. **Joining.** The step-10,000 row of all nine continuations equals r1's published step-10,000 row.
+3. **Rescoring.** Every committed checkpoint (20k–50k) is rescored with my own forward. The result must equal the logged row at that step.
+4. **Thresholds.** Threshold times, censoring and the post-crossing minimum, recomputed from `metrics.jsonl` with my own code. The same for ¬N. For 0–10,000, ¬N is recomputed from r1's `held_final_pred`.
+5. **Attempts.** The registry and manifest: every attempt is kept, including capped or failed ones, and every published file matches its hash.
+6. **Figure.** The figure, against the CSV and against items 2–4.
+
 ## Revisions
 
 (Dated, before the matching analysis or run.)
+
+- **04:1x, time lane counterexamples** (written after reading the time lane's M0 `b7d1ab6` and before any of its results exist). Analysis only, on the lane's committed `ckpt-40000` and `ckpt-50000`.
+  - **CX-T1, against "the supervision gap persists" (`tt-final`).**
+    - *Test.* On the held-out rows that are wrong at 50,000, compute the logit gap (largest wrong logit minus correct logit) at 40k and at 50k. Also compute held-out final CE on ¬N rows over 40k–50k. A median gap that shrinks by more than 10%, or ¬N CE that falls steadily, means the accuracy plateau hides a function still moving toward the boundary. Separately, the last Adam step at 50k is decomposed into its decay part and its gradient part, with the fraction of √v̂ below eps, as in r1's R4 check.
+    - *Prediction.* All three seeds censored, and held-out below 0.6 at 50k. In at least two seeds the median gap shrinks by more than 10% from 40k to 50k, so the lane's "persists" rule does not apply cleanly and the honest reading is "unresolved". The gradient term still dominates the update (more than half its norm), so this is not R4's eps regime. Low confidence on the gap.
+  - **CX-T2, against "the readout gap is mainly speed" (`tu-inter`, if it crosses).**
+    - *Test.* Does the catch-up re-tie the readouts? At 10k and 50k, compute the relative distances ‖V_k − V_3‖/‖V_3‖ for k = 1, 2, and the cross-readout accuracy of V_v on h_t over all 512 rows, as in r1's untied table (V3 on h1 was 0.44–0.62 at 10k).
+    - *Prediction.* The distances shrink from 10k to 50k, but V3 on h1 stays below 0.9 in at least two seeds. So any catch-up is reached with readouts that remain position-specific, not by recovering the tied solution.
+    - *Reading, either way.* If V3 on h1 rises above 0.9 together with the held-out crossing, "speed" means time to re-tie. That would be worth saying in the NOTE.
 
 - **04:06, c2probe added to the pin check** (b0fb22c; written after the first `rev_pin.py` pass, sections 0–7, and before any probe was fitted). `c2probe.decode_table` on the recovered `r1-comp-rnn-inter-s51200-a1` `ckpt-10000` at probe seed 64300 (D5). Checks: its labels equal the oracle's symbols at positions 0–3; each probe's weights equal r1's own `composition/analyze.py fit_probe` on the same activations, bitwise; every table entry, re-scored with my own forward and argmax, equals `table[i][j]` with i the fitted position and j the scored one (a transposed table fails this); the diagonal equals r1's held-out probe accuracy. *Prediction:* all identical.
