@@ -1,0 +1,41 @@
+PASS recipe against source (C1/D9): 9 continuations have their source's step weights, readout, task, lr, wd, width; resume hash = RECOVERY.json; resumed_from is the source run at step 10,000 with the matching condition
+PASS joining: each continuation's step-10,000 row equals r1's published step-10,000 row (train, held, held_final_pred); joined steps 0-50,000 every 50
+PASS MANIFEST.json of all 9 runs: every listed file matches its SHA-256
+PASS 36 committed checkpoints (20k-50k) rescored with my forward: step count, held-out string, train final, notN equal the logged row
+INFO tt-inter s51200 held_final: crossing 7700; at 10k 1.000; at 50k 1.000
+INFO tt-inter s51200 held_notN: crossing 8650; at 10k 1.000; at 50k 1.000
+INFO tt-inter s51201 held_final: crossing 9150; at 10k 0.961; at 50k 1.000
+INFO tt-inter s51201 held_notN: crossing 11200; at 10k 0.881; at 50k 1.000
+INFO tt-inter s51202 held_final: crossing 8200; at 10k 1.000; at 50k 1.000
+INFO tt-inter s51202 held_notN: crossing 9000; at 10k 1.000; at 50k 1.000
+INFO tu-inter s51200 held_final: crossing 24900; at 10k 0.633; at 50k 1.000
+INFO tu-inter s51200 held_notN: crossing 30250; at 10k 0.238; at 50k 1.000
+INFO tu-inter s51201 held_final: crossing 32300; at 10k 0.523; at 50k 1.000
+INFO tu-inter s51201 held_notN: crossing 34100; at 10k 0.071; at 50k 1.000
+INFO tu-inter s51202 held_final: crossing 33550; at 10k 0.516; at 50k 1.000
+INFO tu-inter s51202 held_notN: crossing 39350; at 10k 0.048; at 50k 1.000
+INFO tt-final s51200 held_final: crossing censored (> 50,000); at 10k 0.273; at 50k 0.562
+INFO tt-final s51200 held_notN: crossing censored (> 50,000); at 10k 0.000; at 50k 0.119
+INFO tt-final s51201 held_final: crossing censored (> 50,000); at 10k 0.312; at 50k 0.695
+INFO tt-final s51201 held_notN: crossing censored (> 50,000); at 10k 0.000; at 50k 0.262
+INFO tt-final s51202 held_final: crossing censored (> 50,000); at 10k 0.320; at 50k 0.656
+INFO tt-final s51202 held_notN: crossing censored (> 50,000); at 10k 0.000; at 50k 0.143
+PASS thresholds recomputed (>= 122/128 or >= 40/42 at five consecutive evaluations, joined 0-50k): crossing, censoring, min after, end value and last-10k change equal time_threshold.csv
+CX-T1 tt-final: median gap (largest wrong minus correct logit) on held-out rows wrong at 50k, at 40k and 50k; held-out CE 40k -> 50k; last Adam step at 50k: |Adam part|, |decay part|, frac sqrt(vhat) < eps, |Adam part| / |(lr/eps) mhat|
+  s51200: gap 6.89 -> 4.95 (-28%); CE 4.040 -> 3.549 -> 3.115; |Adam| 3.29e-03, |decay| 3.12e-03, frac below eps 1.000, Adam/GD-like 0.882
+  s51201: gap 9.01 -> 7.63 (-15%); CE 3.586 -> 3.138 -> 2.720; |Adam| 3.17e-03, |decay| 3.06e-03, frac below eps 1.000, Adam/GD-like 0.888
+  s51202: gap 9.62 -> 7.60 (-21%); CE 4.025 -> 3.658 -> 3.326; |Adam| 3.17e-03, |decay| 3.11e-03, frac below eps 1.000, Adam/GD-like 0.892
+PASS CX-T1 prediction: the median wrong-row gap shrinks by > 10% from 40k to 50k in at least two seeds
+PASS CX-T1 prediction, first half: the Adam part of the last update is larger than the decay part, in every seed  [ratios 1.055, 1.036, 1.020]
+FAIL CX-T1 prediction, second half: "so this is not R4's eps regime" (fewer than half the coordinates with sqrt(vhat) < eps)  [fractions 1.000, 1.000, 1.000]
+INFO tt-inter at 50k: fraction sqrt(vhat) < eps [1.0, 1.0, 1.0]
+INFO tu-inter at 50k: fraction sqrt(vhat) < eps [1.0, 1.0, 1.0]
+CX-T2 tu-inter: |V_k - V_3| / |V_3| for k = 1, 2; accuracy of V_v on h_t over all 512 rows (rows v, columns t)
+  s51200 10000: distances 1.11, 1.08; V1 [1.0, 0.328125, 0.228515625]; V2 [0.53125, 1.0, 0.435546875]; V3 [0.4375, 0.5234375, 0.908203125]
+  s51200 50000: distances 1.05, 0.74; V1 [1.0, 0.7890625, 0.650390625]; V2 [1.0, 1.0, 0.95703125]; V3 [0.8125, 0.96875, 1.0]
+  s51201 10000: distances 1.09, 1.08; V1 [1.0, 0.3671875, 0.244140625]; V2 [0.59375, 1.0, 0.3984375]; V3 [0.5, 0.578125, 0.880859375]
+  s51201 50000: distances 0.92, 0.65; V1 [1.0, 0.9921875, 0.923828125]; V2 [1.0, 1.0, 1.0]; V3 [0.96875, 1.0, 1.0]
+  s51202 10000: distances 1.13, 1.08; V1 [1.0, 0.296875, 0.240234375]; V2 [0.53125, 1.0, 0.412109375]; V3 [0.625, 0.5625, 0.87890625]
+  s51202 50000: distances 1.04, 0.75; V1 [1.0, 0.9375, 0.8046875]; V2 [0.9375, 1.0, 0.9609375]; V3 [0.84375, 0.953125, 1.0]
+PASS CX-T2 prediction: at 50k, V3 on h1 stays below 0.9 in at least two seeds (catch-up without re-tied readouts)
+1 FAILED: ['CX-T1 prediction, second half: "so this is not R4\'s eps regime" (fewer than half the coordinates with sqrt(vhat) < eps)']

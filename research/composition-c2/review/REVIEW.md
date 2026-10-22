@@ -5,7 +5,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | item | verdict | evidence |
 |---|---|---|
 | Pin `b3e8132` (common/, recovered/, verify_resume) | **CONCERN** (C1). Training may start. | §1 |
-| Time | M0 read: two wording notes (T0.1, T0.2). Results NOT CHECKED. | §2 |
+| Time | M2 (`543ed95`, PR #55): **PASS** on every number checked. **CONCERN T1**: the late dynamics are in Adam's eps regime. CX-T1 half failed; CX-T2 held narrowly. F1 follow-up NOT CHECKED. | §2 |
 | Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd-0 follow-up NOT CHECKED. | §5 |
 | Generalization | Part A (`30c495f`) and Part B (`99c83c8`), PR #51: **PASS** on every number. Draws are real (CX-G2). CONCERN G1 bounds the iteration claim. Follow-up and NOTE NOT CHECKED. | §3 |
 | Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. **CONCERN M1** on the centroid/residual reading, from CX-M1. NOTE wording notes M2, M3. | §4 |
@@ -76,6 +76,47 @@ Evidence: [rev_pin.py](rev_pin.py), with output in [out/rev_pin.txt](out/rev_pin
 **T0.2 (note): the "speed" rule's ¬N condition has no time.** It needs ¬N ≥ 0.90 but does not say when: at 50,000, or sustained like the main threshold.
 
 My counterexamples (CX-T1, CX-T2) and checks are in QUESTION.md §2.1 and Revisions, written before results.
+
+The lane fixed both notes before reading any continuation record: R1 at f9fb2f9 and R2 at 5f48e4d.
+
+### M2 (`543ed95`, PR #55)
+
+Evidence: [rev_time.py](rev_time.py) with `543ed95`; output in [out/rev_time.txt](out/rev_time.txt). The `tu-inter` sources are my r1 arm.
+
+**PASS.**
+- **Recipe against source (C1/D9).** All 9 continuations carry their source's step weights, readout, task, lr, wd and width. The resume hash equals `RECOVERY.json`. `resumed_from` names the source run at step 10,000, with the matching `condition`.
+- **Joining.** Each continuation's step-10,000 row equals r1's published row. The joined record runs every 50 updates from 0 to 50,000.
+- **Files.** Every file listed in the 9 `MANIFEST.json` matches its SHA-256.
+- **Checkpoints.** All 36 committed checkpoints (20k–50k), rescored with my forward, equal the logged row at that step: step count, held-out string, train final and ¬N.
+- **Thresholds.** Recomputed from the joined records with my own rule and recount, they equal `figures/time_threshold.csv`: crossing, censoring, minimum after the crossing, end value and last-10k change.
+
+  | arm | crossings | ¬N crossings | at 50k |
+  |---|---|---|---|
+  | tt-inter | 7,700 / 9,150 / 8,200 | 8,650 / 11,200 / 9,000 | 1.000 |
+  | tu-inter | 24,900 / 32,300 / 33,550 | 30,250 / 34,100 / 39,350 | 1.000 |
+  | tt-final | censored in all three | censored | 0.56 / 0.70 / 0.66; ¬N 0.12 / 0.26 / 0.14 |
+
+**Lane predictions, for the record.**
+- tt-final at 50k exceeds the predicted 0.30–0.60 in two seeds, and ¬N exceeds 0.25 in one.
+- tu-inter s51200 crossed at 24,900, just before the predicted "after 25,000".
+- The diagnostics prediction (√v̂ below eps ≤ 0.01) failed completely; see T1.
+
+**CX-T1 (tt-final), committed before results.**
+- *The gap: held.* On held-out rows still wrong at 50k, the median gap (largest wrong logit minus correct) shrank 15–28% from 40k to 50k. Held-out CE fell steadily, from 3.6–4.0 to 2.7–3.3. So tt-final is still moving toward the boundary, and the lane's "unresolved" (censored, still rising) is the right reading, not "persists".
+- *The optimizer: the second half failed.* At 50k the Adam part of the last update is only 1.02–1.06× the decay part. **Every coordinate has √v̂ < eps**, and the Adam step is 0.88–0.89 of the gradient-descent-like (lr/eps)·m̂. I had predicted "not R4's eps regime"; it is that regime.
+
+**T1, CONCERN: the late phase runs in a different optimizer regime, in every arm.** This is a descriptive post-hoc check, prompted by the coordinator's reading of `time_main.png` and computed from the logged `diag`.
+- **When.** Median √v̂ falls below eps at 24,100–25,100 updates, and every coordinate follows by 27,800–29,650. The timing is the same in all three arms, tt-inter included.
+- **tu-inter.** 61–87% of its 10k→50k held-out gain came before the median crossed eps (0.95 / 0.88 / 0.81 at that point). But two of its three threshold crossings (32,300 and 33,550) and all ¬N crossings fall in the full eps regime.
+- **tt-final.** 56–70% of its gain came after the switch.
+- **What follows.** The recipe is unchanged, so "the readout gap closes within 50k under this recipe" stands. But past ~25k the optimizer behaves like momentum gradient descent with an effective rate of lr/eps, balanced against decay. Two qualifiers belong in the NOTE:
+  - "Speed" here includes the dynamics of that late regime. It is not a continuation of the early Adam dynamics.
+  - Any F1 extension of tt-final to 100k stays entirely in that regime.
+
+**CX-T2 (tu-inter), committed before results: held, narrowly.**
+- At 50k, V3 read on h1 is 0.81 / 0.97 / 0.84, so below 0.9 in two of three seeds.
+- The readouts did move a long way toward each other. ‖V_k − V_3‖/‖V_3‖ fell from about 1.1 to 0.65–1.05. V3 on h2 reaches 0.95–1.00, and V2 on h1 0.94–1.00.
+- So the catch-up partly re-ties the readouts, fully in s51201. "Speed" here partly means time to converge toward a shared readout. That is worth one sentence in the NOTE.
 
 ## 3. Generalization
 
