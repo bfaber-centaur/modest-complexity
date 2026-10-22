@@ -1,0 +1,198 @@
+[
+ {
+  "data_seed": 31000,
+  "shares": {
+   "0.3": {
+    "train": 299,
+    "cal": 118,
+    "audit": 544,
+    "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24"
+   },
+   "0.4": {
+    "train": 359,
+    "cal": 119,
+    "audit": 483,
+    "split_sha256": "5c843bb877255505545a35a718349e654b02b7feb535561fa15751374075e5a9"
+   },
+   "0.45": {
+    "train": 417,
+    "cal": 119,
+    "audit": 425,
+    "split_sha256": "44e5774e0051bdd952ed089b3bda8513922fc856eed1efe56239b82cf633c7aa"
+   },
+   "0.5": {
+    "train": 478,
+    "cal": 119,
+    "audit": 364,
+    "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49"
+   }
+  },
+  "evaluation": {
+   "pairs": 483,
+   "unordered_groups": 248,
+   "transpose_closed": true,
+   "per_class_min": 15,
+   "per_class_max": 16,
+   "sha256": "1535a21ab192ae95d37a5abb5eb783e74f51bd18a0500fbe0218d910914434d3",
+   "S_size": {
+    "min": 4,
+    "mean": 16.05,
+    "max": 25
+   },
+   "N_size": {
+    "min": 1,
+    "mean": 7.22,
+    "max": 20,
+    "empty": 0,
+    "singleton": 2
+   }
+  }
+ },
+ {
+  "data_seed": 41001,
+  "shares": {
+   "0.3": {
+    "train": 303,
+    "cal": 119,
+    "audit": 539,
+    "split_sha256": "29fbf347dfecabf11fa0596976bba71b8d4613dd42df7b14e5ad65a61efe3377"
+   },
+   "0.4": {
+    "train": 363,
+    "cal": 119,
+    "audit": 479,
+    "split_sha256": "6fb66f49e3b6e6def89d47fc3d93007eeca98e4f2377b958d5f48de49ad4f24d"
+   },
+   "0.45": {
+    "train": 422,
+    "cal": 120,
+    "audit": 419,
+    "split_sha256": "b02fa6ed552cf23de6ae07a4763613a5e1d7184aba30c086e4f3a5faa3cb1f61"
+   },
+   "0.5": {
+    "train": 482,
+    "cal": 121,
+    "audit": 358,
+    "split_sha256": "49413e26e6e739a3e5567279874fc62d5b914099cf77a4ba2ed0c6eaac6316a7"
+   }
+  },
+  "evaluation": {
+   "pairs": 479,
+   "unordered_groups": 248,
+   "transpose_closed": true,
+   "per_class_min": 15,
+   "per_class_max": 16,
+   "sha256": "59086f28615cf9bb2e5fcf5670c4aec26594ac83a8ab247aa09b53e3f7fb0653",
+   "S_size": {
+    "min": 5,
+    "mean": 16.17,
+    "max": 23
+   },
+   "N_size": {
+    "min": 1,
+    "mean": 7.3,
+    "max": 22,
+    "empty": 0,
+    "singleton": 2
+   }
+  }
+ },
+ {
+  "data_seed": 41002,
+  "shares": {
+   "0.3": {
+    "train": 303,
+    "cal": 117,
+    "audit": 541,
+    "split_sha256": "3c780e51297d8935219400402f22df0a027e5dfe71f17ae778982a16c461a549"
+   },
+   "0.4": {
+    "train": 363,
+    "cal": 118,
+    "audit": 480,
+    "split_sha256": "d044117b54d5f83b86c610d136f0d4c25bae82c9b99d29635801a1021ff2bf52"
+   },
+   "0.45": {
+    "train": 420,
+    "cal": 123,
+    "audit": 418,
+    "split_sha256": "f4dd163f1ae98f95da0a3649ae4828ffa0384e8408286d681588054fe8bb2221"
+   },
+   "0.5": {
+    "train": 481,
+    "cal": 120,
+    "audit": 360,
+    "split_sha256": "61b8358be18759884fd0dd6c02b1b46a00f3e43aed80bde08b88fc49a73c5048"
+   }
+  },
+  "evaluation": {
+   "pairs": 480,
+   "unordered_groups": 248,
+   "transpose_closed": true,
+   "per_class_min": 15,
+   "per_class_max": 16,
+   "sha256": "d5a7c8208deb0b51eced26dd88be6564f22fb8fc271a5a7d6bca285f3452e44d",
+   "S_size": {
+    "min": 4,
+    "mean": 16.12,
+    "max": 23
+   },
+   "N_size": {
+    "min": 2,
+    "mean": 7.26,
+    "max": 20,
+    "empty": 0,
+    "singleton": 0
+   }
+  }
+ },
+ {
+  "data_seed": 41003,
+  "shares": {
+   "0.3": {
+    "train": 299,
+    "cal": 122,
+    "audit": 540,
+    "split_sha256": "653e856068dadc08314e8b61145bc9319767f50819866b0d877bf4a49e2d269b"
+   },
+   "0.4": {
+    "train": 360,
+    "cal": 120,
+    "audit": 481,
+    "split_sha256": "e73366ea30c63a753270e982c0e952f58dde8a5191285c8327d6a8d82ad8512e"
+   },
+   "0.45": {
+    "train": 421,
+    "cal": 117,
+    "audit": 423,
+    "split_sha256": "c8d8d1803f54f40d9a1d53bb1b4feab83461e5af09ef878c0126d31cc337f31f"
+   },
+   "0.5": {
+    "train": 480,
+    "cal": 118,
+    "audit": 363,
+    "split_sha256": "d404cb339a7d2d2054d42d33229c95f50ef2f8cdb4dd4ba75276bc56d7ba3e68"
+   }
+  },
+  "evaluation": {
+   "pairs": 481,
+   "unordered_groups": 248,
+   "transpose_closed": true,
+   "per_class_min": 15,
+   "per_class_max": 16,
+   "sha256": "2d2d8748049c9f704caeb015615bcb9781f51b609d9729fcd613ee7d573fae2c",
+   "S_size": {
+    "min": 6,
+    "mean": 16.17,
+    "max": 23
+   },
+   "N_size": {
+    "min": 2,
+    "mean": 7.28,
+    "max": 18,
+    "empty": 0,
+    "singleton": 0
+   }
+  }
+ }
+]

@@ -47,6 +47,11 @@ class SplitTests(unittest.TestCase):
             self.assertEqual(array_sha256(*data(31, 31000, 32000, run['train_fraction'])[:3],
                                           *data(31, 31000, 32000, run['train_fraction'])[4]), run['split_sha256'])
 
+    def test_empty_split_is_rejected(self):
+        # p = 7 has 4 groups per class; a share of .8 leaves no audit pairs.
+        with self.assertRaises(ValueError):
+            data(7, 8, train_fraction=.8)
+
     def test_first_map_split(self):
         plan = json.loads((ROOT/'research/plan.json').read_text())
         c = plan['common']
@@ -153,6 +158,59 @@ class ShortRunTests(unittest.TestCase):
         later = self.load('a', 200)
         for x, key in zip(w+m+v, ['U', 'V', 'W', 'mU', 'mV', 'mW', 'vU', 'vV', 'vW']):
             np.testing.assert_array_equal(x, later[key])
+
+    def continue_from(self, name, weights, steps, expect=None):
+        out = Path(self.tmp.name)/name
+        cmd = [sys.executable, str(ROOT/'experiment.py'), '--out', str(out), '--hidden', '16', '--steps', str(steps),
+               '--log-every', '10', '--checkpoint-every', '50', '--diagnostics', 'none', '--data-seed', '31000',
+               '--init-seed', '30000', '--control-seed', '32000', '--purpose', 'test', '--init-weights', str(weights),
+               '--init-age', '100', '--checkpoint-steps', '30']
+        if expect:
+            cmd += ['--expect-init-sha256', expect]
+        env = {**os.environ, **{k: '1' for k in THREAD_VARS}}
+        return out, subprocess.run(cmd, env=env, capture_output=True)
+
+    def test_continuation_from_given_weights_restarts_the_optimizer(self):
+        # An edited start is just weights: the run evaluates them before any update (step 0)
+        # and then trains with zero Adam moments and the update count restarting at 1.
+        ck = self.load('a', 100)
+        start = Path(self.tmp.name)/'start.npz'
+        np.savez(start, U=ck['U'], V=ck['V'], W=ck['W'])
+        digest = hashlib.sha256(start.read_bytes()).hexdigest()
+        out, proc = self.continue_from('cont', start, 100, digest)
+        self.assertEqual(proc.returncode, 0, proc.stderr.decode()[-500:])
+        cfg = json.loads((out/'config.json').read_text())
+        self.assertEqual((cfg['init_weights_sha256'], cfg['init_age']), (digest, 100))
+        self.assertTrue((out/'checkpoint_000030.npz').exists())
+        with np.load(out/'checkpoint_000000.npz') as z0:
+            for k in 'UVW':
+                np.testing.assert_array_equal(z0[k], ck[k])
+            for k in ('mU', 'mV', 'mW', 'vU', 'vV', 'vW'):
+                self.assertFalse(np.any(z0[k]))
+        rows = [json.loads(r) for r in (out/'metrics.jsonl').read_text().splitlines()]
+        with np.load(out/'data.npz') as d:
+            a, b, y, tr = d['a'], d['b'], d['y'], d['train']
+        logits = forward([ck['U'], ck['V'], ck['W']], a, b)[0]
+        self.assertEqual(rows[0]['step'], 0)
+        self.assertEqual(rows[0]['train'], float(np.mean(logits[tr].argmax(1) == y[tr])))
+        w = [ck['U'].copy(), ck['V'].copy(), ck['W'].copy()]
+        m = [np.zeros_like(x) for x in w]; v = [np.zeros_like(x) for x in w]
+        for t in range(1, 101):
+            adam(w, lossgrad(w, a[tr], b[tr], y[tr])[1], m, v, t, .001, 1.)
+        with np.load(out/'checkpoint_000100.npz') as z:
+            for x, k in zip(w, 'UVW'):
+                np.testing.assert_array_equal(x, z[k])
+            # Not the uninterrupted trajectory, which kept its moments and update count.
+            self.assertFalse(np.array_equal(z['U'], self.load('a', 200)['U']))
+
+    def test_continuation_refuses_a_different_weights_file(self):
+        ck = self.load('a', 100)
+        start = Path(self.tmp.name)/'start-other.npz'
+        np.savez(start, U=ck['U'], V=ck['V'], W=ck['W'])
+        out, proc = self.continue_from('cont-bad', start, 10, '0'*64)
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertEqual(json.loads((out/'runtime.json').read_text())['status'], 'failed')
+        self.assertFalse((out/'checkpoint_000000.npz').exists())
 
 
 if __name__ == '__main__':

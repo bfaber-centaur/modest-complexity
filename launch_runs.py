@@ -37,7 +37,10 @@ def command(plan, run, out, session_label):
             '--control-seed', str(c['control_seed']), '--diagnostic-seed', str(c['diagnostic_seed']),
             '--log-every', str(c['log_every']), '--checkpoint-every', str(c['checkpoint_every']),
             '--diagnostics', c['diagnostics'], '--expect-split-sha256', c['split_sha256']] + (
-            ['--train-fraction', str(c['train_fraction'])] if 'train_fraction' in c else [])
+            ['--train-fraction', str(c['train_fraction'])] if 'train_fraction' in c else []) + (
+            ['--init-weights', c['init_weights'], '--expect-init-sha256', c['init_weights_sha256'],
+             '--init-age', str(c['init_age'])] if 'init_weights' in c else []) + (
+            ['--checkpoint-steps', c['checkpoint_steps']] if 'checkpoint_steps' in c else [])
 
 
 def main():

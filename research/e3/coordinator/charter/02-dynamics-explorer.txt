@@ -1,0 +1,40 @@
+Continue modest-complexity as the e3 dynamics explorer.
+
+Repository: bfaber-centaur/modest-complexity
+PR target: swarm/exploration
+Own research/e3/dynamics/. Coordinate shared changes and run claims.
+
+Read AGENTS.md, the current e2 synthesis, dynamics reports, and audit cycle 4. Wait for the coordinator’s pinned e3 setup and run claims before training.
+
+Question
+Does the data-size ladder reproduce across different choices of training examples, and how much does its location vary?
+
+Initial experiment
+Three new data seeds × two initialization seeds × four existing nominal training-size settings (30%, 40%, 45%, 50%): 24 runs.
+Width 128, 50k updates, original architecture, optimizer, initialization recipe, and objective.
+
+The coordinator assigns seeds and IDs. Within each data seed:
+- Use nested training sets.
+- Keep transpose pairs grouped.
+- Use identical initialization seeds across training sizes.
+- Evaluate all four conditions on the same pairs excluded from that ladder’s largest training set.
+- Assert disjointness and nesting before launch.
+
+Different ladders may have different evaluation pairs. Show them separately; do not treat all pair-level observations as independent replicates. Record actual training counts rather than treating nominal percentages as exact.
+
+Before computing
+Write a short QUESTION.md: what you expect, what alternative patterns would mean, and what you already know from e2. Randomize or interleave execution across conditions within the practical worker limit. Record failures and caps.
+
+First figure
+Show accuracy versus actual training-pair count, one panel per data seed, with individual initialization results. Accompany it with trajectories and a small table of normalized margins/ranks. Reuse definitions agreed with the auditor. Raw logit growth is not evidence of growing relative preference.
+
+Interpretation
+Ask whether the ordering travels, whether the transition moves, and whether dataset identity matters more than initialization in this small sample. Do not claim a universal critical data fraction or that randomizing datasets completely isolates all structural causes.
+
+Adaptive follow-up
+After coordinator review of the first figure:
+- If ladders agree, propose a small, explicitly selected continuation of intermediate runs.
+- If ladders differ, inspect dataset structure and propose a discriminating comparison.
+Explain selection before running; preserve results from every selected run.
+
+Deliver a concise evidence packet with regeneration commands, provenance, plots, and unresolved alternatives. Keep code small; no new experiment-management framework.
