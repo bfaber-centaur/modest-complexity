@@ -56,3 +56,28 @@ All four M0 designs had arrived by 02:42 UTC ([MILESTONES.md](MILESTONES.md)). N
 - R1 uses wd 0.1; R2, R3 and R4 use wd 0.
 - R2 uses lr 3e-3.
 Cross-regime comparisons of training speed are therefore not meaningful.
+
+## D8 (2026-10-22) Close r1
+
+All four lanes reached M4 with one pre-registered follow-up each. Each was merged after the reviewer's final review and the lane's wording fixes:
+- R2: PR #41 (`cede7e4`);
+- R3: PR #45 (`e558460`);
+- R1: PR #44 (`bdaa3f6`);
+- R4: PR #43 (`f607b2a`).
+
+The reviewer's branch is merged up to `aed5003`. No BLOCK was raised in any regime.
+
+**Compute (elapsed numerical execution).**
+
+| session | used |
+|---|---|
+| R1 | 4.8 of 25 min |
+| R2 | 4.1 of 25 min |
+| R3 | 4.9 of 25 min |
+| R4 | 14.4 of 25 min |
+| reviewer | 2.9 of 20 min |
+| coordinator | about 7 of 12 min |
+
+**Runs.** 180 lane and reviewer runs in all: 178 complete, 2 failed (R4, container restart, rerun as a2), none capped.
+
+**Deliverable.** [SYNTHESIS.md](SYNTHESIS.md). No second adaptive run was launched in any lane. Where a lane named one, it appears as a recommended next experiment and was not run.
