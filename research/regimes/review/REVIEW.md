@@ -5,7 +5,7 @@ Reviewer's plan and pre-stated counterexamples: [QUESTION.md](QUESTION.md). Stat
 | section | status | last updated |
 |---|---|---|
 | §0 shared code | PASS, with three usage concerns (C0.1–C0.3) | 2026-10-22, common at `0c7bd19` |
-| §1 R1 composition | M1 oracle/split PASS; design notes; M2 not yet | 2026-10-22, lane `ff9b721` |
+| §1 R1 composition | **M4: no BLOCK; mergeable, one wording CONCERN (C1.1).** Every NOTE number re-derived. Counterexample 1 failed in the lane's favour: `rnn-inter` composes on rows no neighbour copy answers, and the MLP's above-chance accuracy is all on rows a neighbour copy answers. Counterexample 2: untying the RNN readout drops held-out accuracy to 0.52–0.63 from 0.96–1.00 (paired), so the shared readout carries much of the effect | 2026-10-22, lane `de0ef92` |
 | §2 R2 shared subcomputation | **M4: no BLOCK; mergeable.** Counterexamples: z not privileged in y1 features (C2.4); the gate-bit explanation of fine-tuned transfer is refuted by a gate-only arm (C2.5). Two NOTE edits suggested (C2.5, C2.6) | 2026-10-22, lane `f493c1a` |
 | §3 R3 history and recovery | **M4: no BLOCK; mergeable.** 12 B-phase replays match the lane's snapshots exactly; specificity counterexample failed (retention is A-specific); every NOTE number re-derived | 2026-10-22, lane `a23bdd8` |
 | §4 R4 competing routes | M1 PASS; M2 numbers recomputed PASS; counterexample: route choice at ρ = 15/16 is mostly base-specific, not context-level (C4.1, wording) | 2026-10-22, lane `f0f68f7` |
@@ -60,6 +60,97 @@ Reviewed at lane `ff9b721`: QUESTION.md and task.py, no training code or runs ye
 **Design notes (not findings).**
 - Held-out step1/step2 accuracy in `inter` reads prefix labels on prefixes that were seen. Step1 depends only on (s,a), and step2 only on (s,a,b), and all of these occur in training with the same label. A high held-out step-k accuracy therefore measures invariance to the unseen later slots, not composition. QUESTION.md's outcome 5 already reads it this way.
 - C0.1/C0.2 do not arise if every head present is trained in every step, which is what QUESTION.md describes. I recheck this against `train.py`.
+
+### M2–M4 (`de0ef92`: figures, NOTE.md, RNN follow-up)
+
+Reviewed at lane `de0ef92` (PR #44). The evidence is [recompute_composition.py](recompute_composition.py), with output in [out/recompute_composition.txt](out/recompute_composition.txt). It takes labels, held-out rows and neighbours from my oracle, not the lane's code. The reviewer runs use [rnn_untied.py](rnn_untied.py). Both predictions and the four plan entries were pushed at `00ed987` (03:12:11), before the launch at 03:12.
+
+| checklist item | status | evidence and what it affects |
+|---|---|---|
+| Oracle and split | PASS | §1 M1. Also, all 9 one-op-slot neighbours of every held-out row are training rows (Latin-square property); the neighbour analyses rely on this. |
+| Loss and metrics | PASS | Published `ckpt-10000` of `final`, `inter` and `shuf` (seed 51200) was rescored with a forward pass written here. Every logged train and held-out accuracy per head matches exactly, and so does the 128-character `held_final_pred`. In all 17 runs, the logged held-out predictions scored against my oracle's labels give the logged held-out accuracy exactly. RNN gradient: my untied-readout gradient is the lane's backpropagation with V_t at step t. It equals the lane's gradient bitwise at init and passes central differences (288 entries, worst abs error 7e-10). That independently checks the lane's RNN backpropagation. |
+| Data and compute exposure | PASS | All MLP arms use 384 rows and 10,000 full-batch updates. They start from the same trunk: W1, b1, W2, b2 are identical for `final` and `inter`/`shuf` at each seed, checked. `inter` and `shuf` carry 3 labels per row and 2 more heads (22,296 vs 20,232 parameters). `shuf` matches `inter` in heads and label count. RNN arms have 19,208 parameters, with the same rows and updates. NOTE.md states that RNN and MLP seeds are not paired. |
+| Intervention semantics | PASS | The NOTE table and the figure use only training-program pairs. The unpatched model is right on every base row (252 result rows), and the source rows are fitted training rows. The composed counterfactual is P[c_base](step2_source), and pairs where it equals either row's answer are excluded, as stated. The held-out pairs in `interventions.csv` (base accuracy 0.10–0.25) are not used. "Random ≤ 1%" is the mean of 5 random subspaces per run (at most 0.99%); single random subspaces reach 1.8%. |
+| Checkpoint and optimizer handling | PASS | These are single-phase runs with one Adam state from init and no freezing, so C0.1/C0.2 do not arise. Committed files match their MANIFEST hashes. RNN checkpoints are local-only, but my tied-mode replay of `r1-comp-rnn-inter-s51200-a1` reproduces its `metrics.jsonl` line for line. |
+| Follow-up pre-registration | PASS | Predictions `b842eb2` (02:55:06) precede the RNN code and calibration plan `3a58b61` (02:56:06). That commit precedes the calibration launch (02:56:08). The six-run plan `4497ce1` (02:56:23) precedes the first follow-up launch (02:56:25). These are commit times, not push times. |
+| Figures support claims | PASS, with C1.1 and two slips | I inspected `heldout.png`, `decoding.png` and `followup_rnn.png`. All seeds are shown, train curves are dashed, the reference lines are drawn and P2 is marked. Every NOTE number was re-derived; the details follow the table. |
+| Counterexamples | done | Two, below. |
+
+**Numbers re-derived.** All match except the two marked slips.
+- **Held-out final at 10,000:**
+  - `final` 0.164/0.172/0.141;
+  - `inter` 0.242/0.203/0.250;
+  - `shuf` 0.125/0.109/0.102;
+  - `rnn-inter` 1.000/0.961/1.000;
+  - `rnn-final` 0.273/0.312/0.320.
+  P1 reaches 1.0 on all 512 rows and P2 1.0 held-out.
+- **Training fit.** Training accuracy first reaches 1.0 at 200 (`final`), 250–300 (`inter`) and 250 (`shuf`). *Slip:* "by about 250" holds except `inter` seed 51200, which fits at 300.
+- **Intermediate heads.** `inter` held-out step1 is 1.0 and step2 0.977–1.0.
+- **Wrong answers that are neighbour labels.**
+  - Any slot: 0.97–1.00 against a uniform expectation of 0.732.
+  - Slot c: `inter` 0.80–0.86, `final` 0.65–0.70, against 0.339 uniform. *Slip:* NOTE says "66–70%", but seed 51202 is 0.6545.
+  - `heldout_error_types.csv` equals my recomputation in all 36 entries.
+- **Probes.** Step1 from h1 at init: 0.96–0.99. From the input: 0.41.
+  - Step2 from h1: 0.40–0.42 at init, then 0.52–0.57 (`final`), 0.75–0.83 (`inter`), 0.42–0.47 (`shuf`).
+  - Step2 from h2: 0.55–0.66 (`final`), 0.98–0.99 (`inter`).
+- **Interchange.** At h1, the output follows the counterfactual in 1–3% (`final`) and 4–7% (`inter`), and keeps the base answer in 77–93%.
+  - At h2 in `inter`: 12–16% follow, 42–48% keep, 35–38% give the source answer (random 14–15%).
+- **RNN.** `rnn-inter` fits at 400–700 updates. Held-out accuracy is 0.34–0.36 at 1k, 0.48–0.66 at 4k and 0.83–0.93 at 7k. In `rnn-final`, the shared readout on h1 and h2 gives step1 0.06–0.13 and step2 0.09–0.15.
+
+**C1.1 (CONCERN, wording).** This affects the heading "Intermediate heads generalize; the final answer does not" and the Reading sentence "the MLP represents the intermediate state of held-out programs (decodable, and correct at the intermediate heads)". No number changes.
+- Step1 depends only on (s, a) and step2 only on (s, a, b). All 128 held-out prefixes occur in training rows with the same labels (checked). So held-out step-k accuracy measures invariance to a new pairing of a seen prefix with op 3. It does not show the intermediate computation generalizing to anything unseen.
+- In the RNN this holds exactly. h1 and h2 depend only on the prefix, so held-out step1/step2 accuracies equal the training-row accuracies by construction, in all 6 RNN runs at 10,000. The right panel of `followup_rnn.png` ("held-out programs") therefore plots training states.
+- The held-out step2 probes test the same prefixes with a new op 3 attached. The drop from h2 (0.98–0.99, `inter`) to h1 (0.75–0.83) shows that op 3 perturbs the code there.
+- Suggested wording: "the intermediate heads are unaffected by an unseen op 3; the final answer does not compose".
+
+**C1.2 (minor, interchange).** `shuf` never sees true intermediate labels. At h2, its step2 probe subspace still makes the output follow the counterfactual in 8–10% of pairs (random ≤ 1.1%), and give the source answer in 33–36% (`inter` 35–38%).
+- So the source-answer effect does not need true intermediate labels, and neither does about 60% of `inter`'s counterfactual-following.
+- NOTE.md does not attribute the effect to intermediate supervision. But its table lists only `inter` at hidden 2, and a `shuf` row would prevent that reading.
+
+**Counterexample 1 (failed for `rnn-inter`, which supports the lane): is held-out success concentrated where a neighbour copy is right?** The prediction was stated in QUESTION.md (Revisions) before computing.
+- *Method.* Each held-out row is labelled N if its true answer equals the final label of some training row that differs in one op slot. 86 rows are N and 42 are not (¬N). A pure neighbour-copier scores 0 on ¬N.
+- *Result,* accuracy at 10,000 updates:
+
+  | run | all | N | ¬N |
+  |---|---|---|---|
+  | `final` | 0.14–0.17 | 0.21–0.24 | 0.00–0.02 |
+  | `inter` | 0.20–0.25 | 0.29–0.36 | 0.00–0.02 |
+  | `shuf` | 0.10–0.13 | 0.14–0.19 | 0.00–0.02 |
+  | `rnn-final` | 0.27–0.32 | 0.41–0.48 | 0.000 |
+  | `rnn-inter` | 0.96–1.00 | 1.000 | 1.000 / 0.881 / 1.000 |
+
+- *Reading for the RNN.* `rnn-inter` composes on rows no neighbour copy answers, so the counterexample fails. My strict prediction (¬N ≥ 0.9, and within 0.05 of N) held on 2 of 3 seeds. On seed 51201 all 5 remaining errors are ¬N rows, each answered with a neighbour's label.
+- *Reading for the MLP.* Every MLP run, and `rnn-final`, gets at most 1 of the 42 ¬N rows right. All of their above-chance accuracy is on rows a neighbour label answers. This supports NOTE reading (i), and it shows that `inter`'s +0.03 to +0.11 over `final` is not partial composition.
+- *New observation: the RNN's rise has two phases.* While `rnn-inter` rises, ¬N lags N:
+  - at 1,000–2,000 updates, ¬N is 0.00–0.05 while N is 0.50–0.65;
+  - at 4,000, ¬N is 0.05–0.36;
+  - at 7,000, 0.55–0.81;
+  - at 10,000, 0.88–1.00.
+
+  The early above-chance accuracy is neighbour-like, and composition on ¬N rows comes later. The NOTE's "emerged slowly after the training set was fit" could say so.
+
+**Counterexample 2 (partial): is the shared readout needed?** This was the coordinator's question, and the NOTE leaves it open. The prediction was stated before running.
+- *Arm.* `r1-rev-comp-rnn-untied-s5120{0,1,2}-a1` runs the lane's `train.py` at `de0ef92` unedited, except that h1, h2 and h3 get their own readouts V1, V2, V3, each initialized as a copy of the lane's V.
+  - It starts from the identical init as the lane's `rnn-inter` of the same seed. The seeds are reused on purpose for pairing.
+  - The wrapper checks before training pass, and so does the tied-mode replay.
+- *Result:*
+
+  | seed | untied, held-out final at 1k / 4k / 7k / 10k | lane `rnn-inter` (tied) at 10k | untied ¬N | V3 applied to h2, step2 accuracy |
+  |---|---|---|---|---|
+  | 51200 | 0.26 / 0.31 / 0.46 / 0.63 | 1.00 | 0.24 | 0.52 |
+  | 51201 | 0.22 / 0.30 / 0.39 / 0.52 | 0.96 | 0.07 | 0.58 |
+  | 51202 | 0.23 / 0.35 / 0.41 / 0.52 | 1.00 | 0.05 | 0.56 |
+
+  - The untied runs fit training at 500–600 updates. Their held-out step1/step2 are 1.0, which is uninformative (C1.1). Every wrong held-out answer is a neighbour label.
+  - V2 reads step2 off h2 at 1.00, but V3 reads it at only 0.52–0.58. So no state code shared across positions formed.
+- *Against the pre-stated thresholds* (≤ 0.5 means the shared readout is needed, ≥ 0.8 means it is not), all three seeds land in between. That is partial: −0.37 to −0.48 against the paired tied runs, above `rnn-final` (0.27–0.32, unpaired), and still rising at 10,000.
+- *Answer to the coordinator.* Within this recipe, sharing the transition and supervising intermediate states through per-step readouts does not reproduce `rnn-inter`. Most of the untied arm's gain over `rnn-final` is on N rows.
+- *Limits.*
+  - The untied arm has 2,064 more readout parameters, and decay acts on three readouts.
+  - Everything is a 10,000-update number, so "slower vs different" stays open, as it does for `rnn-final`.
+  - The NOTE's disclaimer ("these runs do not separate the two") remains accurate for its own runs. It may cite this arm as reviewer evidence that the shared readout carries much of the effect.
+
+**Verdict.** No BLOCK on R1's M4. One wording CONCERN (C1.1), plus two numeric slips and C1.2, none of which changes a number or a conclusion. Every NOTE number was re-derived from published artifacts. The neighbour counterexample failed for `rnn-inter` and confirms the MLP reading. The untied-readout arm partly answers the NOTE's open question. Mergeable; I recommend the C1.1 wording fix first.
 
 ## §2 R2 shared subcomputations
 

@@ -1,0 +1,86 @@
+PASS every committed file in every published MANIFEST.json matches its SHA-256  [[]]
+PASS r1-comp-final-s51200-a1: ckpt-10000 rescored here equals the last logged accuracies (['final']) and held_final_pred
+PASS r1-comp-inter-s51200-a1: ckpt-10000 rescored here equals the last logged accuracies (['final', 'step1', 'step2']) and held_final_pred
+PASS r1-comp-shuf-s51200-a1: ckpt-10000 rescored here equals the last logged accuracies (['final', 'step1', 'step2']) and held_final_pred
+PASS 17 runs: logged held_final_pred scored against oracle labels equals the logged held-out final accuracy
+INFO held-out final at 10,000, final     [0.164, 0.172, 0.141]
+INFO held-out final at 10,000, inter     [0.242, 0.203, 0.25]
+INFO held-out final at 10,000, shuf      [0.125, 0.109, 0.102]
+INFO held-out final at 10,000, rnn-inter [1.0, 0.961, 1.0]
+INFO held-out final at 10,000, rnn-final [0.273, 0.312, 0.32]
+INFO P1 full: train final 1.0 held final 1.0 | P2 interp: held final 1.0
+INFO MLP: first step with train final acc 1.0 {'final-51200': 200, 'final-51201': 200, 'final-51202': 200, 'inter-51200': 300, 'inter-51201': 250, 'inter-51202': 250, 'shuf-51200': 250, 'shuf-51201': 250, 'shuf-51202': 250}
+INFO final-51200: held-out final over updates 100-500: min 0.062, max 0.094; at 5,000 0.133
+INFO final-51201: held-out final over updates 100-500: min 0.117, max 0.164; at 5,000 0.164
+INFO final-51202: held-out final over updates 100-500: min 0.070, max 0.125; at 5,000 0.109
+INFO inter: held-out step1, step2 at 10,000 [(1.0, 0.984), (1.0, 0.977), (1.0, 1.0)]
+INFO shuf: held-out step1, step2 at 10,000 [(0.109375, 0.125), (0.1328125, 0.07), (0.1015625, 0.094)]
+INFO rnn-inter-51200: train final 1.0 first at 400; held-out final at 1k/4k/7k/10k [0.336, 0.656, 0.93, 1.0]
+INFO rnn-final-51200: shared readout on h1, h2 at 10,000: step1 0.125, step2 0.148 (equal to the training-row accuracies: True)
+INFO rnn-inter-51201: train final 1.0 first at 600; held-out final at 1k/4k/7k/10k [0.352, 0.578, 0.828, 0.961]
+INFO rnn-final-51201: shared readout on h1, h2 at 10,000: step1 0.094, step2 0.148 (equal to the training-row accuracies: True)
+INFO rnn-inter-51202: train final 1.0 first at 700; held-out final at 1k/4k/7k/10k [0.359, 0.477, 0.836, 1.0]
+INFO rnn-final-51202: shared readout on h1, h2 at 10,000: step1 0.062, step2 0.086 (equal to the training-row accuracies: True)
+PASS all 9 one-op-slot neighbours of every held-out row are training rows (Latin-square property)
+PASS heldout_error_types.csv (9 MLP runs x 4 measures): observed and uniform-expected rates equal the oracle recomputation  [max |diff| 0.0e+00]
+INFO over all 128 held-out rows: a uniform wrong answer is a neighbour label with probability 0.732 (any slot), 0.339 (slot c)
+INFO distinct neighbour labels per held-out row (any slot): [0, 0, 0, 0, 8, 40, 51, 28, 1]
+INFO final: wrong answers that are slot-a neighbour labels [0.673, 0.642, 0.627]
+INFO final: wrong answers that are slot-b neighbour labels [0.551, 0.67, 0.636]
+INFO final: wrong answers that are slot-c neighbour labels [0.701, 0.698, 0.655]
+INFO inter: wrong answers that are slot-a neighbour labels [0.639, 0.647, 0.521]
+INFO inter: wrong answers that are slot-b neighbour labels [0.536, 0.569, 0.656]
+INFO inter: wrong answers that are slot-c neighbour labels [0.856, 0.853, 0.802]
+INFO held-out rows whose true answer is a one-slot neighbour label (N): 86 of 128; not (notN): 42
+INFO accuracy at 10,000: all | N | notN   (a pure neighbour-copier scores 0 on notN)
+  final     51200  0.164 | 0.244 | 0.000
+  final     51201  0.172 | 0.244 | 0.024
+  final     51202  0.141 | 0.209 | 0.000
+  inter     51200  0.242 | 0.360 | 0.000
+  inter     51201  0.203 | 0.291 | 0.024
+  inter     51202  0.250 | 0.360 | 0.024
+  shuf      51200  0.125 | 0.186 | 0.000
+  shuf      51201  0.109 | 0.163 | 0.000
+  shuf      51202  0.102 | 0.140 | 0.024
+  rnn-final 51200  0.273 | 0.407 | 0.000
+  rnn-final 51201  0.312 | 0.465 | 0.000
+  rnn-final 51202  0.320 | 0.477 | 0.000
+  rnn-inter 51200  1.000 | 1.000 | 1.000
+  rnn-inter 51201  0.961 | 1.000 | 0.881
+  rnn-inter 51202  1.000 | 1.000 | 1.000
+INFO rnn-inter during the rise, (step: all | N | notN):
+  51200 1000: 0.34 | 0.50 | 0.00; 2000: 0.45 | 0.65 | 0.02; 4000: 0.66 | 0.80 | 0.36; 7000: 0.93 | 0.99 | 0.81; 10000: 1.00 | 1.00 | 1.00
+  51201 1000: 0.35 | 0.52 | 0.00; 2000: 0.44 | 0.63 | 0.05; 4000: 0.58 | 0.80 | 0.12; 7000: 0.83 | 0.97 | 0.55; 10000: 0.96 | 1.00 | 0.88
+  51202 1000: 0.36 | 0.52 | 0.02; 2000: 0.41 | 0.58 | 0.05; 4000: 0.48 | 0.69 | 0.05; 7000: 0.84 | 0.95 | 0.60; 10000: 1.00 | 1.00 | 1.00
+INFO rnn-inter 51201: 5 wrong rows, of which notN 5, answered with a neighbour label 5
+INFO wrong answers that are a neighbour label (any slot / slot c), 4 decimals: {'final-51200': (1.0, 0.7009), 'final-51201': (0.9906, 0.6981), 'final-51202': (0.9909, 0.6545), 'inter-51200': (1.0, 0.8557), 'inter-51201': (1.0, 0.8529), 'inter-51202': (0.9792, 0.8021), 'shuf-51200': (0.9732, 0.6161), 'shuf-51201': (0.9825, 0.5614), 'shuf-51202': (0.9913, 0.6435)}
+INFO exposure final    : fit rows 384, updates 10000, labels per row 1, parameters 20232
+INFO exposure inter    : fit rows 384, updates 10000, labels per row 3, parameters 22296
+INFO exposure shuf     : fit rows 384, updates 10000, labels per row 3, parameters 22296
+INFO exposure rnn-final: fit rows 384, updates 10000, labels per row 1, parameters 19208
+INFO exposure rnn-inter: fit rows 384, updates 10000, labels per row 3, parameters 19208
+PASS MLP trunk (W1, b1, W2, b2) at init is identical for final and inter/shuf heads at each seed
+INFO held-out (s, a, b) prefixes that also occur in training rows: 128 of 128
+INFO probe held-out: input step1 ['0.40625'] | h1 step1 at init [0.961, 0.977, 0.992]
+INFO probe held-out step2 final: h1 init [0.398, 0.406, 0.422] h1 end [0.57, 0.516, 0.562] h2 end [0.656, 0.555, 0.648]
+INFO probe held-out step2 inter: h1 init [0.398, 0.406, 0.422] h1 end [0.828, 0.797, 0.75] h2 end [0.984, 0.977, 0.992]
+INFO probe held-out step2 shuf: h1 init [0.398, 0.406, 0.422] h1 end [0.445, 0.422, 0.469] h2 end [0.555, 0.453, 0.594]
+PASS interchange on training pairs: the unpatched model is right on every base row (252 result rows)
+INFO interchange on held-out pairs, unpatched base accuracy: [0.097, 0.101, 0.102, 0.103, 0.106, 0.109, 0.11, 0.114, 0.125, 0.126, 0.127, 0.129, 0.141, 0.144, 0.149, 0.152, 0.156, 0.164, 0.167, 0.172, 0.177, 0.178, 0.181, 0.186, 0.203, 0.205, 0.207, 0.231, 0.239, 0.241, 0.246, 0.247, 0.248, 0.252]
+INFO interchange step2 final h1: follows cf probe [0.02, 0.028, 0.012] random max 0.018; keeps base probe [0.927, 0.885, 0.926]; source answer probe [0.154, 0.183, 0.163] random range 0.136-0.155
+INFO interchange step2 final h2: follows cf probe [0.042, 0.036, 0.024] random max 0.002; keeps base probe [0.798, 0.794, 0.818]; source answer probe [0.233, 0.262, 0.241] random range 0.136-0.145
+INFO interchange step2 inter h1: follows cf probe [0.044, 0.052, 0.071] random max 0.012; keeps base probe [0.83, 0.811, 0.769]; source answer probe [0.162, 0.19, 0.188] random range 0.129-0.158
+INFO interchange step2 inter h2: follows cf probe [0.159, 0.14, 0.122] random max 0.015; keeps base probe [0.424, 0.479, 0.468]; source answer probe [0.351, 0.363, 0.376] random range 0.138-0.155
+PASS follow-up order: predictions b842eb2 (2026-10-22T02:55:06+00:00) < RNN code 3a58b61 (2026-10-22T02:56:06+00:00) <= calibration launch (2026-10-22T02:56:08+00:00); plan 4497ce1 (2026-10-22T02:56:23+00:00) < first follow-up launch (2026-10-22T02:56:25+00:00)
+PASS replay: tied mode reproduces the lane r1-comp-rnn-inter-s51200-a1 metrics.jsonl line for line
+INFO untied vs tied (lane) rnn-inter, same init: held-out final at 1k/4k/7k/10k; train fit; all | N | notN at 10k
+  untied 51200: [0.258, 0.312, 0.461, 0.633]; notN [0.0, 0.02, 0.12, 0.24]; fit at 500; held step1/step2 1.000/1.000; 0.633 | 0.826 | 0.238
+  lane   51200: [0.336, 0.656, 0.93, 1.0]; notN [0.0, 0.36, 0.81, 1.0]; fit at 400; held step1/step2 1.000/1.000; 1.000 | 1.000 | 1.000
+  untied 51200: readout V_v applied to h_t, accuracy for step t on all 512 rows: V1 on h1 1.00, V2 on h1 0.53, V3 on h1 0.44, V1 on h2 0.33, V2 on h2 1.00, V3 on h2 0.52, V1 on h3 0.23, V2 on h3 0.44, V3 on h3 0.91
+  untied 51201: [0.219, 0.305, 0.391, 0.523]; notN [0.0, 0.0, 0.0, 0.07]; fit at 600; held step1/step2 1.000/1.000; 0.523 | 0.744 | 0.071
+  lane   51201: [0.352, 0.578, 0.828, 0.961]; notN [0.0, 0.12, 0.55, 0.88]; fit at 600; held step1/step2 1.000/1.000; 0.961 | 1.000 | 0.881
+  untied 51201: readout V_v applied to h_t, accuracy for step t on all 512 rows: V1 on h1 1.00, V2 on h1 0.59, V3 on h1 0.50, V1 on h2 0.37, V2 on h2 1.00, V3 on h2 0.58, V1 on h3 0.24, V2 on h3 0.40, V3 on h3 0.88
+  untied 51202: [0.234, 0.352, 0.414, 0.516]; notN [0.0, 0.02, 0.02, 0.05]; fit at 550; held step1/step2 1.000/1.000; 0.516 | 0.744 | 0.048
+  lane   51202: [0.359, 0.477, 0.836, 1.0]; notN [0.02, 0.05, 0.6, 1.0]; fit at 700; held step1/step2 1.000/1.000; 1.000 | 1.000 | 1.000
+  untied 51202: readout V_v applied to h_t, accuracy for step t on all 512 rows: V1 on h1 1.00, V2 on h1 0.53, V3 on h1 0.62, V1 on h2 0.30, V2 on h2 1.00, V3 on h2 0.56, V1 on h3 0.24, V2 on h3 0.41, V3 on h3 0.88
+ALL PASS

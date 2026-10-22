@@ -264,6 +264,106 @@
     "--phases",
     "Bunrel:10000"
    ]
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-replay-inter-s51200-a1",
+   "timeout": 150,
+   "argv": [
+    "research/regimes/review/rnn_untied.py",
+    "de0ef92",
+    "tied",
+    "--",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51200",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-rev-comp-rnn-replay-inter-s51200-a1",
+    "--purpose",
+    "review"
+   ]
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51200-a1",
+   "timeout": 150,
+   "argv": [
+    "research/regimes/review/rnn_untied.py",
+    "de0ef92",
+    "untied",
+    "--",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51200",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-rev-comp-rnn-untied-s51200-a1",
+    "--purpose",
+    "review"
+   ]
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51201-a1",
+   "timeout": 150,
+   "argv": [
+    "research/regimes/review/rnn_untied.py",
+    "de0ef92",
+    "untied",
+    "--",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51201",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-rev-comp-rnn-untied-s51201-a1",
+    "--purpose",
+    "review"
+   ]
+  },
+  {
+   "run_id": "r1-rev-comp-rnn-untied-s51202-a1",
+   "timeout": 150,
+   "argv": [
+    "research/regimes/review/rnn_untied.py",
+    "de0ef92",
+    "untied",
+    "--",
+    "--out",
+    "{out}",
+    "--model",
+    "rnn",
+    "--condition",
+    "inter",
+    "--init-seed",
+    "51202",
+    "--checkpoint-steps",
+    "0",
+    "1000",
+    "--run-id",
+    "r1-rev-comp-rnn-untied-s51202-a1",
+    "--purpose",
+    "review"
+   ]
   }
  ]
 }
