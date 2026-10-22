@@ -1,0 +1,42 @@
+{
+  "status": "complete",
+  "completed_steps": 20000,
+  "first_interpolation": 60,
+  "wall_seconds": 34.50535834800007,
+  "cpu_seconds": 33.411051157,
+  "peak_rss_bytes": 45060096,
+  "phases": {
+    "setup": {
+      "calls": 1,
+      "wall_seconds": 0.026081771000008303,
+      "cpu_seconds": 0.018429597000000006
+    },
+    "data_write": {
+      "calls": 1,
+      "wall_seconds": 0.002419200999838722,
+      "cpu_seconds": 0.0022265359999999873
+    },
+    "evaluation": {
+      "calls": 2001,
+      "wall_seconds": 3.1265403299958052,
+      "cpu_seconds": 3.100059012999976
+    },
+    "checkpoint_write": {
+      "calls": 26,
+      "wall_seconds": 0.25409394200028146,
+      "cpu_seconds": 0.25062226300000345
+    },
+    "metrics_write": {
+      "calls": 2001,
+      "wall_seconds": 0.11328614999729325,
+      "cpu_seconds": 0.11134791900001506
+    },
+    "training": {
+      "calls": 20000,
+      "wall_seconds": 29.56474620300196,
+      "cpu_seconds": 29.23120126399989
+    }
+  },
+  "output_bytes_before_runtime_report": 8486753,
+  "timing_scope": "Excludes Python startup/imports; phases are nonoverlapping. Parent benchmark includes startup."
+}
