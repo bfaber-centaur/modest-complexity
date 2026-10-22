@@ -9,8 +9,8 @@ Bobby's packet: [charter/](charter/) (verbatim). Decisions, assignments, budgets
 | recovered r1 checkpoints | [`recovered/`](../recovered/) (27 original files, hashes matched) | done (D2) |
 | resume and no-change verification | [verify_resume.out](verify_resume.out), runs in [runs/](runs/) | identical (D2) |
 | time lane | `time/` | M2 (PR #55), follow-up F1 pending approval |
-| sharing lane | `sharing/` | M4 (PR #54), wd-0 + NOTE awaiting review |
-| generalization lane | `generalization/` | M4 (PR #51 ready), awaiting Part B + NOTE review |
+| sharing lane | `sharing/` | merged (PR #54); reviewer PASS on M2 and wd-0 numbers; wd-0 decode/group tables not checked |
+| generalization lane | `generalization/` | merged (PR #51); reviewer PASS on Parts A, B, A5; follow-up anatomy numbers not checked |
 | mechanisms lane | `mechanisms/` | M4 (PR #52), awaiting review |
 | reviewer | `review/` | pin checked (PR #50) |
 | final draft PR to `swarm/exploration` | | not opened |
