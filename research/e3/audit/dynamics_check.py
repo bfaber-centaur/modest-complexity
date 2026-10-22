@@ -7,8 +7,14 @@ against the plan, the coordinator's ladders.json and the saved evaluation sets: 
 actual training counts, nesting, transpose closure, partition, the evaluation pairs as the
 complement of the 50% training set, the label-set sizes, and the crossed design.
 
+The `runs` mode checks the landed runs (Y2-Y5): step-0 weights against the independent init
+rule, registry and manifest accounting, my own forward pass on every published checkpoint,
+and independent replays of the first 2,000 updates of one run and of its last 1,000.
+
 uv run --locked python research/e3/audit/dynamics_check.py splits OUT.json
+uv run --locked python research/e3/audit/dynamics_check.py runs RUNS_DIR REGISTRY OUT.json [REPLAY_RUN_ID]
 """
+import hashlib
 import itertools
 import json
 from pathlib import Path
@@ -105,5 +111,86 @@ def splits(out_json):
                reference=all(ref.values()), init=all(res['init_rule_matches_independent'].values())))
 
 
+def runs(runs_dir, registry, out_json, replay_id=None):
+    runs_dir = Path(runs_dir)
+    entries = {e['run_id']: e for e in plan['runs'] if e['run_id'].startswith('e3-dy-')}
+    events = [json.loads(l) for l in Path(registry).read_text().splitlines() if l.strip()]
+    sha = lambda f: hashlib.sha256(Path(f).read_bytes()).hexdigest()
+    init = {i: ind.initial_weights(P, 128, i) for i in INITS}
+    res, splits_cache = dict(runs={}), {}
+    for rid, e in sorted(entries.items(), key=lambda kv: kv[1]['queue_position']):
+        ev = [x['status'] for x in events if x['run_id'] == rid]
+        d = runs_dir/rid
+        r = res['runs'][rid] = dict(events=ev, published=d.exists())
+        if not d.exists():
+            continue
+        cfg = json.loads((d/'config.json').read_text())
+        man = json.loads((d/'manifest.json').read_text())
+        rt = json.loads((d/'runtime.json').read_text())
+        key = (e['data_seed'], e['train_fraction'])
+        if key not in splits_cache:
+            splits_cache[key] = ind.regenerate_split(P, *key[:1], CONTROL, key[1])
+        a, b, y, _, sp = splits_cache[key]
+        XA, XB = ind.one_hot_inputs(a, b, P)
+        logged = {x['step']: x for x in map(json.loads, (d/'metrics.jsonl').read_text().splitlines())}
+        cks = {int(f.stem.split('_')[1]): f for f in sorted(d.glob('checkpoint_*.npz'))}
+        exact, worst = True, 0.
+        for step, f in cks.items():
+            with np.load(f) as z:
+                w = [z[k] for k in 'UVW']
+            zl = ind.forward(w, XA, XB)[0]
+            for name, ix in zip(('train', 'cal', 'audit'), sp):
+                exact &= float(np.mean(zl[ix].argmax(1) == y[ix])) == logged[step][name]
+                ce = float(np.mean(np.logaddexp.reduce(zl[ix], axis=1) - zl[ix, y[ix]]))
+                lg = logged[step]['objective'][name]['cross_entropy']
+                worst = max(worst, abs(ce - lg)/(1e-10*abs(lg) + 1e-14))
+        step0 = None
+        if 0 in cks:
+            with np.load(cks[0]) as z:
+                step0 = all(np.array_equal(z[k], x) for k, x in zip('UVW', init[e['init_seed']]))
+        r.update(completed=rt['completed_steps'], status=rt['status'],
+                 config_matches_plan=(cfg['data_hashes']['split_sha256'] == e['split_sha256'] and cfg['seeds']['data_seed'] == e['data_seed']
+                                      and cfg['seeds']['init_seed'] == e['init_seed'] and cfg['train_fraction'] == e['train_fraction']
+                                      and cfg['steps'] == 50000 and cfg['wd'] == 1 and cfg['hidden'] == 128 and cfg['lr'] == .001),
+                 train_pairs=len(sp[0]) == e['train_pairs'],
+                 manifest_ok=all(sha(d/n) == h['sha256'] for n, h in man['files'].items() if h.get('published') and (d/n).exists()),
+                 manifest_missing=[n for n, h in man['files'].items() if h.get('published') and not (d/n).exists()],
+                 checkpoints=sorted(cks), accuracies_exact=bool(exact), worst_ce_in_tolerance_units=worst, step0_equals_independent_init=step0)
+    landed = [r for r in res['runs'].values() if r['published']]
+    res['Y2_step0'] = [r['step0_equals_independent_init'] for r in landed]
+    res['Y3'] = dict(launched=sum(bool(r['events']) for r in res['runs'].values()), landed=len(landed),
+                     complete=sum(r.get('status') == 'complete' and r.get('completed') == 50000 for r in landed),
+                     event_patterns=sorted({'/'.join(r['events']) for r in res['runs'].values()}),
+                     all_landed_consistent=all(r['config_matches_plan'] and r['train_pairs'] and r['manifest_ok'] and not r['manifest_missing']
+                                               for r in landed))
+    res['Y5'] = all(r['accuracies_exact'] and r['worst_ce_in_tolerance_units'] <= 1 for r in landed)
+    if replay_id:
+        e, d = entries[replay_id], runs_dir/replay_id
+        a, b, y, _, sp = splits_cache[(e['data_seed'], e['train_fraction'])]
+        XT = ind.one_hot_inputs(a[sp[0]], b[sp[0]], P)
+        cks = {int(f.stem.split('_')[1]): f for f in d.glob('checkpoint_*.npz')}
+        w = [x.copy() for x in init[e['init_seed']]]
+        m, v = [np.zeros_like(x) for x in w], [np.zeros_like(x) for x in w]
+        early = {}
+        for t in range(1, 2001):
+            ind.adamw_step(w, ind.loss_and_grad(w, *XT, y[sp[0]])[1], m, v, t, .001, 1.)
+            if t in cks:
+                with np.load(cks[t]) as z:
+                    early[t] = max(float(np.abs(x - z[k]).max()) for x, k in zip(w, 'UVW'))
+        late = {}
+        last = max(cks)
+        start = max(s for s in cks if s <= last - 1000)
+        with np.load(cks[start]) as z:
+            w, m, v = [z[k] for k in 'UVW'], [z[k] for k in ('mU', 'mV', 'mW')], [z[k] for k in ('vU', 'vV', 'vW')]
+        for t in range(start + 1, last + 1):
+            ind.adamw_step(w, ind.loss_and_grad(w, *XT, y[sp[0]])[1], m, v, t, .001, 1.)
+        with np.load(cks[last]) as z:
+            late = dict(start=start, end=last, max_abs_diff=max(float(np.abs(x - z[k]).max()) for x, k in zip(w, 'UVW')),
+                        max_abs_weight=max(float(np.abs(z[k]).max()) for k in 'UVW'))
+        res['Y4'] = dict(run=replay_id, early_max_abs_diff=early, late=late)
+    Path(out_json).write_text(json.dumps(res, indent=1) + '\n')
+    print({k: res[k] for k in ('Y3', 'Y5')}, 'Y2 step-0:', set(res['Y2_step0']), res.get('Y4'))
+
+
 if __name__ == '__main__':
-    {'splits': splits}[sys.argv[1]](*sys.argv[2:])
+    {'splits': splits, 'runs': runs}[sys.argv[1]](*sys.argv[2:])
