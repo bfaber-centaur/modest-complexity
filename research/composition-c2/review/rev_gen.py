@@ -3,17 +3,18 @@ Part A: task facts and the frozen length 1-6 evaluation of the six recovered r1 
 checkpoints, recomputed with the oracle and forward pass of rev_pin.py (not the lane's code),
 against the lane's published CSVs at a lane commit; then counterexample CX-G1.
 
-uv run --locked python research/composition-c2/review/rev_gen.py LANE_COMMIT
+uv run --locked python research/composition-c2/review/rev_gen.py LANE_COMMIT [PART_B_COMMIT]
 """
 import csv
 import io
-from itertools import product
+from itertools import permutations, product
 import json
 import subprocess
 import sys
 import numpy as np
 
 from rev_pin import C2, FAIL, HELD, P, ROOT, TRAIN, check, my_forward, oracle_rows
+import io
 import nets
 
 RUNS = [f'r1-comp-rnn-{c}-s{s}-a1' for c in ('final', 'inter') for s in (51200, 51201, 51202)]
@@ -145,6 +146,117 @@ def main(commit):
     check('CX-G1 prediction: tied/inter accuracy differs by < 0.05 between rows with and without a held-out window, at every L = 4-6 and seed', held_ok)
 
 
+
+def rows_p(Pm, progs):
+    s_, q_, y_ = [], [], []
+    for q in progs:
+        for s in range(8):
+            x, st = s, []
+            for k in q:
+                x = Pm[k][x]; st.append(x)
+            s_.append(s); q_.append(list(q)); y_.append(st)
+    return dict(s=np.array(s_), ops=np.array(q_), states=np.array(y_))
+
+
+def compose_p(Pm, q):
+    f = tuple(range(8))
+    for k in q:
+        f = tuple(Pm[k][x] for x in f)
+    return f
+
+
+def partb(commit):
+    """Part B (QUESTION.md 2.2 item 3 and CX-G2): new draws and splits, recipes, init pairing, rescoring."""
+    import importlib.util
+    import c2task
+    spec = importlib.util.spec_from_file_location('r1_task_rev', ROOT/'research'/'regimes'/'composition'/'task.py')
+    r1 = importlib.util.module_from_spec(spec); spec.loader.exec_module(r1)  # r1's split() is the definition of a split
+    T = json.loads(subprocess.check_output(['git', '-C', str(ROOT), 'show', f'{commit}:{LANE}/tasks.json']))
+    draw = lambda seed: [[int(v) for v in np.random.default_rng([seed, k]).permutation(8)] for k in range(4)]
+    log, draws, seed = [], [], 63000
+    while len(draws) < 2:
+        Pm = draw(seed)
+        ok = (not any(p == list(range(8)) for p in Pm) and len({tuple(p) for p in Pm}) == 4
+              and len({compose_p(Pm, q) for L in (1, 2, 3) for q in product(range(4), repeat=L)}) == 84)
+        log.append(('draw', seed, ok)); draws += [(seed, Pm)] * ok; seed += 1
+    tasks, seed = [], 63100
+    for dseed, Pm in draws:
+        squares = []
+        while len(squares) < 2:
+            L = r1.split(seed)[0].tolist()
+            latin = all(sorted(r) == [0, 1, 2, 3] for r in L) and all(sorted(c) == [0, 1, 2, 3] for c in zip(*L))
+            ok = latin and L not in squares
+            log.append(('split', seed, ok))
+            if ok:
+                squares.append(L); tasks.append((f'ops{dseed}-ls{seed}', Pm, L))
+            seed += 1
+    lane_log = [(e['kind'], e['seed'], e['accepted']) for e in T['decision_log']]
+    struct = {e['task_id']: e for e in T['structure']}
+    same = lane_log == log and [t_[0] for t_ in tasks] == T['accepted_tasks']
+    for tid, Pm, L in tasks:
+        held = sorted((a, b, L[a][b]) for a in range(4) for b in range(4)); C = c2task.load(tid)
+        same &= struct[tid]['ops'] == Pm and struct[tid]['latin_square'] == L and [tuple(h) for h in struct[tid]['held_out_programs']] == held
+        same &= C['P'].tolist() == Pm and C['L'].tolist() == L and [tuple(h) for h in C['held']] == held
+    check(f'Part B draws and splits recomputed from their seeds (r1 acceptance, 84 distinct products, Latin, distinct squares): '
+          f'decision log, accepted tasks, permutations, squares and held-out programs equal tasks.json and c2task.load', same, str([t_[0] for t_ in tasks]))
+    for dseed, Pm in draws:
+        fixed = [(x, Pm[0][x]) for x in range(8) if len({Pm[k][x] for k in range(4)}) == 1]
+        print(f'INFO draw {dseed}: symbols sent to one symbol by all four ops: {fixed}')
+
+    # Recipes, init pairing, rescoring of all 16 runs.
+    rec_ok, init_ok, score_ok, table = True, True, True, {}
+    for tid, Pm, L in tasks:
+        held = sorted((a, b, L[a][b]) for a in range(4) for b in range(4)); train = [q for q in product(range(4), repeat=3) if q not in held]
+        tr, he = rows_p(Pm, train), rows_p(Pm, held)
+        lab = {(s, *q): compose_p(Pm, q)[s] for q in train for s in range(8)}
+        notn = np.array([int(y) not in {lab[k] for j in range(3) for v in range(4) if v != q[j]
+                                        for k in [(int(s), *[int(x) for x in q[:j]], v, *[int(x) for x in q[j+1:]])] if k in lab}
+                         for s, q, y in zip(he['s'], he['ops'], he['states'][:, -1])])
+        for init in (63200, 63201):
+            first = {}
+            for cond, w in (('inter', [1., 1., 1.]), ('final', [0., 0., 1.])):
+                run = f'c2-gen-{cond}-{tid}-s{init}-a1'; base = f'{commit}:{LANE}/runs/{run}'
+                c = json.loads(subprocess.check_output(['git', '-C', str(ROOT), 'show', f'{base}/config.json']))
+                rec_ok &= (c['task_id'] == tid and c['step_weights'] == w and c['init_seed'] == init and c['updates'] == 10000 and c['lr'] == 1e-3
+                           and c['wd'] == .1 and c['hidden'] == 128 and c['resume'] is None and c['scheme'] == dict(transition=True, readout=True))
+                m = [json.loads(l) for l in subprocess.check_output(['git', '-C', str(ROOT), 'show', f'{base}/metrics.jsonl']).decode().splitlines()]
+                first[cond] = {k: m[0][k] for k in ('step', 'train', 'held', 'held_final_pred')}
+                p = nets.load(io.BytesIO(subprocess.check_output(['git', '-C', str(ROOT), 'show', f'{base}/ckpt-10000.npz'])))[0]
+                ph = my_forward(p, he['s'], he['ops'], [1, 2, 3])[1][-1].argmax(1); ok = ph == he['states'][:, -1]
+                pt = my_forward(p, tr['s'], tr['ops'], [1, 2, 3])[1][-1].argmax(1) == tr['states'][:, -1]
+                last = m[-1]
+                score_ok &= (last['step'] == 10000 and ''.join(map(str, ph)) == last['held_final_pred'] and ok.mean() == last['held']['final']['acc']
+                             and pt.mean() == last['train']['final']['acc'] and last['held_subset']['notN'] == ok[notn].mean()
+                             and last['held_subset']['n_notN'] == int(notn.sum()))
+                table[tid, init, cond] = (round(float(ok.mean()), 3), round(float(ok[notn].mean()), 3), int(notn.sum()), round(float(pt.mean()), 3))
+            init_ok &= first['inter'] == first['final']
+    check('Part B recipes: 16 runs, tied/tied, inter 1 1 1 / final 0 0 1, task and init seed as in the ID, lr 1e-3, wd 0.1, 10,000 updates, no resume', rec_ok)
+    check('Part B init pairing: within each (task, init seed), inter and final have identical step-0 rows (same initial function)', init_ok)
+    check('Part B: 16 ckpt-10000 rescored on their own task: held-out string, held-out, train, notN (my recount) equal the last logged row', score_ok)
+    for k, v in table.items():
+        print(f'INFO {k}: held | notN (n) | train = {v}')
+
+    # CX-G2: is any draw a relabelling of another (symbols by sigma in S8, ops by pi in S4)?
+    S = np.array(list(permutations(range(8))))
+    D = [('orig 51000', np.array(P))] + [(f'draw {s}', np.array(Pm)) for s, Pm in draws]
+    def relabellings(A, B):
+        n = 0
+        for pi in permutations(range(4)):
+            ok = np.ones(len(S), bool)
+            for k in range(4):
+                ok &= (S[:, A[k]] == B[pi[k]][S]).all(1)  # sigma(A_k(y)) = B_pi(k)(sigma(y)) for all y
+            n += int(ok.sum())
+        return n
+    res = {(a, b): relabellings(A, B) for i, (a, A) in enumerate(D) for b, B in D[i:]}
+    print('INFO number of (sigma, pi) with sigma A_k sigma^-1 = B_pi(k) for all k:', res)
+    check('CX-G2 prediction: no two of the original and the two new draws are relabellings of each other (each draw relates only to itself)',
+          all(v == 0 for (a, b), v in res.items() if a != b))
+    print('INFO automorphisms per draw (incl. identity):', {a: v for (a, b), v in res.items() if a == b},
+          '-> with only the identity, two distinct squares on one draw are not relabellings of each other')
+
+
 if __name__ == '__main__':
     main(sys.argv[1])
+    if len(sys.argv) > 2:
+        partb(sys.argv[2])
     print('ALL PASS' if not FAIL else f'{len(FAIL)} FAILED: {FAIL}')
