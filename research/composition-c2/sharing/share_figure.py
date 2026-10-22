@@ -17,6 +17,7 @@ import sys
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.lines import Line2D  # noqa: E402
 import numpy as np  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
@@ -81,9 +82,9 @@ def trajectory_panel(ax, c, traj):
         if (c, s) not in traj:
             continue
         rows = traj[c, s]; x = [r['step'] for r in rows]; col = SEED_COLOR[s]
-        ax.plot(x, [r['held_final'] for r in rows], '-', color=col, lw=1.6, label=f'{s} held-out')
-        ax.plot(x, [r['notN'] for r in rows], ':', color=col, lw=1.6, label=f'{s} ¬N (42 rows)')
-        ax.plot(x, [r['train_final'] for r in rows], '--', color=col, lw=0.8, alpha=0.8, label=f'{s} train')
+        ax.plot(x, [r['held_final'] for r in rows], '-', color=col, lw=1.6)
+        ax.plot(x, [r['notN'] for r in rows], ':', color=col, lw=1.6)
+        ax.plot(x, [r['train_final'] for r in rows], '--', color=col, lw=0.8, alpha=0.8)
     ax.axhline(CHANCE, color='0.4', lw=0.8); ax.axhline(THRESH, color='0.75', lw=0.8)
     ax.set_xlim(0, 10000); ax.set_ylim(-0.02, 1.02); ax.set_title(f'{TITLE[c]}\n{PARAMS[c]:,} parameters', fontsize=9.5)
     ax.grid(alpha=0.25)
@@ -94,7 +95,7 @@ def endpoint_panel(ax, ends, keys, title):
     marks = dict(held_final=('o', 'held-out (128)'), notN=('s', '¬N (42)'), N=('^', 'N (86)'), train_final=('x', 'train (384)'))
     off = {k: (i - (len(keys)-1)/2)*0.18 for i, k in enumerate(keys)}
     for s in S.SEEDS:
-        es = sorted((e for e in ends if e['seed'] == s), key=lambda e: x[e['cell']])
+        es = sorted((e for e in ends if e['seed'] == s and e['last_step'] == 10000), key=lambda e: x[e['cell']])
         for k in keys:
             xs = [x[e['cell']] + off[k] for e in es]; ys = [e[k] for e in es]
             ax.plot(xs, ys, '-', color=SEED_COLOR[s], lw=0.7, alpha=0.6)
@@ -107,20 +108,23 @@ def endpoint_panel(ax, ends, keys, title):
 
 
 def grid_figure(traj, ends, missing):
-    fig = plt.figure(figsize=(14, 7.6))
-    gs = fig.add_gridspec(2, 3, width_ratios=[1, 1, 0.85], hspace=0.38, wspace=0.22)
+    fig = plt.figure(figsize=(14, 8.6))
+    gs = fig.add_gridspec(2, 3, width_ratios=[1, 1, 0.85], hspace=0.38, wspace=0.22, top=0.84, bottom=0.13)
     for (i, j), c in zip(((0, 0), (0, 1), (1, 0), (1, 1)), S.CELLS):
         ax = fig.add_subplot(gs[i, j]); trajectory_panel(ax, c, traj)
         if i == 1: ax.set_xlabel('update')
         if j == 0: ax.set_ylabel('accuracy')
-    h, l = fig.axes[0].get_legend_handles_labels()
-    fig.axes[0].legend(h, l, fontsize=6.5, ncol=3, loc='center right', bbox_to_anchor=(1.0, 0.42))
+    handles = [Line2D([], [], color=SEED_COLOR[s], lw=1.6, label=f'init seed {s}') for s in S.SEEDS] + [
+        Line2D([], [], color='0.3', ls='-', lw=1.6, label='held-out final (128 rows)'),
+        Line2D([], [], color='0.3', ls=':', lw=1.6, label='held-out ¬N (42 rows, no neighbour copy)'),
+        Line2D([], [], color='0.3', ls='--', lw=0.8, label='train final (384 rows)')]
+    fig.legend(handles=handles, ncol=6, fontsize=8, loc='lower center', bbox_to_anchor=(0.5, 0.02))
     endpoint_panel(fig.add_subplot(gs[0, 2]), ends, ['held_final', 'train_final'], 'at 10,000 updates: held-out final and train final')
     endpoint_panel(fig.add_subplot(gs[1, 2]), ends, ['N', 'notN'], 'at 10,000 updates: N and ¬N held-out rows')
     fig.suptitle('Tying transitions and readouts: r1 task ops51000-ls51100, width 128, intermediate supervision (step weights 1 1 1), '
                  'Adam lr 1e-3, wd 0.1\nTT and TU are the original r1 runs; UT and UU are c2-share runs. Lines: held-out final (solid), '
                  '¬N (dotted), train final (dashed); grey: chance 0.125 and 0.95' + (f'\nMISSING: {", ".join(missing)}' if missing else ''),
-                 fontsize=9.5)
+                 fontsize=9.5, y=0.985)
     for ext in ('png', 'svg'):
         fig.savefig(FIG/f'sharing_grid.{ext}', dpi=150, bbox_inches='tight')
     plt.close(fig)
