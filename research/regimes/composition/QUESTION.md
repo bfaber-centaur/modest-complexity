@@ -183,4 +183,50 @@ What bears on this design:
 
 ## Follow-up
 
-To be written here, with its motivation and prediction, after the first figure and before any follow-up run.
+Written 2026-10-22 after the first figure (PR #44, head 85f5078) and the decoding/interchange analysis (`r1-comp-probe-a1`). No follow-up run had been launched when this was pushed.
+
+### Motivation
+
+These are the observations from the initial comparison that prompt the follow-up. The numbers are in `figures/` and in `runs/r1-comp-probe-a1/`.
+
+- **The MLP fits but does not compose.** It fits every training program (train accuracy 1.0 by about 250 updates). Held-out final accuracy is 0.14–0.17 with final-only supervision and 0.20–0.25 with intermediate supervision.
+- **Intermediate heads generalize, the final answer does not.** In `inter`, the step1 head reaches 1.0 and the step2 head 0.98–1.0 on the held-out programs.
+- **Wrong final answers look copied.** They are almost always a label of a training row that differs in one op slot. In `inter`, 80–86% of wrong answers match the label of a row with the same prefix and a different op 3. If wrong answers were uniform, that rate would be about 35%. So the network has the right state after op 2 and then gives an answer belonging to a different, seen op 3.
+- **Decodable, but barely used.** Step2 is linearly decodable on held-out rows from hidden layer 1: 0.52–0.57 in `final` and 0.75–0.83 in `inter`, against 0.40–0.42 for the untrained network. Swapping that probe's 7-dimensional subspace between two training rows rarely makes the output follow the composed counterfactual: 1–7% at layer 1 and up to 16% at layer 2, against at most 1% for random subspaces of the same size. The base answer survives the swap in 42–93% of cases.
+- **A reading, not a test.** The step2 representation exists but is not what the final answer is computed from. Op 3 is applied as part of a lookup on the whole program context, not as a reusable function of the state. Nothing in the MLP makes "apply op k" the same computation at each position.
+
+### Follow-up: a recurrent network with one shared transition (`--model rnn`)
+
+**Model.** The same task, split, optimizer, duration and init seeds (51200–51202):
+- start state `h0 = ReLU(e_s Ws + bs)`;
+- at each step `h_t = ReLU(h_{t-1} A + e_{op_t} B + bh)`;
+- one shared softmax readout `V` (8 classes).
+
+**Conditions.**
+- `rnn-final` reads `V` from `h3` only.
+- `rnn-inter` reads it from `h1`, `h2` and `h3`, against step1, step2 and final. That gives three loss terms and no extra parameters.
+
+**Budget.**
+- Width 128 gives 19,208 parameters, against 20,232 for the MLP `final`.
+- Six runs at about 25 s each, about 1.5 min of wall time at two concurrent.
+- No `shuf` arm, no width or duration change.
+
+**What it tests.** This is a structural condition, not an interpreter.
+- The network still has to learn the state code and the four transitions.
+- The readout and the transition are shared across positions.
+- So the held-out programs need only (state, op) transitions that every position has seen, but only if the hidden state for a given symbol is close enough to the same vector whatever produced it.
+
+**Gradient check.** The model is the lane's own (backpropagation through three steps), so it gets a finite-difference check in `test_task.py` before any run.
+
+### Predictions, recorded before running
+
+- **Training.** Train accuracy reaches 1.0 in both conditions. If it does not, that is an optimization failure and is reported as such.
+- **`rnn-inter`.** Held-out final accuracy is at least 0.8 for all three seeds. The shared readout, supervised at every step, pushes the state code to be the same at every position, and every transition is seen.
+- **`rnn-final`.** Held-out final accuracy lies between the MLP `final` result and `rnn-inter`, possibly seed-dependent. My guess is 0.3–0.9, with low confidence.
+- **Descriptive check in `rnn-final`.** The shared readout `V` applied to `h1` and `h2` decodes step1 and step2 above chance, even though it was trained only on `h3`. That would be a sign of a position-invariant state code.
+
+### What would change the reading
+
+- **If `rnn-inter` fails** (below about 0.4), weight sharing plus correct intermediate states is not enough for this network to apply a seen transition to a seen state reached by a new route. The hidden states for the same symbol would then differ by history.
+- **If `rnn-final` reaches about the same accuracy as `rnn-inter`**, the shared transition alone supplies what intermediate supervision supplied in the MLP and more. The condition that matters would then be architectural, not supervisory.
+- **Comparisons.** These results are compared with the MLP runs only as separate panels, never pooled. The RNN init draws differ from the MLP's, so seeds pair only within the RNN conditions.
