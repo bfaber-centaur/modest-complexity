@@ -156,3 +156,4 @@ Three things in the first pass need entries before the second pass.
 ### 5ce9d97 + four runs (06:13, 12.8 s), before any comparison
 
 - The four c3train runs finished. The two continuation entries (RP5) are now in the plan with the hashes of `c3-rev-reset-drop-s51200-a1`'s `ckpt-1200` and `ckpt-1000`. Same predictions.
+- The two continuations finished (2.7 s). `rev_repin.py` is committed with this entry, before its run `c3-rev-repin-a1`. It adds no prediction. RP0 also confirms that HEAD's `common/` equals `82cef77`, and RP4 also prints the fraction of coordinates with \|g\| > 1e-4.
