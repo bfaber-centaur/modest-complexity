@@ -107,6 +107,7 @@ These apply per arm, at the calibrated endpoint of 50,000 updates under this rec
   - The seed does not meet the threshold.
   - Held-out final accuracy changes by < 0.02 between 40,000 and 50,000.
   - The held-out predictions at 50,000 differ from those at 40,000 in at most 2 of 128 rows.
+  - No held-out prediction changes over the last 1,000 updates (the last 21 logged evaluations, 49,000–50,000). Added in R2.
   - Held-out final CE changes by less than 10% of its 40,000 value between 40,000 and 50,000.
 - **Unresolved.** Anything else, for example still rising at 50,000, or mixed outcomes across seeds.
 
@@ -157,3 +158,7 @@ There is one follow-up, chosen after the nine continuations and the first figure
 - **T0.1.** The "gap persists" rule gets tolerances. "Churn ≈ 0" becomes at most 2 of 128 held-out predictions differing between 40,000 and 50,000. The rule also requires flat held-out CE: a change of less than 10% over the same interval. Both match measure 5.
 - **T0.2.** The ¬N ≥ 0.90 condition of the "speed" rule now has a time: each of the last five logged evaluations.
 - **Checkpoints.** `ckpt-40000` is committed with `ckpt-50000`, as the reviewer's pre-committed counterexamples use both. The 20k and 30k checkpoints are committed too, as already planned.
+
+**R2. Written 2026-10-22 04:21Z, again before any continuation record had been read.** The reviewer's own suggestion for T0.1 (REVIEW.md §2) arrived after R1.
+- **Prediction stability.** Its condition that no held-out prediction changes over the last 1,000 updates is added to the "gap persists" rule, alongside R1's 40k-to-50k tolerance.
+- **CE subset.** Its ¬N cross-entropy is not logged; `c2train.py` logs CE over all 128 held-out rows. So R1's held-out final CE tolerance stands in for it.
