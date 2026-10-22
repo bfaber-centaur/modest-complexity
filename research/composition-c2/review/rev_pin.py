@@ -162,10 +162,14 @@ def main(run_root):
             pub.update({(run, m['file']): m['sha256'] for m in json.loads(mpath.read_text())})
         else:
             pub.update({tuple(l.split()[1].split('/', 1)): l.split()[0] for l in mpath.read_text().splitlines() if l.startswith(tuple('0123456789abcdef'))})
-    ok, local = True, 0
+    ok, local, added = True, 0, []
     for e in recj:
         f = rec/e['run_id']/e['file']; h = hashlib.sha256(f.read_bytes()).hexdigest()
         p, st, _ = nets.load(f)
+        if e['run_id'] not in RUNS:  # added after the pin (D2 note in RECOVERY.json): r1 composition lane, its own manifest
+            man = json.loads((ROOT/'research'/'regimes'/'composition'/'runs'/e['run_id']/'MANIFEST.json').read_text())
+            added.append(e['run_id']); ok &= h == e['sha256'] == {m['file']: m['sha256'] for m in man}[e['file']]
+            continue
         ok &= h == e['sha256'] == pub[e['run_id'], e['file']] and st['t'] == int(e['file'][5:-4])
         ok &= c2rnn.scheme(p) == dict(transition=True, readout='untied' not in e['run_id'])
         orig = ROOT/'runs'/'regimes'/e['run_id']/e['file']
@@ -173,8 +177,9 @@ def main(run_root):
             local += 1; ok &= orig.read_bytes() == f.read_bytes()
     listed = {(e['run_id'], e['file']) for e in recj}
     on_disk = {(q.parent.name, q.name) for q in rec.glob('*/*')}
-    check(f'RECOVERY.json: {len(recj)} files; committed bytes = recorded SHA-256 = r1 published manifest; step and scheme in each file as named; '
-          f'{local} also byte-equal to originals on this container; nothing unlisted', ok and len(recj) == 27 and listed == on_disk)
+    check(f'RECOVERY.json: {len(recj)} files ({len(recj) - len(added)} at the pin, added later: {added}); committed bytes = recorded SHA-256 = r1 published manifest; '
+          f'step and scheme in each pin file as named; {local} also byte-equal to originals on this container; nothing unlisted',
+          ok and len(recj) - len(added) == 27 and listed == on_disk)
     data = dict(train=c2task.rows(T['P'], T['train']), held=c2task.rows(T['P'], T['held']))
     ok, notn = True, {}
     for run, (lane, _) in RUNS.items():
@@ -238,6 +243,30 @@ def main(run_root):
           'orientation [fitted][scored], diagonal = r1 held-out probe accuracy', ok)
     print('INFO decode table rows = fitted position 0..3, columns = scored position:', [[round(x, 3) for x in r] for r in out['table']],
           'train fit', [round(x, 3) for x in out['train_fit']])
+
+
+    # 9. D10 (QUESTION.md Revisions, 04:14): the default step map past length 3.
+    d6 = oracle_rows(list(product(range(4), repeat=6))[::37]); raised, same, used = {}, True, True
+    for tt, tr_ in SCHEMES:
+        p = {k: v + r.normal(0, .1, v.shape) for k, v in c2rnn.init(16, 65303, tt, tr_).items()}
+        for L in (3, 4, 6):
+            try:
+                c2rnn.forward(p, d6['ops'][:, :L], s=d6['s']); raised[tt, tr_, L] = None
+            except Exception as e:  # noqa: BLE001
+                raised[tt, tr_, L] = type(e).__name__
+        maps = [[1, 2, 3, 3, 3, 3], [1]*6, [3]*6, [2, 1, 3, 2, 1, 3], list(r.integers(1, 4, 6))]
+        outs = [c2rnn.forward(p, d6['ops'], s=d6['s'], step_map=m) for m in maps]
+        if tt and tr_:
+            mine = my_forward(p, d6['s'], d6['ops'], maps[0])
+            same &= all(np.array_equal(a, b) for o in outs for a, b in zip(o[0] + o[1], mine[0] + mine[1]))
+        else:
+            used &= not all(np.array_equal(a, b) for a, b in zip(outs[0][1], outs[3][1]))
+    print('INFO forward with no step map, exception by (tie transition, tie readout, length):', raised)
+    check('D10: no map raises AssertionError for tied/tied only past length 3, ValueError for untied schemes past length 3, nothing at length 3',
+          all(raised[True, True, L] == ('AssertionError' if L > 3 else None) for L in (3, 4, 6))
+          and all(raised[tt, tr_, L] == ('ValueError' if L > 3 else None) for tt, tr_ in SCHEMES[1:] for L in (3, 4, 6)))
+    check('D10: tied/tied, five valid explicit maps at length 6 give bitwise identical states and logits, equal to the forward written here; '
+          'in each untied scheme two different maps give different logits', same and used)
 
 
 if __name__ == '__main__':
