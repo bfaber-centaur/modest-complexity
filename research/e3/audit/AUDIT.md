@@ -85,3 +85,52 @@ uv run --locked --group analysis python $E/plot_preference.py $E/figures/prefere
 ## Budget
 
 About 25 s of numerical execution, one process and one BLAS thread. No training runs. The e3 numerical budget has not been set yet, so this count stands on its own.
+
+# Investigation 2: checks of the two e3 experiments
+
+Base `bd4a97c`; shared code at the e3 pin `9041a48`. The checks and their pass rules were committed before running any of them: [QUESTION-2.md](QUESTION-2.md), `ae9dd64`. The mechanisms start files are those at the lane's `42ca626`.
+
+## Mechanisms gate (blocking the nine continuations): PASS
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| C1 | Weights, moments, update count | PASS | A 300-update arm-A continuation run at the pin from the real `e1-co-add-w128-i30000-a1` step-50,000 checkpoint. Its step-0 checkpoint equals the source exactly and its moments are zero. An independent replay (own forward, gradient and AdamW in `research/audit/independent.py`, zero moments, t = 1, 2, …) matches the checkpoints at 10, 30, 100 and 300 updates within 3.6e-11 (largest weight 0.85; tolerance 8.5e-10). Moments at 300 agree within 2.3e-17 |
+| C2 | Not a silent resume | PASS | The same replay with the source's moments and t = 50,001, … differs from the run by 1.5e-3 after 10 updates, against a run displacement of 1.7e-3 |
+| C3 | Post-edit row | PASS, with my tolerance mis-set | The step-0 metrics row is bitwise equal to e1's step-50,000 row (accuracies, cross-entropies, norm). My own forward gives the same accuracies and cross-entropies, except the 3.65e-6 train cross-entropy, which differs by 1.4e-16 (3.8e-11 relative, above my pre-stated 1e-12). That quantity is a mean of logsumexp minus a correct logit of about 18.8, whose rounding unit is 3.6e-15, so the difference is a twenty-fifth of one rounding unit. The criterion was too strict for a cancellation-limited number; this is not a code defect |
+| C4 | Data, objective, schedule | PASS | Continuation and source agree on task, width, p, lr, wd, data seed, and split and target hashes. The e1 config predates `--train-fraction`; the split hash covers it. The code has no learning-rate schedule. `config.json` records `init_age` 50,000, the start file's hash and the reset rule |
+| C5 | Tests and launcher | PASS | 13 shared tests OK and `--selftest` passes at the pin. For all nine reserved entries, `launch_runs.command` passes the start file, `--expect-init-sha256`, `--init-age 50000`, `--checkpoint-steps 10,30,100,300`, `--steps 20000`, `--log-every 10`, data seed 31000 and the source split hash. A reserved ID is refused |
+| C6 | Sources | PASS | All three plan source hashes equal the files; each file holds step 50,000; three arms point to each |
+| M1 | Format | PASS | Nine files: keys U, V, W only, float64, shapes (31, 128), (31, 128), (128, 31); SHA-256 equal to `update0.csv` |
+| M2 | Arm A | PASS | Byte-identical arrays |
+| M3 | Arm B | PASS | Exactly e2 `filter_units(w, dominant(w)[0])`. My own projection (orthonormal cos/sin basis, own dominant rule) agrees within 1.2e-14. Accuracies equal e2's published `unitfilter.csv`: common 0.431, 0.540, 0.580; train 0.689, 0.732, 0.789 |
+| M4 | Arm C | PASS | `edits.sham` reads weights only (code reading). Rebuilt with no data, from the written rule, with exact plateaus of the kept energy in λ in place of bisection: agreement within 8.5e-15, and the dominant frequency is never kept. The lane's λ (1.780, 2.065, 2.088) lies in my plateaus. Kept input energy is 1.0001–1.0006 times B's. Seeds 37000–37002 are in the plan at `9041a48`, before the files existed. The lane's own function reproduces the files exactly |
+| M5 | Update-0 report | PASS | Present for all nine with every listed field; my displacement, kept energy, gate flips, train loss and accuracy, common and own held-out accuracy agree within 3.4e-16 |
+| M6 | Matching limits visible | PASS | The lane README calls C "input-energy-matched" and reports W displacement (C 0.71–0.75, B 0.78–0.80), logit change, immediate damage (train accuracy C 0.42–0.48, B 0.69–0.79) and the 37–47 units that cannot be matched |
+
+**Notes for reading the continuations.**
+- The optimizer reset alone barely moves arm A: train cross-entropy goes from 3.651e-6 to 3.655e-6 after 10 updates and 3.649e-6 after 300, with train accuracy 1 throughout (my 300-update check run).
+- B and C start from different damage: C's train accuracy is 0.42–0.48 against B's 0.69–0.79. Any difference in how they recover can come from that and not from which frequencies were kept.
+- `init_weights` is a relative path, so the launcher must run from the repository root, as the D5 command does. A wrong path fails before training.
+- For continuations, `first_interpolation` in `runtime.json` is 0 for A and the first refit for B and C, not a time from initialization.
+
+## Dynamics splits and design: PASS (runs not yet checked)
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| Y1 | Splits | PASS | The independent rewrite of the split rule, at data seeds 31000 and 41001–41003 and shares .3, .4, .45 and .5, gives every plan `split_sha256` and `train_pairs` and every `ladders.json` hash. Training sets nest; every split is transpose-closed; train, cal and audit partition the 961 pairs. Each `eval-d<seed>.npz` equals the complement of that ladder's 50% training set: 483, 479, 480 and 481 pairs, 248 unordered groups each, 15–16 pairs per class |
+| Y1 | Label sets | PASS | With `ladder_sets`: S has at least 4–6 labels; N is never empty and has 2 singleton pairs in each of 31000 and 41001; D is empty for 3 pairs of 41001, which P(D over ·) must drop and count (D6) |
+| Y2 | Design | PASS (plan); landed runs NOT CHECKED | 24 entries, exactly 3 data seeds × 2 init seeds × 4 shares, IDs consistent with their fields, one recipe, queue positions 1–24. `experiment.init` equals the independent init rule for 30000 and 30001, and takes no data seed. The eight reference-ladder runs (31000) have the matching split hash, data seed and init seed |
+| Y3–Y6 | Provenance, replay, predictions, separation | NOT CHECKED | Runs had not landed when this was written |
+
+## Reproduce (investigation 2)
+
+From the repository root, with a scratch directory `$S` and the lane's start files and `edits.py` extracted from `42ca626`:
+
+```bash
+E=research/e3/audit
+uv run --locked python $E/continuation_check.py $S/cont $E/results/continuation-check.json
+uv run --locked python $E/start_check.py $S/starts $E/results/start-check.json $S/lanecode
+uv run --locked python $E/dynamics_check.py splits $E/results/dynamics-splits.json
+```
+
+Budget so far: investigation 1 about 25 s; investigation 2 about 13 s, including two 300-update check runs, a failed first attempt of the continuation check (a key missing from the e1 config, after its run) and the shared tests. Total about 0.7 of 30 min.

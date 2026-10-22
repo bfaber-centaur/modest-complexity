@@ -1,0 +1,305 @@
+{
+ "design": {
+  "entries": 24,
+  "distinct": 24,
+  "crossed": true,
+  "ids_match_fields": true,
+  "recipe": [
+   "{\"task\": \"add\", \"wd\": 1, \"width\": 128, \"steps\": 50000, \"lr\": 0.001, \"log_every\": 100, \"checkpoint_every\": 1000, \"diagnostics\": \"none\", \"control_seed\": 32000}"
+  ],
+  "queue_positions_are_1_to_24": true,
+  "init_weights_independent_of_data_seed": "init(p, hidden, seed) takes no data seed (experiment.py); checked on landed step-0 checkpoints in Y2"
+ },
+ "ladders": {
+  "31000": {
+   "shares": {
+    "0.3": {
+     "train": 299,
+     "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+     "matches_ladders_json": true,
+     "matches_plan": null,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.4": {
+     "train": 359,
+     "split_sha256": "5c843bb877255505545a35a718349e654b02b7feb535561fa15751374075e5a9",
+     "matches_ladders_json": true,
+     "matches_plan": null,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.45": {
+     "train": 417,
+     "split_sha256": "44e5774e0051bdd952ed089b3bda8513922fc856eed1efe56239b82cf633c7aa",
+     "matches_ladders_json": true,
+     "matches_plan": null,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.5": {
+     "train": 478,
+     "split_sha256": "6dc868be7929d30d7f6faa1bbb0bc3d93f7793b8bc1c8cff45dc4775ce043b49",
+     "matches_ladders_json": true,
+     "matches_plan": null,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    }
+   },
+   "evaluation": {
+    "pairs": 483,
+    "equals_saved": true,
+    "sha256": "1535a21ab192ae95d37a5abb5eb783e74f51bd18a0500fbe0218d910914434d3",
+    "matches_ladders_json": true,
+    "transpose_closed": true,
+    "unordered_groups": 248,
+    "per_class": [
+     15,
+     16
+    ],
+    "S": [
+     4,
+     16.05,
+     25
+    ],
+    "D": [
+     1,
+     13,
+     0
+    ],
+    "N": [
+     1,
+     20,
+     0,
+     2
+    ],
+    "N_matches_ladders_json": true
+   }
+  },
+  "41001": {
+   "shares": {
+    "0.3": {
+     "train": 303,
+     "split_sha256": "29fbf347dfecabf11fa0596976bba71b8d4613dd42df7b14e5ad65a61efe3377",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.4": {
+     "train": 363,
+     "split_sha256": "6fb66f49e3b6e6def89d47fc3d93007eeca98e4f2377b958d5f48de49ad4f24d",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.45": {
+     "train": 422,
+     "split_sha256": "b02fa6ed552cf23de6ae07a4763613a5e1d7184aba30c086e4f3a5faa3cb1f61",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.5": {
+     "train": 482,
+     "split_sha256": "49413e26e6e739a3e5567279874fc62d5b914099cf77a4ba2ed0c6eaac6316a7",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    }
+   },
+   "evaluation": {
+    "pairs": 479,
+    "equals_saved": true,
+    "sha256": "59086f28615cf9bb2e5fcf5670c4aec26594ac83a8ab247aa09b53e3f7fb0653",
+    "matches_ladders_json": true,
+    "transpose_closed": true,
+    "unordered_groups": 248,
+    "per_class": [
+     15,
+     16
+    ],
+    "S": [
+     5,
+     16.17,
+     23
+    ],
+    "D": [
+     0,
+     16,
+     3
+    ],
+    "N": [
+     1,
+     22,
+     0,
+     2
+    ],
+    "N_matches_ladders_json": true
+   }
+  },
+  "41002": {
+   "shares": {
+    "0.3": {
+     "train": 303,
+     "split_sha256": "3c780e51297d8935219400402f22df0a027e5dfe71f17ae778982a16c461a549",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.4": {
+     "train": 363,
+     "split_sha256": "d044117b54d5f83b86c610d136f0d4c25bae82c9b99d29635801a1021ff2bf52",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.45": {
+     "train": 420,
+     "split_sha256": "f4dd163f1ae98f95da0a3649ae4828ffa0384e8408286d681588054fe8bb2221",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.5": {
+     "train": 481,
+     "split_sha256": "61b8358be18759884fd0dd6c02b1b46a00f3e43aed80bde08b88fc49a73c5048",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    }
+   },
+   "evaluation": {
+    "pairs": 480,
+    "equals_saved": true,
+    "sha256": "d5a7c8208deb0b51eced26dd88be6564f22fb8fc271a5a7d6bca285f3452e44d",
+    "matches_ladders_json": true,
+    "transpose_closed": true,
+    "unordered_groups": 248,
+    "per_class": [
+     15,
+     16
+    ],
+    "S": [
+     4,
+     16.12,
+     23
+    ],
+    "D": [
+     1,
+     14,
+     0
+    ],
+    "N": [
+     2,
+     20,
+     0,
+     0
+    ],
+    "N_matches_ladders_json": true
+   }
+  },
+  "41003": {
+   "shares": {
+    "0.3": {
+     "train": 299,
+     "split_sha256": "653e856068dadc08314e8b61145bc9319767f50819866b0d877bf4a49e2d269b",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.4": {
+     "train": 360,
+     "split_sha256": "e73366ea30c63a753270e982c0e952f58dde8a5191285c8327d6a8d82ad8512e",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.45": {
+     "train": 421,
+     "split_sha256": "c8d8d1803f54f40d9a1d53bb1b4feab83461e5af09ef878c0126d31cc337f31f",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    },
+    "0.5": {
+     "train": 480,
+     "split_sha256": "d404cb339a7d2d2054d42d33229c95f50ef2f8cdb4dd4ba75276bc56d7ba3e68",
+     "matches_ladders_json": true,
+     "matches_plan": true,
+     "partition": true,
+     "transpose_closed": true,
+     "nested_in_this": true
+    }
+   },
+   "evaluation": {
+    "pairs": 481,
+    "equals_saved": true,
+    "sha256": "2d2d8748049c9f704caeb015615bcb9781f51b609d9729fcd613ee7d573fae2c",
+    "matches_ladders_json": true,
+    "transpose_closed": true,
+    "unordered_groups": 248,
+    "per_class": [
+     15,
+     16
+    ],
+    "S": [
+     6,
+     16.17,
+     23
+    ],
+    "D": [
+     1,
+     14,
+     0
+    ],
+    "N": [
+     2,
+     18,
+     0,
+     0
+    ],
+    "N_matches_ladders_json": true
+   }
+  }
+ },
+ "reference_ladder_31000_runs_match": {
+  "e1-co-add-w128-i30000-a1": true,
+  "e1-st-add-w128-i30001-a1": true,
+  "e2-dy-add-w128-i30000-tf40-a1": true,
+  "e2-dy-add-w128-i30001-tf40-a1": true,
+  "e2-dy-add-w128-i30000-tf45-a1": true,
+  "e2-dy-add-w128-i30001-tf45-a1": true,
+  "e1f2-co-add-w128-i30000-tf50-a1": true,
+  "e1f2-co-add-w128-i30001-tf50-a1": true
+ },
+ "init_rule_matches_independent": {
+  "30000": true,
+  "30001": true
+ }
+}
