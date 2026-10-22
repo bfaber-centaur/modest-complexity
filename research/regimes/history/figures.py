@@ -256,6 +256,53 @@ def summary_figure(rows, out):
     plt.close(fig)
 
 
+def followup_figure(runs, status, out):
+    """M3 follow-up, kept separate from the initial comparison: return-phase updates to criterion
+    with head A reset to its init draw, on different trunks."""
+    kinds = [('fresh', 'untrained trunk = fresh-A', GREY, '_'),
+             ('scratch', 'B-only trunk (same d), head A at init', ORANGE, 'D'),
+             ('reset', 'end-of-B trunk after A, head A reset to init', '#1baf7a', 's'),
+             ('kept', 'end-of-B trunk after A, trained head A kept (M2)', BLUE, 'o'),
+             ('ckA', 'end-of-A trunk, head A reset to init', 'k', '^')]
+    groups = [(arm, b, d) for arm, b in (('rel', 'Brel'), ('unrel', 'Bunrel')) for d in (1000, 10000)]
+    rows = []
+    for s in SEEDS:
+        fresh = first(runs[f'r1-hist-A-s{s}-a1']['rows'], 1, 'A_test_acc')
+        for arm, b, d in groups:
+            ids = dict(fresh=f'r1-hist-A-s{s}-a1', scratch=f'r1-hist-fu-reset-scratch-{b}-d{d}-s{s}-a1',
+                       reset=f'r1-hist-fu-reset-{arm}-d{d}-s{s}-a1', kept=f'r1-hist-{arm}-d{d}-s{s}-a1',
+                       ckA=f'r1-hist-fu-reset-ckA-s{s}-a1')
+            for kind, rid in ids.items():
+                run = runs.get(rid)
+                phase = 2 if kind == 'kept' else 1
+                t = first(run['rows'], phase, 'A_test_acc') if run else None
+                rows.append(dict(group=f'{arm}-d{d}', init_seed=s, trunk_and_head=kind, run_id=rid,
+                                 status=status.get(rid, 'missing'), updates_to_criterion=t,
+                                 censored=run is not None and t is None, ratio_to_fresh_A=None if t is None else t/fresh))
+    fig, ax = plt.subplots(figsize=(10, 5.2))
+    jit = {s: (k-1)*.07 for k, s in enumerate(SEEDS)}
+    for gi, (arm, b, d) in enumerate(groups):
+        for ki, (kind, label, color, marker) in enumerate(kinds):
+            for r in rows:
+                if r['group'] == f'{arm}-d{d}' and r['trunk_and_head'] == kind:
+                    x = gi + (ki-2)*.17 + jit[r['init_seed']]
+                    y = T_R if r['censored'] else r['updates_to_criterion']
+                    ax.plot(x, y, 'x' if r['censored'] else marker, color='red' if r['censored'] else color,
+                            mfc='none' if marker in 'Ds^' else color, ms=6,
+                            label=label if (gi, r['init_seed']) == (0, SEEDS[0]) else None)
+    ax.set_xticks(range(len(groups)), [f'{"related" if a == "rel" else "unrelated"} B, d = {d}' for a, _, d in groups], fontsize=8)
+    ax.set_yscale('log'); ax.set_ylim(20, 2000)
+    ax.set_ylabel('return-phase updates to held-out A >= 0.95 (log; x256 = examples)', fontsize=8)
+    ax.set_title('Follow-up (adaptive, M3): relearning A with head A reset to its initial draw, by trunk; '
+                 '3 init seeds offset left to right', fontsize=9, loc='left')
+    ax.legend(fontsize=7, loc='upper center', bbox_to_anchor=(.5, -.09), ncol=2, frameon=False)
+    for ext in ('png', 'svg'):
+        fig.savefig(out/f'followup_head_reset.{ext}', dpi=130, bbox_inches='tight')
+    plt.close(fig)
+    with (out/'followup_head_reset.csv').open('w', newline='') as fh:
+        w = csv.DictWriter(fh, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--runs', type=Path, default=Path('runs/regimes'))
@@ -272,6 +319,8 @@ def main():
     with (args.out/'survival_summary.csv').open('w', newline='') as fh:
         w = csv.DictWriter(fh, fieldnames=keys); w.writeheader(); w.writerows(rows)
     summary_figure(rows, args.out)
+    if any(k.startswith('r1-hist-fu-') for k in runs):
+        followup_figure(runs, status, args.out)
 
 
 if __name__ == '__main__':
