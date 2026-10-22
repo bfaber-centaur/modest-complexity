@@ -68,3 +68,16 @@ Each status names what it affects.
 ## Revisions
 
 (Counterexample refinements are recorded here, dated, before they are run.)
+
+**2026-10-22 ~03:00, R4, after reading M2 (`f0f68f7`) and before computing.**
+- *Revised target.* The lane's M2 reading has three parts:
+  - every ρ > 1/2 passes through a shortcut phase;
+  - exceptions are fit by memorization first;
+  - the rule's contribution then keeps growing, so the threshold at T depends on T.
+- *What the data already settle.* My pre-stated memorization test is already answered by the lane's own numbers, and I recheck them independently. At ρ ≥ 15/16 the exceptions are fit while reversed accuracy stays low. At ρ ≤ 7/8, reversed accuracy and rule flips approach 1 on unseen contexts.
+- *The weaker claim.* The README says that at ρ = 15/16 "which route wins depends on the held-out context". That is the claim I attempt to break.
+- *Counterexample.* Route choice may instead depend on the rule pattern (some of the 8 parity patterns already handled by the rule), or be unstructured.
+- *Test (analysis only).* From each ρ = 15/16 seed's final.npz, take the 32 held-out contexts × 8 rule patterns matrix of reversed-environment correctness. Split its variance into a context main effect and a rule-pattern main effect.
+- *Prediction if the lane is right:* the context share is well above the pattern share in each seed, and many contexts are all-correct or all-wrong.
+- *Prediction if the counterexample holds:* the pattern share is comparable or larger.
+- *Also checked.* The identity "flip_s = 1 − reversed and flip_rule = reversed whenever reliable = 1", over every logged row.
