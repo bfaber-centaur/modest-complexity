@@ -73,9 +73,9 @@ The one adaptive intervention is proposed to the coordinator after the first fig
 - If E4 holds, remove the offset during training.
 Intervention strengths and selections will be fixed without held-out feedback.
 
-## Addendum, 2026-10-22 about 02:25 UTC: e4 dispatch, exact definitions (before any measurement)
+## Addendum, 2026-10-22 about 02:10 UTC: e4 dispatch, exact definitions (before any measurement)
 
-Written after the coordinator's dispatch (DECISIONS D5, D7) and before any measurement on any checkpoint. It adds definitions; nothing above is changed.
+Written after the coordinator's dispatch (DECISIONS D5, D7) and before any measurement on any checkpoint (committed in `73d45be` at 02:11 UTC; the heading first said 02:25 by mistake). It adds definitions; nothing above is changed.
 
 - **States.** The D5 fixed states 0, t_fit (70/50/40), 100, 300, 1,000, 2,000, 5,000 and 20,000 are the comparison points. The six D7 dense replays (B at wd 1 and 0, updates 0–5,000, every 10 to 300, every 50 to 3,000, every 500 to 5,000) give the trajectory between them; A comes only from its published e3 checkpoints. Replays are checked bitwise against the e3 runs before use (`replay_check.py`). Replay states are dependent observations of the e3 runs, not new seeds.
 - **Channel split** (`channels.py`). Object: logits on the 483 common pairs. Basis rule: each unit's readout row split along the label axis into its update-0 dominant input frequency k_j (fixed, label-free) and the rest; units with no weights at update 0 go wholly to the off-reference part. Reconstruction: the three channels sum to the label-centred logits; the relative maximum error is recorded per state and the analysis stops if it exceeds 1e-9.

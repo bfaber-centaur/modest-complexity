@@ -1,0 +1,111 @@
+{
+  "selftest": false,
+  "out": "runs/e4/e4-me-filt-wd0-replay-w128-i30002-a1",
+  "task": "add",
+  "seed": 1000,
+  "data_seed": 31000,
+  "init_seed": 30002,
+  "control_seed": 32000,
+  "diagnostic_seed": 33000,
+  "expect_split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+  "init_weights": "research/e3/mechanisms/starts/e3-me-filt-w128-i30002-a1.npz",
+  "resume": null,
+  "expect_init_sha256": "e95ebae8de1a0063450f3d06d7af6c5e5ffd254b1807a83e84883589d918138e",
+  "init_age": 50000,
+  "run_id": "e4-me-filt-wd0-replay-w128-i30002-a1",
+  "purpose": "diagnostic-replay",
+  "session_label": "e4-me-cloud-1",
+  "p": 31,
+  "train_fraction": 0.3,
+  "hidden": 128,
+  "steps": 5000,
+  "lr": 0.001,
+  "wd": 0.0,
+  "log_every": 10,
+  "audit_every": 1000,
+  "checkpoint_every": 1000,
+  "checkpoint_steps": "10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,1450,1500,1550,1600,1650,1700,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500,2550,2600,2650,2700,2750,2800,2850,2900,2950,3000,3500,4000,4500,5000",
+  "diagnostics": "none",
+  "shams": 32,
+  "seeds": {
+    "data_seed": 31000,
+    "init_seed": 30002,
+    "control_seed": 32000,
+    "diagnostic_seed": 33000
+  },
+  "data_hashes": {
+    "split_sha256": "aa8f7504bf7d925eb90c69183f10daf5778cce9aad8e460b2c907811526d1f24",
+    "target_sha256": "6f1576d4a05ce6f233fd0ffd2e66b637cbcba50724975fa5b05907b8337a2046"
+  },
+  "host": "vm",
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "visible_cpus": 4,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1",
+      "BLIS_NUM_THREADS": "1"
+    },
+    "numpy_config": "{\n  \"Compilers\": {\n    \"c\": {\n      \"name\": \"gcc\",\n      \"linker\": \"ld.bfd\",\n      \"version\": \"14.2.1\",\n      \"commands\": \"cc\"\n    },\n    \"cython\": {\n      \"name\": \"cython\",\n      \"linker\": \"cython\",\n      \"version\": \"3.2.1\",\n      \"commands\": \"cython\"\n    },\n    \"c++\": {\n      \"name\": \"gcc\",\n      \"linker\": \"ld.bfd\",\n      \"version\": \"14.2.1\",\n      \"commands\": \"c++\"\n    }\n  },\n  \"Machine Information\": {\n    \"host\": {\n      \"cpu\": \"x86_64\",\n      \"family\": \"x86_64\",\n      \"endian\": \"little\",\n      \"system\": \"linux\"\n    },\n    \"build\": {\n      \"cpu\": \"x86_64\",\n      \"family\": \"x86_64\",\n      \"endian\": \"little\",\n      \"system\": \"linux\"\n    }\n  },\n  \"Build Dependencies\": {\n    \"blas\": {\n      \"name\": \"scipy-openblas\",\n      \"found\": true,\n      \"version\": \"0.3.30\",\n      \"detection method\": \"pkgconfig\",\n      \"include directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/include\",\n      \"lib directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/lib\",\n      \"openblas configuration\": \"OpenBLAS 0.3.30  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=64\",\n      \"pc file directory\": \"/project/.openblas\"\n    },\n    \"lapack\": {\n      \"name\": \"scipy-openblas\",\n      \"found\": true,\n      \"version\": \"0.3.30\",\n      \"detection method\": \"pkgconfig\",\n      \"include directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/include\",\n      \"lib directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/lib\",\n      \"openblas configuration\": \"OpenBLAS 0.3.30  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=64\",\n      \"pc file directory\": \"/project/.openblas\"\n    }\n  },\n  \"Python Information\": {\n    \"path\": \"/tmp/build-env-aw1mwcap/bin/python\",\n    \"version\": \"3.12\"\n  },\n  \"SIMD Extensions\": {\n    \"baseline\": [\n      \"SSE\",\n      \"SSE2\",\n      \"SSE3\"\n    ],\n    \"found\": [\n      \"SSSE3\",\n      \"SSE41\",\n      \"POPCNT\",\n      \"SSE42\",\n      \"AVX\",\n      \"F16C\",\n      \"FMA3\",\n      \"AVX2\",\n      \"AVX512F\",\n      \"AVX512CD\",\n      \"AVX512_SKX\",\n      \"AVX512_CLX\"\n    ],\n    \"not found\": [\n      \"AVX512_KNL\",\n      \"AVX512_KNM\",\n      \"AVX512_CNL\",\n      \"AVX512_ICL\",\n      \"AVX512_SPR\"\n    ]\n  }\n}\n",
+    "cgroup": {
+      "/proc/self/cgroup": "9:name=systemd:/\n8:pids:/\n7:blkio:/\n6:freezer:/\n5:devices:/\n4:memory:/process_api/01a16154-aa37-7508-8eb1-b3217f56c73b/claude-code-bash\n3:cpuset:/\n2:cpuacct:/\n1:cpu:/\n0::/\n",
+      "/proc/self/mountinfo": "38 37 0:30 / /sys/fs/cgroup/cpu rw,relatime - cgroup cgroup rw,cpu\n39 37 0:31 / /sys/fs/cgroup/cpuacct rw,relatime - cgroup cgroup rw,cpuacct\n40 37 0:32 / /sys/fs/cgroup/cpuset rw,relatime - cgroup cgroup rw,cpuset\n41 37 0:33 / /sys/fs/cgroup/memory rw,relatime - cgroup cgroup rw,memory\n42 37 0:34 / /sys/fs/cgroup/devices rw,relatime - cgroup cgroup rw,devices\n43 37 0:35 / /sys/fs/cgroup/freezer rw,relatime - cgroup cgroup rw,freezer\n44 37 0:36 / /sys/fs/cgroup/blkio rw,relatime - cgroup cgroup rw,blkio\n45 37 0:37 / /sys/fs/cgroup/pids rw,relatime - cgroup cgroup rw,pids\n46 37 0:38 / /sys/fs/cgroup/systemd rw,relatime - cgroup cgroup rw,name=systemd\n47 37 0:39 / /sys/fs/cgroup/unified rw,relatime - cgroup2 cgroup2 rw",
+      "/sys/fs/cgroup/memory/process_api/01a16154-aa37-7508-8eb1-b3217f56c73b/claude-code-bash/memory.limit_in_bytes": "14343688192",
+      "/sys/fs/cgroup/memory/process_api/01a16154-aa37-7508-8eb1-b3217f56c73b/claude-code-bash/memory.usage_in_bytes": "1275965440",
+      "/sys/fs/cgroup/memory/process_api/01a16154-aa37-7508-8eb1-b3217f56c73b/memory.limit_in_bytes": "9223372036854771712",
+      "/sys/fs/cgroup/memory/process_api/01a16154-aa37-7508-8eb1-b3217f56c73b/memory.usage_in_bytes": "1805127680",
+      "/sys/fs/cgroup/memory/process_api/memory.limit_in_bytes": "9223372036854771712",
+      "/sys/fs/cgroup/memory/process_api/memory.usage_in_bytes": "1805279232",
+      "/sys/fs/cgroup/memory/memory.limit_in_bytes": "9223372036854771712",
+      "/sys/fs/cgroup/memory/memory.usage_in_bytes": "1824620544",
+      "/sys/fs/cgroup/cpu/cpu.stat": "nr_periods 0\nnr_throttled 0\nthrottled_time 0\nnr_bursts 0\nburst_time 0",
+      "/sys/fs/cgroup/cpu/cpu.cfs_quota_us": "-1",
+      "/sys/fs/cgroup/cpu/cpu.cfs_period_us": "100000",
+      "/sys/fs/cgroup/unified/cpu.stat": "usage_usec 134121870\nuser_usec 104371424\nsystem_usec 29750445\nnice_usec 0"
+    },
+    "disk_free_bytes": 30543499264,
+    "git_commit": "73d45be5ee95f2ab79e742927ab12f289a85010e",
+    "git_status": "",
+    "source_sha256": {
+      "analysis.py": "9860f9a41cb4b41769d3387018224255b5d7886ce24af27f4d54d72f3b07d827",
+      "benchmark.py": "2a9e0b80b1edb4522444962646c495b685e36feae6ab29f35af9581e3c763482",
+      "experiment.py": "1c7e6cbfc847d17b2cc478751e0d75d8f045cd8025394dfba9889e9a167f4c98",
+      "instrumentation.py": "fea99e7be8d53c5a5df4302311b14479060fa946a776e53674670394c307571a",
+      "launch_runs.py": "c58c1d147fa8ad9d200f593e88b4dbc506b8f22e4431de2131acf867bc78627d",
+      "publish_run.py": "9d00b54a8b8a6947f3f361763570158f55d169ec4f4d8507bdaa29316fe9869b",
+      "report_map.py": "c1877eb73c9e093df3221ca0995a6b82d19cbc912d0d9a10aa60ac097f1e7e41",
+      "run_study.py": "77f4f9a9895be285984cd4fb66b0a2d33ef01026277df99051fc8ce1cbdf9713",
+      "test_exploration.py": "ee68e5ac18eb1d57ee2b8f70b9070ba797b585ec4c844d5f9bf43facd35fc700",
+      "test_instrumentation.py": "bc2a71db16b16aabc92159dab3d70093c1d99f859d78bfc23318a7735e7bb985"
+    },
+    "environment_sha256": {
+      "pyproject.toml": "b800ae86b9b700683590ee8758831fbb1836d4856c06fe8d2f19a67a31bcbcd3",
+      "uv.lock": "bb1dcfbb76c2d9e27b28b2558c73b96363e85091b0eebcf8afb6986b84f5263d",
+      ".python-version": "f50159fad3f4319868eb38717b91d55843c41e9803014c8de05e116a6d0bcfdc"
+    },
+    "peak_rss_scope": "current process lifetime; excludes children",
+    "cgroup_note": "Raw process membership and visible ancestor limits; unavailable on macOS."
+  },
+  "init_weights_sha256": "e95ebae8de1a0063450f3d06d7af6c5e5ffd254b1807a83e84883589d918138e",
+  "resume_sha256": null,
+  "init_rule": "U, V, W from --init-weights (init_seed unused); Adam moments zero, update count restarts at 1",
+  "diagnostic_schedule": {
+    "metrics_every": 10,
+    "checkpoint_every": 1000,
+    "checkpoint_extra": "last step, first train accuracy >= .99 and --checkpoint-steps",
+    "checkpoint_steps": "10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,1450,1500,1550,1600,1650,1700,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500,2550,2600,2650,2700,2750,2800,2850,2900,2950,3000,3500,4000,4500,5000",
+    "inline": "none",
+    "inline_every": null
+  }
+}
