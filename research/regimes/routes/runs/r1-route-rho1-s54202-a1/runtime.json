@@ -1,0 +1,18 @@
+{
+ "status": "complete",
+ "wall_seconds": 13.27404513600004,
+ "cpu_seconds": 13.141940315000001,
+ "peak_rss_bytes": 48005120,
+ "phases": {
+  "evaluate": {
+   "calls": 87,
+   "wall_seconds": 0.1639380820001861,
+   "cpu_seconds": 0.16361581800000036
+  },
+  "train": {
+   "calls": 20000,
+   "wall_seconds": 12.804872357990348,
+   "cpu_seconds": 12.73421561400002
+  }
+ }
+}

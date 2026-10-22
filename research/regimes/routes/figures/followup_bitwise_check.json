@@ -1,0 +1,15 @@
+{
+ "r1-route-long-rho1-s54200-a1 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho1-s54201-a1 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho1-s54202-a1 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho1-s54202-a1 metrics vs r1-route-long-rho1-s54202-a2": "identical on all 128 shared logged steps (to step 144119)",
+ "r1-route-long-rho1-s54202-a2 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho31of32-s54200-a1 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho31of32-s54201-a1 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho31of32-s54202-a1 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho31of32-s54202-a1 metrics vs r1-route-long-rho31of32-s54202-a2": "identical on all 128 shared logged steps (to step 144119)",
+ "r1-route-long-rho31of32-s54202-a2 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho15of16-s54200-a1 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho15of16-s54201-a1 step20000 vs initial final.npz": "bitwise equal",
+ "r1-route-long-rho15of16-s54202-a1 step20000 vs initial final.npz": "bitwise equal"
+}
