@@ -376,7 +376,7 @@ The evidence is [check_routes_m4.py](check_routes_m4.py), with output in [out/ch
   - The answer to the coordinator's question is "together with the shrinking gradient": √v̂ ≪ eps alone does not explain the collapse.
 
 **C4.3 (CONCERN, wording): float64 saturation is immaterial.**
-- Saturated rows (margin > 36.7) carry under 1e-6 of the gradient weight Σ(1 − p) at 200k. That is less than they would carry without rounding, because their 1 − p ≤ 1e-16 is already 10⁶ below the smallest-margin rows' 1e-10.
+- Saturated rows (margin > 36.7) carry under 1e-6 of the gradient weight Σ(1 − p) at 200k. That share is computed without rounding: their 1 − p ≤ 1e-16 is already 10⁶ below the smallest-margin rows' 1e-10, so rounding it to zero changes nothing material.
 - Also, only the target-logit component rounds to zero. The other logit still gets e^(−m).
 - *Affects* follow-up item 4's third bullet and the Limitations sentence on saturation, which list it beside eps as a cause of the stall. The stall is fully accounted for by the eps regime and the gradient's decay, so the saturation clause should be dropped or marked as immaterial. No number changes.
 
