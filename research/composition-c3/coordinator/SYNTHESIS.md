@@ -1,6 +1,6 @@
 # Composition follow-ups c3: synthesis
 
-**Status.** DRAFT, complete except the reviewer's check of the scaffolding follow-up and of this synthesis.
+**Status.** DRAFT, complete; every lane result it cites is reviewed (REVIEW §1–§5). The reviewer's check of this synthesis itself is pending.
 
 **Scope of every claim.**
 - **Task.** The original task and split (`ops51000-ls51100`), with three paired init seeds (51200–51202). The correction follow-up adds eight tied/final bases from four new task draws.
@@ -76,14 +76,15 @@ Lane notes: [correction](../correction/NOTE.md), [scaffolding](../scaffolding/NO
 | B′ drop at 1k, Adam reset at 1k | 12,250 | 14,100 | 16,350 |
 
 - **At 50k the reset changes nothing.** A′ − A and B′ − B are within 1 pp on every measure in all seeds. The weights at 1k, followed by final-only training, suffice to reach keep's endpoint; the carried moments are not needed for it.
-- **On the path, the reset speeds acquisition after the drop and barely moves keep.** B′ crosses 2,350–5,900 updates before B, which removes about a third to a half of B's lag behind keep. B′ − B on L6 at 20k is +0.18 to +0.33. A′ − A stays between −0.06 and +0.09 on every measure and time. B′ still lags keep in every seed.
-- **The reset does two things, and this follow-up does not separate them.** It discards the moments' history, and it enlarges the next steps: 17–22× the carried update on the first step, an RMS of 2.1–2.6× over the first 100 (reviewer CX-R1), and 1.15–1.75× at 1,050–1,500. Train final CE does not rise. So part of the slowdown after a drop goes with the optimizer state carried across it. Whether the history or the step size is responsible is open.
+- **On the path, the reset speeds acquisition after the drop.** Here (S = R = 1k, this recipe), the drop branch with its Adam state carried crossed 2,350–5,900 updates later than with a reset at the switch, in 3 of 3 seeds. That is about a third to a half of B's lag behind keep. B′ − B on L6 at 20k is +0.18 to +0.33. B′ still lags keep in every seed.
+- **What the keep control shows.** Up to 3k the reset raises held-out length 3 about as much in keep (A′ − A up to +0.07) as in drop (B′ − B up to +0.09), so the early gain is not specific to the drop. From 4k on, keep's effect fades to −0.07 to +0.05 while drop's grows to +0.06 to +0.15, with keep still at 0.48–0.86. By 20k keep is at its ceiling, so later comparisons are effectively B′ − B alone (reviewer post-hoc, REVIEW §5).
+- **The reset does two things, and this follow-up does not separate them.** It discards the moments' history, and it enlarges the next steps: 17–22× the carried update on the first step, an RMS of 2.1–2.6× over the first 100 (reviewer CX-R1), and 1.15–1.75× at 1,050–1,500. Train final CE does not rise, and the reset does not slow early acquisition in either arm (reviewer CX-F1). The effect belongs to the reset as a whole; whether the history or the step size is responsible is open. Because the burst of larger steps, if anything, helps, "weights at S suffice" cannot exclude a moments effect that the burst offsets.
 - **Predictions.** Three of four held. The failed one expected B′ to cross within 3,000 updates of B in at least two seeds; it did so in one.
-- **Review.** *Pending* (reviewer items 6–8 and wording).
+- **Review.** PASS (REVIEW §5). The reviewer reproduced the first post-reset update from a fresh Adam state exactly, confirmed the matched controls bitwise, and recomputed every follow-up number.
 
 **Reading.**
 - On this task and recipe, 1,000 updates of intermediate supervision were enough to put tied/tied training on keep's 50k endpoint. That benefit is carried by the weights at the switch: a fresh optimizer from those weights also gets there. Removing the labels at 1k or 10k slowed acquisition but did not undo it, and nothing measured was forgotten by 50k.
-- The equal endpoints hide different paths. After S = 1k the held-out crossing comes 4,350–12,250 updates after keep's. Part of that delay goes with the optimizer state carried across the drop.
+- The equal endpoints hide different paths. After a drop at S = 1k the held-out crossing comes 6,900–12,250 updates after keep's (taper: 4,350–12,250). A reset of the optimizer at the drop removes a third to a half of that delay, through the moments' history, the larger early steps, or both.
 - This does not show that the labels are necessary: D is one tested baseline at a finite horizon, not a bound. It does not say what the trained network computes, or that the result holds past 50k, at other switch times, on other tasks, or under other recipes.
 
 ## 3. Limitations
@@ -92,7 +93,7 @@ Lane notes: [correction](../correction/NOTE.md), [scaffolding](../scaffolding/NO
 - **Horizons and times.** Scaffolding: two switch times, one taper length, one reset time, a 50k horizon. Correction: bases frozen at 10k only. From about 29k every arm trains in Adam's eps regime, so late dynamics are specific to this optimizer setting (as in r1 and c2).
 - **Measurement.** Training measures are logged every 50 updates; frozen lengths 1–6 are evaluated at fixed checkpoints only. "Nothing lost" means within 5 pp of keep on seven listed measures at those times.
 - **Correction design.** One adapter family, applied to h2 only. The grouped split fits 64 prefixes in a 128-dimensional state, and the task has only 16 depth-2 prefixes per symbol. The main evaluation's success is on seen states only. The base readout's ability to read every prefix's symbol (V2 at 1.00) is linear decodability, not evidence of causal use.
-- **Attribution.** The reset follow-up does not separate the moments' history from the larger early steps. Keep barely responds to the same reset, which is consistent with the history mattering after a loss change, but that is not a decomposition.
+- **Attribution.** The reset follow-up does not separate the moments' history from the larger early steps, and it uses one reset time, equal to the switch. The keep control is informative only before keep reaches its ceiling (about 4k–8k); there the drop-specific part of the effect is visible, but that is not a decomposition.
 - **Scope of claims.** Finite plateaus do not establish necessity or impossibility, and the tested baselines (A, D, the oracle-centroid arm E) are not bounds.
 
 ## 4. Next questions (at most two)
@@ -108,7 +109,7 @@ All runs are CPU only, on the lanes' own hosts, with no rented compute. Wall tim
 |---|---|---|---|
 | learned correction | 6 (calibration, main and grouped, F2, post-hoc) | 0 | about 1.1 min (10 + 5) |
 | temporary scaffolding | 24 (2 calibration, 12 branches, 4 matched-control checks, 6 reset runs) | 0 | 27.2 + 16.8 min (40 + 20) |
-| reviewer | 15 so far | 1 (`c3-rev-corr-a1`, the reviewer's own panel mapping; rerun as `-a2`) | 10.3 min so far (20) |
+| reviewer | 16 so far | 1 (`c3-rev-corr-a1`, the reviewer's own panel mapping; rerun as `-a2`) | 11.5 min so far (20) |
 | coordinator | 3 (1 verification, 2 calibration) | 0 | about 1 min (10) |
 
 Every run is in its lane's `plan.json` and append-only `registry.jsonl`, including the failed one. Training updates: 534k in the 12 scaffolding branches, 294k in the reset runs, plus 8k in the checks.
