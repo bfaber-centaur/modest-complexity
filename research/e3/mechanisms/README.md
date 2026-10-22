@@ -64,7 +64,7 @@ uv run --locked --group analysis python research/e3/mechanisms/continuation.py
 uv run --locked --group analysis python research/e3/mechanisms/plot_continuation.py
 ```
 
-**Accuracy on the 483 common pairs** ("50k" is the source before the edit; the other columns are continuation updates), with three other measures at update 20,000:
+**Accuracy on the 483 common pairs** ("50k" is the source before the edit; the other columns are continuation updates), with three other measures at update 20,000, where B and C are still fitting:
 
 | run | 50k | 0 | 10 | 100 | 300 | 1000 | 5000 | 20000 | P(a+b>N) / P(a+b>S) at 20k | σ-margin over N at 20k | input concentration at 20k | units with update-0 dominant freq. at 20k | distance from update 0 / from 50k at 20k |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -87,15 +87,17 @@ Chance is 1/31 ≈ 0.032.
    - Train cross-entropy stays at 3.5–3.7e-6.
    - P(a+b over N) changes by at most 0.003.
    - Distance from the start reaches 0.06–0.10 by update 20,000.
-2. **B, first ~100 updates: training raised held-out accuracy above what the edit gave.**
-   - Common accuracy went from 0.431 / 0.540 / 0.580 at update 0 to 0.735 / 0.789 / 0.863 at update 100.
+2. **B, first ~100 updates: training raised held-out accuracy above what the edit gave.** These are two separate effects:
+   - The edit itself took common accuracy from 0.000 / 0.000 / 0.004 to 0.431 / 0.540 / 0.580 at update 0, before any update.
+   - Training after the edit then added another 0.25–0.30, reaching 0.735 / 0.789 / 0.863 at update 100. The edit did not produce this rise.
    - Dense audit accuracy (544 pairs, which include the 483) peaks at 0.746 / 0.798 / 0.884 at updates 80 / 70 / 70.
    - That is just after train accuracy first reaches 1.0 (updates 70 / 50 / 40), when train cross-entropy is about 0.2.
 3. **B, afterwards: the gain is then erased.**
    - Common accuracy is 0.62–0.74 at update 300, 0.22–0.27 at 1000, 0.02–0.03 at 5000 and 0.010–0.031 at 20,000, which is chance.
    - Audit accuracy drops below its update-0 value at updates 490–600, and below half of it at 880–1090.
    - After update 5000 it never exceeds 0.053.
-   - Meanwhile train cross-entropy keeps falling, from 0.2 at update 100 to about 3.5e-5 at 20,000, parallel to C's curve and slightly below it.
+   - Meanwhile train cross-entropy keeps falling, from 0.2 at update 100 to 3.5–3.7e-5 at 20,000, parallel to C's curve and slightly below it.
+   - **Update 20,000 is not an end state.** B and C are still fitting there: their train cross-entropy (B 3.5–3.7e-5, C 5.0–5.4e-5) is about 10–15× A's 3.6e-6 and still falling steeply. The held-out fall was complete by about 5,000 updates, long before that.
 4. **C shows no held-out accuracy at any point.**
    - Common accuracy is 0.010 at update 0 and 0.000–0.002 from update 100 on.
    - Train accuracy recovers to 1.0 by updates 100–110, later than B's 40–70.

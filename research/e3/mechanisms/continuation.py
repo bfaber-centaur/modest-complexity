@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """e3 mechanisms: what continued training does after the edit (QUESTION.md; DECISIONS D5, D6).
 
-Rows, for each of the nine continuation runs (arms keep / filt / sham x three source checkpoints),
+Rows, for each continuation run in the plan (arms keep / filt / sham x three source checkpoints at
+wd 1, and filt / sham at wd 0 for follow-up 1; `branch` names arm and decay, e.g. filt-wd0),
 on every published checkpoint, plus one row per run for its source checkpoint at 50,000 updates
 (phase "source", before the edit):
 - train cross-entropy and accuracy (299 pairs), accuracy on the run's own cal + audit;
@@ -12,7 +13,7 @@ on every published checkpoint, plus one row per run for its source checkpoint at
 - frequency structure: research/mechanisms/units.py `concentration`, the mean share of each live
   unit's non-DC input energy at its source-checkpoint dominant frequency, and the fraction of live
   units whose dominant input frequency is the one they had at update 0;
-- relative distance ||w - w0|| / ||w0|| over U, V, W together, from the start file (update 0) and
+- the weight norm over U, V, W together, and the relative distance ||w - w0|| / ||w0||, from the start file (update 0) and
   from the source checkpoint, and the fraction of the 961 x 128 ReLU gates that differ from update 0.
 Dense rows (every 10 updates) are each run's metrics.jsonl, unchanged.
 
@@ -141,7 +142,8 @@ def analyse(runs_root):
             wsrc = [z[k] for k in 'UVW']
         k_source, k_start = dominant(wsrc)[0], dominant(ws)[0]
         arm = r['run_id'].split('-')[2]
-        base = dict(run_id=r['run_id'], arm=arm, source_run=r['source_run'], init_seed=r['init_seed'], init_age=r['init_age'])
+        base = dict(run_id=r['run_id'], arm=arm, wd=r['wd'], branch=arm + ('-wd0' if r['wd'] == 0 else ''),
+                    source_run=r['source_run'], init_seed=r['init_seed'], init_age=r['init_age'])
         manifest, steps = published_steps(run_dir)
         g0 = gates(ws, d)
         for phase, step, w in [('source', '', wsrc)] + [('continuation', s, None) for s in steps]:
@@ -150,6 +152,7 @@ def analyse(runs_root):
             m, _ = evaluate(w, d)
             rows.append(dict(base, phase=phase, step=step, train_ce=m['train_cross_entropy'], train_acc=m['train_accuracy'],
                              own_heldout_acc=own_heldout(w, d), **common_measures(w, d, sets), **structure(w, k_source, k_start),
+                             norm=float(np.sqrt(sum(np.sum(x**2) for x in w))),
                              dist_from_update0=distance(w, ws), dist_from_source=distance(w, wsrc),
                              gates_changed_from_update0=float(np.mean(gates(w, d) != g0))))
         for line in (run_dir/'metrics.jsonl').read_text().splitlines():

@@ -15,8 +15,10 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
-ARMS = {'keep': ('A unchanged', '#555555'), 'filt': ('B dominant-frequency filter', '#0072B2'),
-        'sham': ('C input-energy-matched sham', '#D55E00')}
+ARMS = {'keep': ('A unchanged', '#555555', '-'), 'filt': ('B dominant-frequency filter', '#0072B2', '-'),
+        'sham': ('C input-energy-matched sham', '#D55E00', '-')}
+WD0 = {'filt': ('B filter, wd 1', '#0072B2', '-'), 'filt-wd0': ('B filter, wd 0', '#56B4E9', '--'),
+       'sham': ('C sham, wd 1', '#D55E00', '-'), 'sham-wd0': ('C sham, wd 0', '#E69F00', '--')}
 SEEDS = (30000, 30001, 30002)
 
 
@@ -31,17 +33,17 @@ def read(path):
     return rows
 
 
-def series(rows, arm, seed, key):
-    rs = [r for r in rows if r['arm'] == arm and r['init_seed'] == seed and r.get('phase', 'continuation') == 'continuation']
+def series(rows, branch, seed, key):
+    rs = [r for r in rows if r['branch'] == branch and r['init_seed'] == seed and r.get('phase', 'continuation') == 'continuation']
     rs.sort(key=lambda r: r['step'])
     return [r['step'] for r in rs], [r[key] for r in rs]
 
 
-def source_value(ck, arm, seed, key):
-    return next(r[key] for r in ck if r['arm'] == arm and r['init_seed'] == seed and r['phase'] == 'source')
+def source_value(ck, branch, seed, key):
+    return next(r[key] for r in ck if r['branch'] == branch and r['init_seed'] == seed and r['phase'] == 'source')
 
 
-def figure(ck, dense, panels, title, caption, path):
+def figure(ck, dense, panels, title, caption, path, branches=ARMS):
     fig = plt.figure(figsize=(15, 2.35*len(panels) + 1.4))
     outer = fig.add_gridspec(len(panels), len(SEEDS), wspace=.28, hspace=.42, left=.07, right=.99, top=.91,
                              bottom=.07 + .012*caption.count('\n'))
@@ -49,19 +51,19 @@ def figure(ck, dense, panels, title, caption, path):
         for j, seed in enumerate(SEEDS):
             inner = outer[i, j].subgridspec(1, 2, width_ratios=(1, 4), wspace=.05)
             ea, ta = fig.add_subplot(inner[0]), fig.add_subplot(inner[1])
-            for arm, (name, color) in ARMS.items():
+            for arm, (name, color, ls) in branches.items():
                 tab = dense if source == 'dense' else ck
                 x, y = series(tab, arm, seed, key)
                 edit = opts.get('edit_key', key)
                 before = source_value(ck, arm, seed, edit)
                 after = series(ck, arm, seed, edit)[1][0]
-                ea.plot([0, 1], [before, after], '-o', color=color, ms=4, lw=1.4)
+                ea.plot([0, 1], [before, after], marker='o', ls=ls, color=color, ms=4, lw=1.4)
                 keep = [k for k, s in enumerate(x) if s > 0]
-                ta.plot([x[k] for k in keep], [y[k] for k in keep], '-' if source == 'dense' else '-o',
+                ta.plot([x[k] for k in keep], [y[k] for k in keep], marker=None if source == 'dense' else 'o', ls=ls,
                         color=color, lw=1.2, ms=3, label=name)
                 if 'dense_overlay' in opts:
                     xd, yd = series(dense, arm, seed, opts['dense_overlay'])
-                    ta.plot(xd[1:], yd[1:], '-', color=color, lw=.6, alpha=.5)
+                    ta.plot(xd[1:], yd[1:], ls=ls, color=color, lw=.6, alpha=.5)
                 if 'second' in opts:
                     x2, y2 = series(ck, arm, seed, opts['second'])
                     ta.plot(x2[1:], y2[1:], '--', color=color, lw=1)
@@ -90,8 +92,8 @@ def figure(ck, dense, panels, title, caption, path):
                 ea.set_title('the edit', fontsize=8)
             if i == len(panels) - 1:
                 ta.set_xlabel('continuation updates (log; update 0 in the left panel)', fontsize=8)
-    handles = [plt.Line2D([], [], color=c, marker='o', ms=4, lw=1.4) for _, c in ARMS.values()]
-    fig.legend(handles, [n for n, _ in ARMS.values()], loc='upper center', ncol=3, fontsize=9, frameon=False,
+    handles = [plt.Line2D([], [], color=c, ls=ls, marker='o', ms=4, lw=1.4) for _, c, ls in branches.values()]
+    fig.legend(handles, [n for n, _, _ in branches.values()], loc='upper center', ncol=len(branches), fontsize=9, frameon=False,
                bbox_to_anchor=(.53, .975))
     fig.suptitle(title, fontsize=12, y=.995)
     fig.text(.07, .01, caption, fontsize=8, va='bottom')
@@ -132,6 +134,18 @@ def main():
     ], 'Frequency structure and operand-label preference through the continuation',
         common + '\nShares are of each live unit\'s non-DC input energy (U and V). sigma = std of the pair\'s 30 wrong-label logits.',
         args.out/'structure')
+    figure(ck, dense, [
+        ('common_acc', 'held-out accuracy\n(483 common pairs)', 'ck', dict(ylim=(0, 1), ref=1/31, dense_overlay='audit_acc')),
+        ('train_ce', 'train cross-entropy\n(log)', 'dense', dict(log=True)),
+        ('P_cN', 'P(a+b over N)\n(common pairs)', 'ck', dict(ylim=(0, 1), ref=.5)),
+        ('input_concentration', 'input concentration\n(mean top share)', 'ck', dict(ylim=(0, 1.02))),
+        ('norm', 'weight norm\n(U, V, W together)', 'dense', {}),
+    ], 'Follow-up 1: the same B and C start files continued with weight decay 1 (solid) and 0 (dashed)',
+        common.replace('All nine branches', 'All branches').replace('the original recipe', 'the original recipe apart from weight decay').replace(
+            'Run IDs e3-me-<keep|filt|sham>-w128-i<seed>-a1.', 'Run IDs e3-me-<filt|sham>-w128-i<seed>-a1 (wd 1) and '
+            'e3-me-<filt|sham>-wd0-w128-i<seed>-a1 (wd 0); wd 1 rows are packet 1.')
+        + '\nTop row, thin lines: accuracy on the run\'s own 544 audit pairs (they include the 483), every 10 updates.',
+        args.out/'weight_decay', WD0)
 
 
 if __name__ == '__main__':
