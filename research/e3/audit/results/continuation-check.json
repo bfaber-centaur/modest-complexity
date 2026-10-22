@@ -1,0 +1,172 @@
+{
+ "C6": {
+  "sources": {
+   "e1-co-add-w128-i30000-a1": {
+    "checkpoint": "research/coordinator/runs/e1-co-add-w128-i30000-a1/checkpoint_050000.npz",
+    "arms": 3,
+    "sha256_matches": true,
+    "step": 50000
+   },
+   "e1-st-add-w128-i30001-a1": {
+    "checkpoint": "research/size-time/runs/e1-st-add-w128-i30001-a1/checkpoint_050000.npz",
+    "arms": 3,
+    "sha256_matches": true,
+    "step": 50000
+   },
+   "e1-st-add-w128-i30002-a1": {
+    "checkpoint": "research/size-time/runs/e1-st-add-w128-i30002-a1/checkpoint_050000.npz",
+    "arms": 3,
+    "sha256_matches": true,
+    "step": 50000
+   }
+  },
+  "PASS": true
+ },
+ "continuation_seconds": 0.71,
+ "C1": {
+  "split_regenerated_equals_run": true,
+  "step0_weights_equal_source": true,
+  "step0_moments_zero": true,
+  "max_abs_weight": 0.8498178234611606,
+  "tolerance": 8.498178234611606e-10,
+  "independent_fresh_replay_max_abs_diff": {
+   "10": 2.0709045589484276e-11,
+   "30": 1.9454680921793255e-11,
+   "100": 2.5155960647893494e-11,
+   "300": 3.610300947087808e-11
+  },
+  "independent_fresh_replay_moment_max_abs_diff_at_300": 2.321126866902797e-17,
+  "PASS": true
+ },
+ "C2": {
+  "kept_moments_replay_max_abs_diff_at_10": 0.0014779556715959763,
+  "run_displacement_max_abs_at_10": 0.001741385971233654,
+  "PASS": true
+ },
+ "C3": {
+  "step0_row": {
+   "train": 1.0,
+   "cal": 0.0,
+   "audit": 0.0,
+   "norm": 60.337936530419675,
+   "train_ce": 3.650925265756814e-06,
+   "cal_ce": 11.042691707315438,
+   "audit_ce": 10.545483047939243
+  },
+  "source_row_50000": {
+   "train": 1.0,
+   "cal": 0.0,
+   "audit": 0.0,
+   "norm": 60.337936530419675,
+   "train_ce": 3.650925265756814e-06,
+   "cal_ce": 11.042691707315438,
+   "audit_ce": 10.545483047939243
+  },
+  "own_forward": {
+   "train": {
+    "acc": 1.0,
+    "ce": 3.6509252658967577e-06
+   },
+   "cal": {
+    "acc": 0.0,
+    "ce": 11.042691707315438
+   },
+   "audit": {
+    "acc": 0.0,
+    "ce": 10.545483047939243
+   }
+  },
+  "own_forward_ce_rel_diff": {
+   "train": 3.833105548263433e-11,
+   "cal": 0.0,
+   "audit": 0.0
+  },
+  "own_forward_ce_abs_diff": {
+   "train": 1.399438189300401e-16,
+   "cal": 0.0,
+   "audit": 0.0
+  },
+  "train_mean_abs_correct_logit": 18.83628897085073,
+  "row_equals_source_exactly": true,
+  "PASS": false
+ },
+ "arm_A_train_ce_after_reset": {
+  "0": 3.650925265756814e-06,
+  "10": 3.6551992612134056e-06,
+  "30": 3.6526608033202454e-06,
+  "100": 3.6506780031557494e-06,
+  "300": 3.6494284311368963e-06
+ },
+ "arm_A_train_acc_after_reset": {
+  "0": 1.0,
+  "10": 1.0,
+  "30": 1.0,
+  "100": 1.0,
+  "300": 1.0
+ },
+ "C4": {
+  "same": {
+   "task": [
+    "add",
+    "add"
+   ],
+   "hidden": [
+    128,
+    128
+   ],
+   "p": [
+    31,
+    31
+   ],
+   "lr": [
+    0.001,
+    0.001
+   ],
+   "wd": [
+    1.0,
+    1.0
+   ],
+   "diagnostics": [
+    "none",
+    "none"
+   ]
+  },
+  "train_fraction": [
+   0.3,
+   null
+  ],
+  "data_seed": [
+   31000,
+   31000
+  ],
+  "hashes_equal": true,
+  "init_rule": "U, V, W from --init-weights (init_seed unused); Adam moments zero, update count restarts at 1",
+  "init_age": 50000,
+  "init_weights_sha256_recorded": true,
+  "PASS": true
+ },
+ "C5": {
+  "unittest_returncode": 0,
+  "unittest_summary": "OK",
+  "unittest_ran": [
+   "Ran 13 tests in 1.123s"
+  ],
+  "selftest_returncode": 0,
+  "nine_commands_correct": {
+   "e3-me-keep-w128-i30000-a1": true,
+   "e3-me-filt-w128-i30000-a1": true,
+   "e3-me-sham-w128-i30000-a1": true,
+   "e3-me-keep-w128-i30001-a1": true,
+   "e3-me-filt-w128-i30001-a1": true,
+   "e3-me-sham-w128-i30001-a1": true,
+   "e3-me-keep-w128-i30002-a1": true,
+   "e3-me-filt-w128-i30002-a1": true,
+   "e3-me-sham-w128-i30002-a1": true
+  },
+  "reserved_id_refused": true,
+  "init_weights_sha256_still_pending": [
+   "PENDING"
+  ],
+  "PASS": true
+ }
+}

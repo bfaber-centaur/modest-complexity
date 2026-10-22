@@ -181,3 +181,72 @@ A lane that projects a launch past its remaining budget stops and asks; it never
 | 30 min per session | 70 / 25 / 30 / 15 min, calibrated | D7 |
 | two inquiry cycles per explorer | one initial experiment and one adaptive follow-up, with first figure reviewed | D8 |
 | restricted rank and σ-unit gap as the main normalized measures | pairwise P(S over N), P(a+b over N), P(a+b over S) as primary; max-based measures kept | D6 |
+
+## D10 (2026-10-22) Mechanisms runs activated
+
+The lane pushed the nine start files and the update-0 report on `claude/project-thread-psralm` at `42ca626` (`research/e3/mechanisms/starts/`, written by `edits.py` at `371ed43`). The coordinator recomputed the nine SHA-256 values; they match the lane's list. A's arrays are identical to the source checkpoints. B's relative displacement is 0.74–0.76 for U and V and 0.78–0.80 for W; C's is 0.74–0.76 for U and V and 0.71–0.75 for W.
+
+The audit gate passed on every item, with evidence on `claude/project-thread-id1tmm` at `a8d796d` (`research/e3/audit/results/continuation-check.json` and `start-check.json`):
+- sources;
+- A unchanged;
+- B equal to the e2 `filter_units`;
+- C weights-only and rebuilt independently;
+- optimizer reset and recipe: a 300-update arm-A continuation matches an independent zero-moment AdamW replay to 3.6e-11;
+- post-edit row;
+- visible limits.
+
+The nine entries moved from `reserved` to `runs` with `init_weights_sha256` filled in and `activated` set. The start files reach `swarm/exploration` with the lane's PR.
+
+## D11 (2026-10-22) Mechanisms first figure reviewed; follow-up claimed (weight decay 0)
+
+PR #24 was integrated at `d0a0657`; it is not yet audited. The coordinator spot-checked it with separate forward code on published checkpoints and matched `results/checkpoints.csv`, and the update-0 moments are zero. Reviewed figures: `research/e3/mechanisms/figures/continuation.png` and `structure.png`.
+
+**Observations, all three seeds alike:**
+- A does not move under the reset.
+- B rises from 0.43–0.58 at update 0 to 0.74–0.86 around updates 70–100, while train accuracy returns to 1.
+- B then falls to 0.22–0.27 by 1,000 updates and to near chance by 5,000.
+- During the fall B's P(S over N) climbs back to about 0.94, A's level.
+- B's P(a+b over N) stays near 0.87 against A's 0.70–0.74.
+- 90–92% of B's units keep their update-0 dominant frequency.
+- C stays at chance on held-out pairs, and its removed frequency partly regrows.
+
+Two parts of the rise and fall are separate: the edit supplied the update-0 level, and the rise after the edit came from training. "Erasure" is an observation of the held-out readout, not evidence about a hidden algorithm.
+
+**Follow-up approved, the lane's proposal.** The question is whether decay or the cross-entropy drive on 299 pairs removes B's held-out gain. The fall happens between about 300 and 2,000 updates, which overlaps both the decay timescale 1/(lr·wd) = 1,000 updates and the phase in which train CE falls from about 0.1 to about 1e-3. Design:
+- Continue the same B and C start files, with the same hashes and already gated, at `--wd 0`.
+- Everything else is unchanged.
+- Six runs, `e3-me-<filt|sham>-wd0-w128-i<30000|30001|30002>-a1`.
+- About 2 minutes elapsed, within the lane's follow-up allowance (D7).
+
+The lane writes its expectation in QUESTION.md before launching. A is not repeated at wd 0, because the converged memorizer's held-out accuracy is not in question. Optimizer-state retention is left as a possible later question.
+
+## D12 (2026-10-22) Mechanisms follow-up integrated; lane's cycles used
+
+PR #25 was integrated. The lane pushed its expectation at `ad6e923` before running, and all six weight-decay-0 runs completed. The coordinator spot-checked one B and one C run at updates 0, 1,000 and 20,000 with separate forward code, and the configs record wd 0, the gated hashes and age 50,000. Neither packet is audited yet.
+
+**Observation.** From the same start files:
+- At wd 0, B keeps 0.69–0.81 common-set accuracy at 1,000 updates and 0.56–0.62 at 20,000. At wd 1 the same branches are at 0.22–0.27 and 0.01–0.03.
+- The early rise is the same at both settings.
+- At wd 0 the fit runs about 1,000× further (train cross-entropy about 3e-8), and the weight norm doubles.
+- C stays at chance at both settings.
+
+**Reading, labelled as such.** Within 20,000 updates, decay is necessary for the fast erasure. The cross-entropy drive alone erodes the gain only slowly, by 0.20–0.25 from the peak. Why decay erases it is open. One candidate explanation, untested: under decay at this training share, the operand-label memorizer is the cheaper solution.
+
+The mechanisms lane has used its initial experiment and its one follow-up (D8). Its budget is about 5.5 of 25 minutes.
+
+## D13 (2026-10-22) Audit of mechanisms packet 1 integrated; one audit probe approved
+
+PR #23 was integrated. It contains audit investigations 2 and 3: the gate, the dynamics splits, and mechanisms packet 1.
+
+**Packet 1 software checks: PASS.** All 104 checkpoints were recomputed, and the replays agree within 5e-11.
+
+**Packet 1 interpretations:**
+- The rise and fall of B are robust. At one-update resolution the peak is 0.743, 0.797 and 0.872, reached 18–37 updates after train accuracy first reaches 1.
+- The edit supplies 0.43–0.58. Training then adds 0.26–0.31 and removes it again in accuracy, but not in ranks: at 20k, P(a+b over S) is 0.39–0.45 for B against 0.14–0.18 for A and C.
+- "Return toward the memorizer" is CONTRADICTED as a return to A. B's argmax agreement with A is 0.42–0.50, and its distance from A grows.
+- It is SUPPORTED LOCALLY as B becoming a fitted network that prefers operand labels again, with P(S over N) at 0.92–0.93.
+
+**Audit probe approved.** The probe asks whether B's early rise comes from fitting frequency-concentrated features or from fresh Adam's first steps of size about ±lr. It replays B's first 300 updates from the same three start files at lr 1e-4, and separately with plain gradient descent.
+- The probe uses the auditor's own code, takes a few seconds per replay, and counts against the audit budget (D7).
+- These are diagnostic replays, not plan runs, so they get no run IDs. Their outputs and the decision rule, stated before running, go under `research/e3/audit/`.
+- They are listed in the run accounting as audit probes.
