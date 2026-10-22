@@ -103,3 +103,17 @@ Each status names what it affects.
   - if the y2-irrelevant bit count drives it: `gate` lands between `part` and `unrel`, at or below `fresh`;
   - if sharing x2 is what `part` adds: `gate` is below `part` on all three replicates.
 - *Budget.* 4 runs of about 10 s each.
+
+**2026-10-22 ~03:20, R3 M4 (`a23bdd8`), before running.**
+- *Target.* NOTE obs. 2: A stays linearly decodable after B. A fresh readout on the frozen end-of-B trunk gets 0.91–1.00, against 0.49–0.79 on a B-only trunk and 0.58–0.63 untrained.
+- *Counterexample.* The A-then-B trunk could be generically richer, not A-specific. After two parity tasks, its units may make any 3-bit parity linearly readable, including ones never trained.
+- *Test.* The end-of-B checkpoints are local-only in the lane, so I replay the B phase from each published ckA. The runs are `r1-rev-hist-replay-{rel,unrel}-d{1000,10000}-s5320{0,1,2}-a1`, using the lane's `history.py` at `a23bdd8`, unedited.
+- *Replay check.* Each replay's end-of-B snapshot metrics and readout must equal the lane's `summary.json` snapshot for the matching branch run.
+- *Controls.* Then the lane's own readout recipe is fitted, same rows and budget, with only the target changed, to:
+  - C1 = x7⊕x8⊕x9 (bits no task uses);
+  - C2 = x0⊕x1⊕x7 (A's and Brel's pair with an unused third bit).
+  Each is fitted on the untrained trunk, ckA and every end-of-B trunk.
+- *Prediction if retention is A-specific:* on end-of-B trunks, A − C1 ≥ 0.25 held-out on every seed and condition, and C1 stays within about 0.1 of its untrained-trunk level.
+- *Prediction if it is generic:* C1 on end-of-B trunks rises toward A's level.
+- *Expectation for C2.* It may be high on related-B trunks, because both A and Brel contain x0⊕x1. That would say what is shared, not that A survived.
+- *Budget.* 12 runs, about 1 min with 2 workers.
