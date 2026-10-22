@@ -5,7 +5,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | item | verdict | evidence |
 |---|---|---|
 | Pin `b3e8132` (common/, recovered/, verify_resume) | **CONCERN** (C1). Training may start. | §1 |
-| Time | M2 (`543ed95`) and F1 + NOTE (`e44349b`, PR #55): **PASS** on every check. **CONCERN T1** (eps regime; carried into the NOTE). **CONCERN T3**: the NOTE's 75k held-out column is wrong (0.781 / 0.797 / 0.844). **CONCERN T2** (CX-T4 held): at 100k tt-final still does not extend past length 3, so the supervision "speed" reading applies to held-out length-3 accuracy only. CX-T3 held. Notes T4, T5. | §2 |
+| Time | M2 (`543ed95`) and F1 + NOTE (`e44349b`, PR #55): **PASS** on every check. **CONCERN T1** (eps regime; carried into the NOTE). **CONCERN T3**: the NOTE's 75k held-out column is wrong (0.781 / 0.797 / 0.844). **CONCERN T2** (CX-T4 held): at 100k tt-final still does not extend past length 3, so the supervision "speed" reading applies to held-out length-3 accuracy only. CX-T3 held. Notes T4, T5. **All four addressed** at `4e24ebd`/`1fd4ff6` (merged `9092ed1`), with the lane's `lengths` CSV equal to my CX-T4. | §2 |
 | Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd 0 follow-up (`501071c`): **PASS** on every number checked; note S1 (F4 lead is 0.05–0.13). CX-S2: "nearly flat" is a slow rise in every run while logits keep growing, not a plateau. wd 0 decode and group tables NOT CHECKED. | §5 |
 | Generalization | Parts A and B, A5 and the follow-up anatomy (NOTE `6fe1435`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1, G2, G5 and G6. CX-G3: drift predicts failures within a transition in every model, but only 1.2–3.3×, so it is a partial account (note G7). Note G8. | §3 |
 | Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. CONCERN M1 on the centroid/residual reading, from CX-M1, is **addressed** in NOTE `0fe8624`, as are notes M2 and M3; that revision PASSES, including O6's scale-outside-U claim (0.67–0.98). Note M4 on one README word. | §4 |
@@ -161,6 +161,19 @@ Evidence: `rev_time.py 543ed95 e44349b`, functions `f1` and `note_m4`. Output in
 - **T5.** The parameter norms at 40k–50k are 25.4–35.8, not "25–35".
 - **NOT CHECKED.** The path-length estimates (`path_est_prev`, "34–38%"). The NOTE calls them coarse.
 - **Scope (handoff 6).** Apart from T2, the wording stays within "this task, recipe and budget". It says "no plateau", "not an asymptote" and "untested" where it should. It discloses that the `tu-inter` sources are my r1 arm.
+
+### NOTE fixes (`4e24ebd`, `1fd4ff6`; merged in PR #55 at `9092ed1`)
+
+I read the diff of `time/` from `e44349b` to `9092ed1` and compared the new CSV with my committed `out/rev_time.txt`. This was a read only, with no new measurement.
+
+- **T2, addressed.** The Reading now scopes the claim to "held-out length-3 accuracy". It adds a bullet saying that at 100k, final-only still does not extend past length 3, and the "does not show" list now has "at length 3 or at any other length".
+  - The lane recomputed the numbers with `time_analyze.py lengths` from the committed `ckpt-100000`.
+  - Every value in `figures/time_followup_lengths.csv` equals my CX-T4 output to 3 decimals: h1 0.125 / 0.000 / 0.1875, h2 0.109 / 0.039 / 0.148, and L = 4–6 between 0.063 and 0.140.
+  - The lane reads h1 and h2 on the 128 held-out rows, and I read them on all 32,768 length-6 prefixes. They agree here.
+- **T3, addressed.** The 75k held-out column now reads 0.781 / 0.797 / 0.844.
+- **T4, addressed.** s51201's readouts are re-tied "in function", with every cross-readout ≥ 0.92. They are not re-tied in the weights: ‖V1 − V3‖/‖V3‖ is 0.92.
+- **T5, addressed.** The norms at 40k–50k are now given as 25.4–35.8.
+- No other text, number or checkpoint changed.
 
 ## 3. Generalization
 
@@ -439,5 +452,5 @@ Every quoted number was checked against the lane NOTEs, REVIEW.md and my script 
 - **PASS.** SY7 is taken in all four places: the short answer (a), the final-only and length bullets in (a), the generalization bullet, and "Extra labels".
 - **Numbers.** Each new number matches §2 T2 and `out/rev_time.txt` (CX-T4): h1 and h2 read at 0.00–0.19, L = 4–6 at 0.06–0.14 at 100k. The pooled "0.06–0.15 beyond length 3" over 10k, 50k and 100k matches A4 (0.115–0.136 at 10k), A5 (0.095–0.15 at 50k) and CX-T4.
 - **Scope.** "Whether the model extended past length 3 at all" is bounded by the sentence's "within this budget", so it does not claim impossibility.
-- **Still open.** The time NOTE corrections for T2–T5 are not yet checked; the synthesis lists them as an open item.
+- **Time NOTE.** The time NOTE corrections for T2–T5 are now checked (§2). The synthesis's open item for them can be closed.
 
