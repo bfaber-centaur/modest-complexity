@@ -54,7 +54,7 @@ def read(path):
 
 
 def series(rows, arm, wd, seed, key):
-    rs = [r for r in rows if r['arm'] == arm and r['wd'] == wd and r['init_seed'] == seed]
+    rs = [r for r in rows if r['arm'] == arm and r['wd'] == wd and r['init_seed'] == seed and not r.get('decay_on')]
     dense = {r['step'] for r in rs if r['source'] == 'replay'}
     rs = sorted((r for r in rs if r['source'] == 'replay' or r['step'] not in dense), key=lambda r: r['step'])
     return [max(r['step'], ZERO) for r in rs], [r[key] for r in rs]

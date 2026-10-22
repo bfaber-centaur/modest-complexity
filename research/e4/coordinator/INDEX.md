@@ -13,7 +13,7 @@ Figures, observations, the explanations that survived or failed, confounds, run 
 | lane | initial experiment | status |
 |---|---|---|
 | dynamics | D6: six constant-decay runs at wd 0.1 and 0.3 from the filtered starts | packets 1 (PR #33) and 2 (PR #36, the D13 decay-off follow-up) integrated, audits pending; no further runs |
-| mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | first figure integrated (PR #35) and audited (PR #38); intervention claimed (D15, shared code pinned at 8108d8b) |
+| mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | first figure integrated (PR #35) and audited (PR #38); intervention integrated (PR #40), audit pending |
 | auditor | audit of the decomposition, the strongest cheap control (random-feature starts, D11–D12), dynamics and intervention checks | C1 (PR #34) and the decomposition audit (PR #38) integrated; dynamics checks and the patch review pending |
 
 ## 1. Decay strength between the peak and the collapse (dynamics, packet 1, not yet audited)
@@ -124,3 +124,31 @@ The published wd 1 states at update 300 or 1,000 are resumed with weights, Adam 
   Train cross-entropy and the weight norm converge to the wd 0 run; accuracy and P(a+b over S) do not.
 - **Observation, not anticipated.** After the switch the decline continues at close to the wd 1 rate for about 50 updates, and the effect fades over about 200 updates.
 - **Explanation (lane).** The loss of correct answers accumulates with decay exposure. It starts, continues and stops with decay, and fitting without decay does not restore it. So it is not a global-norm effect. The mechanism is not shown.
+
+## 5. Where decay acts (mechanisms intervention, D14–D15, not yet audited)
+
+![intervention](../mechanisms/figures/intervention.png)
+
+This rerun is the wd 1 dense replay with the decoupled decay restricted. In **xref**, the reference parts are exempt from decay. In **onlyref**, only the reference parts decay. The reference parts are each unit's cosine and sine at its update-0 frequency, the one the filter kept. Nothing is frozen. The reading was stated in [INTERVENTION.md](../mechanisms/INTERVENTION.md) before any code or run. Packet: [../mechanisms/README.md](../mechanisms/README.md), section "Intervention".
+
+**Pre-stated reading.** f = (acc − acc wd 1)/(acc wd 0 − acc wd 1), on the common pairs at 5,000 updates.
+
+| arm | f at 5,000 | common accuracy at 5,000 | reading |
+|---|---|---|---|
+| xref | 1.37–1.60 | 0.998–1.000 | decay on the reference parts is **necessary** for the collapse |
+| onlyref | −0.04 to −0.03 | 0.000 | decay on the reference parts alone **suffices** |
+
+**Observations, xref.**
+- Own held-out accuracy reaches 0.99–1.00.
+- The reference parts grow (U, V 31 → 50; W 26 → 38).
+- The off-reference parts peak near 7 and 5 at updates 650–850, then shrink.
+
+**Observations, onlyref.** It falls below 0.10 at updates 700–800, against 1,550–1,950 under uniform wd 1.
+
+**Post hoc observation.** Decay steps of similar size give opposite outcomes depending on where they act. At 5,000, xref's decay step norm is 6e-3 with accuracy 1.00, against 5.5e-3 for uniform wd 0.1 with accuracy 0.37–0.43.
+
+**Explanation (lane, provisional).** The competitor grew at wd 1 because the reference parts were being decayed. With the reference parts spared, decay holds the competitor small.
+
+**Caveats (stated in advance).**
+- The parts are coupled through the loss.
+- The exemption is task-informed. It names the frequencies the filter kept, so part of the 1.00 may be built in by the intervention.
