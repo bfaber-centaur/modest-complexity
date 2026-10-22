@@ -232,7 +232,9 @@ def main():
         for alt in ('D-nc', 'D-ridge'):
             dd = st[(alt, 'eval')][2] - st[('D', 'eval')][2]; df = acc[(alt, 'eval', 'held')] - acc[('D', 'eval', 'held')]
             worst_dec, worst_fin = max(worst_dec, dd), max(worst_fin, df)
-            rows_.append(f"{b['run_id'].replace('c2-gen-final-', '')[:22]} {alt} dec {st[(alt, 'eval')][2]:.3f} (D {st[('D', 'eval')][2]:.3f}) held {acc[(alt, 'eval', 'held')]:.3f} (D {acc[('D', 'eval', 'held')]:.3f})")
+            a_, e_ = acc[('A', 'eval', 'held')], acc[('E', 'eval', 'held')]
+            gr = f"{(acc[(alt, 'eval', 'held')] - a_)/(e_ - a_):+.2f}" if e_ - a_ >= .1 else 'n/a'
+            rows_.append(f"{b['run_id'].replace('c2-gen-final-', '')} {alt} gain {gr} (D {(acc[('D', 'eval', 'held')] - a_)/(e_ - a_) if e_ - a_ >= .1 else float('nan'):+.2f}) dec {st[(alt, 'eval')][2]:.3f} (D {st[('D', 'eval')][2]:.3f}) held {acc[(alt, 'eval', 'held')]:.3f} (D {acc[('D', 'eval', 'held')]:.3f})")
     for r in rows_:
         print('   ', r)
     check('CX-C2 tied/final grouped eval: nearest-centroid and val-tuned ridge decoders raise decoder accuracy by <= 0.15 and held final accuracy by <= 0.1 over the probe, in every base',
@@ -243,7 +245,7 @@ def main():
                      ('figures/followup_f2.csv', lambda r: f"c2-gen-final-{r['task_id']}-s{r['seed']}-a1")):
         n, bad, panels = 0, [], set()
         for r in lane_csv(a.lane, fig):
-            split = 'grouped' if 'grouped' in r['panel'] else 'main'
+            split = 'grouped' if 'grouped' in r['panel'] or r['prefixes'] in ('val', 'eval') else 'main'
             acc, st, _ = mine[(key(r), split)]
             if 'accuracy' in r['panel'] and 'symbol' not in r['panel'] and 'decoder' not in r['panel']:
                 v = acc[(r['arm'], r['prefixes'], r['rows'])]
@@ -257,7 +259,7 @@ def main():
             if abs(float(r['value']) - v) > tol:
                 bad.append((r['panel'], r['seed'], r['arm'], r['value'], v))
         check(f'C7 {fig}: every value recomputes from my numbers ({n} values)', not bad and n > 0, f'unmatched panels {sorted(panels)}; {bad[:3]}')
-    (a.out/'rev_corr.json').write_text(json.dumps(dump, indent=1))
+    (a.out/'rev_corr.json').write_text(json.dumps(dict(summary=dump, acc={f'{k[0]}|{k[1]}': {'|'.join(map(str, kk)): v for kk, v in m[0].items()} for k, m in mine.items()}), indent=1))
 
 
 if __name__ == '__main__':

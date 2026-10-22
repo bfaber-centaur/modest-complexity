@@ -157,6 +157,17 @@
     "--lane",
     "c3f03cd"
    ]
+  },
+  {
+   "run_id": "c3-rev-corr-a2",
+   "timeout": 600,
+   "argv": [
+    "research/composition-c3/review/rev_corr.py",
+    "--out",
+    "{out}",
+    "--lane",
+    "c3f03cd"
+   ]
   }
  ]
 }

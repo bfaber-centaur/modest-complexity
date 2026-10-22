@@ -81,3 +81,17 @@ Three things in the first pass need entries before the second pass.
 - **C7, added (no prediction beyond "equal").** Every value in `figures/correction.csv` and `figures/followup_f2.csv` recomputes from my numbers: A, D and E exactly, and B and C within one row.
 - **Run.** `rev_corr.py` runs as `c3-rev-corr-a1` through `run_jobs.py` (plan entry in this commit).
 
+### ae77579, first run `c3-rev-corr-a1` (failed with exit code 1 after 190 s; log kept as [out/rev_corr_pass1.txt](out/rev_corr_pass1.txt))
+
+- **Complete before the crash, and recorded as they stand:**
+  - C1–C4 pass in all 28 base × evaluation cells, with B and C exact to 0 rows.
+  - C6 fails in part: "B ≤ D + 1/32" fails in 3 grouped cells, and "≤ 1/8 of wrong-symbol rows" fails in 8 grouped cells.
+  - CX-C1 passes, 6/6 in every case.
+  - CX-C2 fails: the largest rises are +0.156 in decoder accuracy and +0.156 in held final accuracy.
+- **The crash was in C7, a bug of mine.** C7 read the `symbol_acc`/`centroid_err` panels, which have no split in their name, as the main evaluation. They are keyed by prefixes instead: `fit` means main and `eval` means grouped.
+- **Rerun `c3-rev-corr-a2`.** The fix maps the split from the prefixes. Two other additions change no check:
+  - the CX-C2 lines print the gain recovered;
+  - all my accuracies are dumped to `rev_corr.json`.
+
+  Prediction: C1–C6 and the counterexamples come out as in the first run (the code is deterministic), and C7 passes.
+
