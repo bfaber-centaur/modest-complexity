@@ -36,9 +36,34 @@ The `tu-inter` source runs are my r1 arm (disclosure above). Checks on the lane'
 5. **Attempts.** The registry and manifest: every attempt is kept, including capped or failed ones, and every published file matches its hash.
 6. **Figure.** The figure, against the CSV and against items 2–4.
 
+### 2.2 Generalization (M0 `e5a4415`)
+
+Checks, with code written here:
+1. **Task facts.** Recomputed with my own permutation code: the group the four ops generate, and the collision and function-class counts at lengths 4–6.
+2. **Part A primary metric.**
+   - Recomputed for all six r1 checkpoints at L = 1–6, every row, with my own forward and oracle. Compared with the lane's CSV.
+   - At L = 3, the held-out prediction strings against r1's.
+   - The lane's explicit step map (D10) is valid.
+3. **Part B tasks and inits.**
+   - Draws and splits are recomputed from the seeds with my own acceptance code and compared with `tasks.json`, accepted and rejected seeds alike.
+   - `c2task.load` of each task ID equals the logged draw.
+   - Held-out programs have no product collision at length ≤ 3. Each split is Latin, and squares are distinct within a draw.
+   - `ckpt-0` is identical for inter and final within a split, and across splits with the same init seed.
+   - Every run's recipe matches its plan entry (D9).
+   - All 16 `ckpt-10000` are rescored with my forward. Held-out and ¬N use my recount on each task.
+
 ## Revisions
 
 (Dated, before the matching analysis or run.)
+
+- **04:1y, D10 and the post-pin recovery addition.** These were written after reading D10 and `c2rnn._step_map`, and before running anything.
+  - *Prediction (D10).* For a tied/tied model, `forward` with no map raises AssertionError at L ≥ 4 and works at L ≤ 3. An untied model with no map raises ValueError at L ≥ 4. For tied/tied, every valid explicit map gives bitwise identical states and logits, equal to my forward. For each untied scheme, two different maps give different logits, so the map is used there.
+  - *Prediction (recovery).* The 28th `RECOVERY.json` entry (`r1-comp-interp-s51200-a1` `ckpt-10000`, r1's P2) has committed bytes equal to its recorded SHA-256 and to r1's published manifest.
+- **04:1y, generalization counterexamples.** These were written after reading its M0 `e5a4415` and the coordinator's one-line relay ("length 3 reproduces r1 exactly"), and before opening its tables, CSV or figure.
+  - **CX-G1, against "reusable iteration" (Part A).**
+    - *If tied/inter succeeds at L = 4–6.* I split rows by whether *any* 3-op window of the program, not only the prefix, is a held-out length-3 program. *Prediction:* in every seed with L = 4 accuracy ≥ 0.5, the two groups differ by less than 0.05 at each L. The alternative is success that is partly window-specific.
+    - *If it fails.* I decode h_t at t = 4–6 by the nearest training-row centroid of h1–h3 for each symbol, and compare that with the readout. *Prediction:* centroid decoding is within 0.1 of the readout, so the failure is in the state, not only in reading it.
+  - **CX-G2, against "the contrast reproduces on new tasks" (Part B).** A new draw that equals the original after relabelling symbols and ops (σ P_π(k) σ⁻¹ = P'_k for some σ in S8 and π in S4) is the same task with a different init, not a new task. I test every pair among the original and the two new draws over all σ and π. I also test, for each draw, whether its two splits correspond under such a relabelling. *Prediction:* no pair is equivalent.
 
 - **04:11, time lane counterexamples** (db69507; written after reading the time lane's M0 `b7d1ab6` and before any of its results exist). Analysis only, on the lane's committed `ckpt-40000` and `ckpt-50000`.
   - **CX-T1, against "the supervision gap persists" (`tt-final`).**
