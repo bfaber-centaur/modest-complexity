@@ -28,16 +28,18 @@ uv run --locked python research/composition-c2/review/rev_time.py 543ed95 > rese
 
 ## Budget tally (25 min of numerical execution, D6)
 
-| time (UTC) | item | wall | running total |
+| when (UTC; from 04:16 on, the commit that recorded it) | item | wall | running total |
 |---|---|---|---|
 | 04:01 | `c2-rev-verify-final-s51200-a1` (resume 1,000 → 10,000) | 52.4 s | 0.9 min |
 | 04:05 | `rev_pin.py` first pass (§0–7, includes `test_c2.py` 13 s and two one-update guard runs) | 15.6 s | 1.1 min |
 | 04:08 | `rev_pin.py` with §8 (c2probe) | 21.5 s | 1.5 min |
-| 04:16 | `rev_pin.py` with §9 (D10) and the post-pin recovery entry | 22.0 s | 1.9 min |
-| 04:17–04:20 | `rev_gen.py` (generalization Part A): one crash on the `steps.csv` summary row, then two complete passes | 3.4 + 15.6 + 16.3 s | 2.4 min |
-| 04:25–04:27 | `rev_mech.py` (mechanisms M1–M2, CX-M1), two passes | 13.4 + 13.5 s | 2.9 min |
-| 04:29 | `rev_mech.py` at `817a768` with follow-up B | 25.3 s | 3.3 min |
-| 04:31 | `rev_share.py` (sharing M2, CX-S1) | 0.6 s | 3.3 min |
-| 04:33 | `rev_gen.py` with Part B and CX-G2 | 20.4 s | 3.7 min |
-| 04:38–04:40 | `rev_time.py` (time M2, CX-T1, CX-T2), two passes, plus a one-off read of the logged eps-regime steps | 2.0 + 1.7 + 1 s | 3.8 min |
-| 04:43–04:46 | A5 checks: two one-off reads (about 6 s), then `rev_gen.py` with `a5()` | 6 + 42.8 s | 4.6 min |
+| before 8867974 (04:20) | `rev_pin.py` with §9 (D10) and the post-pin recovery entry | 22.0 s | 1.9 min |
+| before 8867974 (04:20) | `rev_gen.py` (generalization Part A): one crash on the `steps.csv` summary row, then two complete passes | 3.4 + 15.6 + 16.3 s | 2.4 min |
+| before 413fddc (04:24) | `rev_mech.py` (mechanisms M1–M2, CX-M1), two passes | 13.4 + 13.5 s | 2.9 min |
+| before 58b00bf (04:26) | `rev_mech.py` at `817a768` with follow-up B | 25.3 s | 3.3 min |
+| before 5893f9f (04:31) | `rev_share.py` (sharing M2, CX-S1) | 0.6 s | 3.3 min |
+| before 5893f9f (04:31) | `rev_gen.py` with Part B and CX-G2 | 20.4 s | 3.7 min |
+| before 7ab43ed (04:34) | `rev_time.py` (time M2, CX-T1, CX-T2), two passes, plus a one-off read of the logged eps-regime steps | 2.0 + 1.7 + 1 s | 3.8 min |
+| before c321113 (04:37) | A5 checks: two one-off reads (about 6 s), then `rev_gen.py` with `a5()` | 6 + 42.8 s | 4.6 min |
+
+Times from 04:16 on were first written as clock guesses that ran 3–9 minutes ahead. They were replaced with the commit that recorded each run.

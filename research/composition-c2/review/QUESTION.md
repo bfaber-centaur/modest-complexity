@@ -74,7 +74,7 @@ The TU cell is my r1 arm (disclosure above). Checks, with code written here:
 
 (Dated, before the matching analysis or run.)
 
-- **04:4x, sharing wd-0 follow-up.** This is post hoc in one respect. It was written after the coordinator's one-line summary, which said held-out at 10k was 0.30–0.45, ¬N ≤ 0.07, and "nearly flat after 1–4k, not eps-limited". It was written before opening any wd-0 file.
+- **04:38, sharing wd-0 follow-up** (69ed8e2). This is post hoc in one respect. It was written after the coordinator's one-line summary, which said held-out at 10k was 0.30–0.45, ¬N ≤ 0.07, and "nearly flat after 1–4k, not eps-limited". It was written before opening any wd-0 file.
   - **Checks.** The recipes (wd 0, everything else as at wd 0.1). The step-0 rows equal the wd-0.1 runs' per seed. The endpoints recomputed from the logged prediction strings with my ¬N recount. No checkpoints are committed.
   - **CX-S2, against "without decay, no cell composes within 10k".** "Nearly flat" could be an argmax property while the function still moves.
   - *Test.* Per run, from 5k to 10k: the held-out change, the held-out final CE, the train final margin (from `--diag`), and the number of held-out predictions that change between consecutive evaluations.
