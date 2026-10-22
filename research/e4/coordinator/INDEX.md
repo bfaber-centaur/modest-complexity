@@ -13,8 +13,8 @@ Figures, observations, the explanations that survived or failed, confounds, run 
 | lane | initial experiment | status |
 |---|---|---|
 | dynamics | D6: six constant-decay runs at wd 0.1 and 0.3 from the filtered starts | packets 1 (PR #33) and 2 (PR #36, the D13 decay-off follow-up) integrated, audits pending; no further runs |
-| mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | first figure integrated (PR #35), audit pending; intervention approved in principle (D14), waiting for the shared-code patch |
-| auditor | audit of the decomposition, the strongest cheap control (random-feature starts, D11–D12), dynamics and intervention checks | control C1 integrated (PR #34); decomposition and dynamics checks pending |
+| mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | first figure integrated (PR #35) and audited (PR #38); intervention claimed (D15, shared code pinned at 8108d8b) |
+| auditor | audit of the decomposition, the strongest cheap control (random-feature starts, D11–D12), dynamics and intervention checks | C1 (PR #34) and the decomposition audit (PR #38) integrated; dynamics checks and the patch review pending |
 
 ## 1. Decay strength between the peak and the collapse (dynamics, packet 1, not yet audited)
 
@@ -81,6 +81,29 @@ States come from the six dense replays (bitwise equal to e3 at every shared chec
 **Explanation (lane, provisional).** The answers are outvoted, not erased. Decay stalls the reference part while a competing off-reference readout grows against a+b on the operand labels.
 
 **Strongest alternative (lane).** This is one integrated re-memorisation, cut into two channels by a task-informed basis.
+
+**Audit (PR #38, [AUDIT.md](../audit/AUDIT.md)).** Software checks M1–M4 PASS. The lane's `channels.py` equals the auditor's implementation to 7e-16.
+
+| reading | verdict |
+|---|---|
+| The label offset is not involved in the decline | SUPPORTED LOCALLY |
+| "Outvoted, not erased" | SUPPORTED LOCALLY, as a statement about the readout at the reference frequencies |
+| What decay changes is mostly the reference part | AMBIGUOUS, scale-dependent |
+| The loss is not weight shrinkage | AMBIGUOUS |
+| Phase coherence is not involved | AMBIGUOUS |
+
+Why "outvoted, not erased" holds, and its limits:
+- The reference-only score is 0.22–0.36 above A in every seed. With a permuted basis it falls to 0.03–0.05.
+- The same channels move in the same order on the random-feature control runs, so this belongs to the filtered start and not to the failed runs.
+- What is not erased is a direction. By 5k the edited readout itself is under 1% of W_ref, but the rebuilt readout keeps cosine 0.72–0.83 with it.
+- The reference frequencies cover every bin, so "off-reference" is a per-unit distinction, not a per-frequency one.
+
+Why the other readings are ambiguous:
+- **Scale.** Per unit of ‖(U,V)‖·‖W‖, the off-reference excess at wd 1 is 2.5× larger.
+- **Rebuilding.** Decay acts on schedule. The norms hold because the gradient rebuilds the weights.
+- **Coherence.** On held-out pairs, coherence falls only from 0.97 to 0.92. The all-pairs index cannot show a computation, since A also scores 0.98–0.99 on it.
+
+The strongest surviving alternative is the lane's own: one re-fitting process cut in two by the basis. The D15 intervention discriminates.
 
 ## 4. Does the decline need decay to continue? (dynamics packet 2, endpoint intervention, not yet audited)
 
