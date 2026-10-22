@@ -58,9 +58,9 @@ Figure: [figures/time_followup.png](figures/time_followup.png).
 
 | seed | held-out final at 50k / 75k / 100k | threshold step | ¬N at 50k / 75k / 100k | N at 100k | 90k → 100k |
 |---|---|---|---|---|---|
-| 51200 | 0.562 / 0.766 / 0.898 | censored | 0.12 / 0.48 / 0.74 | 0.98 | +0.06, CE −35% |
-| 51201 | 0.695 / 0.750 / 0.961 | 95,050 | 0.26 / 0.40 / 0.88 | 1.00 | +0.05, CE −52% |
-| 51202 | 0.656 / 0.797 / 0.914 | censored | 0.14 / 0.55 / 0.74 | 1.00 | +0.02, CE −28% |
+| 51200 | 0.562 / 0.781 / 0.898 | censored | 0.12 / 0.48 / 0.74 | 0.98 | +0.06, CE −35% |
+| 51201 | 0.695 / 0.797 / 0.961 | 95,050 | 0.26 / 0.40 / 0.88 | 1.00 | +0.05, CE −52% |
+| 51202 | 0.656 / 0.844 / 0.914 | censored | 0.14 / 0.55 / 0.74 | 1.00 | +0.02, CE −28% |
 
 - **Outcome.** By the same rules applied over 90k–100k, `tt-final` is still unresolved at 100,000.
   - Every seed is still rising.
@@ -95,7 +95,7 @@ These are logged from 10,000 on. r1 logged no diagnostics before that.
 
 - **Stable functions, moving parameters.** `tt-inter` and `tu-inter` show no change in any held-out prediction over 49k–50k. Their held-out CE still falls, by 19–56% from 40k to 50k in `tt-inter`.
 - **Parameters keep moving** under the balance of gradient and decay.
-  - Between `ckpt-40000` and `ckpt-50000` the distance is 2.6–3.4 in `tt-inter`, 5.4–6.1 in `tu-inter` and 4.4–4.6 in `tt-final`. The parameter norms are 25–35.
+  - Between `ckpt-40000` and `ckpt-50000` the distance is 2.6–3.4 in `tt-inter`, 5.4–6.1 in `tu-inter` and 4.4–4.6 in `tt-final`. The parameter norms at 40k–50k are 25.4–35.8.
   - Parameter norms shrink slowly after a peak near 20k, for example 27.6 → 25.5 in `tt-inter` s51200.
   - In F1, `tt-final` moves 7.3–7.8 per 25,000 updates at 75k–100k.
 - **Directed in the inter arms, not in `tt-final`.** Over 40k–50k, the distance between checkpoints is 71–84% of the path length estimated from logged update norms in `tt-inter` and `tu-inter`. In `tt-final` it is 38–42% over 40k–50k, and 34–38% over 75k–100k, which is consistent with its noisier gradient. The estimate is coarse, because it takes the logged norm, sampled every 50 updates, as typical.
@@ -107,7 +107,7 @@ At 50k in `tu-inter`, the step-3 readout V3 reads h1 at 0.81 / 0.97 / 0.84, so C
 - V3 reads h2 at 0.95–1.00;
 - V2 reads h1 at 0.94–1.00.
 
-The catch-up therefore partly re-ties the readouts, and fully so in s51201.
+The catch-up therefore partly re-ties the readouts. In s51201 it does so fully in function, with every cross-readout ≥ 0.92, but not in the weights: ‖V1 − V3‖/‖V3‖ is still 0.92 (reviewer T4).
 
 ## Predictions against outcomes
 
@@ -132,15 +132,20 @@ All of this holds for one task draw and split, one recipe (including eps = 1e-8 
   - **The late phase is a different update rule.** The late part of the catch-up, including most crossings, happens in the eps regime. There Adam behaves as decay-balanced gradient descent, not as the early normalized Adam. "Speed" here includes those late dynamics.
   - **Untied readouts may only partly stay untied.** The readouts converge toward one another as the arm catches up. So "slower" partly means "takes longer to approach a shared readout", and the result does not show that untied readouts compose by a different route.
 
-**The supervision gap is a large speed difference within 100k, and its end state is unresolved.**
+**For held-out length-3 accuracy, the supervision gap is a large speed difference within 100k, and its end state is unresolved.**
 - `tt-final` takes more than 10× longer than `tt-inter` in the one seed that crosses (95,050 against 7,700–9,150), and is still rising in all three.
+- **This holds for length-3 accuracy only** (reviewer T2, CX-T4).
+  - At 100k, the shared readout of `tt-final` reads the intermediate states h1 and h2 at 0.00–0.19.
+  - On all programs of length 4–6, `tt-final` scores 0.06–0.14, against chance 0.125. Its tied transition is applied with the tied readout.
+  - I recomputed both from the committed `ckpt-100000`, and they agree with the reviewer.
+  - So at 100k final-only training still does not extend past length 3. Its length-3 gain does not come with intermediate states that the shared readout can read.
 - The rise is not a neighbour-copy plateau. ¬N, which no one-slot neighbour copy can answer, climbs from 0 at 10k to 0.74–0.88 at 100k.
 - Most of this rise happens in the eps regime. Whether it would continue, stall or speed up under a different eps, or under an optimizer that does not slow down at tiny gradients, is untested.
 - A plateau would not have shown necessity either. Here there is no plateau.
 
 **What this lane does not show.**
 - That any arm has reached an asymptote.
-- That `tt-final` will close the gap.
+- That `tt-final` will close the gap, at length 3 or at any other length.
 - That the late dynamics would be the same with another eps, decay, learning rate or optimizer.
 - That the networks compute by composing internal states. Accuracy on ¬N rows rules out one copying rule, not every shortcut.
 - Any mechanism. The mechanisms lane has the 20k–50k states.
