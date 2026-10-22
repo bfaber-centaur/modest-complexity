@@ -1,0 +1,140 @@
+{
+ "30000": {
+  "eta": 0.20183405972115112,
+  "first_adam_step_norm": 0.1075289049457094,
+  "initial_gradient_norm": 0.5327589659261109,
+  "reference": {
+   "update0": 0.4306418219461698,
+   "fit_reached": true,
+   "fit_update": 69,
+   "at_fit": 0.7349896480331263,
+   "gain_at_fit": 0.3043478260869565,
+   "peak": 0.7432712215320911,
+   "peak_update": 87,
+   "final": 0.6211180124223602,
+   "final_train_acc": 1.0
+  },
+  "small Adam": {
+   "update0": 0.4306418219461698,
+   "fit_reached": true,
+   "fit_update": 724,
+   "at_fit": 0.7142857142857143,
+   "gain_at_fit": 0.2836438923395445,
+   "peak": 0.7267080745341615,
+   "peak_update": 1326,
+   "final": 0.6190476190476191,
+   "final_train_acc": 1.0
+  },
+  "gradient descent": {
+   "update0": 0.4306418219461698,
+   "fit_reached": true,
+   "fit_update": 82,
+   "at_fit": 0.7101449275362319,
+   "gain_at_fit": 0.27950310559006214,
+   "peak": 0.7184265010351967,
+   "peak_update": 123,
+   "final": 0.006211180124223602,
+   "final_train_acc": 1.0
+  }
+ },
+ "30001": {
+  "eta": 0.2616193762269643,
+  "first_adam_step_norm": 0.10796121350488874,
+  "initial_gradient_norm": 0.41266520493202485,
+  "reference": {
+   "update0": 0.5403726708074534,
+   "fit_reached": true,
+   "fit_update": 45,
+   "at_fit": 0.7784679089026915,
+   "gain_at_fit": 0.23809523809523803,
+   "peak": 0.7971014492753623,
+   "peak_update": 68,
+   "final": 0.6790890269151139,
+   "final_train_acc": 1.0
+  },
+  "small Adam": {
+   "update0": 0.5403726708074534,
+   "fit_reached": true,
+   "fit_update": 480,
+   "at_fit": 0.7598343685300207,
+   "gain_at_fit": 0.2194616977225673,
+   "peak": 0.7846790890269151,
+   "peak_update": 933,
+   "final": 0.6625258799171843,
+   "final_train_acc": 1.0
+  },
+  "gradient descent": {
+   "update0": 0.5403726708074534,
+   "fit_reached": true,
+   "fit_update": 48,
+   "at_fit": 0.7743271221532091,
+   "gain_at_fit": 0.23395445134575565,
+   "peak": 0.7971014492753623,
+   "peak_update": 125,
+   "final": 0.0,
+   "final_train_acc": 1.0
+  }
+ },
+ "30002": {
+  "eta": 0.24876739971154366,
+  "first_adam_step_norm": 0.10761927347330182,
+  "initial_gradient_norm": 0.43261003490847644,
+  "reference": {
+   "update0": 0.5797101449275363,
+   "fit_reached": true,
+   "fit_update": 33,
+   "at_fit": 0.8385093167701864,
+   "gain_at_fit": 0.2587991718426501,
+   "peak": 0.8716356107660456,
+   "peak_update": 70,
+   "final": 0.7391304347826086,
+   "final_train_acc": 1.0
+  },
+  "small Adam": {
+   "update0": 0.5797101449275363,
+   "fit_reached": true,
+   "fit_update": 353,
+   "at_fit": 0.8178053830227743,
+   "gain_at_fit": 0.23809523809523803,
+   "peak": 0.8633540372670807,
+   "peak_update": 673,
+   "final": 0.7287784679089027,
+   "final_train_acc": 1.0
+  },
+  "gradient descent": {
+   "update0": 0.5797101449275363,
+   "fit_reached": true,
+   "fit_update": 41,
+   "at_fit": 0.8322981366459627,
+   "gain_at_fit": 0.2525879917184265,
+   "peak": 0.8592132505175983,
+   "peak_update": 101,
+   "final": 0.0,
+   "final_train_acc": 1.0
+  }
+ },
+ "small Adam": {
+  "gains": [
+   0.2836438923395445,
+   0.2194616977225673,
+   0.23809523809523803
+  ],
+  "at_least_010_all": true,
+  "below_005_all": false
+ },
+ "gradient descent": {
+  "gains": [
+   0.27950310559006214,
+   0.23395445134575565,
+   0.2525879917184265
+  ],
+  "at_least_010_all": true,
+  "below_005_all": false
+ },
+ "verdict": "a property of fitting from the edited point",
+ "reference_matches_investigation_3": [
+  0.7432712215320911,
+  0.7971014492753623,
+  0.8716356107660456
+ ]
+}

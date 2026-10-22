@@ -206,6 +206,144 @@
    "producing_code_commit": "59c822ec0164930028b0364bf016d798a70f761b",
    "producing_tree_dirty": true,
    "PASS": true
+  },
+  "e3-me-filt-wd0-w128-i30000-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "completed": 20000,
+   "start_sha_recorded": true,
+   "recipe": [
+    50000,
+    20000,
+    0.001,
+    0.0,
+    10,
+    "aa8f7504bf7d"
+   ],
+   "step0_is_start": true,
+   "step0_moments_zero": true,
+   "manifest_published_files_match": true,
+   "manifest_missing": [],
+   "producing_code_commit": "ad6e923aadd8a75a903d8b11945ba5c456dc411d",
+   "producing_tree_dirty": true,
+   "PASS": true
+  },
+  "e3-me-filt-wd0-w128-i30001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "completed": 20000,
+   "start_sha_recorded": true,
+   "recipe": [
+    50000,
+    20000,
+    0.001,
+    0.0,
+    10,
+    "aa8f7504bf7d"
+   ],
+   "step0_is_start": true,
+   "step0_moments_zero": true,
+   "manifest_published_files_match": true,
+   "manifest_missing": [],
+   "producing_code_commit": "ad6e923aadd8a75a903d8b11945ba5c456dc411d",
+   "producing_tree_dirty": true,
+   "PASS": true
+  },
+  "e3-me-filt-wd0-w128-i30002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "completed": 20000,
+   "start_sha_recorded": true,
+   "recipe": [
+    50000,
+    20000,
+    0.001,
+    0.0,
+    10,
+    "aa8f7504bf7d"
+   ],
+   "step0_is_start": true,
+   "step0_moments_zero": true,
+   "manifest_published_files_match": true,
+   "manifest_missing": [],
+   "producing_code_commit": "ad6e923aadd8a75a903d8b11945ba5c456dc411d",
+   "producing_tree_dirty": true,
+   "PASS": true
+  },
+  "e3-me-sham-wd0-w128-i30000-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "completed": 20000,
+   "start_sha_recorded": true,
+   "recipe": [
+    50000,
+    20000,
+    0.001,
+    0.0,
+    10,
+    "aa8f7504bf7d"
+   ],
+   "step0_is_start": true,
+   "step0_moments_zero": true,
+   "manifest_published_files_match": true,
+   "manifest_missing": [],
+   "producing_code_commit": "ad6e923aadd8a75a903d8b11945ba5c456dc411d",
+   "producing_tree_dirty": true,
+   "PASS": true
+  },
+  "e3-me-sham-wd0-w128-i30001-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "completed": 20000,
+   "start_sha_recorded": true,
+   "recipe": [
+    50000,
+    20000,
+    0.001,
+    0.0,
+    10,
+    "aa8f7504bf7d"
+   ],
+   "step0_is_start": true,
+   "step0_moments_zero": true,
+   "manifest_published_files_match": true,
+   "manifest_missing": [],
+   "producing_code_commit": "ad6e923aadd8a75a903d8b11945ba5c456dc411d",
+   "producing_tree_dirty": true,
+   "PASS": true
+  },
+  "e3-me-sham-wd0-w128-i30002-a1": {
+   "events": [
+    "running",
+    "complete"
+   ],
+   "completed": 20000,
+   "start_sha_recorded": true,
+   "recipe": [
+    50000,
+    20000,
+    0.001,
+    0.0,
+    10,
+    "aa8f7504bf7d"
+   ],
+   "step0_is_start": true,
+   "step0_moments_zero": true,
+   "manifest_published_files_match": true,
+   "manifest_missing": [],
+   "producing_code_commit": "ad6e923aadd8a75a903d8b11945ba5c456dc411d",
+   "producing_tree_dirty": true,
+   "PASS": true
   }
  },
  "K2": {
@@ -261,6 +399,42 @@
    "checkpoints": 12,
    "accuracies_exact": true,
    "worst_ce_diff_in_tolerance_units": 0.02087092386901224,
+   "PASS": true
+  },
+  "e3-me-filt-wd0-w128-i30000-a1": {
+   "checkpoints": 12,
+   "accuracies_exact": true,
+   "worst_ce_diff_in_tolerance_units": 0.03022377450627047,
+   "PASS": true
+  },
+  "e3-me-filt-wd0-w128-i30001-a1": {
+   "checkpoints": 12,
+   "accuracies_exact": true,
+   "worst_ce_diff_in_tolerance_units": 0.02619788113661414,
+   "PASS": true
+  },
+  "e3-me-filt-wd0-w128-i30002-a1": {
+   "checkpoints": 11,
+   "accuracies_exact": true,
+   "worst_ce_diff_in_tolerance_units": 0.016740185744676003,
+   "PASS": true
+  },
+  "e3-me-sham-wd0-w128-i30000-a1": {
+   "checkpoints": 12,
+   "accuracies_exact": true,
+   "worst_ce_diff_in_tolerance_units": 0.023050037603494347,
+   "PASS": true
+  },
+  "e3-me-sham-wd0-w128-i30001-a1": {
+   "checkpoints": 12,
+   "accuracies_exact": true,
+   "worst_ce_diff_in_tolerance_units": 0.04239501116238883,
+   "PASS": true
+  },
+  "e3-me-sham-wd0-w128-i30002-a1": {
+   "checkpoints": 12,
+   "accuracies_exact": true,
+   "worst_ce_diff_in_tolerance_units": 0.03236190419636187,
    "PASS": true
   }
  },
@@ -356,6 +530,71 @@
     "80": 6.106226635438361e-16,
     "100": 6.106226635438361e-16,
     "300": 9.992007221626409e-16
+   },
+   "tolerance": 1.3354203414019863e-09,
+   "PASS": true
+  },
+  "e3-me-filt-wd0-w128-i30000-a1": {
+   "max_abs_diff_at_checkpoints": {
+    "10": 7.771561172376096e-16,
+    "30": 7.771561172376096e-16,
+    "60": 9.43689570931383e-16,
+    "100": 1.0894063429134349e-15,
+    "300": 4.440892098500626e-15
+   },
+   "tolerance": 8.792405966497047e-10,
+   "PASS": true
+  },
+  "e3-me-filt-wd0-w128-i30001-a1": {
+   "max_abs_diff_at_checkpoints": {
+    "10": 2.7720881146109377e-15,
+    "30": 2.783363817204787e-15,
+    "50": 2.8449465006019636e-15,
+    "100": 5.329070518200751e-15,
+    "300": 8.104628079763643e-15
+   },
+   "tolerance": 8.704117803849996e-10,
+   "PASS": true
+  },
+  "e3-me-filt-wd0-w128-i30002-a1": {
+   "max_abs_diff_at_checkpoints": {
+    "10": 9.43689570931383e-16,
+    "30": 1.1934897514720433e-15,
+    "100": 2.55351295663786e-15,
+    "300": 4.107825191113079e-15
+   },
+   "tolerance": 8.736142160024872e-10,
+   "PASS": true
+  },
+  "e3-me-sham-wd0-w128-i30000-a1": {
+   "max_abs_diff_at_checkpoints": {
+    "10": 1.4988010832439613e-15,
+    "30": 1.5265566588595902e-15,
+    "90": 1.5230872119076366e-15,
+    "100": 1.5057399771478686e-15,
+    "300": 2.9004576518332215e-15
+   },
+   "tolerance": 1.352604217196651e-09,
+   "PASS": true
+  },
+  "e3-me-sham-wd0-w128-i30001-a1": {
+   "max_abs_diff_at_checkpoints": {
+    "10": 4.163336342344337e-16,
+    "30": 1.3322676295501878e-15,
+    "80": 6.106226635438361e-16,
+    "100": 6.314393452555578e-16,
+    "300": 4.385380947269368e-15
+   },
+   "tolerance": 1.3885334035750407e-09,
+   "PASS": true
+  },
+  "e3-me-sham-wd0-w128-i30002-a1": {
+   "max_abs_diff_at_checkpoints": {
+    "10": 6.938893903907228e-16,
+    "30": 6.661338147750939e-16,
+    "80": 1.4432899320127035e-15,
+    "100": 1.4432899320127035e-15,
+    "300": 2.5292268279741847e-15
    },
    "tolerance": 1.3354203414019863e-09,
    "PASS": true
