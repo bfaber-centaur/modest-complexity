@@ -23,6 +23,45 @@
    ],
    "timeout": 300,
    "purpose": "Part A: frozen length 1-6 evaluation of recovered r1 tied/inter and tied/final ckpt-10000, plus reference systems; no training; a2 after a1 failed: c2rnn default step map rejects tied/tied models past length 3, explicit ignored map now passed"
+  },
+  {
+   "run_id": "c2-gen-calib-inter-s900130-a1",
+   "argv": [
+    "research/composition-c2/common/c2train.py",
+    "--out",
+    "{out}",
+    "--task-id",
+    "ops51000-ls51100",
+    "--transition",
+    "tied",
+    "--readout",
+    "tied",
+    "--step-weights",
+    "1",
+    "1",
+    "1",
+    "--init-seed",
+    "900130",
+    "--hidden",
+    "128",
+    "--updates",
+    "2000",
+    "--lr",
+    "0.001",
+    "--wd",
+    "0.1",
+    "--eval-every",
+    "50",
+    "--diag",
+    "--checkpoint-steps",
+    "0",
+    "--run-id",
+    "c2-gen-calib-inter-s900130-a1",
+    "--purpose",
+    "calibration: ms per update on this host"
+   ],
+   "timeout": 120,
+   "purpose": "calibration (D6): one short tied/inter run on this host before planning Part B"
   }
  ]
 }
