@@ -31,3 +31,10 @@ Code under test is imported read-only or run as a subprocess. The forward pass, 
 Verdict rule: BLOCK if any of P1–P3, P5 or P9 fails in a way that changes what a branch or correction computes. CONCERN if a check fails without changing results, or a recipe pairing that should be refused is accepted. Otherwise PASS.
 
 ## Revisions
+
+### 05aac5a + runs (05:23–05:24), before any analysis of them
+
+- The five runs in the plan finished. Before I compare any of their rows, P9 gains two checks:
+  - In the drop branch, every parameter moves over 10,000–10,300, so no head is frozen. The Adam step count carries (10,300), and the first moments are nonzero. Prediction: true.
+  - The taper run's row at 1,000 equals r1's published row, so the branch point is untouched. Prediction: true.
+- P5 also checks that a per-step-readout model run at length 5 without a step map is refused.
