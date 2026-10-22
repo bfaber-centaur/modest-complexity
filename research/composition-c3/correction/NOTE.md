@@ -3,9 +3,9 @@
 **Question (charter 02).** Can a small correction that sees only the frozen model's hidden state recover part of the oracle-centroid improvement on unseen programs?
 
 **Short answer.**
-- **States the correction was fit on:** yes. With a new op 3, it recovers the full gain.
+- **States the correction was fit on:** yes. With a new op 3, the decoder arm D recovers the full gain. The map B recovers 75–103% of it on the original bases (75% in tied/final 51202) and 79–100% in F2.
 - **Prefixes held out from the correction:** no, under this design. It recovers essentially none of the gain and breaks answers the model already got right.
-- **Replication:** the same holds for eight bases from new task draws (F2).
+- **Replication:** the same holds for eight bases from new task draws (F2). These are tied/final only, because no per-step-readout arm exists on those draws.
 
 Full tables are in [README.md](README.md); the design is in [QUESTION.md](QUESTION.md) and [ADAPTIVE.md](ADAPTIVE.md).
 
@@ -31,7 +31,7 @@ Full tables are in [README.md](README.md); the design is in [QUESTION.md](QUESTI
 - **Grouped eval prefixes, train rows.** Learned arms fall from A's 1.00 to 0.17–0.64.
 - **Decoder accuracy on eval prefixes.** 0.53–0.66 (per-step) and 0.22–0.31 (tied/final), against 1.00 on fit prefixes.
 
-**F2** (eight c2 generalization tied/final bases on four new task draws; recipe fixed, refit per base).
+**F2** (eight c2 generalization tied/final bases on four new task draws; recipe fixed, refit per base). This replicates tied/final only; no per-step-readout arm exists on these draws.
 - **Main.** B recovers 79–100% of the gain, D = E, and C is below A.
 - **Grouped eval prefixes.**
   - Every learned arm is below A on held rows in all eight bases. B ranges from −110% to −13% of the gain, D from −90% to −7%.
@@ -52,9 +52,9 @@ Full tables are in [README.md](README.md); the design is in [QUESTION.md](QUESTI
 - With only 16 prefixes per symbol at depth 2, no grouped split can fit on many more.
 
 **What the results support.**
-1. A supervised post-hoc correction can map the frozen h_2 of a *seen* prefix to its centroid, and that rescues the new suffix.
-2. Under this design, a correction fit on half the prefixes does not transfer to the other half. The step that fails is reading the symbol across prefixes, not replacing the state with a centroid: E uses the same fit centroids and still works.
-3. Replacing a correctly handled state with a slightly wrong centroid costs more than it gains. Training-program rows on new prefixes fall from 1.00 to 0.17–0.64.
+1. A supervised post-hoc correction can map the frozen h_2 of a *seen* prefix to its centroid, and that rescues the new suffix. The rescue is exact for D, and 75–103% for B.
+2. Under this design, a correction fit on half the prefixes does not transfer to the other half. For D, the step that fails is reading the symbol across prefixes, not replacing the state with a centroid: E uses the same fit centroids and still works. B is not purely a decoder plus a centroid. On grouped eval prefixes, B is above D on held rows in 3 of 14 bases: original tied/final 51201, and F2 `ops63000-ls63100` s63201 and `ops63000-ls63101` s63201. The reviewer also finds that B answers 13–33% of the rows whose state it decodes to a wrong symbol correctly (c3 REVIEW §2). B still stays below A.
+3. Replacing a correctly handled state with a wrong symbol's centroid (D) or an off-centroid state (B) costs more than it gains. Training-program rows on new prefixes fall from 1.00 to 0.17–0.64.
 
 **What they do not show.** The base model selecting centroids internally; the history residual being uniformly harmful; the main correction having learned no new computation (charter limits); or any necessity or impossibility claim.
 
@@ -97,3 +97,5 @@ The F2 results, post-hoc reference and this note are in the following commit.
 - `correction.svg` metadata changes on every re-render; the PNG is byte-stable.
 
 **Compute.** About 0.8 of 10 minutes initially, plus 0.3 of 5 minutes for the follow-up.
+
+**Review.** c3 REVIEW §2 (PR #64) passed this lane: every number reproduced, the leakage checks held, CX-C1 held, and CX-C2 failed narrowly (a val-tuned ridge decoder recovers at most 6%, which is inside the bound above). Wording fixes W1–W3 and C6 were applied without new runs.

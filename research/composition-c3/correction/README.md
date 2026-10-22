@@ -76,8 +76,8 @@ All six bases are frozen ckpt-10000 runs: per-step readout and tied/final, seeds
 
 ## Interpretation (limited; QUESTION.md limits apply)
 
-1. **Seen states.** On the states it was fit on, a supervised post-hoc correction using only h_2 reproduces the oracle-centroid gain in both weak arms (B, D). Because of the overlap, this shows only that the frozen h_2 of a *seen* prefix can be mapped to its centroid. It says nothing about new states.
-2. **New prefixes.** On prefixes the correction did not fit, under this design, the correction recovers essentially none of the gain: at most +15% in one base, and ≤ 0 in the rest. It also breaks answers the base model already got right. F2 replicates this on eight bases from new task draws (below).
+1. **Seen states.** On the states it was fit on, a supervised post-hoc correction using only h_2 reproduces the oracle-centroid gain in both weak arms. D does so exactly. B recovers 100% in per-step readout and 101%, 103% and 75% in tied/final. Because of the overlap, this shows only that the frozen h_2 of a *seen* prefix can be mapped to its centroid. It says nothing about new states.
+2. **New prefixes.** On prefixes the correction did not fit, under this design, the correction recovers essentially none of the gain: at most +15% in one base, and ≤ 0 in the rest. It also breaks answers the base model already got right. F2 replicates this on eight tied/final bases from new task draws (below); there is no per-step-readout arm on those draws. B is not purely a decoder plus a centroid. On grouped eval prefixes, B is above D on held rows in 3 of 14 bases: original tied/final 51201, and F2 `ops63000-ls63100` s63201 and `ops63000-ls63101` s63201. The reviewer also finds that B answers 13–33% of the rows whose state it decodes to a wrong symbol correctly (c3 REVIEW §2). B still stays below A.
    - The design: 8 fit prefixes per symbol, a linear decoder, a 64-unit map, and 2,000 updates.
    - The failing step is reading the symbol from h_2 across prefixes. The decoder is at 0.22–0.66, while the oracle's centroid replacement with the same fit centroids still works (0.83–1.00).
    - This is a finite-data, small-module result. It does not show that h_2 lacks the symbol in a decodable form. Only 16 prefixes per symbol exist at depth 2, so no split can fit on much more.
@@ -114,6 +114,7 @@ The coordinator approved F2 at 05:37Z. The declaration and predictions were comm
 
 - **Bases.** The eight c2 generalization tied/final `ckpt-10000` runs: tasks `ops63000-ls63100`, `ops63000-ls63101`, `ops63001-ls63102` and `ops63001-ls63103`, each with init seeds 63200 and 63201.
 - **Recipe.** Fixed (k = 64, lr = 1e-3, 2,000 updates, map seed 71200, probe seed 71301) and refit per base.
+- **Scope.** This replicates the tied/final arm only.
 - **Split.** The same grouped rule and seed 71300, applied to each task's own prefixes.
 
 ![followup](figures/followup_f2.png)
