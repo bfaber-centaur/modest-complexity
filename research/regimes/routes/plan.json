@@ -1,0 +1,62 @@
+{
+ "note": "R4 routes lane plan. Calibration/positive-control init seed 54300 is never pooled with the principal seeds 54200-54202. Entries are appended, never edited after launch.",
+ "runs": [
+  {
+   "run_id": "r1-route-smoke-rho7of8-s54300-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-smoke-rho7of8-s54300-a1",
+    "--condition",
+    "rho7of8",
+    "--init-seed",
+    "54300",
+    "--updates",
+    "200",
+    "--purpose",
+    "calibration"
+   ],
+   "timeout": 120
+  },
+  {
+   "run_id": "r1-route-calib-rho1of2-s54300-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-calib-rho1of2-s54300-a1",
+    "--condition",
+    "rho1of2",
+    "--init-seed",
+    "54300",
+    "--updates",
+    "20000",
+    "--purpose",
+    "calibration"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-route-calib-shortcut_only-s54300-a1",
+   "argv": [
+    "research/regimes/routes/train.py",
+    "--out",
+    "{out}",
+    "--run-id",
+    "r1-route-calib-shortcut_only-s54300-a1",
+    "--condition",
+    "shortcut_only",
+    "--init-seed",
+    "54300",
+    "--updates",
+    "20000",
+    "--purpose",
+    "calibration"
+   ],
+   "timeout": 300
+  }
+ ]
+}
