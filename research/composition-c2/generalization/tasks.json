@@ -1,0 +1,1395 @@
+{
+ "decision_log": [
+  {
+   "kind": "draw",
+   "seed": 63000,
+   "accepted": true,
+   "reason": "accepted"
+  },
+  {
+   "kind": "draw",
+   "seed": 63001,
+   "accepted": true,
+   "reason": "accepted"
+  },
+  {
+   "kind": "split",
+   "draw": 63000,
+   "seed": 63100,
+   "accepted": true,
+   "reason": "accepted"
+  },
+  {
+   "kind": "split",
+   "draw": 63000,
+   "seed": 63101,
+   "accepted": true,
+   "reason": "accepted"
+  },
+  {
+   "kind": "split",
+   "draw": 63001,
+   "seed": 63102,
+   "accepted": true,
+   "reason": "accepted"
+  },
+  {
+   "kind": "split",
+   "draw": 63001,
+   "seed": 63103,
+   "accepted": true,
+   "reason": "accepted"
+  }
+ ],
+ "accepted_tasks": [
+  "ops63000-ls63100",
+  "ops63000-ls63101",
+  "ops63001-ls63102",
+  "ops63001-ls63103"
+ ],
+ "structure": [
+  {
+   "task_id": "ops63000-ls63100",
+   "task_seed_used": 63000,
+   "ops": [
+    [
+     3,
+     1,
+     6,
+     7,
+     4,
+     2,
+     5,
+     0
+    ],
+    [
+     3,
+     5,
+     6,
+     1,
+     0,
+     4,
+     2,
+     7
+    ],
+    [
+     6,
+     7,
+     3,
+     4,
+     2,
+     1,
+     5,
+     0
+    ],
+    [
+     2,
+     7,
+     1,
+     6,
+     0,
+     5,
+     3,
+     4
+    ]
+   ],
+   "latin_square": [
+    [
+     1,
+     3,
+     2,
+     0
+    ],
+    [
+     3,
+     1,
+     0,
+     2
+    ],
+    [
+     0,
+     2,
+     3,
+     1
+    ],
+    [
+     2,
+     0,
+     1,
+     3
+    ]
+   ],
+   "held_out_programs": [
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     3
+    ],
+    [
+     0,
+     2,
+     2
+    ],
+    [
+     0,
+     3,
+     0
+    ],
+    [
+     1,
+     0,
+     3
+    ],
+    [
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     2,
+     0
+    ],
+    [
+     1,
+     3,
+     2
+    ],
+    [
+     2,
+     0,
+     0
+    ],
+    [
+     2,
+     1,
+     2
+    ],
+    [
+     2,
+     2,
+     3
+    ],
+    [
+     2,
+     3,
+     1
+    ],
+    [
+     3,
+     0,
+     2
+    ],
+    [
+     3,
+     1,
+     0
+    ],
+    [
+     3,
+     2,
+     1
+    ],
+    [
+     3,
+     3,
+     3
+    ]
+   ],
+   "held_out_repetition_pattern": {
+    "a=b": 2,
+    "distinct": 8,
+    "b=c": 2,
+    "a=c": 2,
+    "all-same": 2
+   },
+   "group_order": 40320,
+   "op_parities": [
+    0,
+    1,
+    0,
+    1
+   ],
+   "op_cycle_types": [
+    [
+     3,
+     3,
+     1,
+     1
+    ],
+    [
+     5,
+     2,
+     1
+    ],
+    [
+     5,
+     3
+    ],
+    [
+     5,
+     2,
+     1
+    ]
+   ],
+   "commuting_pairs": [],
+   "involutions": [],
+   "identifiable_from_final_tables": 1,
+   "n_notN": 33,
+   "all_neighbours_are_training_rows": true,
+   "coverage": {
+    "op_at_position": {
+     "pos1": [
+      12,
+      12,
+      12,
+      12
+     ],
+     "pos2": [
+      12,
+      12,
+      12,
+      12
+     ],
+     "pos3": [
+      12,
+      12,
+      12,
+      12
+     ]
+    },
+    "ordered_pair_count_range": {
+     "12": [
+      3,
+      3,
+      16
+     ],
+     "23": [
+      3,
+      3,
+      16
+     ],
+     "13": [
+      3,
+      3,
+      16
+     ]
+    },
+    "transitions_seen": {
+     "pos1 (s,a)": 32,
+     "pos2 (step1,b)": 32,
+     "pos3 (step2,c)": 32,
+     "prefix (s,a,b)": 128,
+     "suffix-context (step1,b,c)": 128,
+     "of": [
+      32,
+      32,
+      32,
+      128,
+      128
+     ]
+    }
+   },
+   "heldout_baselines": {
+    "chance": 0.125,
+    "identity: s": 0.1171875,
+    "first op only: P[a](s)": 0.09375,
+    "middle op only: P[b](s)": 0.125,
+    "last op only: P[c](s)": 0.09375,
+    "drop op 1: P[c](P[b](s))": 0.125,
+    "drop op 2: P[c](P[a](s))": 0.125,
+    "drop op 3: P[b](P[a](s))": 0.125,
+    "nearest seen program (oracle-selected)": 0.4453125,
+    "3-of-4-slot neighbour vote": 0.115234375,
+    "best partial-slot lookup (fitted on train)": 0.125
+   },
+   "row_overlap_train_heldout": 0,
+   "by_length": {
+    "1": {
+     "programs": 4,
+     "distinct_products": 4,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 4,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 0
+     }
+    },
+    "2": {
+     "programs": 16,
+     "distinct_products": 16,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 16,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 0
+     }
+    },
+    "3": {
+     "programs": 64,
+     "distinct_products": 64,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 0,
+      "F3train": 48,
+      "F3held": 16,
+      "novel": 0
+     }
+    },
+    "4": {
+     "programs": 256,
+     "distinct_products": 253,
+     "programs_in_collision_groups": 6,
+     "largest_collision_group": 2,
+     "function_class_programs": {
+      "F12": 7,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 249
+     }
+    },
+    "5": {
+     "programs": 1024,
+     "distinct_products": 994,
+     "programs_in_collision_groups": 51,
+     "largest_collision_group": 3,
+     "function_class_programs": {
+      "F12": 40,
+      "F3train": 0,
+      "F3held": 1,
+      "novel": 983
+     }
+    },
+    "6": {
+     "programs": 4096,
+     "distinct_products": 3793,
+     "programs_in_collision_groups": 524,
+     "largest_collision_group": 5,
+     "function_class_programs": {
+      "F12": 1,
+      "F3train": 157,
+      "F3held": 52,
+      "novel": 3886
+     }
+    }
+   }
+  },
+  {
+   "task_id": "ops63000-ls63101",
+   "task_seed_used": 63000,
+   "ops": [
+    [
+     3,
+     1,
+     6,
+     7,
+     4,
+     2,
+     5,
+     0
+    ],
+    [
+     3,
+     5,
+     6,
+     1,
+     0,
+     4,
+     2,
+     7
+    ],
+    [
+     6,
+     7,
+     3,
+     4,
+     2,
+     1,
+     5,
+     0
+    ],
+    [
+     2,
+     7,
+     1,
+     6,
+     0,
+     5,
+     3,
+     4
+    ]
+   ],
+   "latin_square": [
+    [
+     2,
+     1,
+     3,
+     0
+    ],
+    [
+     0,
+     2,
+     1,
+     3
+    ],
+    [
+     3,
+     0,
+     2,
+     1
+    ],
+    [
+     1,
+     3,
+     0,
+     2
+    ]
+   ],
+   "held_out_programs": [
+    [
+     0,
+     0,
+     2
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     2,
+     3
+    ],
+    [
+     0,
+     3,
+     0
+    ],
+    [
+     1,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     2
+    ],
+    [
+     1,
+     2,
+     1
+    ],
+    [
+     1,
+     3,
+     3
+    ],
+    [
+     2,
+     0,
+     3
+    ],
+    [
+     2,
+     1,
+     0
+    ],
+    [
+     2,
+     2,
+     2
+    ],
+    [
+     2,
+     3,
+     1
+    ],
+    [
+     3,
+     0,
+     1
+    ],
+    [
+     3,
+     1,
+     3
+    ],
+    [
+     3,
+     2,
+     0
+    ],
+    [
+     3,
+     3,
+     2
+    ]
+   ],
+   "held_out_repetition_pattern": {
+    "a=b": 3,
+    "b=c": 3,
+    "distinct": 6,
+    "a=c": 3,
+    "all-same": 1
+   },
+   "group_order": 40320,
+   "op_parities": [
+    0,
+    1,
+    0,
+    1
+   ],
+   "op_cycle_types": [
+    [
+     3,
+     3,
+     1,
+     1
+    ],
+    [
+     5,
+     2,
+     1
+    ],
+    [
+     5,
+     3
+    ],
+    [
+     5,
+     2,
+     1
+    ]
+   ],
+   "commuting_pairs": [],
+   "involutions": [],
+   "identifiable_from_final_tables": 1,
+   "n_notN": 32,
+   "all_neighbours_are_training_rows": true,
+   "coverage": {
+    "op_at_position": {
+     "pos1": [
+      12,
+      12,
+      12,
+      12
+     ],
+     "pos2": [
+      12,
+      12,
+      12,
+      12
+     ],
+     "pos3": [
+      12,
+      12,
+      12,
+      12
+     ]
+    },
+    "ordered_pair_count_range": {
+     "12": [
+      3,
+      3,
+      16
+     ],
+     "23": [
+      3,
+      3,
+      16
+     ],
+     "13": [
+      3,
+      3,
+      16
+     ]
+    },
+    "transitions_seen": {
+     "pos1 (s,a)": 32,
+     "pos2 (step1,b)": 32,
+     "pos3 (step2,c)": 32,
+     "prefix (s,a,b)": 128,
+     "suffix-context (step1,b,c)": 128,
+     "of": [
+      32,
+      32,
+      32,
+      128,
+      128
+     ]
+    }
+   },
+   "heldout_baselines": {
+    "chance": 0.125,
+    "identity: s": 0.109375,
+    "first op only: P[a](s)": 0.09375,
+    "middle op only: P[b](s)": 0.0703125,
+    "last op only: P[c](s)": 0.09375,
+    "drop op 1: P[c](P[b](s))": 0.125,
+    "drop op 2: P[c](P[a](s))": 0.125,
+    "drop op 3: P[b](P[a](s))": 0.125,
+    "nearest seen program (oracle-selected)": 0.421875,
+    "3-of-4-slot neighbour vote": 0.099609375,
+    "best partial-slot lookup (fitted on train)": 0.13307291666666665
+   },
+   "row_overlap_train_heldout": 0,
+   "by_length": {
+    "1": {
+     "programs": 4,
+     "distinct_products": 4,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 4,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 0
+     }
+    },
+    "2": {
+     "programs": 16,
+     "distinct_products": 16,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 16,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 0
+     }
+    },
+    "3": {
+     "programs": 64,
+     "distinct_products": 64,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 0,
+      "F3train": 48,
+      "F3held": 16,
+      "novel": 0
+     }
+    },
+    "4": {
+     "programs": 256,
+     "distinct_products": 253,
+     "programs_in_collision_groups": 6,
+     "largest_collision_group": 2,
+     "function_class_programs": {
+      "F12": 7,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 249
+     }
+    },
+    "5": {
+     "programs": 1024,
+     "distinct_products": 994,
+     "programs_in_collision_groups": 51,
+     "largest_collision_group": 3,
+     "function_class_programs": {
+      "F12": 40,
+      "F3train": 1,
+      "F3held": 0,
+      "novel": 983
+     }
+    },
+    "6": {
+     "programs": 4096,
+     "distinct_products": 3793,
+     "programs_in_collision_groups": 524,
+     "largest_collision_group": 5,
+     "function_class_programs": {
+      "F12": 1,
+      "F3train": 157,
+      "F3held": 52,
+      "novel": 3886
+     }
+    }
+   }
+  },
+  {
+   "task_id": "ops63001-ls63102",
+   "task_seed_used": 63001,
+   "ops": [
+    [
+     2,
+     0,
+     1,
+     6,
+     4,
+     7,
+     5,
+     3
+    ],
+    [
+     3,
+     4,
+     1,
+     0,
+     5,
+     7,
+     2,
+     6
+    ],
+    [
+     6,
+     4,
+     1,
+     3,
+     7,
+     5,
+     0,
+     2
+    ],
+    [
+     5,
+     7,
+     1,
+     6,
+     4,
+     2,
+     3,
+     0
+    ]
+   ],
+   "latin_square": [
+    [
+     3,
+     2,
+     0,
+     1
+    ],
+    [
+     1,
+     0,
+     2,
+     3
+    ],
+    [
+     2,
+     3,
+     1,
+     0
+    ],
+    [
+     0,
+     1,
+     3,
+     2
+    ]
+   ],
+   "held_out_programs": [
+    [
+     0,
+     0,
+     3
+    ],
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     0,
+     2,
+     0
+    ],
+    [
+     0,
+     3,
+     1
+    ],
+    [
+     1,
+     0,
+     1
+    ],
+    [
+     1,
+     1,
+     0
+    ],
+    [
+     1,
+     2,
+     2
+    ],
+    [
+     1,
+     3,
+     3
+    ],
+    [
+     2,
+     0,
+     2
+    ],
+    [
+     2,
+     1,
+     3
+    ],
+    [
+     2,
+     2,
+     1
+    ],
+    [
+     2,
+     3,
+     0
+    ],
+    [
+     3,
+     0,
+     0
+    ],
+    [
+     3,
+     1,
+     1
+    ],
+    [
+     3,
+     2,
+     3
+    ],
+    [
+     3,
+     3,
+     2
+    ]
+   ],
+   "held_out_repetition_pattern": {
+    "a=b": 4,
+    "distinct": 4,
+    "a=c": 4,
+    "b=c": 4
+   },
+   "group_order": 40320,
+   "op_parities": [
+    1,
+    0,
+    0,
+    1
+   ],
+   "op_cycle_types": [
+    [
+     4,
+     3,
+     1
+    ],
+    [
+     6,
+     2
+    ],
+    [
+     4,
+     2,
+     1,
+     1
+    ],
+    [
+     5,
+     2,
+     1
+    ]
+   ],
+   "commuting_pairs": [],
+   "involutions": [],
+   "identifiable_from_final_tables": 1,
+   "n_notN": 24,
+   "all_neighbours_are_training_rows": true,
+   "coverage": {
+    "op_at_position": {
+     "pos1": [
+      12,
+      12,
+      12,
+      12
+     ],
+     "pos2": [
+      12,
+      12,
+      12,
+      12
+     ],
+     "pos3": [
+      12,
+      12,
+      12,
+      12
+     ]
+    },
+    "ordered_pair_count_range": {
+     "12": [
+      3,
+      3,
+      16
+     ],
+     "23": [
+      3,
+      3,
+      16
+     ],
+     "13": [
+      3,
+      3,
+      16
+     ]
+    },
+    "transitions_seen": {
+     "pos1 (s,a)": 32,
+     "pos2 (step1,b)": 32,
+     "pos3 (step2,c)": 32,
+     "prefix (s,a,b)": 128,
+     "suffix-context (step1,b,c)": 128,
+     "of": [
+      32,
+      32,
+      32,
+      128,
+      128
+     ]
+    }
+   },
+   "heldout_baselines": {
+    "chance": 0.125,
+    "identity: s": 0.109375,
+    "first op only: P[a](s)": 0.109375,
+    "middle op only: P[b](s)": 0.078125,
+    "last op only: P[c](s)": 0.109375,
+    "drop op 1: P[c](P[b](s))": 0.125,
+    "drop op 2: P[c](P[a](s))": 0.125,
+    "drop op 3: P[b](P[a](s))": 0.125,
+    "nearest seen program (oracle-selected)": 0.4375,
+    "3-of-4-slot neighbour vote": 0.412109375,
+    "best partial-slot lookup (fitted on train)": 0.21744791666666669
+   },
+   "row_overlap_train_heldout": 0,
+   "by_length": {
+    "1": {
+     "programs": 4,
+     "distinct_products": 4,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 4,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 0
+     }
+    },
+    "2": {
+     "programs": 16,
+     "distinct_products": 16,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 16,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 0
+     }
+    },
+    "3": {
+     "programs": 64,
+     "distinct_products": 64,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 0,
+      "F3train": 48,
+      "F3held": 16,
+      "novel": 0
+     }
+    },
+    "4": {
+     "programs": 256,
+     "distinct_products": 254,
+     "programs_in_collision_groups": 4,
+     "largest_collision_group": 2,
+     "function_class_programs": {
+      "F12": 0,
+      "F3train": 0,
+      "F3held": 1,
+      "novel": 255
+     }
+    },
+    "5": {
+     "programs": 1024,
+     "distinct_products": 1001,
+     "programs_in_collision_groups": 46,
+     "largest_collision_group": 2,
+     "function_class_programs": {
+      "F12": 7,
+      "F3train": 1,
+      "F3held": 0,
+      "novel": 1016
+     }
+    },
+    "6": {
+     "programs": 4096,
+     "distinct_products": 3823,
+     "programs_in_collision_groups": 524,
+     "largest_collision_group": 3,
+     "function_class_programs": {
+      "F12": 41,
+      "F3train": 3,
+      "F3held": 1,
+      "novel": 4051
+     }
+    }
+   }
+  },
+  {
+   "task_id": "ops63001-ls63103",
+   "task_seed_used": 63001,
+   "ops": [
+    [
+     2,
+     0,
+     1,
+     6,
+     4,
+     7,
+     5,
+     3
+    ],
+    [
+     3,
+     4,
+     1,
+     0,
+     5,
+     7,
+     2,
+     6
+    ],
+    [
+     6,
+     4,
+     1,
+     3,
+     7,
+     5,
+     0,
+     2
+    ],
+    [
+     5,
+     7,
+     1,
+     6,
+     4,
+     2,
+     3,
+     0
+    ]
+   ],
+   "latin_square": [
+    [
+     3,
+     1,
+     0,
+     2
+    ],
+    [
+     2,
+     3,
+     1,
+     0
+    ],
+    [
+     1,
+     0,
+     2,
+     3
+    ],
+    [
+     0,
+     2,
+     3,
+     1
+    ]
+   ],
+   "held_out_programs": [
+    [
+     0,
+     0,
+     3
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     2,
+     0
+    ],
+    [
+     0,
+     3,
+     2
+    ],
+    [
+     1,
+     0,
+     2
+    ],
+    [
+     1,
+     1,
+     3
+    ],
+    [
+     1,
+     2,
+     1
+    ],
+    [
+     1,
+     3,
+     0
+    ],
+    [
+     2,
+     0,
+     1
+    ],
+    [
+     2,
+     1,
+     0
+    ],
+    [
+     2,
+     2,
+     2
+    ],
+    [
+     2,
+     3,
+     3
+    ],
+    [
+     3,
+     0,
+     0
+    ],
+    [
+     3,
+     1,
+     2
+    ],
+    [
+     3,
+     2,
+     3
+    ],
+    [
+     3,
+     3,
+     1
+    ]
+   ],
+   "held_out_repetition_pattern": {
+    "a=b": 3,
+    "b=c": 3,
+    "a=c": 3,
+    "distinct": 6,
+    "all-same": 1
+   },
+   "group_order": 40320,
+   "op_parities": [
+    1,
+    0,
+    0,
+    1
+   ],
+   "op_cycle_types": [
+    [
+     4,
+     3,
+     1
+    ],
+    [
+     6,
+     2
+    ],
+    [
+     4,
+     2,
+     1,
+     1
+    ],
+    [
+     5,
+     2,
+     1
+    ]
+   ],
+   "commuting_pairs": [],
+   "involutions": [],
+   "identifiable_from_final_tables": 1,
+   "n_notN": 24,
+   "all_neighbours_are_training_rows": true,
+   "coverage": {
+    "op_at_position": {
+     "pos1": [
+      12,
+      12,
+      12,
+      12
+     ],
+     "pos2": [
+      12,
+      12,
+      12,
+      12
+     ],
+     "pos3": [
+      12,
+      12,
+      12,
+      12
+     ]
+    },
+    "ordered_pair_count_range": {
+     "12": [
+      3,
+      3,
+      16
+     ],
+     "23": [
+      3,
+      3,
+      16
+     ],
+     "13": [
+      3,
+      3,
+      16
+     ]
+    },
+    "transitions_seen": {
+     "pos1 (s,a)": 32,
+     "pos2 (step1,b)": 32,
+     "pos3 (step2,c)": 32,
+     "prefix (s,a,b)": 128,
+     "suffix-context (step1,b,c)": 128,
+     "of": [
+      32,
+      32,
+      32,
+      128,
+      128
+     ]
+    }
+   },
+   "heldout_baselines": {
+    "chance": 0.125,
+    "identity: s": 0.1484375,
+    "first op only: P[a](s)": 0.109375,
+    "middle op only: P[b](s)": 0.109375,
+    "last op only: P[c](s)": 0.109375,
+    "drop op 1: P[c](P[b](s))": 0.125,
+    "drop op 2: P[c](P[a](s))": 0.125,
+    "drop op 3: P[b](P[a](s))": 0.125,
+    "nearest seen program (oracle-selected)": 0.421875,
+    "3-of-4-slot neighbour vote": 0.412109375,
+    "best partial-slot lookup (fitted on train)": 0.21744791666666669
+   },
+   "row_overlap_train_heldout": 0,
+   "by_length": {
+    "1": {
+     "programs": 4,
+     "distinct_products": 4,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 4,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 0
+     }
+    },
+    "2": {
+     "programs": 16,
+     "distinct_products": 16,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 16,
+      "F3train": 0,
+      "F3held": 0,
+      "novel": 0
+     }
+    },
+    "3": {
+     "programs": 64,
+     "distinct_products": 64,
+     "programs_in_collision_groups": 0,
+     "largest_collision_group": 1,
+     "function_class_programs": {
+      "F12": 0,
+      "F3train": 48,
+      "F3held": 16,
+      "novel": 0
+     }
+    },
+    "4": {
+     "programs": 256,
+     "distinct_products": 254,
+     "programs_in_collision_groups": 4,
+     "largest_collision_group": 2,
+     "function_class_programs": {
+      "F12": 0,
+      "F3train": 1,
+      "F3held": 0,
+      "novel": 255
+     }
+    },
+    "5": {
+     "programs": 1024,
+     "distinct_products": 1001,
+     "programs_in_collision_groups": 46,
+     "largest_collision_group": 2,
+     "function_class_programs": {
+      "F12": 7,
+      "F3train": 1,
+      "F3held": 0,
+      "novel": 1016
+     }
+    },
+    "6": {
+     "programs": 4096,
+     "distinct_products": 3823,
+     "programs_in_collision_groups": 524,
+     "largest_collision_group": 3,
+     "function_class_programs": {
+      "F12": 41,
+      "F3train": 1,
+      "F3held": 3,
+      "novel": 4051
+     }
+    }
+   }
+  }
+ ]
+}

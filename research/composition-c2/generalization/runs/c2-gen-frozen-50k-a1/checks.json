@@ -1,0 +1,80 @@
+{
+ "c2-time-tt-inter-s51200-a1": {
+  "held_final_pred": "23704651615432070736124507316425723156403214560715473260137640252047635121607345413725602375104615674320367451024532701630725614",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-inter-s51200-a1/ckpt-50000.npz",
+  "sha256": "0d3f537003d3e92721b4ab1b5112f6c76d33c7a1050e36174da15a1a2013774d",
+  "step": 50000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "c2-time-tt-inter-s51201-a1": {
+  "held_final_pred": "23704651615432070736124507316425723156403214560715473260137640252047635121607345413725602375104615674320367451024532701630725614",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-inter-s51201-a1/ckpt-50000.npz",
+  "sha256": "0f76d81c7830207ed10a619e32a97065b8e471b4824c6b29c9dafa83f92064b2",
+  "step": 50000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "c2-time-tt-inter-s51202-a1": {
+  "held_final_pred": "23704651615432070736124507316425723156403214560715473260137640252047635121607345413725602375104615674320367451024532701630725614",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-inter-s51202-a1/ckpt-50000.npz",
+  "sha256": "e7fbcb03186b7b99d686a6dec50ea2af31484128ad76fd2b0befa035645c9d2b",
+  "step": 50000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "c2-time-tt-final-s51200-a1": {
+  "held_final_pred": "23706531615472310726334517016452742126410714264705463210137640262747615020507443427126602575314615473720567423074305740630527540",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-final-s51200-a1/ckpt-50000.npz",
+  "sha256": "41d9144865a8266aa47e368aedcc72bb6374903d4854a999b2be1bebdc01a452",
+  "step": 50000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "c2-time-tt-final-s51201-a1": {
+  "held_final_pred": "23706151215472070726044517116455723126410214260715473210137640255047615421507445413726602575314615174720267423064315741660523110",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-final-s51201-a1/ckpt-50000.npz",
+  "sha256": "e63bdd9b5bd727551f86e03e18d5e6d789d8dff5d064e4ac3eedff161de5842e",
+  "step": 50000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ },
+ "c2-time-tt-final-s51202-a1": {
+  "held_final_pred": "23706671617452070726020517016452723126410214260715173210237640255447615027507445463156602575314615474720367423044315741630525110",
+  "causality_identity_max_abs_diff": 0.0,
+  "path": "runs/c2-inputs/time-543ed95/research/composition-c2/time/runs/c2-time-tt-final-s51202-a1/ckpt-50000.npz",
+  "sha256": "d9555e8f952f36fd153497a41d8c8a18b0cf788625bf55c0f02a1ef0f6a6a2aa",
+  "step": 50000,
+  "logged_row_found": true,
+  "held_final_pred_matches_log": true,
+  "train_final_matches_log": true,
+  "held_final_matches_log": true,
+  "length1_equals_logged_train_step1": true,
+  "length2_equals_logged_train_step2": true
+ }
+}
