@@ -48,6 +48,7 @@ Chance is 0.125. The "all" column at L = 3 is 75% training rows; the held-out va
 **At 50k updates the length decline is gone for tied/inter (A5, `runs/c2-gen-frozen-50k-a1`).** These are the time lane's exact continuations of the same three runs: same recipe, length-3 training only, full Adam state, ckpt-10000 → 50,000. Their `ckpt-50000` came from branch `claude/project-thread-xb3nfz` at 543ed95; hashes match the time lane's manifests, and every check holds against their own logs.
 - tied/inter answers **every row of every length 1–6 correctly in all three seeds** (1.000 on 32,768 rows at L = 6). At step 6 the hidden-state norm and centroid distance are 0.99–1.00× their training-h3 medians, against 1.02–1.19× at 10k.
 - tied/final's length-3 held-out accuracy rose to 0.56 / 0.70 / 0.66 (¬N 0.12 / 0.26 / 0.14), but lengths 4–6 stay at 0.10–0.15.
+- The reviewer evaluated the time lane's intermediate checkpoints (G6, PR #59): the decline was already gone by 20k, with L = 6 at 0.9996 / 0.986 / 1.000. That is before the time lane's Adam-eps regime at about 25k, so the change does not depend on it.
 - So the 10k decline, the held-out-window effect and the follow-up's error anatomy describe the 10k models. They are finite-time properties of this recipe, not limits on these architectures.
 
 **Reference systems** (labelled references, not evidence of discovery).
@@ -99,7 +100,7 @@ Figure: [figures/followup.png](figures/followup.png) (`figures/followup.csv`; pe
 - **Not concentrated on a few transitions (F1 failed in 11 of 11).** The 4 most frequent of the 32 (state, op) transitions carry 0.20–0.29 of first errors at steps 4–6. That is above the diffuse 0.125 but far below the predicted ≥ 0.5. The top 8 carry 0.36–0.50.
 - **The same transitions fail at steps 5 and 6 (F2 held in 11 of 11).** Spearman ρ between per-transition first-error rates at steps 5 and 6 is 0.62–0.96. Between steps 4 and 5, where step 4 has enough errors, it is 0.08–0.80.
 - **Held-out windows are over-represented at the error step, less than predicted (F3: 3 of 11 met the 0.375 threshold).** In 0.31–0.41 of first errors the last three ops form a held-out program, against 0.25 among rows at risk, in every model.
-- **Wrong answers lean toward another op applied to the right state.** 0.62–0.71 of first wrong answers equal `P[k'](x)` for the true state x and some other op k′. Uniform wrong answers would give 3/7 = 0.43.
+- **Wrong answers lean toward another op applied to the right state.** 0.62–0.71 of first wrong answers equal `P[k'](x)` for the true state x and some other op k′. Uniform wrong answers would give at most 3/7 = 0.43. That is an upper bound, because two other ops can send x to the same symbol; averaged over (state, op) on the original draw the baseline is 0.339 (reviewer G5, PR #59), so the lean is if anything understated.
 
 ## Reading
 
