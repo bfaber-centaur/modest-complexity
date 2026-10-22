@@ -1,0 +1,333 @@
+{
+ "out": "runs/c3/c3-co-calib-taper-s900200-a1",
+ "task_id": "ops51000-ls51100",
+ "transition": "tied",
+ "readout": "tied",
+ "step_weights": [
+  1.0,
+  1.0,
+  1.0
+ ],
+ "switch_step": 500,
+ "switch_weights": [
+  0.0,
+  0.0,
+  1.0
+ ],
+ "taper_updates": 1000,
+ "init_seed": 900200,
+ "hidden": 128,
+ "updates": 2000,
+ "lr": 0.001,
+ "wd": 0.1,
+ "eval_every": 50,
+ "diag": true,
+ "checkpoint_steps": [
+  0
+ ],
+ "resume": null,
+ "resume_sha256": null,
+ "resume_config": null,
+ "run_id": "c3-co-calib-taper-s900200-a1",
+ "purpose": "calibration",
+ "model": "rnn",
+ "scheme": {
+  "transition": true,
+  "readout": true
+ },
+ "resumed_from": null,
+ "schedule": {
+  "before": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "switch_step": 500,
+  "after": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "taper": 1000
+ },
+ "task": {
+  "id": "ops51000-ls51100",
+  "task_seed_used": 51000,
+  "ops": [
+   [
+    7,
+    0,
+    1,
+    2,
+    4,
+    6,
+    5,
+    3
+   ],
+   [
+    5,
+    0,
+    7,
+    2,
+    6,
+    1,
+    3,
+    4
+   ],
+   [
+    6,
+    3,
+    0,
+    5,
+    1,
+    2,
+    7,
+    4
+   ],
+   [
+    6,
+    1,
+    4,
+    3,
+    0,
+    5,
+    7,
+    2
+   ]
+  ],
+  "latin_square": [
+   [
+    0,
+    1,
+    3,
+    2
+   ],
+   [
+    3,
+    2,
+    0,
+    1
+   ],
+   [
+    2,
+    0,
+    1,
+    3
+   ],
+   [
+    1,
+    3,
+    2,
+    0
+   ]
+  ],
+  "held_out_programs": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    1,
+    1
+   ],
+   [
+    0,
+    2,
+    3
+   ],
+   [
+    0,
+    3,
+    2
+   ],
+   [
+    1,
+    0,
+    3
+   ],
+   [
+    1,
+    1,
+    2
+   ],
+   [
+    1,
+    2,
+    0
+   ],
+   [
+    1,
+    3,
+    1
+   ],
+   [
+    2,
+    0,
+    2
+   ],
+   [
+    2,
+    1,
+    0
+   ],
+   [
+    2,
+    2,
+    1
+   ],
+   [
+    2,
+    3,
+    3
+   ],
+   [
+    3,
+    0,
+    1
+   ],
+   [
+    3,
+    1,
+    3
+   ],
+   [
+    3,
+    2,
+    2
+   ],
+   [
+    3,
+    3,
+    0
+   ]
+  ],
+  "n_notN": 42,
+  "all_neighbours_are_training_rows": true
+ },
+ "seeds_by_role": {
+  "task": 51000,
+  "split": 51100,
+  "init": 900200
+ },
+ "recipe": {
+  "optimizer": "Adam, decoupled decay on every parameter",
+  "b1": 0.9,
+  "b2": 0.999,
+  "eps": 1e-08,
+  "full_batch": true,
+  "loss": "sum over steps of w(t) * mean cross-entropy (schedule above)"
+ },
+ "exposure": {
+  "fit_rows": 384,
+  "updates": 2000,
+  "updates_this_run": 2000,
+  "row_presentations": 768000,
+  "labels_this_run": {
+   "updates_with_weight": [
+    1499,
+    1499,
+    2000
+   ],
+   "weighted_row_presentations": [
+    383807.99999999994,
+    383807.99999999994,
+    768000.0
+   ]
+  },
+  "labels_from_init": {
+   "updates_with_weight": [
+    1499,
+    1499,
+    2000
+   ],
+   "weighted_row_presentations": [
+    383807.99999999994,
+    383807.99999999994,
+    768000.0
+   ]
+  },
+  "parameters": {
+   "Ws": 1024,
+   "bs": 128,
+   "A": 16384,
+   "B": 512,
+   "bh": 128,
+   "V": 1024,
+   "bv": 8
+  },
+  "total_parameters": 19208
+ },
+ "sha256": {
+  "ops": "dd6d868c83feafa402ae10ed54148979a58c804d90e10690ee39dbd83bdab808",
+  "train_rows": "32b0651b54c46d7bbe088f824d1d6616caaa1653131ecafe5320ffc95657cbd2",
+  "held_rows": "3af406c947fcd3e9d2ec5d2b9c1eb2fc9b720742b0dca6b36a4a71823eb82506"
+ },
+ "provenance": {
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "platform": "Linux-6.18.44-fc-v140-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "visible_cpus": 4,
+  "affinity": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "thread_environment": {
+   "OPENBLAS_NUM_THREADS": "1",
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "BLIS_NUM_THREADS": "1"
+  },
+  "numpy_config": "{\n  \"Compilers\": {\n    \"c\": {\n      \"name\": \"gcc\",\n      \"linker\": \"ld.bfd\",\n      \"version\": \"14.2.1\",\n      \"commands\": \"cc\"\n    },\n    \"cython\": {\n      \"name\": \"cython\",\n      \"linker\": \"cython\",\n      \"version\": \"3.2.1\",\n      \"commands\": \"cython\"\n    },\n    \"c++\": {\n      \"name\": \"gcc\",\n      \"linker\": \"ld.bfd\",\n      \"version\": \"14.2.1\",\n      \"commands\": \"c++\"\n    }\n  },\n  \"Machine Information\": {\n    \"host\": {\n      \"cpu\": \"x86_64\",\n      \"family\": \"x86_64\",\n      \"endian\": \"little\",\n      \"system\": \"linux\"\n    },\n    \"build\": {\n      \"cpu\": \"x86_64\",\n      \"family\": \"x86_64\",\n      \"endian\": \"little\",\n      \"system\": \"linux\"\n    }\n  },\n  \"Build Dependencies\": {\n    \"blas\": {\n      \"name\": \"scipy-openblas\",\n      \"found\": true,\n      \"version\": \"0.3.30\",\n      \"detection method\": \"pkgconfig\",\n      \"include directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/include\",\n      \"lib directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/lib\",\n      \"openblas configuration\": \"OpenBLAS 0.3.30  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=64\",\n      \"pc file directory\": \"/project/.openblas\"\n    },\n    \"lapack\": {\n      \"name\": \"scipy-openblas\",\n      \"found\": true,\n      \"version\": \"0.3.30\",\n      \"detection method\": \"pkgconfig\",\n      \"include directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/include\",\n      \"lib directory\": \"/opt/_internal/cpython-3.12.12/lib/python3.12/site-packages/scipy_openblas64/lib\",\n      \"openblas configuration\": \"OpenBLAS 0.3.30  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=64\",\n      \"pc file directory\": \"/project/.openblas\"\n    }\n  },\n  \"Python Information\": {\n    \"path\": \"/tmp/build-env-aw1mwcap/bin/python\",\n    \"version\": \"3.12\"\n  },\n  \"SIMD Extensions\": {\n    \"baseline\": [\n      \"SSE\",\n      \"SSE2\",\n      \"SSE3\"\n    ],\n    \"found\": [\n      \"SSSE3\",\n      \"SSE41\",\n      \"POPCNT\",\n      \"SSE42\",\n      \"AVX\",\n      \"F16C\",\n      \"FMA3\",\n      \"AVX2\",\n      \"AVX512F\",\n      \"AVX512CD\",\n      \"AVX512_SKX\",\n      \"AVX512_CLX\"\n    ],\n    \"not found\": [\n      \"AVX512_KNL\",\n      \"AVX512_KNM\",\n      \"AVX512_CNL\",\n      \"AVX512_ICL\",\n      \"AVX512_SPR\"\n    ]\n  }\n}\n",
+  "cgroup": {
+   "/proc/self/cgroup": "9:name=systemd:/\n8:pids:/\n7:blkio:/\n6:freezer:/\n5:devices:/\n4:memory:/process_api/01a161ef-763d-740f-9130-2fcdffb5dce3/claude-code-bash\n3:cpuset:/\n2:cpuacct:/\n1:cpu:/\n0::/\n",
+   "/proc/self/mountinfo": "38 37 0:30 / /sys/fs/cgroup/cpu rw,relatime - cgroup cgroup rw,cpu\n39 37 0:31 / /sys/fs/cgroup/cpuacct rw,relatime - cgroup cgroup rw,cpuacct\n40 37 0:32 / /sys/fs/cgroup/cpuset rw,relatime - cgroup cgroup rw,cpuset\n41 37 0:33 / /sys/fs/cgroup/memory rw,relatime - cgroup cgroup rw,memory\n42 37 0:34 / /sys/fs/cgroup/devices rw,relatime - cgroup cgroup rw,devices\n43 37 0:35 / /sys/fs/cgroup/freezer rw,relatime - cgroup cgroup rw,freezer\n44 37 0:36 / /sys/fs/cgroup/blkio rw,relatime - cgroup cgroup rw,blkio\n45 37 0:37 / /sys/fs/cgroup/pids rw,relatime - cgroup cgroup rw,pids\n46 37 0:38 / /sys/fs/cgroup/systemd rw,relatime - cgroup cgroup rw,name=systemd\n47 37 0:39 / /sys/fs/cgroup/unified rw,relatime - cgroup2 cgroup2 rw",
+   "/sys/fs/cgroup/memory/process_api/01a161ef-763d-740f-9130-2fcdffb5dce3/claude-code-bash/memory.limit_in_bytes": "14341885952",
+   "/sys/fs/cgroup/memory/process_api/01a161ef-763d-740f-9130-2fcdffb5dce3/claude-code-bash/memory.usage_in_bytes": "1297158144",
+   "/sys/fs/cgroup/memory/process_api/01a161ef-763d-740f-9130-2fcdffb5dce3/memory.limit_in_bytes": "9223372036854771712",
+   "/sys/fs/cgroup/memory/process_api/01a161ef-763d-740f-9130-2fcdffb5dce3/memory.usage_in_bytes": "1795833856",
+   "/sys/fs/cgroup/memory/process_api/memory.limit_in_bytes": "9223372036854771712",
+   "/sys/fs/cgroup/memory/process_api/memory.usage_in_bytes": "1796128768",
+   "/sys/fs/cgroup/memory/memory.limit_in_bytes": "9223372036854771712",
+   "/sys/fs/cgroup/memory/memory.usage_in_bytes": "1797672960",
+   "/sys/fs/cgroup/cpu/cpu.stat": "nr_periods 0\nnr_throttled 0\nthrottled_time 0\nnr_bursts 0\nburst_time 0",
+   "/sys/fs/cgroup/cpu/cpu.cfs_quota_us": "-1",
+   "/sys/fs/cgroup/cpu/cpu.cfs_period_us": "100000",
+   "/sys/fs/cgroup/unified/cpu.stat": "usage_usec 143685408\nuser_usec 113129327\nsystem_usec 30556081\nnice_usec 0"
+  },
+  "disk_free_bytes": 30027214848,
+  "git_commit": "be41d16ed39dc0d27313b446b90b03bb6a0b31a8",
+  "git_status": "?? research/composition-c3/coordinator/registry.jsonl",
+  "source_sha256": {
+   "analysis.py": "9860f9a41cb4b41769d3387018224255b5d7886ce24af27f4d54d72f3b07d827",
+   "benchmark.py": "2a9e0b80b1edb4522444962646c495b685e36feae6ab29f35af9581e3c763482",
+   "experiment.py": "d9a00fb05de867f017ff4579ff2f07e2da9afe9bdb4fa6437fbdd149ff8c6f4c",
+   "instrumentation.py": "fea99e7be8d53c5a5df4302311b14479060fa946a776e53674670394c307571a",
+   "launch_runs.py": "8e4a23f2540099b69c25d10222ed63ee0b632cbd56138ef2e3618231f2268d7a",
+   "publish_run.py": "9d00b54a8b8a6947f3f361763570158f55d169ec4f4d8507bdaa29316fe9869b",
+   "report_map.py": "c1877eb73c9e093df3221ca0995a6b82d19cbc912d0d9a10aa60ac097f1e7e41",
+   "run_study.py": "77f4f9a9895be285984cd4fb66b0a2d33ef01026277df99051fc8ce1cbdf9713",
+   "test_exploration.py": "23bc8c4235e14d1273010b25c8761f4d82e9398545de1729f7f373edd5ff7eda",
+   "test_instrumentation.py": "bc2a71db16b16aabc92159dab3d70093c1d99f859d78bfc23318a7735e7bb985"
+  },
+  "environment_sha256": {
+   "pyproject.toml": "b800ae86b9b700683590ee8758831fbb1836d4856c06fe8d2f19a67a31bcbcd3",
+   "uv.lock": "bb1dcfbb76c2d9e27b28b2558c73b96363e85091b0eebcf8afb6986b84f5263d",
+   ".python-version": "f50159fad3f4319868eb38717b91d55843c41e9803014c8de05e116a6d0bcfdc"
+  },
+  "peak_rss_scope": "current process lifetime; excludes children",
+  "cgroup_note": "Raw process membership and visible ancestor limits; unavailable on macOS.",
+  "lane_source_sha256": {
+   "research/composition-c2/common/c2task.py": "36aeb791a5e670285639b88dbd92ace57f36ea2f314316a9aab132c3a15a4d39",
+   "research/composition-c2/common/c2rnn.py": "acc4d76a952609454e0bfb53aa5d6eaf2848553a6bc987d1da62c8bfa044a8a0",
+   "research/composition-c2/common/c2train.py": "a00481ba44ceb975be8ced10c204fcd46bca2401f743b3cce38ecae2af11560d",
+   "research/composition-c3/common/c3train.py": "8789144f9bb60a6bb93a1312b0429ff9699fcf55beffccd9cfec3f203be42a94",
+   "research/regimes/common/nets.py": "1a1e3ef27af63fc7b0f540f100fe165c48076b035230b186aa065a56a981689a"
+  }
+ }
+}

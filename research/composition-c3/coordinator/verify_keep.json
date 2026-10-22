@@ -1,0 +1,16 @@
+{
+ "run": "c3-co-verify-keep-s51200-a1",
+ "compared_rows": 41,
+ "steps": [
+  1000,
+  3000
+ ],
+ "keys": [
+  "step",
+  "train",
+  "held",
+  "held_final_pred"
+ ],
+ "identical_to_r1_published": true,
+ "command": "python3 -c (inline in coordinator commit): compare runs/c3/c3-co-verify-keep-s51200-a1/metrics.jsonl with research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/metrics.jsonl on r1 keys"
+}

@@ -1,0 +1,66 @@
+Post-hoc keep control (logged rows, every 50 updates):
+  logged 1050-3000 held_final_acc: keep-reset - keep [-0.008, +0.078] (n 120); drop-reset - drop [-0.016, +0.094] (n 120)
+  logged 1050-3000 held_notN_acc: keep-reset - keep [-0.024, +0.143] (n 120); drop-reset - drop [-0.024, +0.143] (n 120)
+  logged 3050-7950 held_final_acc: keep-reset - keep [-0.070, +0.094] (n 297); drop-reset - drop [+0.031, +0.156] (n 297)
+  logged 3050-7950 held_notN_acc: keep-reset - keep [-0.190, +0.167] (n 297); drop-reset - drop [+0.024, +0.310] (n 297)
+  logged 8000-50000 held_final_acc: keep-reset - keep [-0.070, +0.047] (n 2523); drop-reset - drop [+0.000, +0.195] (n 2523)
+  logged 8000-50000 held_notN_acc: keep-reset - keep [-0.190, +0.167] (n 2523); drop-reset - drop [+0.000, +0.476] (n 2523)
+  logged 10000-50000 held_final_acc: keep-reset - keep [-0.016, +0.008] (n 2403); drop-reset - drop [+0.000, +0.195] (n 2403)
+  logged 10000-50000 held_notN_acc: keep-reset - keep [-0.048, +0.048] (n 2403); drop-reset - drop [+0.000, +0.476] (n 2403)
+Correction call site at the integrated head:
+  old call at head raises TypeError: check_source() missing 1 required positional argument: 'sched'
+  load_base at head on 14 bases: fields differing from the recorded checks.json: []
+  test_corr.py exit 0: OK
+correction: 6 runs, not complete {}; union wall 1.16 min, summed wall 1.51 min
+    complete  c3-corr-calib-s900200-a1
+    complete  c3-corr-f2-grouped-a1
+    complete  c3-corr-f2-main-a1
+    complete  c3-corr-grouped-a1
+    complete  c3-corr-main-a1
+    complete  c3-corr-posthoc-v2-a1
+scaffolding: 24 runs, not complete {}; union wall 43.99 min, summed wall 86.39 min
+    complete  c3-scaf-calib-drop-s900210-a1
+    complete  c3-scaf-calib-taper-s900210-a1
+    complete  c3-scaf-drop-at10k-s51200-a1
+    complete  c3-scaf-drop-at10k-s51201-a1
+    complete  c3-scaf-drop-at10k-s51202-a1
+    complete  c3-scaf-drop-at1k-s51200-a1
+    complete  c3-scaf-drop-at1k-s51201-a1
+    complete  c3-scaf-drop-at1k-s51202-a1
+    complete  c3-scaf-drop-reset-at1k-s51200-a1
+    complete  c3-scaf-drop-reset-at1k-s51201-a1
+    complete  c3-scaf-drop-reset-at1k-s51202-a1
+    complete  c3-scaf-keep-reset-at1k-s51200-a1
+    complete  c3-scaf-keep-reset-at1k-s51201-a1
+    complete  c3-scaf-keep-reset-at1k-s51202-a1
+    complete  c3-scaf-taper-at10k-s51200-a1
+    complete  c3-scaf-taper-at10k-s51201-a1
+    complete  c3-scaf-taper-at10k-s51202-a1
+    complete  c3-scaf-taper-at1k-s51200-a1
+    complete  c3-scaf-taper-at1k-s51201-a1
+    complete  c3-scaf-taper-at1k-s51202-a1
+    complete  c3-scaf-verify-carried-drop-at1k-s51200-a1
+    complete  c3-scaf-verify-carried-keep-at1k-s51200-a1
+    complete  c3-scaf-verify-carried-keep-at1k-s51201-a1
+    complete  c3-scaf-verify-carried-keep-at1k-s51202-a1
+review: 16 runs, not complete {'c3-rev-corr-a1': 'failed'}; union wall 10.09 min, summed wall 10.33 min
+    complete  c3-rev-c2final-s51200-a1
+    failed    c3-rev-corr-a1
+    complete  c3-rev-corr-a2
+    complete  c3-rev-drop-s51200-a1
+    complete  c3-rev-repin-a1
+    complete  c3-rev-repin-drop-s51200-a1
+    complete  c3-rev-repin-taper-s51201-a1
+    complete  c3-rev-reset-drop-cont1000-s51200-a1
+    complete  c3-rev-reset-drop-cont1200-s51200-a1
+    complete  c3-rev-reset-drop-s51200-a1
+    complete  c3-rev-reset-keep-s51201-a1
+    complete  c3-rev-scaf-a1
+    complete  c3-rev-scaf-fu-a1
+    complete  c3-rev-taper-cont-s51201-a1
+    complete  c3-rev-taper-whole-s51201-a1
+    complete  c3-rev-verify-keep10k-s51202-a1
+coordinator: 3 runs, not complete {}; union wall 0.52 min, summed wall 0.80 min
+    complete  c3-co-calib-keep-s900200-a1
+    complete  c3-co-calib-taper-s900200-a1
+    complete  c3-co-verify-keep-s51200-a1

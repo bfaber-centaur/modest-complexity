@@ -1,0 +1,72 @@
+{
+ "runs": [
+  {
+   "run_id": "c3-co-verify-keep-s51200-a1",
+   "argv": [
+    "research/composition-c3/common/c3train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "51200",
+    "--updates",
+    "3000",
+    "--resume",
+    "research/composition-c2/recovered/r1-comp-rnn-inter-s51200-a1/ckpt-1000.npz",
+    "--resume-sha256",
+    "bc7cb3c42dae6b9e1e7557ff05b0346ffabde6f476930669cc8a7bd95605b51c",
+    "--resume-config",
+    "research/regimes/composition/runs/r1-comp-rnn-inter-s51200-a1/config.json",
+    "--diag",
+    "--run-id",
+    "c3-co-verify-keep-s51200-a1",
+    "--purpose",
+    "verification: no-change resume of r1 ckpt-1000 to 3000, compare with published r1 metrics"
+   ],
+   "timeout": 180
+  },
+  {
+   "run_id": "c3-co-calib-keep-s900200-a1",
+   "argv": [
+    "research/composition-c3/common/c3train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "900200",
+    "--updates",
+    "2000",
+    "--diag",
+    "--run-id",
+    "c3-co-calib-keep-s900200-a1",
+    "--purpose",
+    "calibration"
+   ],
+   "timeout": 120
+  },
+  {
+   "run_id": "c3-co-calib-taper-s900200-a1",
+   "argv": [
+    "research/composition-c3/common/c3train.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "900200",
+    "--updates",
+    "2000",
+    "--switch-step",
+    "500",
+    "--switch-weights",
+    "0",
+    "0",
+    "1",
+    "--taper-updates",
+    "1000",
+    "--diag",
+    "--run-id",
+    "c3-co-calib-taper-s900200-a1",
+    "--purpose",
+    "calibration"
+   ],
+   "timeout": 120
+  }
+ ]
+}

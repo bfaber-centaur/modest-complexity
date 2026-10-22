@@ -1,0 +1,37 @@
+PASS RP0 be41d16..82cef77 changes only c3train.py, test_c3.py and README.md in c3 common/  [['research/composition-c3/common/README.md', 'research/composition-c3/common/c3train.py', 'research/composition-c3/common/test_c3.py']]
+PASS RP0 research/composition-c3/common/ at HEAD equals 82cef77
+PASS RP0 research/composition-c3/common/c3correct.py at HEAD equals be41d16
+PASS RP0 research/composition-c2/common/ at HEAD equals b3e8132
+PASS RP0 research/regimes/common/ at HEAD equals be41d16
+PASS RP1 research/composition-c3/common/test_c3.py in its own process  [['Ran 9 tests in 15.549s'] OK; 15.7 s]
+PASS RP1 research/composition-c2/common/test_c2.py in its own process  [['Ran 10 tests in 13.442s'] OK; 13.6 s]
+PASS RP2 c3-rev-repin-drop-s51200-a1 (82cef77) equals c3-rev-drop-s51200-a1 (be41d16) bitwise: checkpoints ['ckpt-10300.npz'] and every metrics row incl. diag  [7 rows]
+PASS RP2 c3-rev-repin-taper-s51201-a1 (82cef77) equals c3-rev-taper-whole-s51201-a1 (be41d16) bitwise: checkpoints ['ckpt-1800.npz', 'ckpt-2600.npz'] and every metrics row incl. diag  [33 rows]
+PASS RP3 rev_c3pin's 41 P4 pairings give the same outcomes with the new check_source (27 accepted, 14 refused)  [27 accepted; mismatches []]
+PASS RP3 be41d16 taper ckpt-1800 (config without reset_at): accepted with its own flags, refused with a reset at 1500  [ | optimizer reset before 1800: 1500 here, None in the source]
+PASS RP4 c3-rev-reset-drop-s51200-a1 ckpt-1000 equals the r1 source in weights, moments and count (1000): saved before the reset
+PASS RP4 c3-rev-reset-drop-s51200-a1: at 1000+k (k=1,2,3) the count is k, meta step 1000+k, and weights and moments equal my Adam from zero moments  [counts [(1, 1001), (2, 1002), (3, 1003)]; max |diff| 0.0e+00; bitwise True]
+PASS RP4 c3-rev-reset-drop-s51200-a1: in the update at 1000 every coordinate with |g| > 1e-4 moves by lr within 1e-4 relative (decay removed)  [max rel 1.0e-04 over 69.0% of coordinates]
+PASS RP4 c3-rev-reset-keep-s51201-a1: at 1000+k (k=1,2,3) the count is k, meta step 1000+k, and weights and moments equal my Adam from zero moments  [counts [(1, 1001), (2, 1002), (3, 1003)]; max |diff| 0.0e+00; bitwise True]
+PASS RP4 c3-rev-reset-keep-s51201-a1: in the update at 1000 every coordinate with |g| > 1e-4 moves by lr within 1e-4 relative (decay removed)  [max rel 1.0e-04 over 70.3% of coordinates]
+PASS RP5 c3-rev-reset-drop-cont1200-s51200-a1: ckpt-1400 and rows 1200-1400 (incl. diag) equal the uninterrupted reset branch bitwise  [5 rows]
+PASS RP5 c3-rev-reset-drop-cont1000-s51200-a1: ckpt-1400 and rows 1000-1400 (incl. diag) equal the uninterrupted reset branch bitwise  [9 rows]
+PASS RP6 refused: reset branch ckpt-1200, no reset  [optimizer reset before 1200: None here, 1000 in the source]
+PASS RP6 refused: reset branch ckpt-1200, reset at 1100  [optimizer reset before 1200: 1100 here, 1000 in the source]
+PASS RP6 refused: reset branch ckpt-1200, reset at 1300  [optimizer reset before 1200: None here, 1000 in the source]
+PASS RP6 accepted: reset branch ckpt-1200, reset at 1000
+PASS RP6 refused: reset branch ckpt-1200, reset at 1000, count forged to 1200  [checkpoint Adam count 1200 != 200 implied by the source at step 1200]
+PASS RP6 accepted: reset branch ckpt-1000 (pre-reset), no reset
+PASS RP6 refused: r1 s51200 ckpt-1000, keep, reset at 500  [optimizer reset before 1000: 500 here, None in the source]
+PASS RP6 refused: r1 s51200 ckpt-10000, keep, reset at 1000  [optimizer reset before 10000: 1000 here, None in the source]
+PASS RP6 accepted: r1 s51200 ckpt-10000, keep, reset at 10000
+PASS RP6 accepted: r1 s51200 ckpt-10000, keep, reset at 20000
+PASS RP7 reset configs record schedule.reset_at = 1000 (drop and keep), and the drop exposure equals a drop at 1000 without a reset (mine)  [{"updates_with_weight": [1000, 1000, 1400], "weighted_row_presentations": [384000.0, 384000.0, 537600.0]}]
+     CX-R1 keep s51200: mean RMS move 1000-1099 reset 1.28e-04 vs carried 5.56e-05; ratio 2.31 (first update 16.90, last 10 1.51)
+     CX-R1 drop s51200: mean RMS move 1000-1099 reset 1.18e-04 vs carried 4.54e-05; ratio 2.60 (first update 17.42, last 10 1.63)
+     CX-R1 keep s51201: mean RMS move 1000-1099 reset 1.33e-04 vs carried 6.24e-05; ratio 2.14 (first update 15.29, last 10 1.43)
+     CX-R1 drop s51201: mean RMS move 1000-1099 reset 1.22e-04 vs carried 4.92e-05; ratio 2.49 (first update 15.68, last 10 1.76)
+     CX-R1 keep s51202: mean RMS move 1000-1099 reset 1.21e-04 vs carried 5.26e-05; ratio 2.31 (first update 18.04, last 10 1.40)
+     CX-R1 drop s51202: mean RMS move 1000-1099 reset 1.13e-04 vs carried 4.29e-05; ratio 2.64 (first update 18.70, last 10 1.43)
+PASS CX-R1 reset/carried mean RMS move over 1000-1099 >= 1.5 in all six seed x {keep, drop} pairs  [min 2.14]
+ALL PASS

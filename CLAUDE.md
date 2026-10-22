@@ -1,6 +1,8 @@
 # Modest-complexity exploratory swarm
 
-Composition round c2 is active on branch `swarm/composition-c2`: Bobby's charter is research/composition-c2/coordinator/charter/ and assignments, the shared-code pin, run IDs, seeds and budgets are in research/composition-c2/coordinator/DECISIONS.md; c2 PRs target `swarm/composition-c2`.
+Composition follow-ups c3 are active on branch `swarm/composition-c3`: Bobby's charter is research/composition-c3/coordinator/charter/, and c2 evidence, the shared-code pin, design constants, run IDs, seeds and budgets are in research/composition-c3/coordinator/DECISIONS.md; c3 PRs target `swarm/composition-c3`.
+
+Composition round c2 is complete (draft integration PR #61 to `swarm/exploration`, for Bobby) on branch `swarm/composition-c2`: Bobby's charter is research/composition-c2/coordinator/charter/ and assignments, the shared-code pin, run IDs, seeds and budgets are in research/composition-c2/coordinator/DECISIONS.md; c2 PRs target `swarm/composition-c2`.
 
 The r1 regime expedition (branch `swarm/regimes`) is complete: start at research/regimes/coordinator/SYNTHESIS.md. For any r1 follow-up work, research/regimes/PLAN.md and the role files in research/regimes/coordinator/prompts/ apply.
 

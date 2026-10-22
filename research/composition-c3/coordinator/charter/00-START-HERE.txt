@@ -1,0 +1,13 @@
+Composition follow-ups c3
+
+Send 01-coordinator.txt to the coordinator now as queued work. Start the two investigator prompts (02, 03) and reviewer (04) after c2 is reviewed and its handoff is pinned. Each prompt includes shared instructions and can be pasted separately.
+
+Two questions:
+1. Can a correction using only hidden state recover the oracle-centroid improvement?
+2. Does composition persist after intermediate supervision is removed?
+
+The coordinator should commit the charter and assignments before execution. No c2 integration merge is authorized by this packet. A reviewed c2 branch can serve as the base without merging it. Final c3 integration is a draft for Bobby.
+
+Important design refinement: depth-two states in the original held-out programs already occur in training. The correction experiment must distinguish new suffix combinations from generalizing to unseen adapter inputs. It includes a grouped-prefix check and a direct decoder baseline.
+
+Five files: start guide, coordinator, two investigators, independent reviewer. Existing threads may be reused. Small CPU experiments, one figure before expansion, at most one adaptive follow-up per investigator.

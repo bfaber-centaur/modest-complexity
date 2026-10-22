@@ -1,0 +1,44 @@
+COMPOSITION FOLLOW-UPS — c3
+Repository: bfaber-centaur/modest-complexity.
+This is a queued follow-up to composition round c2, not a replacement for it. Begin scientific execution only after the coordinator records c2's completed review packet and pins a usable c2 commit. Do not assume c2 is complete merely because this prompt exists. Do not merge c2's final integration PR without Bobby's authorization. You may branch from its reviewed integration head without merging it into its parent.
+
+Read AGENTS.md, research/composition-c2/coordinator/{INDEX,DECISIONS}.md, the final c2 synthesis if present, and the relevant lane NOTE and reviewer findings. Prior chat numbers are provisional; use reviewed repository evidence. Record anything revised or refuted by c2. Supersede old assignments/budgets only for this new round, preserving prior artifacts.
+
+New integration branch: swarm/composition-c3 (check for an existing round before creating). New directory: research/composition-c3/. Workers get isolated branches, assigned directories and unique run IDs; PRs target swarm/composition-c3. Final integration is a draft PR to the verified parent branch for Bobby. Do not merge that final PR, push to main/upstream, or rent compute.
+
+Common execution contract:
+- Exploratory work. Commit QUESTION.md before new results: exact task, interventions, alternatives, predictions, controls, evaluation and first figure. Adaptive decisions get dated entries before execution. This is not a confirmatory study.
+- Reuse reviewed code, frozen datasets, recovered checkpoints and the locked uv environment. Keep implementation small. Coordinator owns shared-code changes and publishes the pin. Use fully qualified or uniquely named imports; run old test suites in separate processes because their task/train module names collide.
+- Verify checkpoint hashes AND recipe: task/split, architecture, loss weights, learning rate, decay, optimizer moments and step. A c2 resume hash alone did not enforce recipe identity. All recipe changes must be explicit interventions. Test resume against uninterrupted execution.
+- Calibrate on the actual host. Coordinator assigns finite elapsed budgets and concurrency; one BLAS thread per process by default. Preserve failed/capped attempts and do not silently retry under the same ID. No broad optimizer/width/architecture grid.
+- Start with three paired original initialization seeds, explicitly conditional on the original task/split. Branches and repeated checkpoints are not independent replicates. Add new task draws only as a declared follow-up justified by the initial figure.
+- Define all training, validation and evaluation subsets before fitting. Tune only on training-derived validation, never the evaluation programs or longer-length test outcomes. Exhaustive evaluation is not permission to train on the evaluation labels.
+- One primary figure before expanding; at most one adaptive follow-up per investigator. Show each seed, train performance, failed/capped runs, source CSV and exact regeneration command. Export PNG plus SVG and inspect the PNG.
+- Deliver a concise NOTE.md separating observation from interpretation, checkpoint/config manifests and a reviewer handoff. No necessity, impossibility, hidden-algorithm or novelty claim from finite-budget results alone.
+- Starting literature: lookup-table composition, https://arxiv.org/abs/1802.06467. Read relevant methods when useful; cite actual source correspondence rather than treating our design as an exact reproduction.
+
+ROLE: LEARNED-CORRECTION INVESTIGATOR
+Question: can a small correction using only the model's hidden state recover part of the oracle-centroid improvement on unseen programs?
+
+Motivation to verify against final c2 review: replacing depth-two hidden states with training-derived means grouped by the true intermediate symbol improved the weaker RNNs. That intervention supplied an oracle symbol. We now ask whether a learned map can select a useful correction without that symbol at inference.
+
+Main setting: frozen 10k tied-transition RNNs from the original final-only and separate-readout/intermediate arms, three seeds each. Use the original task/split. Freeze every original parameter; hash before/after. Apply one correction at depth two and then the unchanged third transition/readout. Start with a small nonnegative-output bottleneck map, with exact dimensions and optimizer fixed after a training-only calibration. Use the same map architecture/initial draw/update exposure for learned-correction and reconstruction arms. Do not train its targets through the final-answer loss in the main experiment.
+
+Arms:
+A. Identity/no correction.
+B. Hidden state -> training-derived centroid for its intermediate symbol, trained by squared error. At evaluation input is ONLY h2; no true symbol, raw program, suffix or final answer may enter the correction module.
+C. Same architecture trained to reconstruct h2. This controls the module and training, but is not a perfectly matched target-complexity control; report that limitation.
+D. Direct symbol decoder from h2, then select that predicted symbol's training centroid and run the unchanged suffix. Train decoder only on allowed training labels. This exposes how much B is effectively a decoder plus re-encoder.
+E. True-symbol centroid replacement, labeled oracle reference (not a guaranteed upper bound).
+
+Define centroids from training states only, before evaluation. Weight unique prefixes explicitly rather than accidentally overweighting repeated appearances with different suffixes. Report final accuracy and symbol-decoding/centroid error separately. A correct decoder plus a correctly functioning suffix may explain the entire improvement; that is still useful, but not spontaneous discovery by the frozen model.
+
+CRITICAL OVERLAP CHECK:
+In the original split every held-out (start, op1, op2) prefix occurs in training. Because the RNN is causal, its h2 is identical across suffixes. The main result therefore tests novel suffix combinations of seen states, NOT generalization of the correction to unseen hidden states. State this prominently.
+Add a grouped-prefix split for the correction's own training/validation/evaluation if feasible within the initial budget: group identical prefixes together, balance symbol coverage using training labels, fit centroids and correction only on the fit groups, and evaluate on excluded prefixes. The frozen base has still encountered those prefixes; label this as adapter-held-out prefixes, not globally unseen prefixes. Do not quietly change the base-network training split.
+
+First figure: original and corrected final accuracy by arm, separate seen-prefix/new-suffix and adapter-held-out-prefix evaluations, with every seed and train performance. Include oracle reference and direct-decoder baseline.
+
+Interpretation: improvement shows a supervised post-hoc correction can use the frozen representation under the specified exposure. It does not show that the base model internally selects centroids, that the history residual is uniformly harmful, or that no new computation was learned by the correction.
+
+One follow-up after the initial figure: test the fixed correction at another depth/longer continuation, or on a second reviewed task draw. Predeclare the application rule; do not repeatedly retune using longer-length answers. Failure there bounds portability rather than invalidating the original improvement.

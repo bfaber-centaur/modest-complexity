@@ -1,5 +1,9 @@
 # Repository workflow
 
+## Composition follow-ups c3 (branch `swarm/composition-c3`)
+
+Bobby's c3 packet (2026-10-22) asks two follow-up questions to c2: a learned, oracle-free correction of the depth-2 state, and temporary intermediate supervision. Its charter is `research/composition-c3/coordinator/charter/`; c2 evidence, the pinned shared code, design constants, run-ID prefixes, seeds, budgets and gates are in [research/composition-c3/coordinator/DECISIONS.md](research/composition-c3/coordinator/DECISIONS.md). c3 branches from c2's reviewed head without merging c2; worker PRs target `swarm/composition-c3`, and the final draft PR to the parent is left for Bobby. c2, r1 and e4 artifacts are read-only for c3.
+
 ## Composition round c2 (branch `swarm/composition-c2`)
 
 Bobby's c2 round (opened 2026-10-22) follows up r1's composition regime. Its charter is `research/composition-c2/coordinator/charter/`; assignments, the pinned shared code, run-ID prefixes, seeds, budgets and gates are in [research/composition-c2/coordinator/DECISIONS.md](research/composition-c2/coordinator/DECISIONS.md). c2 work lives under `research/composition-c2/`, worker PRs target `swarm/composition-c2`, and the integration PR to `swarm/exploration` is left for Bobby. r1 and e4 artifacts are read-only for c2.
