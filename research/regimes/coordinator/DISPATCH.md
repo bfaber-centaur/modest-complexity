@@ -32,8 +32,8 @@ All five were started at 02:34 UTC with these launch texts and Bobby's request a
 
 | # | thread id | designated branch |
 |---|---|---|
-| 1 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTU8s1uzfPigWN1q5DxvtmMS` | (pending first push) |
-| 2 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTHrQdbqxgJH98bLPYsM9cdd` | (pending first push) |
-| 3 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTATNHjgSg2dD5z5YPwf1EmL` | (pending first push) |
+| 1 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTU8s1uzfPigWN1q5DxvtmMS` | `claude/project-thread-xb3nfz` |
+| 2 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTHrQdbqxgJH98bLPYsM9cdd` | `claude/project-thread-y589c6` |
+| 3 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTATNHjgSg2dD5z5YPwf1EmL` | `claude/project-thread-fbrzec` |
 | 4 | `cmsg_01APdvkRg6kVtZy2e9JoDcdT7BUSAAopwVV2LKJYAZoQTB` | `claude/project-thread-d3kg6e` |
-| 5 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTAKMwUsYk2djqx7Pz1rukHx` | (pending first push) |
+| 5 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTAKMwUsYk2djqx7Pz1rukHx` | `claude/project-thread-wvait2` |
