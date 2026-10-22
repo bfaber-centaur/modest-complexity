@@ -42,6 +42,16 @@
    ],
    "timeout": 600,
    "purpose": "D5 decode tables, probe seed 64300, nine 10k checkpoints"
+  },
+  {
+   "run_id": "c2-mech-residual-a1",
+   "argv": [
+    "research/composition-c2/mechanisms/mech_residual.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 600,
+   "purpose": "follow-up B (approved by coordinator 04:18Z): residual dose, inside/outside centroid span, held-out subspace interchange; nine 10k checkpoints; seed 64302"
   }
  ]
 }

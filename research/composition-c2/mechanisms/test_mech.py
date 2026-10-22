@@ -73,6 +73,18 @@ class TestMech(unittest.TestCase):
         self.assertAlmostEqual(mc.agreement(pred, group), (1 + 1/3) / 2)
         self.assertAlmostEqual(mc.cross_agreement(pred[:2], group[:2], pred[2:3], group[2:3]), (1 + 1/2) / 2)
 
+    def test_centroid_basis(self):
+        import mech_residual as mr
+        H = self.rng.normal(size=(80, 128)); y = np.repeat(np.arange(8), 10)
+        c, U = mr.centroid_basis(H, y)
+        np.testing.assert_allclose(U.T @ U, np.eye(7), atol=1e-12)
+        centered = c - c.mean(0)
+        np.testing.assert_allclose(mr.proj(U, centered), centered, atol=1e-12)  # U spans the centered means
+        r = self.rng.normal(size=(5, 128))
+        np.testing.assert_allclose(mr.proj(U, mr.proj(U, r)), mr.proj(U, r), atol=1e-12)
+        Q = mr.random_bases(np.random.default_rng(1), 128)[0]
+        np.testing.assert_allclose(Q.T @ Q, np.eye(7), atol=1e-12)
+
     def test_checkpoint_hash_refused(self):
         ck = dict(mc.checkpoints([0])[0]); ck['sha256'] = '0'*64
         with self.assertRaises(ValueError):
