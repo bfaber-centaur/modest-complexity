@@ -307,3 +307,106 @@ uv run --locked --group analysis python $E/plot_probe.py $E/figures/probe $E/res
 ```
 
 Budget: `mech_check.py` with the six new runs took 16 s, the probe 60 s and the figures about 12 s. Investigation 4 totals about 1.5 min, and the audit total is about 2.6 of 30 min.
+
+# Investigation 5: the 24 dynamics runs and the ladder claims (packet 1, PR #28)
+
+Base `0d11fbb`. The checks, rules and expectations were committed before computing: [QUESTION-5.md](QUESTION-5.md), `d3a64a1`. Before that I had read the lane's README, its three figures and the docstring and `score` of `ladder.py`, and nothing in `ladders.csv`.
+
+## Figure 5
+
+![ladder audit](figures/ladder.png)
+
+Look before reading: in the top right, does the thick orange pair stay on top when the pairs are held fixed? In the bottom left, how many points sit above the dashed line, and how many would you expect from the grey bands?
+
+## Software checks: PASS
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| Y2′ | Init pairing, by replay (no step-0 checkpoint is published) | PASS | All 24 runs: a replay from `independent.initial_weights` on the regenerated split reproduces the first published checkpoint (update 300 in 21 runs, 400 in 3) within 3.3e-13, at most 4e-4 of the 1e-9 × weight tolerance. This checks the init, the split and the recipe of every run together |
+| Y3 | Provenance and accounting | PASS | 24 launched, 24 published, 24 complete at 50,000. Each has one running and one complete event, with no unplanned IDs in the registry. Split hash, data seed, init seed, fraction, steps, wd, width and lr match the plan; training counts match; every published file matches its manifest hash |
+| Y4 | Replays of the 41002 40% pair | PASS (late: rounding) | Early, from the independent init to 2,000: within 4.1e-12 of the published weights (tolerance 1.1e-9). Late, 30k → 50k with moments: weights differ by 0.31% (init 30000) and 6.8% (init 30001) in norm, but the 50k measures agree. Accuracy is 0.025 against 0.025, and 0.090 against 0.092 (one pair of 480). σ-margin is 0.506 against 0.510, and 0.770 against 0.785. The cause of the init-30001 gap is under "late replay" below |
+| Y5 | Checkpoint predictions | PASS on accuracies; cross-entropy criterion mis-set | Train, cal and audit accuracies are exactly equal at all 192 checkpoints. Cross-entropies are within 3.6e-15 absolute. The pre-stated 1e-12 relative fails in every run (up to 1.2e-10) only because the training cross-entropies are of order 1e-5. This is the same mis-set criterion as C3, not a defect |
+| T1 | Table 1 recomputed | PASS | I implemented the measures afresh from the README definitions. All six measures match `ladders.csv` in all 200 rows (192 e3 checkpoints, plus the eight 31000 runs at 50k): five exactly, the σ-margin within 4.4e-16 |
+| Y6 | Separation of variation | PASS (review) | Ladders appear in separate panels with their evaluation-pair counts and init seeds as line styles. Pairs are never pooled or counted as replicates |
+
+**Late replay (observed after the fact, not pre-stated).**
+- **The run is exact.** The shared code at `72cfb5d`, resumed in scratch from the published 30k checkpoint (an audit probe with no run ID), reproduces the published 50k checkpoint bitwise.
+- **Where my replay departs.** Against that trajectory it is 2.9e-6 off in norm at 31k and 1.4e-3 at 32k. The gap reaches 5% by 38k and then levels off at 6–7%.
+- **The size of a one-update difference.**
+  - One update from 30k differs by 5.0e-13 between my code and the shared code.
+  - Reordering the training pairs changes my own update by only 1 ulp.
+  - Rounding the logit gradient the shared code's way makes my update match it to 1 ulp (1.1e-16). That means a max-shifted softmax, then subtracting 1 at the label, instead of exp(logits − logsumexp) − onehot.
+- **Cause.** At 30k, 1 − p(a+b) on the training pairs is 3e-6 to 7e-6 (median 7.0e-6). The two codes therefore round the label term of the gradient differently at the 1e-11 relative level, and late training amplifies that. Neither code is more correct.
+- **Rounding-level controls in my own code** stay within 0.09–0.67% of each other at 50k. They are below the cross-code gap, because they do not touch that cancellation.
+- **Precedent.** This is the late-trajectory sensitivity of e1 F11 and e2 G21: weights are trajectory-specific, while logged accuracies and measures reproduce. Replays of the continuations past 50k should use short windows or the shared code's rounding of the label term.
+- **Superseded attempts.** The sensitivity control was run three times as variants were added: first a start perturbation only, then per-gradient perturbations, then the pair reordering. Only the last output is kept. Each run gave controls between 0.09% and 0.67% of the weight norm.
+
+## Results against the interpretation rules
+
+| Rule | Verdict | Evidence |
+|---|---|---|
+| 1. The ordering travels | SUPPORTED LOCALLY | In all 8 ladder × init sequences, accuracy, P(a+b over N), P(a+b over S) and the σ-margin rise at every rung, and the own-absent rank falls |
+| 2. P(S over N) falls with share in every ladder | SUPPORTED LOCALLY | From 30% to 50% it falls by 0.051–0.060 in all 8 sequences |
+| 3. The 45% runs are still rising at 50,000 | SUPPORTED LOCALLY | Accuracy rises by 0.067–0.112 from 30k to 50k in all six e3 45% runs |
+| 4. 41002 at 40% is a ladder (training-set) effect | CONTRADICTED (by the pre-stated rule; read with the caveat below) | (a) The lane's criterion fires by chance with probability 0.19 per cell, and it fires in 7 of 24 cells. (b) F = 2.95, p = 0.25 (three e3 ladders); F = 2.90, p = 0.20 (with 31000). (c) On the 53 fixed pairs 41002 leads for neither init. (d) Over training, against the other two e3 ladders, 41002 leads for init 30001 from 5k on, but for init 30000 only from 30k |
+
+**Rule 4 in detail.**
+- **(a) The lane's criterion.** The range of the three e3 ladder means exceeds every within-ladder init difference in 7 of 24 measure × share cells.
+  - The cells are P(a+b over N), P(a+b over S), the σ-margin and the own-absent rank at 40%, and P(a+b over N), P(S over N) and the own-absent rank at 50%.
+  - Under no ladder effect, a cell meets the criterion with probability 0.19, so about 4.6 cells would be expected if the cells were independent. They are not.
+  - The ratio of the range to the largest init difference has a median of 0.69 across cells, against 0.56 under the null. The largest ratio, 1.75 (σ-margin at 40%), sits just above the null 95% point of 1.67.
+- **(b) Two-way decomposition.** Ladder and init are crossed, and the init that leads changes between ladders: at the 40% σ-margin, init 30000 leads in 41001 and 41003, and init 30001 in 41002 and 31000. The ladder × init interaction is therefore large, and the ladder mean square is about three times it, which is not unusual for 2 or 3 degrees of freedom.
+- **(c) Fixed pairs.** On the 53 pairs outside all four 50% training sets, the 40% σ-margins at 50k for init 30000 / init 30001 are:
+  - 41001: 0.13 / 0.11
+  - 41002: 0.25 / 0.50
+  - 41003: 0.61 / 0.30
+  - 31000: 0.32 / 0.51
+
+  On the secondary measures, P(a+b over own N) does not lead for either init, and the all-wrong-label rank leads for init 30001 only.
+  - **Caveat (post hoc).** A median over 53 pairs moves with the choice of pairs: across random 53-pair subsets of each run's own evaluation pairs its standard deviation is 0.13–0.17. That is comparable to 41002's lead on its own pairs, 0.11 for init 30000 and 0.36 for init 30001. This test is coarse. It shows that the lead is not stable to which pairs are scored. It does not show that the training sets are equivalent.
+
+## Interpretations
+
+| Claim (lane README, D14) | Verdict | Evidence and scope |
+|---|---|---|
+| The ordering travels to three new ladders, in the same bands | SUPPORTED LOCALLY | Rule 1 and T1. Four rungs, two inits, one width, one horizon |
+| In this sample the transition does not clearly move | SUPPORTED LOCALLY, weak | Ladder against init is within chance on every measure. With two inits per cell, a ladder effect smaller than the interaction would not be detected |
+| 41002 at 40% is a hint of a ladder effect | CONTRADICTED as a training-set effect (rule 4) | Within init chance, and not stable to the evaluation pairs. The lane already said that two inits cannot separate it from chance |
+| P(S over N) falls with share in every ladder | SUPPORTED LOCALLY | Rule 2. This was investigation 1's cheapest next check, and it now holds across four data seeds. It says nothing yet about whether the fall comes from finding a+b or from fitting more pairs per operand |
+| The 45% runs are not at a plateau at 50k | SUPPORTED LOCALLY | Rule 3. Every accuracy crossing is a 50k description, not a threshold |
+
+**Separation of variation (post hoc, descriptive).** Inits differ consistently in some places and not others.
+- At 45% accuracy, init 30001 is ahead in all four ladders, by 0.015–0.142.
+- At the 40% σ-margin, the leading init flips between ladders.
+- So what Table 3 calls "init spread" is largely an init × training-set interaction, not a property of the init alone. Both kinds of variation are of a size that two inits cannot pin down.
+
+**Strongest surviving alternative.** The ladders could differ by a training-set effect about the size of the init × ladder interaction: around 0.2–0.3 σ in margin at 40%, and a few hundredths in accuracy at 45%. The design cannot see an effect that size. Evaluation-pair composition also differs between ladders and adds variation of about the same size, so comparisons on each ladder's own pairs cannot attribute a difference to the training set.
+
+**Cheapest next discriminating check.**
+- **What to run.** Two more init seeds (for example 30002 and 30003) at 40% on the 41002 and 41001 ladders: four 50k runs, about 2.5 min each on two workers. The lane is already continuing those same 40% runs to 100k, so the new runs would share their ladders.
+- **Pre-stated reading.** If 41002 leads 41001 in σ-margin for all four inits (a sign test, p = 1/16 one-sided) and on the 53 fixed pairs, a training-set effect at 40% is supported. Otherwise the 40% difference is init × ladder interaction.
+- **For a later round.** Ladders that share a common held-out block across data seeds would remove the evaluation-pair confound by design.
+
+## Reproduce (investigation 5)
+
+```bash
+E=research/e3/audit; R=research/e3/dynamics/runs; X=e3-dy-add-w128-i30001-tf40-d41002-a1
+uv run --locked python $E/dynamics_check.py runs $R research/e3/dynamics/registry.jsonl $E/results/dynamics-runs.json
+uv run --locked python $E/dynamics_check.py replay $R $X $E/results/dynamics-replay-i30001.json
+uv run --locked python $E/dynamics_check.py replay $R ${X/i30001/i30000} $E/results/dynamics-replay-i30000.json
+uv run --locked python $E/ladder_check.py $E/results
+# post hoc: rounding controls, and my replay against the shared code resumed from 30k (scratch, no run ID)
+uv run --locked python $E/dynamics_check.py sensitivity $R $X $E/results/dynamics-sensitivity.json
+uv run --locked python $E/dynamics_check.py sensitivity $R ${X/i30001/i30000} $E/results/dynamics-sensitivity-i30000.json
+git worktree add --detach $SCRATCH/wt 72cfb5d   # then, from $SCRATCH/wt, with the run's seeds and --train-fraction .4 --diagnostics none:
+#   uv run --locked python experiment.py --resume <repo>/$R/$X/checkpoint_030000.npz --steps 50000 --out $SCRATCH/resume-check-i30001
+#   uv run --locked python experiment.py --resume <same> --steps 30010 --log-every 1 --checkpoint-steps 30001 --out $SCRATCH/resume-step-i30001
+uv run --locked python $E/dynamics_check.py track $R $X $SCRATCH/resume-check-i30001 $E/results/dynamics-track-i30001.json
+uv run --locked python $E/dynamics_check.py track $R $X $SCRATCH/resume-step-i30001 $E/results/dynamics-track-step-i30001.json
+uv run --locked python $E/dynamics_check.py onestep $R $X $E/results/dynamics-onestep-i30001.json $SCRATCH/resume-step-i30001/checkpoint_030001.npz
+uv run --locked --group analysis python $E/plot_ladder.py $E/figures/ladder $E/results
+```
+
+The full `experiment.py` arguments for the scratch resumes are `--expect-init-sha256 f81279e4… --data-seed 41002 --init-seed 30001 --control-seed 32000 --diagnostic-seed 33000 --train-fraction .4 --diagnostics none --expect-split-sha256 d044117b…`, with run IDs `audit-scratch-resume-check` and `audit-scratch-resume-step`. Their outputs stay in scratch.
+
+Budget: about 12 min of process time, at most two processes. The rounding controls account for about 8 min of it (four runs of 60k–80k updates). The checks, replays, recomputation and tracking took about 3 min, the shared-code resumes about 40 s, and three renders of the figure about 10 s. The audit total is about 14.6 of 30 min.

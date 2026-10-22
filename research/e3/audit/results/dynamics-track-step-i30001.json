@@ -1,0 +1,15 @@
+{
+ "run": "e3-dy-add-w128-i30001-tf40-d41002-a1",
+ "mine_vs_other": [
+  {
+   "step": 30001,
+   "relative_weight_distance": 9.473216859500552e-14,
+   "max_abs_diff": 5.025979632478084e-13
+  },
+  {
+   "step": 30010,
+   "relative_weight_distance": 1.1641318566856288e-12,
+   "max_abs_diff": 5.863198815347914e-12
+  }
+ ]
+}

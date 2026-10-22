@@ -1,0 +1,33 @@
+{
+ "run": "e3-dy-add-w128-i30001-tf40-d41002-a1",
+ "mine_vs_mine_start_perturbed": {
+  "relative_weight_distance": 0.0010219178327732009,
+  "max_abs_diff": 0.01441218539564526
+ },
+ "mine_vs_mine_every_gradient_perturbed": {
+  "relative_weight_distance": 0.0009186731260065489,
+  "max_abs_diff": 0.015376684415178032
+ },
+ "mine_vs_mine_pairs_permuted": {
+  "relative_weight_distance": 0.0017309420930479147,
+  "max_abs_diff": 0.025058792016182746
+ },
+ "vs_published": {
+  "plain": {
+   "relative_weight_distance": 0.06826702862440938,
+   "max_abs_diff": 0.9631243317117066
+  },
+  "start perturbed": {
+   "relative_weight_distance": 0.06834880499712206,
+   "max_abs_diff": 0.9637222490934761
+  },
+  "every gradient perturbed": {
+   "relative_weight_distance": 0.06815342789292225,
+   "max_abs_diff": 0.962930142697768
+  },
+  "pairs permuted": {
+   "relative_weight_distance": 0.06825724341071408,
+   "max_abs_diff": 0.9630120830159372
+  }
+ }
+}
