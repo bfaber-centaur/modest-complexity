@@ -26,7 +26,7 @@ Questions and predictions, committed before each measurement: [QUESTION.md](QUES
     - At `ckpt-10000` plus N(0, 0.01²), it reached 8.2e-6 (P3b, added after P3).
   - I read both as limits of the test (round-off, curvature and ReLU kinks), not as a gradient error, but I did not prove that.
   - The gradient code is c2's pinned `c2rnn`, unchanged, which `test_c2.py` checks bitwise against r1's training. `test_c3.py` checks that the gradient is linear in the weights to 1e-13. A gradient error large enough to change a branch would show at the 1e-2 to 1 level at `ckpt-1000`.
-- **P4, resume recipe check** (`check_source`, called directly, no training). Every pairing went the predicted way: 27 accepted and 15 refused.
+- **P4, resume recipe check** (`check_source`, called directly, no training). Every pairing went the predicted way: 27 accepted and 14 refused.
   - **Accepted.** Each tied/inter `ckpt-1000` and `ckpt-10000` with its own r1 config, under keep, drop or taper at its step, or a switch after it. A c2 time `ckpt-20000` with its config. My per-step-readout `ckpt-10000` with its config.
   - **Refused.**
     - A config from another seed, or from tied/final, because its MANIFEST.json lists a different hash.
