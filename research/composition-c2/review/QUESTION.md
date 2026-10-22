@@ -74,6 +74,18 @@ The TU cell is my r1 arm (disclosure above). Checks, with code written here:
 
 (Dated, before the matching analysis or run.)
 
+- **Generalization follow-up anatomy and drift** (recorded in the commit that adds this entry, before the code below exists). This was written after reading the merged NOTE (`6fe1435`), its follow-up section, `gen_followup.py` and the head of `summary.json`. So the checks below are recomputations of numbers I have seen. Only CX-G3 is a new measurement.
+  - **Checks (11 tied/inter `ckpt-10000`; my oracle, my forward, my draws and splits from `partb`).**
+    - On exhaustive length-6 rows: first wrong step and the transition (true state before, op) at steps 4–6. Also the at-risk counts. Together these give all of `anatomy.csv`.
+    - The `summary.json` measures: top-1/4/8 shares, Spearman ρ (step 5 vs 6; step 4 vs 5 where step 4 has ≥ 20 errors), the other-op share and the held-out-window shares at the error and at risk. Also the F1–F3 verdicts.
+    - `windows.csv`, `followup.csv`, and the NOTE's ranges in the follow-up section and the held-out-window bullet.
+    - The drift columns (`norm_ratio`, `centroid_distance_ratio`) of `steps.csv` for all 22 frozen models. Also the NOTE's step-6 ranges and its after-first-error percentages.
+    - The at-risk window share should be exactly 0.25. Because the split is a Latin square, every op pair at positions (t−2, t−1) completes exactly one held-out program, whatever the filtering on the prefix.
+  - **CX-G3, against "this matches gradual degradation of the iterated continuous state more than a few broken transitions".** If the continuous state degrades, then within a fixed transition the rows whose incoming state has drifted further should fail more often.
+    - *Test.* At steps t = 5 and 6, take the rows at risk (correct through t − 1). Measure drift as ‖h_{t−1} − c(x_{t−1})‖, where c is the training-h3 centroid of the true symbol. Split each of the 32 transitions' at-risk rows into drift quartiles within that transition, then pool the error counts by quartile.
+    - *Prediction.* The top-quartile error rate is at least 2× the bottom-quartile rate, at both steps, in at least 9 of 11 models. Low confidence.
+    - *If it fails.* Drift is the NOTE's descriptive measure, and it does not locate the failures within a transition. The "degradation of the continuous state" reading would then rest on the per-step error rate alone.
+
 - **After CX-S2 ran, sharing NOTE follow-up numbers** (recorded in the commit that adds this entry, before the code below exists). CX-S2 and the three checks above ran first: recipes, pairing and endpoints PASS; CX-S2's first half FAILED, its second half held (REVIEW.md §5). I have now read the NOTE's follow-up section (`501071c`). These are recomputations of its stated numbers, with no new prediction beyond "they match".
   - **From the logged rows.** The held-out, ¬N and wd 0 − wd 0.1 table; the paired contrasts and interaction; F2–F4; held-out at 1,000 and the change over the last 2,000 updates at both recipes; N at 10k; the first step where all three training heads are at 1.0. Also the held-out change from 1,000 to 10,000, against "then barely moves".
   - **Figure CSVs.** `followup_endpoints.csv` and `followup_trajectories.csv` against the logged rows.
