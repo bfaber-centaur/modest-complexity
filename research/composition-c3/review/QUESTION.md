@@ -112,6 +112,24 @@ This section was written before I read any follow-up result. At `abfa30b` the la
 - **If it holds.** A "weights at S suffice" result (B′ ≈ B at 50k) cannot exclude a moments effect that the burst offsets, and I will say so.
 - **If B′ is clearly slower early but equal at 50k.** The reset costs time, which the carried moments save, and the endpoint hides it.
 
+## 6. Synthesis check (`coordinator/SYNTHESIS.md`; written before I read it)
+
+I wrote this section before opening `coordinator/SYNTHESIS.md`. At `f2c7c63` I know it only from its commit messages ("complete in draft (follow-up attribution, limitations, two next questions, runs and compute)"). The check reads the synthesis against reviewed evidence only: the lane NOTEs at their merged hashes, my outputs in `out/` (and the `rev_*.json` dumps they came from), and `REVIEW.md`. It trains and fits nothing. A small reads-only script (`rev_synth.py`) totals the registries for SY4.
+
+| # | check | prediction |
+|---|---|---|
+| SY1 | **Numbers.** Every number in the synthesis traces to a reviewed artifact and equals it at the stated rounding: correction (`out/rev_corr_*`), scaffolding M2 (`out/rev_scaf*.txt`), follow-up (`out/rev_scaf_fu*.txt`), re-pin (`out/rev_repin.txt`) | all, or wording-level nits only |
+| SY2 | **Review points carried.** Correction: the W1–W3 and C6 fixes and "in 8 of 14 bases". M2: CX-S1 failed, so persistence stands (L6 within 0.0023 of keep). CX-S2: the lower total norm is not a uniform shrinkage (Ws, bs, bv shrink; A grows). N-S1–N-S3. Re-pin: CX-R1, that the effect belongs to the reset as a whole and is not split between the moments and the burst. Follow-up: W-F1 (scoped to S = R = 1k and this recipe) and W-F2 (the keep control is informative only while keep is below its ceiling) | all present |
+| SY3 | **Claim scope** (the standing rule for these packets). No finite-budget result is stated as necessity or impossibility. Tested baselines are not called bounds. Seed counts are given with each comparison, and one-S or one-reset-time results are not generalized | holds |
+| SY4 | **Runs and compute.** Run counts and wall-clock totals per lane and for the review equal the registries (completed, failed and capped runs all listed; my failed `c3-rev-corr-a1` included). Observations are kept apart from interpretations | equal at stated rounding |
+| SY5 | **Packet shape** (DECISIONS, final packet). It covers what the oracle-free correction achieved, what temporary supervision left behind, and the limitations. It asks at most two next questions | holds |
+| SY6 | **Disclosure.** Where the correction lane uses the per-step-readout base (`r1-rev-comp-rnn-untied-*`), the synthesis says it is my r1 arm, or points to where `REVIEW.md` says so | holds |
+
+**Counterexample CX-SY1, compression drift.** A synthesis compresses, and the two places I expect it to over-compress are these.
+- **Prediction.** At least one sentence states the follow-up more broadly than W-F1 allows. Examples: "carrying the Adam state slows acquisition" with no S, R or recipe scope, or an attribution of the slowing to the moments rather than to the reset as a whole. Or the CX-S2 norm result is summarised as a uniform shrinkage.
+- **If it holds.** Each instance is a CONCERN with a proposed rewording. None is a BLOCK unless a number is wrong.
+- **If it fails.** I record that the synthesis kept both scopes, and SY2 and SY3 pass on those points.
+
 ## Revisions
 
 ### 05aac5a + runs (05:23–05:24), before any analysis of them
