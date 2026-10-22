@@ -48,13 +48,14 @@ def read(path):
                 r[k] = float(v)
             except ValueError:
                 pass
-        for part in ('ref', 'off'):
+        for part in ('ref', 'dc', 'off'):
             r[f'UV_{part}_norm'] = (r[f'U_{part}_norm']**2 + r[f'V_{part}_norm']**2)**.5
     return rows
 
 
 def series(rows, arm, wd, seed, key):
-    rs = [r for r in rows if r['arm'] == arm and r['wd'] == wd and r['init_seed'] == seed and not r.get('decay_on')]
+    rs = [r for r in rows if r['arm'] == arm and r['wd'] == wd and r['init_seed'] == seed
+          and not r.get('decay_on') and not r.get('switch_step')]
     dense = {r['step'] for r in rs if r['source'] == 'replay'}
     rs = sorted((r for r in rs if r['source'] == 'replay' or r['step'] not in dense), key=lambda r: r['step'])
     return [max(r['step'], ZERO) for r in rs], [r[key] for r in rs]
