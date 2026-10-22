@@ -386,6 +386,17 @@
     "--lane",
     "4512bce"
    ]
+  },
+  {
+   "run_id": "c3-rev-scaf-fu-a1",
+   "timeout": 900,
+   "argv": [
+    "research/composition-c3/review/rev_scaf_fu.py",
+    "--out",
+    "{out}",
+    "--lane",
+    "5317c54"
+   ]
   }
  ]
 }
