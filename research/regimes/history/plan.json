@@ -1,0 +1,1178 @@
+{
+ "note": "R3 history lane plan (QUESTION.md). M1 entries: phase-A runs (fresh-A reference, positive control, ckA source) and scratch-B runs (difficulty match, history-free readout reference). Timeouts before calibration are generous; later entries use ~3x the calibrated expectation. Branch entries (d0, rel, unrel, contA, conflict) added after M1: sources are the phase-A checkpoints with their SHA-256; timeouts = 3 x (updates/1500 + 4 s), at least 30 s, from the M1 calibration (~1850 updates/s, ~1 s per snapshot). Follow-up entries (r1-hist-fu-reset-*) added after M2: return phase with head A reset to its init draw; QUESTION.md \"Follow-up\". Timeout 30 s each (~3x the calibrated ~9 s).",
+ "runs": [
+  {
+   "run_id": "r1-hist-A-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53200",
+    "--phases",
+    "A:2000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-A-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53201",
+    "--phases",
+    "A:2000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-A-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53202",
+    "--phases",
+    "A:2000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Brel-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53200",
+    "--phases",
+    "Brel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Bunrel-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53200",
+    "--phases",
+    "Bunrel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Brel-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53201",
+    "--phases",
+    "Brel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Bunrel-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53201",
+    "--phases",
+    "Bunrel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Brel-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53202",
+    "--phases",
+    "Brel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Bunrel-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53202",
+    "--phases",
+    "Bunrel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-d0-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-rel-d100-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "Brel:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-rel-d1000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "Brel:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-rel-d10000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "Brel:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-unrel-d100-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "Bunrel:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-unrel-d1000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "Bunrel:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-unrel-d10000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "Bunrel:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-contA-d100-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "A:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-contA-d1000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "A:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-contA-d10000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "A:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-conflict-d100-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "notA:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-conflict-d1000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "notA:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-conflict-d10000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--phases",
+    "notA:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-d0-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-rel-d100-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "Brel:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-rel-d1000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "Brel:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-rel-d10000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "Brel:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-unrel-d100-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "Bunrel:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-unrel-d1000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "Bunrel:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-unrel-d10000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "Bunrel:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-contA-d100-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "A:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-contA-d1000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "A:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-contA-d10000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "A:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-conflict-d100-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "notA:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-conflict-d1000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "notA:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-conflict-d10000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--phases",
+    "notA:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-d0-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-rel-d100-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "Brel:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-rel-d1000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "Brel:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-rel-d10000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "Brel:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-unrel-d100-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "Bunrel:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-unrel-d1000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "Bunrel:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-unrel-d10000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "Bunrel:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-contA-d100-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "A:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-contA-d1000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "A:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-contA-d10000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "A:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-conflict-d100-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "notA:100,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-conflict-d1000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "notA:1000,A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-conflict-d10000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--phases",
+    "notA:10000,A:4000"
+   ],
+   "timeout": 40
+  },
+  {
+   "run_id": "r1-hist-fu-reset-rel-d1000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-rel-d1000-s53200-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "8493af8bf4295f8a32643d19131837d5a3c193579fccf34bc137718002524d0c",
+    "--reset-head-A",
+    "53200",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-rel-d10000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-rel-d10000-s53200-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "94b98f2c438efb727758f55072fcc28fbc3f56e488e32c07a75b7e8e82627092",
+    "--reset-head-A",
+    "53200",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-unrel-d1000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-unrel-d1000-s53200-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "cb0e0782ad9e8afd48cfa2f88bb661aa6a31db1ffab9b9f8a30f37bec69cee23",
+    "--reset-head-A",
+    "53200",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-unrel-d10000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-unrel-d10000-s53200-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "d5bb2c628dd0e417b24ea38975d55e8d4b1ae6d03e4bcaba137b371ffd5b22a8",
+    "--reset-head-A",
+    "53200",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Brel-d1000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Brel-s53200-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "849e28738982d4891c08eaf070f1b6770495cdbc346e9e49e014ba4dd6200c6a",
+    "--reset-head-A",
+    "53200",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Brel-d10000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Brel-s53200-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "2c032830eecf9d8c07070736cabd4c9372b64f9a55212dfe378c9ba45e2712c7",
+    "--reset-head-A",
+    "53200",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Bunrel-d1000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Bunrel-s53200-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "7ae214120ed379657d9413792ebee2e0d730ad69e030b6e312b2e38202585194",
+    "--reset-head-A",
+    "53200",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Bunrel-d10000-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Bunrel-s53200-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "e1373aafe6fe2b7efc63dfadccc55160a276c42db735ef2ec40df0936f5a6fa9",
+    "--reset-head-A",
+    "53200",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-ckA-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53200-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--reset-head-A",
+    "53200",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-rel-d1000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-rel-d1000-s53201-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "2cbd0bd44c803e0041e1e066e0a6684992e18eae0827cdbcf2911f0c71135c06",
+    "--reset-head-A",
+    "53201",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-rel-d10000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-rel-d10000-s53201-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "7a2d9a2459f78c7023918da5eb8984428bc2af66fab8d288c5eccbee287be053",
+    "--reset-head-A",
+    "53201",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-unrel-d1000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-unrel-d1000-s53201-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "08588949aaef163f0940c715280a5aaaa507a079336e282fd41f679e8ba619b9",
+    "--reset-head-A",
+    "53201",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-unrel-d10000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-unrel-d10000-s53201-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "aa20b93a10a76bddc2fb9f88a9616d5168da736f17fdea5bda9d7b3179bd0443",
+    "--reset-head-A",
+    "53201",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Brel-d1000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Brel-s53201-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "4488cdbd7f67e70a851a71c09682794138646c3062bc679ae8f7c8ba50c8f467",
+    "--reset-head-A",
+    "53201",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Brel-d10000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Brel-s53201-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "872433bff132ccd12eb4e3ebb76ac73a87c39975402e2fdd78c6240c4ea64c66",
+    "--reset-head-A",
+    "53201",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Bunrel-d1000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Bunrel-s53201-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "e15c8cb70d55a016090d99abf49b5032ddbf827d69f1c6fa713c1c0955b8e489",
+    "--reset-head-A",
+    "53201",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Bunrel-d10000-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Bunrel-s53201-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "a6e5062b43fdabf1e81d3ba1d5c3effd6510ea5b1b926466327fc4f17869943e",
+    "--reset-head-A",
+    "53201",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-ckA-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53201-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--reset-head-A",
+    "53201",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-rel-d1000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-rel-d1000-s53202-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "9f92f59708fe777b443a4371dfdc4da1e799527f6935a87cc82f015561e43500",
+    "--reset-head-A",
+    "53202",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-rel-d10000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-rel-d10000-s53202-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "c10ac19fae83c9c800412417a4de3c65897400c51a79ddceb7087804846280bb",
+    "--reset-head-A",
+    "53202",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-unrel-d1000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-unrel-d1000-s53202-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "c6fcb227535f2b320fb9ab9c422eca064cac3ee1f5a79b10e9295c24198b0f97",
+    "--reset-head-A",
+    "53202",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-unrel-d10000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-unrel-d10000-s53202-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "1b6981fe6d8c5295e541326279f589a0f0ce4dec86610417b21b4b2c2cd0f0d9",
+    "--reset-head-A",
+    "53202",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Brel-d1000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Brel-s53202-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "e445ae52b80a9a66ecbcda28e68e66d6e08bbc2d9b0be58c50660209c2fac456",
+    "--reset-head-A",
+    "53202",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Brel-d10000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Brel-s53202-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "fb1c6641db6b6d2f295f8584578390def31e6623cf49cbf981444d12f52dcaa2",
+    "--reset-head-A",
+    "53202",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Bunrel-d1000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Bunrel-s53202-a1/ckpt_t1000.npz",
+    "--from-sha256",
+    "9e2f4a6587f520194b3a5b18b3f51ffbfbc60c257d8f2854e06f3829f6c72219",
+    "--reset-head-A",
+    "53202",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-scratch-Bunrel-d10000-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-scratch-Bunrel-s53202-a1/ckpt_t10000.npz",
+    "--from-sha256",
+    "ef303ed2f444ba1bd77c9c3d87826dd771e29df220b6930f6d2dcbf1157212e3",
+    "--reset-head-A",
+    "53202",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  },
+  {
+   "run_id": "r1-hist-fu-reset-ckA-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--from",
+    "runs/regimes/r1-hist-A-s53202-a1/ckpt_t2000.npz",
+    "--from-sha256",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--reset-head-A",
+    "53202",
+    "--phases",
+    "A:4000"
+   ],
+   "timeout": 30
+  }
+ ]
+}
