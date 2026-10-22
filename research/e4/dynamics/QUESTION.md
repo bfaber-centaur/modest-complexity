@@ -73,3 +73,34 @@ Hold everything else fixed: the same three filtered start files, the same data, 
 - **wd 0.3 is the more informative arm for the delay reading.** It reaches E = 6, where wd 1 is fully collapsed.
 - **The start files are not new replicates.** They are the same three as e3, so comparisons are paired by start file, and repeated checkpoints of one run are dependent observations.
 - **Comparability.** The existing wd 0 and wd 1 runs were produced at `59c822e` and `ad6e923` (shared code equal to `9041a48`). New runs at a later pin are compared with them only after their code and settings are checked equal, and after one replay check if the coordinator wants one.
+
+## Q1 addendum (2026-10-22, after measuring the existing wd 0 and wd 1 runs, before any new run)
+
+`decay.py` was committed at `9257c00`, with outputs in `figures/existing/`. On the existing runs it measures the following.
+
+- **wd 1.**
+  - The peak is 0.751, 0.807 and 0.878, at updates 80, 70 and 70.
+  - Accuracy falls below the update-0 level at updates 600, 470 and 470 (E = 0.60, 0.47, 0.47).
+  - It falls below 0.10 at updates 1,680, 1,540 and 1,800 (E = 1.68, 1.54, 1.80). There are no re-crossings.
+- **wd 0.** The peak is 0.766, 0.823 and 0.881, at updates 100, 110 and 80. Both thresholds are censored (> 20,000).
+
+The order is init 30000, 30001, 30002 throughout.
+
+**Prediction under the delay reading.** If the explicit shrinkage sets the clock, each new run crosses at the same exposure as its wd 1 partner from the same start file.
+
+| start | wd 0.3: T(update-0 level) | wd 0.3: T(0.10) | wd 0.1: T(update-0 level) | wd 0.1: T(0.10) |
+|---|---|---|---|---|
+| i30000 | about 2,000 | about 5,600 | about 6,000 | about 16,800 |
+| i30001 | about 1,570 | about 5,130 | about 4,700 | about 15,400 |
+| i30002 | about 1,570 | about 6,000 | about 4,700 | about 18,000 |
+
+All of these lie inside the 20,000-update window. That makes the earlier limitation about wd 0.1 less severe than stated in Q1, provided the delay reading holds.
+
+**Decision rule, fixed now.** For each new run and each threshold, take r = observed T divided by predicted T.
+
+- **Consistent with the exposure clock:** 1/1.5 ≤ r ≤ 1.5 for all six runs at both thresholds.
+- **Slower than exposure:** r > 1.5, or censored. Lower decay then removes less per unit of exposure; something other than the explicit shrinkage, such as the cross-entropy drive or the Adam step, sets part of the clock.
+- **Faster than exposure:** r < 1/1.5.
+- **Mixed:** the arms or seeds disagree. Report per run, with no pooling.
+
+The early rise and the endpoint are read separately from r.
