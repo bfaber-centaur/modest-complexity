@@ -1,0 +1,134 @@
+{
+ "note": "R3 history lane plan (QUESTION.md). M1 entries: phase-A runs (fresh-A reference, positive control, ckA source) and scratch-B runs (difficulty match, history-free readout reference). Timeouts before calibration are generous; later entries use ~3x the calibrated expectation.",
+ "runs": [
+  {
+   "run_id": "r1-hist-A-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53200",
+    "--phases",
+    "A:2000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-A-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53201",
+    "--phases",
+    "A:2000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-A-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53202",
+    "--phases",
+    "A:2000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Brel-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53200",
+    "--phases",
+    "Brel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Bunrel-s53200-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53200",
+    "--phases",
+    "Bunrel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Brel-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53201",
+    "--phases",
+    "Brel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Bunrel-s53201-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53201",
+    "--phases",
+    "Bunrel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Brel-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53202",
+    "--phases",
+    "Brel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  },
+  {
+   "run_id": "r1-hist-scratch-Bunrel-s53202-a1",
+   "argv": [
+    "research/regimes/history/history.py",
+    "--out",
+    "{out}",
+    "--init-seed",
+    "53202",
+    "--phases",
+    "Bunrel:10000",
+    "--snapshot-at",
+    "100,1000"
+   ],
+   "timeout": 300
+  }
+ ]
+}
