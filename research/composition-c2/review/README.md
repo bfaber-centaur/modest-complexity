@@ -19,7 +19,7 @@ uv run --locked python research/regimes/common/run_jobs.py --plan research/compo
     --ids c2-rev-verify-final-s51200-a1
 uv run --locked python research/composition-c2/review/rev_pin.py runs/c2 > research/composition-c2/review/out/rev_pin.txt
 uv run --locked python research/composition-c2/review/rev_gen.py 30c495f 99c83c8 543ed95 fd4e21d > research/composition-c2/review/out/rev_gen.txt
-uv run --locked python research/composition-c2/review/rev_mech.py 817a768 817a768 > research/composition-c2/review/out/rev_mech.txt
+uv run --locked python research/composition-c2/review/rev_mech.py 817a768 817a768 0fe8624 > research/composition-c2/review/out/rev_mech.txt
 uv run --locked python research/composition-c2/review/rev_share.py 83b3303 501071c > research/composition-c2/review/out/rev_share.txt
 uv run --locked python research/composition-c2/review/rev_time.py 543ed95 > research/composition-c2/review/out/rev_time.txt
 ```
@@ -43,5 +43,6 @@ uv run --locked python research/composition-c2/review/rev_time.py 543ed95 > rese
 | before c321113 (04:37) | A5 checks: two one-off reads (about 6 s), then `rev_gen.py` with `a5()` | 6 + 42.8 s | 4.6 min |
 | after 3be6632 (04:42) | `rev_share.py` with the wd 0 follow-up: one crash (no `diag` in the 10k row), the CX-S2 pass, the NOTE-check pass, a one-off read of the table values, and a final pass after fixing two rounding tolerances in my checks | 0.7 + 0.9 + 1.2 + 1 + 1.1 s | 4.7 min |
 | after 651de53 (04:51) | generalization anatomy: `anatomy()` alone, then the full `rev_gen.py` after correcting my aggregation of one NOTE check (per seed and step, not pooled) | 48.0 + 88.5 s | 7.0 min |
+| after 35ec5f5 (04:58) | `rev_mech.py` with `o6_scale` (mechanisms NOTE `0fe8624`) | 24.7 s | 7.4 min |
 
 Times from 04:16 on were first written as clock guesses that ran 3–9 minutes ahead. They were replaced with the commit that recorded each run.

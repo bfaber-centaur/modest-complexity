@@ -8,7 +8,7 @@ Predictions and the order of work are in [QUESTION.md](QUESTION.md). Disclosure:
 | Time | M2 (`543ed95`, PR #55): **PASS** on every number checked. **CONCERN T1**: the late dynamics are in Adam's eps regime. CX-T1 half failed; CX-T2 held narrowly. F1 follow-up NOT CHECKED. | §2 |
 | Sharing | M2 (`83b3303`, PR #54): **PASS** on every number checked. CX-S1 failed to dent Interpretation 2, whose sign holds at all 41 evaluations from 8k to 10k. wd 0 follow-up (`501071c`): **PASS** on every number checked; note S1 (F4 lead is 0.05–0.13). CX-S2: "nearly flat" is a slow rise in every run while logits keep growing, not a plateau. wd 0 decode and group tables NOT CHECKED. | §5 |
 | Generalization | Parts A and B, A5 and the follow-up anatomy (NOTE `6fe1435`): **PASS** on every number checked. Draws are genuinely new (CX-G2). The NOTE adopts G1, G2, G5 and G6. CX-G3: drift predicts failures within a transition in every model, but only 1.2–3.3×, so it is a partial account (note G7). Note G8. | §3 |
-| Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. **CONCERN M1** on the centroid/residual reading, from CX-M1. NOTE wording notes M2, M3. | §4 |
+| Mechanisms | `817a768` (PR #52): M1–M2 and follow-up B **PASS** on every number checked. CONCERN M1 on the centroid/residual reading, from CX-M1, is **addressed** in NOTE `0fe8624`, as are notes M2 and M3; that revision PASSES, including O6's scale-outside-U claim (0.67–0.98). Note M4 on one README word. | §4 |
 
 ## 1. Pin check (`b3e8132`)
 
@@ -288,6 +288,22 @@ Evidence: `rev_mech.py 817a768 817a768`; output in [out/rev_mech.txt](out/rev_me
 - Item 5: the V3 recipient frame is declared and applied as declared. I wrote that arm; my checks used the same code path as for the other arms.
 
 **Design note for follow-up B (`c2-mech-residual-a1`), written before I opened its files (I had seen only the coordinator's summary).** U_i is the span of the *centered* centroids. A pure scale residual, r ∝ c_i(x), therefore lies largely outside U, in the mean-centroid direction. "The harmful residual is outside U" would then partly restate the norm effect above. Reporting the component of r along c_i(x), or along the mean centroid, separately would keep the two apart. I will check B's numbers when they land.
+
+### NOTE revision `0fe8624`
+
+Evidence: `rev_mech.py 817a768 817a768 0fe8624`. The new function is `o6_scale`, and its output is in [out/rev_mech.txt](out/rev_mech.txt). The check was recorded at 35ec5f5 before the code existed.
+
+**PASS. M1 is addressed, and M2, M3 and the post-hoc label are taken up as suggested.**
+- **O4 and Interpretation 1.** Every CX-M1 range the NOTE now quotes equals my output.
+  - For tied/inter at L = 4–6 (11 cells), (a) recovers 0.01–0.22 and (b) 0.25–0.63.
+  - For per-step and tied/final at (3, 3), (a) recovers 0.64–0.86. At (2, 2) it recovers 0.10–0.59.
+  - "A quarter to two thirds" is the right reading of (b).
+- **Interpretation 2.** It now says the class-mean claim is close to true by construction, gives the (2, 2) and (3, 3) recoveries, and places the limit beside the claim. This is M2.
+- **Interpretation 3.** It now gives the U-swap rates per condition (0.50–0.59, 0.35–0.38, 0.26–0.29), which equal O6's table. It drops "share of the causal effect". This is M3.
+- **O6.** It now labels `c2-mech-energy-a1` post hoc.
+- **O6's new sentence.** "A pure scale residual lies largely outside U" holds, and my prediction held. At depth 2, the share of ‖c(x)‖² outside U is 0.67–0.90 in tied/inter, 0.76–0.97 in per-step readout and 0.82–0.98 in tied/final, so above 0.5 for every symbol in all 9 runs.
+
+**M4 (note, README).** The README's centroid paragraph says the deviation from the class mean that goes with long-length errors "is largely overall scale". Norm matching recovers 25–63% of the gap, median 0.42. The NOTE's "a quarter to two thirds" and "a large part" are the bounded forms. "Largely" in the README is a little stronger than the numbers.
 
 ## 5. Sharing
 

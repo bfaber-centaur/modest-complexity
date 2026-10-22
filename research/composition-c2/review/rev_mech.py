@@ -4,7 +4,7 @@ h_i replaces the recipient's h_j, the recipient's remaining ops run through the 
 and the recipient's final readout (V, or V3 for per-step readouts) reads the answer. Compared with
 the lane's cells.csv at a lane commit; then counterexample CX-M1.
 
-uv run --locked python research/composition-c2/review/rev_mech.py LANE_COMMIT [FOLLOWUP_COMMIT]
+uv run --locked python research/composition-c2/review/rev_mech.py LANE_COMMIT [FOLLOWUP_COMMIT [NOTE_COMMIT]]
 """
 import csv
 import io
@@ -138,8 +138,24 @@ def followup(commit):
           f'equal residual.csv ({n} entries)', worst < 1e-12, f'max |diff| {worst:.1e}')
 
 
+def o6_scale():
+    """NOTE 0fe8624 O6: share of each depth-2 training centroid's squared norm outside U (a pure scale residual r = a c(x))."""
+    tr = oracle_rows(TRAIN); lo = 1.
+    for cond, seed, run in RUNS:
+        p = nets.load(C2/'recovered'/run/'ckpt-10000.npz')[0]
+        Ht = my_forward(p, tr['s'], tr['ops'], [1, 2, 3])[0]
+        c = np.stack([Ht[2][tr['states'][:, 1] == v].mean(0) for v in range(8)])
+        U = np.linalg.svd(c - c.mean(0), full_matrices=False)[2][:7].T
+        out = 1 - np.linalg.norm(c @ U, axis=1)**2 / np.linalg.norm(c, axis=1)**2
+        lo = min(lo, out.min())
+        print(f'INFO O6 {COND[cond]:23s} {seed}: share of |c(x)|^2 outside U, over the 8 symbols: {out.min():.3f}-{out.max():.3f}')
+    check('NOTE O6 "a pure scale residual lies largely outside U": share outside U > 0.5 for every depth-2 centroid in all 9 runs', lo > .5, f'minimum {lo:.3f}')
+
+
 if __name__ == '__main__':
     main(sys.argv[1])
     if len(sys.argv) > 2:
         followup(sys.argv[2])
+    if len(sys.argv) > 3:
+        o6_scale()
     print('ALL PASS' if not FAIL else f'{len(FAIL)} FAILED: {FAIL}')
