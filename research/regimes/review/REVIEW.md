@@ -7,7 +7,7 @@ Reviewer's plan and pre-stated counterexamples: [QUESTION.md](QUESTION.md). Stat
 | §0 shared code | PASS, with three usage concerns (C0.1–C0.3) | 2026-10-22, common at `0c7bd19` |
 | §1 R1 composition | M1 oracle/split PASS; design notes; M2 not yet | 2026-10-22, lane `ff9b721` |
 | §2 R2 shared subcomputation | **M4: no BLOCK; mergeable.** Counterexamples: z not privileged in y1 features (C2.4); the gate-bit explanation of fine-tuned transfer is refuted by a gate-only arm (C2.5). Two NOTE edits suggested (C2.5, C2.6) | 2026-10-22, lane `f493c1a` |
-| §3 R3 history and recovery | M1 oracle/split/metrics/branch hashes PASS; C0.1/C0.2 avoided | 2026-10-22, lane `f71c84f` |
+| §3 R3 history and recovery | **M4: no BLOCK; mergeable.** 12 B-phase replays match the lane's snapshots exactly; specificity counterexample failed (retention is A-specific); every NOTE number re-derived | 2026-10-22, lane `a23bdd8` |
 | §4 R4 competing routes | M1 PASS; M2 numbers recomputed PASS; counterexample: route choice at ρ = 15/16 is mostly base-specific, not context-level (C4.1, wording) | 2026-10-22, lane `f0f68f7` |
 
 ## §0 Shared code (`research/regimes/common/`)
@@ -170,6 +170,43 @@ Reviewed at lane `f71c84f`: QUESTION.md, history.py and plan.json, with the M1 r
 | Identical A checkpoints across branches | PASS (plan level) | All 39 checkpoint-started plan entries pass `--from-sha256`. Each of the 3 source files is named with one hash throughout. `history.py` refuses a file whose SHA-256 differs, and checks the loaded weights against the hash recorded at save time. §0 showed that a file hash identifies contents on this environment. Run-level confirmation from the published configs is still owed. |
 | Optimizer and freezing (C0.1, C0.2) | PASS | `trainable` is the trunk plus the active head only. `adam_state` is called at every phase start. Each run asserts that frozen parameters are bitwise unchanged. The readout uses its own fresh state. |
 | Exposure, interventions, figures | NOT YET CHECKED | |
+
+### M2–M4 (`a23bdd8`: first figure, follow-up, NOTE.md)
+
+Evidence:
+- [check_history_m4.py](check_history_m4.py), output in [out/check_history_m4.txt](out/check_history_m4.txt);
+- [specificity_history.py](specificity_history.py), output in [out/specificity_history.txt](out/specificity_history.txt);
+- the reviewer replays `r1-rev-hist-replay-{rel,unrel}-d{1000,10000}-s5320{0,1,2}-a1`, which ran the lane's `history.py` unedited via [replay_history.py](replay_history.py).
+
+| checklist item | status | evidence and what it affects |
+|---|---|---|
+| Oracle and split | PASS | §3 M1. |
+| Loss and metrics | PASS | `ce_acc` (M1). Every relearning time in NOTE obs. 3 was re-derived from `metrics.jsonl.gz` as the first logged step with held-out A ≥ 0.95: fresh-A 540/690/700; kept head 62–330 (related) and 37–560 (unrelated); reset head 230–410 and 190–310; B-only trunk 460–640 and 740–1100; reset head on ckA 110–180. All match. So do the derived claims: kept faster than reset in 10 of 12 pairs (exceptions: unrelated, seed 53200), reset/fresh = 0.27–0.76 with ≤ 0.5 in 8 of 12, and end-of-B over B-only by 50–910 updates. |
+| Same criterion and resolution across the relearning comparison | PASS | Fresh-A is phase 1 of the same seed's A run, and the return phases are phases of branch runs. Both are logged by the same `on_grid` (every update to 100, every 10 to 1,000, every 100 beyond) and scored with the same criterion. The coordinator's question is answered: they are comparable, at the stated grid resolution. |
+| Data and compute exposure | PASS | All phases are full-batch on the same 256 rows with an Adam reset. Continued-A is matched in updates, not in A exposure, and NOTE/QUESTION.md say so. The readout comparison is matched: one `readout()` function for every snapshot (ckA, end-of-B, scratch-B at t = d, init), with the same 256 training rows, the same 2,000 updates at lr 1e-2 and the same readout init seed 53300. |
+| Intervention semantics | PASS | The head-A reset puts `W_A`/`b_A` back to the same seed's init draw (`nets.init(..., seed)`), leaving the trunk and head B as loaded. That is exactly fresh-A's starting head. B-only trunks keep their never-trained init head A. |
+| Checkpoint and optimizer handling | PASS | All 66 checkpoint-started runs record the MANIFEST SHA-256 of their source file and use their own seed. 42 start from ckA. The other 24 are follow-ups from end-of-B or scratch-B checkpoints. `history.py` refuses hash mismatches and asserts that frozen parameters are bitwise unchanged. **Replay:** for each of the 12 (seed, B task, d ∈ {1000, 10000}) cases, the reviewer's B phase from the published ckA reproduces the lane's end-of-B snapshot exactly (metrics, readout and null; exact float equality). |
+| Follow-up pre-registration | PASS | The prediction commit `58cb3e3` (02:54:40) precedes the first follow-up launch (02:54:47), and all 27 follow-up IDs were already in its plan. That is commit time, not push time. The registry has 75 runs complete, none failed or capped. |
+| Figures support claims | PASS | Inspected `recovery_curves.png`. All seeds are shown, along with the fresh-A reference, the criterion and chance lines, relearned markers and no censored runs. The drop in held-out A coincides with B's rise at d ≥ 1000, and is absent at d = 100 and under continued-A. Each numbered NOTE claim maps to `survival_summary.csv` or `followup_head_reset.csv`. |
+
+**Counterexample (failed, which supports the lane): is A's post-B decodability A-specific?** The prediction was stated in QUESTION.md (Revisions) before running.
+- *Method.* On the replayed end-of-B trunks, the lane's own readout recipe was refit with only the target changed: C1 = x7⊕x8⊕x9, which no task uses, and C2 = x0⊕x1⊕x7.
+- *Result,* held-out readout accuracy:
+
+  | trunk | A | C1 | C2 |
+  |---|---|---|---|
+  | untrained | 0.58–0.63 | 0.58–0.60 | 0.57–0.61 |
+  | ckA | 0.99–1.00 | 0.53–0.57 | 0.66–0.69 |
+  | end of Brel | 0.98–1.00 | 0.52–0.63 | 0.75–0.90 |
+  | end of Bunrel | 0.91–1.00 | 0.50–0.55 | 0.58–0.67 |
+
+  A − C1 on end-of-B trunks is +0.37 to +0.49 in every one of the 12 cases.
+- *Reading.* The end-of-B trunk is not generically parity-rich. What a fresh readout recovers is specific to A. As expected, C2 is high only on related-B trunks, because x0⊕x1 is shared with Brel. That indicates what Brel shares with A; it does not show more of A surviving.
+- NOTE obs. 2 stands. Its own caveat ("a linear readout cannot say whether the network would use these features") remains the right limit.
+
+**Note on obs. 1 wording (no change required).** "Forgetting tracks B acquisition, not elapsed updates" rests on two things: d = 100 (B not yet learned) shows no forgetting, and continued-A for as many updates shows none. It is descriptive. B acquisition and B-phase duration are not separated by an equal-length B phase that fails to learn B, and "tracks" claims no more than that.
+
+**Verdict.** No BLOCK and no CONCERN on R3's M4. Every NOTE number checked was re-derived from published artifacts. Branch-identity and optimizer handling were verified at run level and by exact replay. The one counterexample attempted failed in the lane's favour. Mergeable.
 
 ## §4 R4 competing predictive routes
 

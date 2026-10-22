@@ -84,6 +84,186 @@
     "--data-seed",
     "52100"
    ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-rel-d1000-s53200-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53200-a1",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Brel:1000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-rel-d10000-s53200-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53200-a1",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Brel:10000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-unrel-d1000-s53200-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53200-a1",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Bunrel:1000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-unrel-d10000-s53200-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53200-a1",
+    "957a1c8c9901bbd0a71e4652d1621cee4f53d2daf9a77cc6513afc779f7476f1",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Bunrel:10000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-rel-d1000-s53201-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53201-a1",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Brel:1000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-rel-d10000-s53201-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53201-a1",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Brel:10000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-unrel-d1000-s53201-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53201-a1",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Bunrel:1000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-unrel-d10000-s53201-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53201-a1",
+    "4c0067607f166ef127a6838abab85c8b5b643ae4e8f1d180d286a1d18ea68ce0",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Bunrel:10000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-rel-d1000-s53202-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53202-a1",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Brel:1000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-rel-d10000-s53202-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53202-a1",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Brel:10000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-unrel-d1000-s53202-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53202-a1",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Bunrel:1000"
+   ]
+  },
+  {
+   "run_id": "r1-rev-hist-replay-unrel-d10000-s53202-a1",
+   "timeout": 120,
+   "argv": [
+    "research/regimes/review/replay_history.py",
+    "a23bdd8",
+    "r1-hist-A-s53202-a1",
+    "677a4da38be4dc17246f52bd0af7f2b63c05d8cfbd0e13e9d86e808da9266125",
+    "--",
+    "--out",
+    "{out}",
+    "--phases",
+    "Bunrel:10000"
+   ]
   }
  ]
 }
