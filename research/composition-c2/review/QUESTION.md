@@ -40,7 +40,7 @@ The `tu-inter` source runs are my r1 arm (disclosure above). Checks on the lane'
 
 (Dated, before the matching analysis or run.)
 
-- **04:1x, time lane counterexamples** (written after reading the time lane's M0 `b7d1ab6` and before any of its results exist). Analysis only, on the lane's committed `ckpt-40000` and `ckpt-50000`.
+- **04:11, time lane counterexamples** (db69507; written after reading the time lane's M0 `b7d1ab6` and before any of its results exist). Analysis only, on the lane's committed `ckpt-40000` and `ckpt-50000`.
   - **CX-T1, against "the supervision gap persists" (`tt-final`).**
     - *Test.* On the held-out rows that are wrong at 50,000, compute the logit gap (largest wrong logit minus correct logit) at 40k and at 50k. Also compute held-out final CE on ¬N rows over 40k–50k. A median gap that shrinks by more than 10%, or ¬N CE that falls steadily, means the accuracy plateau hides a function still moving toward the boundary. Separately, the last Adam step at 50k is decomposed into its decay part and its gradient part, with the fraction of √v̂ below eps, as in r1's R4 check.
     - *Prediction.* All three seeds censored, and held-out below 0.6 at 50k. In at least two seeds the median gap shrinks by more than 10% from 40k to 50k, so the lane's "persists" rule does not apply cleanly and the honest reading is "unresolved". The gradient term still dominates the update (more than half its norm), so this is not R4's eps regime. Low confidence on the gap.
