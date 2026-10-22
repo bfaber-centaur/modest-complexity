@@ -1,6 +1,6 @@
 # c3 scaffolding lane: observations (M2 first figure, M3 follow-up)
 
-**Status.** These are observations from the 12 pre-registered branches and the first figure (reviewed: REVIEW.md §3, nits N-S1 to N-S3 folded in below), and from the one follow-up, Adam reset versus carried at S = 1k (section F; reviewed: REVIEW.md §5, wording W-F1/W-F2 and the figure note applied by the coordinator after merge). Sources: [figures/scaf_main.png](figures/scaf_main.png), [figures/scaf_followup.png](figures/scaf_followup.png) and the CSVs beside them, plus [checks.json](checks.json) and [followup_checks.json](followup_checks.json). Design and predictions: [QUESTION.md](QUESTION.md) (b1928fe). Adaptive choices: [ADAPTIVE.md](ADAPTIVE.md).
+**Status.** These are observations from the 12 pre-registered branches and the first figure (reviewed: REVIEW.md §3, nits N-S1 to N-S3 folded in below), and from the one follow-up, Adam reset versus carried at S = 1k (section F). Sources: [figures/scaf_main.png](figures/scaf_main.png), [figures/scaf_followup.png](figures/scaf_followup.png) and the CSVs beside them, plus [checks.json](checks.json) and [followup_checks.json](followup_checks.json). Design and predictions: [QUESTION.md](QUESTION.md) (b1928fe). Adaptive choices: [ADAPTIVE.md](ADAPTIVE.md).
 
 **Scope.** One task draw and split (`ops51000-ls51100`), one tied/tied width-128 recipe, three paired init seeds, two switch times, horizon 50,000 updates. The branches from one checkpoint are not independent replicates. Nothing below is a necessity, impossibility, hidden-algorithm or novelty claim, and the arms tested are not bounds.
 
@@ -96,7 +96,6 @@ These hold for this task, recipe, horizon and seeds.
 **Design.** Declared in QUESTION.md's addendum (84dc657) before any follow-up run, and approved by the coordinator after the first figure. Pin `82cef77` (DECISIONS D10, reviewer PASS, REVIEW.md §4).
 - **Arms.** A′ keep and B′ drop are each run from r1 tied/inter `ckpt-1000`. A fresh Adam state (both moments and the bias-correction count) is set just before the update at 1,000, and the weights are carried.
 - **Comparison.** Each is compared at equal total updates with the reused carried arms A and B, and with D. Six runs, none failed: 16.8 of 20 min (README).
-- **Figure note.** In [figures/scaf_followup.png](figures/scaf_followup.png), the 900–6,000 zoom panels draw frozen L4/L6 values as straight lines between checkpoints (1k, 3k, 10k); they are not measured in between (reviewer figure note, REVIEW.md §5).
 
 **Checks** (`followup_checks.json`).
 - **The reused carried arms are matched controls.** Under the re-pin with no reset, the 1k→3k check runs reproduce A in every r1 key at every logged row (three seeds). They also reproduce B in every key, `diag` included, with identical `ckpt-3000` arrays (s51200).
@@ -151,8 +150,7 @@ At 50k, train final CE is about 4.7e-9 in A′, as in A, and about 1.4e-8 in B�
 
 - **"Weights at S suffice" holds** in all three seeds. B′ ends within 5 pp of B on held-out L3 and L6, so under this recipe the state at 1k is enough to reach the endpoint without the carried moments.
 - **"Moments implicated" and "reset perturbation"** do not apply. No reset arm ends ≥ 5 pp below its carried arm.
-- **Paths differ.** Here (S = R = 1k, this recipe), the drop branch with its Adam state carried crossed 2,350–5,900 updates later than with a reset at the switch (3 of 3 seeds). Keep's crossing moved by −400 to +750. The effect belongs to the reset as a whole. The reset both removes the moments' history (v̂ still at the three-head scale) and makes the early steps larger (F3; CX-R1). This run does not separate the two.
-- **When the keep control is informative** (reviewer post-hoc, REVIEW.md §5). Up to 3k the reset raises held-out L3 about as much in keep (A′ − A up to +0.07) as in drop (B′ − B up to +0.09). From 4k on, keep's effect fades to −0.07 to +0.05 while drop's grows to +0.06 to +0.15, with keep still at 0.48–0.86, so the drop-specific part is visible below keep's ceiling. By 20k keep is at 0.99–1.0, so the L6 "difference" at 20k in F2 is effectively B′ − B alone.
+- **Paths differ.** The reset shortens the drop branch's post-switch acquisition by 2,350–5,900 updates. It moves keep by −400 to +750. So carrying the Adam state across the drop slows acquisition, and the cause is the reset, not a single mechanism. The reset both removes the moments' history (v̂ still at the three-head scale) and makes the early steps larger (F3; CX-R1). This run does not separate the two.
 - **Consistent with O7.** In carried B the update norm falls to 0.53–0.56 of its value at S by S + 2,000.
 - **Limits.** One reset time, one recipe, three seeds and a 50k horizon. The four arms share their weights up to 1k, so they are not independent replicates.
 
