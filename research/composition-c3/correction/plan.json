@@ -1,0 +1,15 @@
+{
+ "note": "c3 correction lane plan (DECISIONS D6-D8, QUESTION.md). Frozen bases; only the small correction maps and decoders are fit. IDs are never reused; main/grouped entries are added with the calibrated k and lr after an ADAPTIVE.md entry.",
+ "runs": [
+  {
+   "run_id": "c3-corr-calib-s900200-a1",
+   "argv": [
+    "research/composition-c3/correction/corr_calib.py",
+    "--out",
+    "{out}"
+   ],
+   "timeout": 300,
+   "purpose": "training-only calibration of the map (k x lr on grouped fit -> val, init seed 900200) and host timing"
+  }
+ ]
+}
