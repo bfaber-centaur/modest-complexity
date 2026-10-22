@@ -1,0 +1,10 @@
+{
+ "runs": [
+  {
+   "run_id": "c2-gen-frozen-orig-a1",
+   "argv": ["research/composition-c2/generalization/gen_eval.py", "--out", "{out}", "--recovered", "--references"],
+   "timeout": 300,
+   "purpose": "Part A: frozen length 1-6 evaluation of recovered r1 tied/inter and tied/final ckpt-10000, plus reference systems; no training"
+  }
+ ]
+}
