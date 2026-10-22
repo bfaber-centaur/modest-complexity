@@ -115,3 +115,17 @@ Three things in the first pass need entries before the second pass.
 
   Prediction: C1–C6 and the counterexamples come out as in the first run (the code is deterministic), and C7 passes.
 
+### 63625a5, rerun `c3-rev-corr-a2` complete (191 s); now the lane's NOTE (`c3f03cd`)
+
+- **The rerun.** Every line matches pass 1 except C7, which now passes: 240 + 320 figure values.
+- **Files now read.** The lane's NOTE.md and both figure PNGs.
+- **Next check, `rev_corr_note.py` (reading only).** It compares the NOTE's numbers with my accuracies (`rev_corr.json`) and with the decoder accuracies in the lane's `states.csv`, which C4 showed equal mine:
+  - **Main, held.** A, B, C, D and E as quoted. C is below A in all six bases. "Recovers the full gain" is checked per arm.
+  - **Grouped eval prefixes.**
+    - Held rows: E, B against A with its gain range, "D above A once", C ≤ A.
+    - Training rows: learned arms 0.17–0.64.
+    - Decoder: 0.53–0.66 / 0.22–0.31.
+  - **F2.**
+    - Main: B 79–100% of the gain, D = E, C < A.
+    - Grouped: every learned arm below A; B −110% to −13%, D −90% to −7%; training rows 0.19–0.62; decoder 0.19–0.44; E 0.91–1.00.
+
