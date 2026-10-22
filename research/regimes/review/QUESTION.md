@@ -81,3 +81,14 @@ Each status names what it affects.
 - *Prediction if the lane is right:* the context share is well above the pattern share in each seed, and many contexts are all-correct or all-wrong.
 - *Prediction if the counterexample holds:* the pattern share is comparable or larger.
 - *Also checked.* The identity "flip_s = 1 − reversed and flip_rule = reversed whenever reliable = 1", over every logged row.
+
+**2026-10-22 ~03:05, R2, after reading M2 (`55d6787`) and before computing.**
+- *Revised target.* The M2 summary reads the frozen y1 features as giving a linear y2 readout of 0.98–1.00 at n ≥ 128, with +0.15 to +0.35 over `part` at n = 32–128. The tempting reading is that y1 pretraining builds *our* z = x1⊕x2.
+- *Counterexample.* y1 = x1⊕x2⊕x3 is symmetric in x1, x2 and x3. A y1 network may therefore support the gated readout for any of the three pairwise XORs, and z is not privileged.
+- *Test (analysis only, published `pretrained.npz` of the three `rel` runs).*
+  - First reproduce the lane's readout exactly: fresh copy of the init `new` head, Adam lr 3e-3, 2,000 updates on D_n, unstandardized last-layer features.
+  - Then fit the same readout for y2' = (x1⊕x3)∧x4 and y2'' = (x2⊕x3)∧x4.
+  - Score on the test rows with x4 = 1, at n ∈ {32, 64, 128, 512}.
+  - Reference: the same readouts on the untrained network.
+- *Prediction if z is privileged:* the y2 readout exceeds the y2' and y2'' readouts by ≥ 0.1 at n ≥ 128 on each replicate.
+- *Prediction if the counterexample holds:* all three are within about 0.05 of each other, so frozen-feature transfer says "pairwise XORs of y1's bits are linearly available", not "z".
