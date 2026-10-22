@@ -13,7 +13,7 @@ Figures, observations, the explanations that survived or failed, confounds, run 
 | lane | initial experiment | status |
 |---|---|---|
 | dynamics | D6: six constant-decay runs at wd 0.1 and 0.3 from the filtered starts | packets 1 (PR #33) and 2 (PR #36, the D13 decay-off follow-up) integrated, audits pending; no further runs |
-| mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | first figure integrated (PR #35) and audited (PR #38); intervention integrated (PR #40), audit pending |
+| mechanisms | analysis of published e3 checkpoints; D7: six dense diagnostic replays | first figure integrated (PR #35) and audited (PR #38); intervention (PR #40) and decay-off channel analysis (PR #46) integrated, audits pending; lane work complete |
 | auditor | audit of the decomposition, the strongest cheap control (random-feature starts, D11–D12), dynamics and intervention checks | C1 (PR #34) and the decomposition audit (PR #38) integrated; dynamics checks and the patch review pending |
 
 ## 1. Decay strength between the peak and the collapse (dynamics, packet 1, not yet audited)
@@ -152,3 +152,17 @@ This rerun is the wd 1 dense replay with the decoupled decay restricted. In **xr
 **Caveats (stated in advance).**
 - The parts are coupled through the loss.
 - The exemption is task-informed. It names the frequencies the filter kept, so part of the 1.00 may be built in by the intervention.
+
+## 6. What the decay-off runs keep and regrow (mechanisms analysis of the dynamics D13 runs, not yet audited)
+
+![decay off channels](../mechanisms/figures/decay_off.png)
+
+This applies the same channel split and weight parts to the six decay-off runs. It is analysis only, with no runs. Packet: [../mechanisms/README.md](../mechanisms/README.md).
+
+- **Observation, wd 1, updates 300 → 1,000.** No channel is removed outright.
+  - The reference S-margin falls 17–20%: W_ref drops 5–7% while the U/V reference parts hold.
+  - The off-reference competitor doubles its margin, and the off-reference parts grow 65–83%.
+  - Over the same updates at wd 0, the reference parts grow 9–10%.
+- **Observation, decay off, at 20k.** The reference parts regrow to 0.89–0.98 of the wd 0 runs'. The reference margin regrows to 0.92–0.93 (off from 300) and 0.75–0.78 (off from 1,000). The competitor ends above wd 0's: weights 1.05–1.31×, margin 1.15–1.54×.
+- **Post hoc observation.** The ratio −(off margin)/(reference margin) at the switch carries through to 20k. That is a summary, not a test.
+- **Strongest alternative (lane).** This may just be wd 0 training from a state with a larger competitor. So "held by what decay built" and "kept growing by the loss" are not separated.
