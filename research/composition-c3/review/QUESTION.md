@@ -53,6 +53,26 @@ I have read its QUESTION.md (`3e3f73d` and the addenda through `95052f5`), ADAPT
 
   Each is followed by c(x̂). Prediction: on grouped eval prefixes, neither raises decoder accuracy by more than 0.15 over the lane's probe, or held-row final accuracy by more than 0.1, in any tied/final base (original or F2). If one does, then "the adapter fails on new prefixes" is about the unregularized probe, not about what h_2 carries linearly.
 
+## 3. Scaffolding lane (written while its training runs; before any of its results exist on its branch)
+
+I have read its QUESTION.md (`b1928fe`) and nothing else from the lane. Its branch head when I wrote this was `de9ff42`, which holds the plan, calibration records, `scaf_analyze.py` and `test_scaf.py`, and no branch results.
+
+**Checks** (script to come, mine; forward and oracle from `rev_pin.py`).
+
+| # | check | prediction |
+|---|---|---|
+| S1 | **Branch points.** Each of the 12 configs resumes the recovered r1 tied/inter `ckpt-S` with the RECOVERY.json hash, manifest-listed, with the right run ID and the explicit recipe flags. Each branch's first row (step S) equals r1's published row on every r1 key | all 12 |
+| S2 | **Schedule.** `step_weights` on every logged row equals my w(t) (D5, including S, S + 1,999 and S + 2,000). The final weight is exactly 1. The exposure in each config equals my recount | all 12 |
+| S3 | **Records.** Committed checkpoints match their MANIFEST hashes. Every checkpoint rescores with my forward to its logged row (train, held, `held_final_pred`). The registry holds every attempt, and none is missing or silently retried | all |
+| S4 | **Frozen lengths.** Every number in the lane's L = 1–6 table, recomputed with my forward and oracle, exhaustively. This includes its reproduction of c2 generalization's keep and final-only numbers at 10k and 50k | exact |
+| S5 | **Arithmetic.** Δ_branch, Δ_keep, Δ_D, the threshold crossings and the retention / degradation / collapse labels, recomputed from the joined trajectories at the fixed times (no checkpoint chosen by score). The reused keep and final-only arms are the c2 time runs, whose joins the c2 review passed | exact |
+| S6 | **Parameters keep moving.** In every branch every parameter changes over S → S + 2,000 and S + 2,000 → 50k. The Adam step carries | all |
+| S7 | **Figure.** Every value in the lane's figure CSV recomputes from the logged rows or from S4. I look at the PNG | equal |
+
+**Counterexamples** (committed before any scaffolding result exists).
+- **CX-S1, length 3 hiding length transfer.** At S = 10k, if B or C is "retained" at length 3 (within 0.05 of keep at 50k), my own exhaustive evaluation of its `ckpt-50000` at L = 6 is ≥ 0.05 below keep's `ckpt-50000` in at least one seed. The shared readout reads h1 or h2 (train step-1 or step-2 accuracy) below 0.9 in at least two seeds. If neither holds, "retention at length 3" also carries length transfer here, and I say so.
+- **CX-S2, decay without the intermediate loss.** Decoupled decay alone shrinks a parameter that no remaining loss supports by (1 − 1e-4)^40,000 ≈ e^−4 over 10k → 50k. Prediction: at S = 10k, every B branch's parameter norm at `ckpt-50000` is below keep's at 50k in all three seeds. The h1/h2 readout directions shrink most, measured by ‖V‖ against keep. If the norms are equal or larger, the final-only loss alone sustains the whole solution's scale.
+
 ## Revisions
 
 ### 05aac5a + runs (05:23–05:24), before any analysis of them
