@@ -11,7 +11,7 @@ Bobby's packet: [charter/](charter/) (verbatim). Decisions, assignments, budgets
 | time lane | `time/` | M2 (PR #55), follow-up F1 pending approval |
 | sharing lane | `sharing/` | merged (PR #54); reviewer PASS on M2 and wd-0 numbers; wd-0 decode/group tables not checked |
 | generalization lane | `generalization/` | merged (PR #51); reviewer PASS on Parts A, B, A5; follow-up anatomy numbers not checked |
-| mechanisms lane | `mechanisms/` | M4 (PR #52), awaiting review |
+| mechanisms lane | `mechanisms/` | merged (PR #52); reviewer PASS on numbers, CONCERN M1 adopted in NOTE (re-check of the revised wording pending) |
 | reviewer | `review/` | pin checked (PR #50) |
 | final draft PR to `swarm/exploration` | | not opened |
 

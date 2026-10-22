@@ -37,3 +37,4 @@
 | 04:40–04:47 | reviewer | sharing wd-0 follow-up PASS (S1: TT lead 0.05–0.13; CX-S2: wd-0 held-out rises slowly, not flat); generalization NOTE at 01d1296 PASS, A5 verified (time lane 50k tied/inter answers every row at L = 1–6), G5 (3/7 baseline is an upper bound), G6 (length decline already gone at 20k, before the eps regime); anatomy follow-up numbers and wd-0 decode/group tables NOT CHECKED | reviewer branch 695d83e |
 | 04:47 | coordinator | relays sent after the hourly cap cleared: time F1 approved + T1/CX-T2/CX-T1 for NOTE; mechanisms M1–M3/O6 | |
 | 04:48 | coordinator | merged generalization PR #51 (6fe1435, NOTE with G1/G2/G5/G6) and sharing PR #54 (f1b0f93, NOTE with S1/CX-S2) into `swarm/composition-c2`; reviewer's unchecked items stay listed in INDEX | 344f8e2, 52e4f7d |
+| 04:50 | coordinator | merged mechanisms PR #52 (0fe8624: NOTE takes review §4 M1–M3/O6, no numbers changed) | 31f0fcc |
