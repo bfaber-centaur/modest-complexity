@@ -1,6 +1,6 @@
 # R1 composing small programs: commands, environment, budget, runs
 
-Design and predictions: [QUESTION.md](QUESTION.md). Observations: NOTE.md (at M4). Primary figure: [figures/heldout.png](figures/heldout.png) (+ `.svg`, CSVs beside it).
+Design and predictions: [QUESTION.md](QUESTION.md). Observations: [NOTE.md](NOTE.md). Primary figure: [figures/heldout.png](figures/heldout.png) (+ `.svg`, CSVs beside it). Supporting: [figures/decoding.png](figures/decoding.png) (probes and interchange). Adaptive follow-up, kept separate: [figures/followup_rnn.png](figures/followup_rnn.png).
 
 ## Files
 
@@ -8,8 +8,8 @@ Design and predictions: [QUESTION.md](QUESTION.md). Observations: NOTE.md (at M4
 |---|---|
 | `task.py` | ops, Latin-square split, rows/encoding, equivalence/coverage checks and non-trained baselines (`python task.py` prints them) |
 | `test_task.py` | independent checks: labels against permutation-matrix products, split counts by array sums, encoding round trip, no row leakage, a train.py smoke run (bitwise-identical init across conditions) |
-| `train.py` | one run: conditions `final`, `inter`, `shuf`, `full` (P1), `interp` (P2); writes `config.json`, `metrics.jsonl`, `runtime.json`, checkpoints |
-| `analyze.py` | `publish` (small run files + SHA-256 manifest into `runs/`), `figure` (first figure and CSVs from `runs/`) |
+| `train.py` | one run: conditions `final`, `inter`, `shuf`, `full` (P1), `interp` (P2); `--model rnn` (follow-up: shared transition and readout, own backpropagation, finite-difference checked in `test_task.py`); writes `config.json`, `metrics.jsonl`, `runtime.json`, checkpoints |
+| `analyze.py` | `publish` (small run files + SHA-256 manifest into `runs/`), `probe` (linear probes and interchange interventions from local checkpoints, each checked against its published SHA-256), `figure` (all three figures and their CSVs from `runs/`) |
 | `plan.json`, `registry.jsonl` | every planned run; append-only status events from `common/run_jobs.py` |
 
 ## Commands (exact)
@@ -26,6 +26,10 @@ $R --workers 2 --ids r1-comp-full-s51200-a1 r1-comp-interp-s51200-a1
 $R --workers 2 --ids r1-comp-final-s51200-a1 r1-comp-inter-s51200-a1 r1-comp-shuf-s51200-a1 \
     r1-comp-final-s51201-a1 r1-comp-inter-s51201-a1 r1-comp-shuf-s51201-a1 \
     r1-comp-final-s51202-a1 r1-comp-inter-s51202-a1 r1-comp-shuf-s51202-a1
+$R --workers 1 --ids r1-comp-probe-a1     # analyze.py probe: needs the local ckpt-0/ckpt-10000 files of the nine runs
+$R --workers 1 --ids r1-comp-calib-rnn-inter-s900001-a1
+$R --workers 2 --ids r1-comp-rnn-final-s51200-a1 r1-comp-rnn-inter-s51200-a1 r1-comp-rnn-final-s51201-a1 \
+    r1-comp-rnn-inter-s51201-a1 r1-comp-rnn-final-s51202-a1 r1-comp-rnn-inter-s51202-a1
 uv run --locked python research/regimes/composition/analyze.py publish --root runs/regimes --ids <all IDs above> \
     --commit-checkpoints r1-comp-final-s51200-a1/ckpt-10000.npz r1-comp-inter-s51200-a1/ckpt-10000.npz r1-comp-shuf-s51200-a1/ckpt-10000.npz
 uv run --locked python research/regimes/composition/analyze.py figure
@@ -44,11 +48,14 @@ Calibration `r1-comp-calib-inter-s900000-a1` (seed 900000, not a research run): 
 | calibration | 1 | 2 s |
 | positive controls P1, P2 (2 concurrent) | 2 | 27 s |
 | initial comparison (2 concurrent) | 9 | 98 s |
-| **total so far** | 12 | **about 2.1 of 25 min** |
+| decoding and interventions (`r1-comp-probe-a1`) | 1 | 35 s |
+| RNN calibration | 1 | 4 s |
+| follow-up RNN (2 concurrent) | 6 | 121 s |
+| **total** | 20 | **about 4.8 of 25 min** |
 
 ## Run manifest
 
-All 12 planned runs completed; none failed or was capped (`registry.jsonl`). Each `runs/<ID>/` holds `config.json`, `metrics.jsonl`, `runtime.json`, `stdout.log` and `MANIFEST.json` (SHA-256 and size of every file in the local run directory, with `committed` true or false). Checkpoints `ckpt-0`, `ckpt-1000` and `ckpt-10000` stay local except the three `ckpt-10000.npz` of init seed 51200 (`final`, `inter`, `shuf`); every run is deterministic and takes under 30 s to regenerate.
+All 20 planned runs completed; none failed or was capped (`registry.jsonl`). `r1-comp-probe-a1` publishes `probes.csv` and `interventions.csv`; it writes no `config.json`, its inputs being the checkpoints it verified against the published manifests, and its code being `analyze.py probe` as of c493823 (unchanged since). Each `runs/<ID>/` holds `config.json`, `metrics.jsonl`, `runtime.json`, `stdout.log` and `MANIFEST.json` (SHA-256 and size of every file in the local run directory, with `committed` true or false). Checkpoints `ckpt-0`, `ckpt-1000` and `ckpt-10000` stay local except the three `ckpt-10000.npz` of init seed 51200 (`final`, `inter`, `shuf`), about 1.5 MB; every run is deterministic and takes under 50 s to regenerate.
 
 | run ID | role | held-out final accuracy at 10,000 updates |
 |---|---|---|
@@ -58,3 +65,7 @@ All 12 planned runs completed; none failed or was capped (`registry.jsonl`). Eac
 | r1-comp-final-s5120{0,1,2}-a1 | initial comparison | 0.164, 0.172, 0.141 |
 | r1-comp-inter-s5120{0,1,2}-a1 | initial comparison | 0.242, 0.203, 0.250 |
 | r1-comp-shuf-s5120{0,1,2}-a1 | initial comparison | 0.125, 0.109, 0.102 |
+| r1-comp-probe-a1 | decoding and interchange on the nine runs' checkpoints 0 and 10,000 | (analysis) |
+| r1-comp-calib-rnn-inter-s900001-a1 | RNN calibration (1,000 updates, 4.2 s) | not a research result |
+| r1-comp-rnn-final-s5120{0,1,2}-a1 | follow-up | 0.273, 0.312, 0.320 |
+| r1-comp-rnn-inter-s5120{0,1,2}-a1 | follow-up | 1.000, 0.961, 1.000 |

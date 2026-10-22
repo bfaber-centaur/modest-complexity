@@ -39,7 +39,7 @@ def publish(root, ids, committed_checkpoints=()):
         dst.mkdir(parents=True, exist_ok=True)
         manifest = []
         for f in sorted(src.iterdir()):
-            committed = f.name in SMALL or f'{rid}/{f.name}' in committed_checkpoints
+            committed = f.name in SMALL or f.suffix == '.csv' or f'{rid}/{f.name}' in committed_checkpoints
             if committed:
                 shutil.copy2(f, dst/f.name)
             manifest.append(dict(file=f.name, bytes=f.stat().st_size, sha256=hashlib.sha256(f.read_bytes()).hexdigest(),
@@ -208,6 +208,106 @@ def figure():
     for ext in ('png', 'svg'):
         fig.savefig(FIGS/f'heldout.{ext}', dpi=130)
     print('wrote', FIGS/'heldout.png')
+    plt.close(fig)
+    if (RUNS/'r1-comp-probe-a1'/'probes.csv').exists():
+        decoding_figure(plt, base)
+    followup_figure(plt, base)
+
+
+def decoding_figure(plt, base):
+    """Supporting figure: linear-probe decoding by layer, and interchange interventions on training pairs."""
+    probes = list(csv.DictReader((RUNS/'r1-comp-probe-a1'/'probes.csv').open()))
+    inter = list(csv.DictReader((RUNS/'r1-comp-probe-a1'/'interventions.csv').open()))
+    fig, ax = plt.subplots(1, 3, figsize=(15, 4.8), constrained_layout=True)
+    for a, target in zip(ax[:2], ('step1', 'step2')):
+        a.axhline(base['chance'], color='0.45', lw=1, ls=(0, (4, 3)))
+        x0 = [r for r in probes if r['layer'] == '0' and r['target'] == target][0]
+        a.scatter([0], [float(x0['probe_held_acc'])], color='0.3', marker='X', s=50, label='input layer (any run)', zorder=3)
+        ticks, labels = [0], ['input']
+        for li, layer in enumerate(('1', '2')):
+            for si, step in enumerate(('0', '10000')):
+                xpos = 1 + 2.5*li + si
+                ticks.append(xpos); labels.append(f'hidden {layer}\n{"init" if step == "0" else "trained"}')
+                for k, c in enumerate(CONDS):
+                    for n, sd in enumerate(SEEDS):
+                        r = [r for r in probes if r['layer'] == layer and r['step'] == step and r['condition'] == c
+                             and r['init_seed'] == str(sd) and r['target'] == target]
+                        if r:
+                            a.scatter(xpos + (k-1)*.22 + (n-1)*.06, float(r[0]['probe_held_acc']), color=COLOR[c],
+                                      marker=MARKER[sd], s=22, zorder=3, label=c if (li, si, n) == (0, 1, 0) else None)
+        a.set_xticks(ticks, labels, fontsize=8)
+        a.set(title=f'linear probe for {target}: held-out programs\n(fitted on training programs; train acc ≥ 0.99 at hidden layers)',
+              ylabel='probe accuracy', ylim=(0, 1.04))
+        a.legend(fontsize=8, loc='lower right')
+    a = ax[2]
+    cases = [(lay, var) for lay in ('1', '2') for var in ('step1', 'step2')]
+    for k, c in enumerate(CONDS):
+        for ci, (lay, var) in enumerate(cases):
+            rows_ = [r for r in inter if r['condition'] == c and r['layer'] == lay and r['variable'] == var and r['pairs_from'] == 'train']
+            for n, sd in enumerate(SEEDS):
+                pr = [float(r['follows_counterfactual']) for r in rows_ if r['init_seed'] == str(sd) and r['subspace'] == 'probe']
+                rd = [float(r['follows_counterfactual']) for r in rows_ if r['init_seed'] == str(sd) and r['subspace'].startswith('random')]
+                xpos = ci + (k-1)*.25 + (n-1)*.07
+                a.scatter(xpos, pr[0], color=COLOR[c], marker=MARKER[sd], s=24, zorder=3, label=c if (ci, n) == (0, 0) else None)
+                a.scatter(xpos, np.mean(rd), facecolor='none', edgecolor=COLOR[c], marker=MARKER[sd], s=24, zorder=3,
+                          label='random 7-d subspace (mean of 5), open' if (k, ci, n) == (0, 0, 0) else None)
+    a.set_xticks(range(len(cases)), [f'{v} subspace\nhidden {l}' for l, v in cases], fontsize=8)
+    a.set(title='interchange on training-program pairs: output follows\nthe composed counterfactual (probe subspace, filled)',
+          ylabel='fraction of pairs', ylim=(0, 1.04))
+    a.legend(fontsize=8, loc='upper left')
+    fig.suptitle('R1 decoding is descriptive; the interchange tests use (r1-comp-probe-a1, last checkpoint of each initial run)', fontsize=10)
+    for ext in ('png', 'svg'):
+        fig.savefig(FIGS/f'decoding.{ext}', dpi=130)
+    plt.close(fig)
+    print('wrote', FIGS/'decoding.png')
+
+
+def followup_figure(plt, base):
+    """Adaptive follow-up, kept separate: the shared-transition RNN."""
+    runs = {(c, s): load(f'r1-comp-rnn-{c}-s{s}-a1') for c in ('final', 'inter') for s in SEEDS}
+    with (FIGS/'followup_rnn.csv').open('w', newline='') as f:
+        w = csv.writer(f); w.writerow(['run_id', 'condition', 'init_seed', 'step', 'split', 'readout_at', 'acc', 'ce'])
+        for (c, s), m in runs.items():
+            for row in m or []:
+                for split in ('train', 'held'):
+                    for h, v in row[split].items():
+                        w.writerow([f'r1-comp-rnn-{c}-s{s}-a1', f'rnn-{c}', s, row['step'], split, h, v['acc'], v['ce']])
+    fig, ax = plt.subplots(1, 3, figsize=(15, 4.8), constrained_layout=True)
+    color = {'final': COLOR['final'], 'inter': COLOR['inter']}
+    for j, c in enumerate(('final', 'inter')):
+        a = ax[j]
+        a.axhline(base['chance'], color='0.45', lw=1, ls=(0, (4, 3)), label='chance 1/8')
+        a.axhline(base['3-of-4-slot neighbour vote'], color='0.45', lw=1, ls=':', label='3-of-4-slot neighbour vote')
+        for s in SEEDS:
+            m = runs[(c, s)]
+            if not m:
+                a.text(.02, .5, f'missing: r1-comp-rnn-{c}-s{s}-a1', transform=a.transAxes, color='crimson'); continue
+            st = [r['step'] for r in m]
+            a.plot(st, [r['train']['final']['acc'] for r in m], color=color[c], lw=1, ls='--', alpha=.7)
+            a.plot(st, [r['held']['final']['acc'] for r in m], color=color[c], lw=1.6, marker=MARKER[s], markevery=20, ms=5,
+                   label=f'init {s}')
+        a.set(title=f'rnn-{c}: readout on h3', xlabel='full-batch updates', ylabel='accuracy, final answer', ylim=(0, 1.04), xlim=(0, 10000))
+        a.legend(fontsize=8, loc='center right' if c == 'final' else 'lower right', title='held-out (solid), train (dashed)', title_fontsize=8)
+    a = ax[2]
+    a.axhline(base['chance'], color='0.45', lw=1, ls=(0, (4, 3)))
+    for c in ('final', 'inter'):
+        for s in SEEDS:
+            m = runs[(c, s)]
+            if not m:
+                continue
+            st = [r['step'] for r in m]
+            for h, ls in (('step1', ':'), ('step2', '-')):
+                a.plot(st, [r['held'][h]['acc'] for r in m], color=color[c], lw=1.4, ls=ls, marker=MARKER[s], markevery=20, ms=4,
+                       label=f'rnn-{c}, readout on {"h1 vs step1" if h == "step1" else "h2 vs step2"}' if s == SEEDS[0] else None)
+    a.set(title='shared readout applied to h1 and h2, held-out programs\n(rnn-final never trains the readout there)',
+          xlabel='full-batch updates', ylabel='accuracy', ylim=(0, 1.04), xlim=(0, 10000))
+    a.legend(fontsize=8, loc='center right', title='markers = init seed', title_fontsize=8)
+    fig.suptitle('R1 adaptive follow-up (separate from the initial comparison): ReLU RNN, one shared transition per op and one '
+                 'shared readout, width 128, same split, optimizer and seeds', fontsize=10)
+    for ext in ('png', 'svg'):
+        fig.savefig(FIGS/f'followup_rnn.{ext}', dpi=130)
+    plt.close(fig)
+    print('wrote', FIGS/'followup_rnn.png')
 
 
 def neighbour_labels(P, train, he):
