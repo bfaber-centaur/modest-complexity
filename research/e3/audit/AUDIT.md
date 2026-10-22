@@ -159,7 +159,7 @@ Look before reading: in the top left, does every blue curve rise and then fall? 
 **1. The rise is robust.**
 - In every B run my replay's peak exceeds update 0 by 0.26–0.31: from 0.431 to 0.743 (update 87), from 0.540 to 0.797 (68) and from 0.580 to 0.872 (70).
 - The published checkpoint at 100 (0.735, 0.789, 0.863) underestimates the peak by 0.008–0.009.
-- The metrics file has 4–5 rows within 20 updates of each peak. They carry own held-out accuracy (cal ∪ audit), which tracks the common set within 0.02 throughout.
+- The metrics file has 4–5 rows within 20 updates of each peak. They carry own held-out accuracy (cal ∪ audit), which tracks the common set within 0.028 at every published checkpoint (0.019 after update 0).
 - The peak comes 18–37 updates after train accuracy first reaches 1 (updates 69, 45, 33).
 
 **2. The fall is robust.**
