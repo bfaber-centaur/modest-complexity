@@ -8,12 +8,12 @@ Bobby's packet: [charter/](charter/) (verbatim). Decisions, assignments, budgets
 | shared code pin | [`common/`](../common/) at the pin commit below | reviewer: CONCERN C1, no BLOCK (D9) |
 | recovered r1 checkpoints | [`recovered/`](../recovered/) (28 original files, hashes matched) | done (D2) |
 | resume and no-change verification | [verify_resume.out](verify_resume.out), runs in [runs/](runs/) | identical (D2) |
-| time lane | `time/` | M2 (PR #55) reviewer PASS on numbers, CONCERN T1 (eps regime); follow-up F1 approved and running |
+| time lane | `time/` | merged (PR #55); reviewer PASS on M2, F1 and NOTE fixes; T1 (eps regime) and T2 (100k rise length-3-specific) carried in NOTE |
 | sharing lane | `sharing/` | merged (PR #54); reviewer PASS on M2 and wd-0 numbers; wd-0 decode/group tables not checked |
-| generalization lane | `generalization/` | merged (PR #51); reviewer PASS on Parts A, B, A5; follow-up anatomy numbers not checked |
-| mechanisms lane | `mechanisms/` | merged (PR #52); reviewer PASS on numbers, CONCERN M1 adopted in NOTE (re-check of the revised wording pending) |
-| reviewer | `review/` | pin, generalization, mechanisms, sharing and time M2 reviewed ([REVIEW.md](../review/REVIEW.md)) |
-| synthesis | [SYNTHESIS.md](SYNTHESIS.md) | draft; waiting on time F1 and last reviews |
-| final draft PR to `swarm/exploration` | | not opened |
+| generalization lane | `generalization/` | merged (PR #51); reviewer PASS on Parts A, B, A5 and the follow-up anatomy |
+| mechanisms lane | `mechanisms/` | merged (PR #52); reviewer PASS on numbers and on the revised NOTE (M1 adopted) |
+| reviewer | `review/` | every lane and the synthesis reviewed ([REVIEW.md](../review/REVIEW.md)); PRs #50, #53, #56–#60 merged; 7.9 of 25 min |
+| synthesis | [SYNTHESIS.md](SYNTHESIS.md) | final for handoff; reviewer PASS (§6) |
+| final draft PR to `swarm/exploration` | see MILESTONES | opened as a draft for Bobby; not merged by the coordinator |
 
 Pin commit: `b3e8132` (shared code `common/` as of that commit). Later coordinator commits change only `coordinator/` and add files to `recovered/` (D9) unless DECISIONS records a re-pin.

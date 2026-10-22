@@ -1,6 +1,6 @@
 # Composition round c2: synthesis
 
-**Status.** DRAFT 3. The reviewer checked drafts 1 and 2 (`review/REVIEW.md` §6: SY1–SY7), and this version takes all seven. The time lane's follow-up F1 (tied/final 50k → 100k) passed every review check (§2); the time NOTE is being corrected for T2–T5 ("Open items"). Every number below is quoted from a lane NOTE, a lane report or `review/REVIEW.md`; nothing here is a new measurement.
+**Status.** Final for c2's handoff. The reviewer checked drafts 1–3 (`review/REVIEW.md` §6: SY1–SY7, PASS on draft 3), and this version takes all seven. All four lanes are reviewed and merged; the time lane's F1 and its NOTE fixes T2–T5 passed review (§2). Every number below is quoted from a lane NOTE, a lane report or `review/REVIEW.md`; nothing here is a new measurement.
 
 **Scope of every claim.**
 - One recurrent architecture family: width 128, ReLU, one start embedding, a transition (A, B, bh) and a readout (V, bv), each either shared across the three steps ("tied") or one copy per step.
@@ -106,15 +106,14 @@ No paid compute; all runs used the session containers. An update took 3.7–7.5 
 | lane | runs | failed or capped | elapsed / budget | PR | merged |
 |---|---|---|---|---|---|
 | coordinator | 7 (3 resume checks, 4 calibrations) | 0 | about 3.5 / 10 min | | |
-| time | 15 (3 checks, 9 continuations to 50k, 3 to 100k) | 0 | 22.4 / 40 min | #55 | *pending* |
+| time | 15 (3 checks, 9 continuations to 50k, 3 to 100k) | 0 | 22.4 / 40 min | #55 | 9092ed1 |
 | sharing | 28 (4 calibrations, 12 at wd 0.1, 12 at wd 0) | 0 | 14.4 / 20 min | #54 | 52e4f7d |
 | generalization | 22 | 1 failed (D10), kept | 6.4 / 25 min | #51 | 344f8e2 |
 | mechanisms | 6 (no training) | 0 | about 1.8 / 15 min | #52 | 31f0fcc |
-| reviewer | analyses of committed files, plus 1 resume check | 1 crashed analysis pass, kept | 7.4 / 25 min | #50, #53, #56–#59 | each merged |
+| reviewer | analyses of committed files, plus 1 resume check | 1 crashed analysis pass, kept | 7.9 / 25 min | #50, #53, #56–#60 | each merged |
 
 Committed checkpoints: the 28 recovered r1 files (`recovered/`), the time lane's 42 (20k–50k for nine runs, and 75k and 100k for the three tied/final runs), the sharing lane's six UT/UU `ckpt-10000` and the generalization lane's 16 new-task `ckpt-10000`. Every other checkpoint is listed by hash in its run's manifest and kept local.
 
-## Open items before this is final
+## Not independently checked
 
-- Time: NOTE fixes T2–T5 (wording and one table column, no new runs); merge PR #55.
-- Left NOT CHECKED by the reviewer to save budget: the sharing lane's wd 0 decode and group tables (local-only checkpoints), and the inputs named in SY5.
+The reviewer left these NOT CHECKED to save budget: the sharing lane's wd 0 decode and group tables (they rest on local-only checkpoints), and the two inputs named in SY5 (UT's off-diagonal decoding and the U-swap rates). Both equal their lane NOTEs.

@@ -43,3 +43,7 @@
 | 05:01 | reviewer | generalization anatomy PASS (CX-G3 failed: drift predicts failures only 1.2–3.3× within a transition; G7, G8); mechanisms NOTE 0fe8624 PASS (M4 minor); synthesis draft 1 CONCERN SY1 (eps qualifier for per-step readout), notes SY2–SY6; sharing wd-0 decode/group tables stay NOT CHECKED | PR #59 merged (867c1ea); synthesis draft 2 ef69e01 |
 | 05:03 | time | M4: NOTE.md with T1, CX-T1, CX-T2 and handoff list; 22.4 of 40 min | PR #55 at e44349b |
 | 05:10 | reviewer | time F1 and NOTE: PASS on every F1 check (recipes, joins, manifests, 6 checkpoints rescored, classification, error compatibility, eps regime); T3 CONCERN (75k held-out column wrong: 0.781/0.797/0.844); T2 CONCERN (CX-T4 held: at 100k tt-final reads h1/h2 at 0.00–0.19 and scores 0.06–0.14 at L 4–6, so the rise is length-3-specific); T4, T5 notes; SY7 on the synthesis | reviewer branch 7748795; T2–T5 relayed to the time lane; synthesis draft 3 84b5175 |
+| 05:14 | time | NOTE fixes T2–T5 (no new runs) | 4e24ebd, 1fd4ff6 |
+| 05:14 | coordinator | merged time PR #55; all c2 test files pass on the integrated head, each in its own process | 9092ed1 |
+| 05:15 | reviewer | time NOTE fixes confirmed; synthesis draft 3 PASS (§6); c2 review complete | PR #60 merged (f8d37eb) |
+| 05:17 | coordinator | synthesis final; c2 handoff: draft integration PR to `swarm/exploration` for Bobby | |
