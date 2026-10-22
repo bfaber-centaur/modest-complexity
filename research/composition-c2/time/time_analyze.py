@@ -104,6 +104,14 @@ def check():
                                        subset_recomputed_equal=subsets(rows[0]['held_final_pred']) == rows[0]['held_subset'],
                                        recipe_differs=recipe_vs_source(json.loads((RUNS/run_id(arm, s)/'config.json').read_text()),
                                                                        json.loads((source_dir(arm, s)/'config.json').read_text())))
+    for s in SEEDS:  # F1 extensions: joined to their 50k run, recipe still the r1 source's
+        rows, base = read_jsonl(RUNS/ext_id('tt-final', s)/'metrics.jsonl'), read_jsonl(RUNS/run_id('tt-final', s)/'metrics.jsonl')
+        if rows is None:
+            continue
+        out[ext_id('tt-final', s)] = dict(source=run_id('tt-final', s), first_step=rows[0]['step'], last_step=rows[-1]['step'], logged=len(rows),
+                                          join_step_differs=bool(same_r1_keys(rows[:1], base[-1:])) or rows[0]['held_subset'] != base[-1]['held_subset'],
+                                          recipe_differs=recipe_vs_source(json.loads((RUNS/ext_id('tt-final', s)/'config.json').read_text()),
+                                                                          json.loads((source_dir('tt-final', s)/'config.json').read_text())))
     (HERE/'checks.json').write_text(json.dumps(out, indent=1)+'\n')
     print(json.dumps(out, indent=1))
 
