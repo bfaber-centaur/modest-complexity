@@ -30,12 +30,12 @@ For the reviewer only, append:
 
 ## Thread and branch assignments
 
-Branches are filled in as the workers push.
+Threads 2–4 were started by the project coordinator at 03:58Z; 1 and 5 received the launch text from this thread at 03:56Z. Branches are filled in as the workers push.
 
 | # | thread id | designated branch |
 |---|---|---|
 | 1 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTU8s1uzfPigWN1q5DxvtmMS` | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
+| 2 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTAaEVfAVzHaVKDX6fqHWFyJ` | |
+| 3 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTDWFArk7gDAQdi4r2c532Ui` | |
+| 4 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTHq7m8eNJQc51iKX371EFA6` | |
 | 5 | `cmsg_01APdvkRg6kVtZy2e9JoDcdTAKMwUsYk2djqx7Pz1rukHx` | |
