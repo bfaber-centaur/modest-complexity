@@ -6,7 +6,7 @@
 - `oracle_{composition,shared,history,routes}.py`: per-lane oracle, split and metric checks against a named lane commit (the lane's files are read from git, never edited). Outputs in `out/`.
 - [lanes.py](lanes.py): PASS/FAIL printing and loading a lane module from a commit.
 - `recompute_{routes,shared,composition}.py`: key numbers recomputed from published lane artifacts, plus analysis-only counterexamples.
-- [arm_shared.py](arm_shared.py), [compare_gate.py](compare_gate.py), [replay_history.py](replay_history.py), [specificity_history.py](specificity_history.py), [check_history_m4.py](check_history_m4.py), [rnn_untied.py](rnn_untied.py), [plan.json](plan.json), [registry.jsonl](registry.jsonl): the reviewer's training runs (R2 gate-only arm and a replay check; R3 B-phase replays; R1 untied-readout RNN arm and a replay check). Run outputs are local (`runs/regimes/`, gitignored); `runs/` here holds their small files with a manifest.
+- [arm_shared.py](arm_shared.py), [compare_gate.py](compare_gate.py), [replay_history.py](replay_history.py), [specificity_history.py](specificity_history.py), [check_history_m4.py](check_history_m4.py), [rnn_untied.py](rnn_untied.py), [check_routes_m4.py](check_routes_m4.py), [plan.json](plan.json), [registry.jsonl](registry.jsonl): the reviewer's training runs (R2 gate-only arm and a replay check; R3 B-phase replays; R1 untied-readout RNN arm and a replay check). Run outputs are local (`runs/regimes/`, gitignored); `runs/` here holds their small files with a manifest.
 
 ## Commands
 
@@ -30,6 +30,7 @@ uv run --locked python research/regimes/review/check_history_m4.py a23bdd8 58cb3
 # R1: r1-rev-comp-rnn-replay-inter-s51200-a1 and r1-rev-comp-rnn-untied-s5120{0,1,2}-a1 through run_jobs.py as above, then
 uv run --locked python research/regimes/review/recompute_composition.py de0ef92 runs/regimes > research/regimes/review/out/recompute_composition.txt
 # (RUN_ROOT research/regimes/review/runs gives the same output from the published files)
+uv run --locked python research/regimes/review/check_routes_m4.py d2f154f > research/regimes/review/out/check_routes_m4.txt
 ```
 
 ## Budget tally (20 min of numerical execution)
@@ -45,5 +46,6 @@ uv run --locked python research/regimes/review/recompute_composition.py de0ef92 
 | 2026-10-22 03:03 | specificity_history.py (54 readouts × 2,000 updates on replayed trunks) | 18.6 s | 1.5 min |
 | 2026-10-22 03:12 | runner: `r1-rev-comp-rnn-replay-inter-s51200-a1`, `r1-rev-comp-rnn-untied-s5120{0,1,2}-a1` (2 workers; wrapper checks 0.15 s each) | 84.8 s | 2.9 min |
 | 2026-10-22 03:16 | recompute_composition.py (rescoring and analysis, no training) | < 1 s | 2.9 min |
+| 2026-10-22 03:23 | check_routes_m4.py (rescoring and Adam-state analysis, no training) | 0.6 s | 2.9 min |
 
 Host for the checks above: 4 visible CPUs, Intel Xeon 2.10 GHz, CPython 3.12.14 and NumPy from the locked environment, one BLAS thread.

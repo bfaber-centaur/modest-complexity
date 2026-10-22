@@ -1,0 +1,42 @@
+PASS registry: 11 follow-up IDs, each with one running and one terminal event, no ID reused
+INFO hand-written terminal events: {'r1-route-long-rho1-s54202-a1': ('failed', None, 'interrupted: the container restarted at about 03:00:01 UTC w...'), 'r1-route-long-rho31of32-s54202-a1': ('failed', None, 'interrupted: the container restarted at about 03:00:01 UTC w...')}
+PASS the manual events record the wall time between launch and the last metrics write
+PASS order: follow-up predictions and plan 5710c35 (2026-10-22T02:51:41+00:00) < first launch (2026-10-22T02:52:08+00:00); a2 plan f79f170 (2026-10-22T03:01:04+00:00) < first a2 launch (2026-10-22T03:01:18+00:00)
+PASS MANIFEST.sha256: 147 published entries match their bytes, every published run file is listed (0 entries marked local-only)
+PASS 11 follow-up runs: step20000.npz equals the initial run final.npz (all p., m., v. arrays and t = 20000)
+PASS rho1 s54202: the 128 a1 metrics lines (to step 144119) equal the first 128 a2 lines; a1 publishes no final.npz/runtime.json
+PASS rho31of32 s54202: the 128 a1 metrics lines (to step 144119) equal the first 128 a2 lines; a1 publishes no final.npz/runtime.json
+PASS 9 follow-up final.npz (200k) rescored with independent code equal the last metrics row  [worst relative diff 0.0e+00]
+INFO rho1: reversed 20k->39k->200k [(0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)]
+INFO rho1: rule share 20k->39k->200k [(0.003, 0.003, 0.003), (0.001, 0.001, 0.001), (0.001, 0.001, 0.001)]
+INFO rho1: displacement/update at steps 20177, 38858, 200000: [('0.00011', '1.1e-05', '7.4e-07'), ('0.00012', '1.2e-05', '7.1e-07'), ('0.00013', '1.3e-05', '7.6e-07')]
+INFO rho1: median sqrt(vhat) at 20177 and 200000; saturated fraction at 200000; min/median margin at 200000 [('1e-08', '9e-15', 0.0, 26.3, 28.0), ('2e-08', '9e-15', 0.0, 26.3, 28.1), ('2e-08', '1e-14', 0.0, 26.2, 28.1)]
+INFO rho31of32: reversed 20k->39k->200k [(0.04296875, 0.0546875, 0.05859375), (0.03125, 0.03515625, 0.03515625), (0.05859375, 0.078125, 0.078125)]
+INFO rho31of32: rule share 20k->39k->200k [(0.107, 0.124, 0.129), (0.103, 0.121, 0.124), (0.163, 0.186, 0.19)]
+INFO rho31of32: displacement/update at steps 20177, 38858, 200000: [('0.00029', '2.8e-05', '1.7e-06'), ('0.00031', '2.9e-05', '1.8e-06'), ('0.00027', '2.8e-05', '1.8e-06')]
+INFO rho31of32: median sqrt(vhat) at 20177 and 200000; saturated fraction at 200000; min/median margin at 200000 [('2e-08', '2e-13', 0.171875, 22.8, 30.4), ('3e-08', '2e-13', 0.1796875, 23.1, 30.6), ('3e-08', '2e-13', 0.203125, 22.9, 30.5)]
+INFO rho15of16: reversed 20k->39k->200k [(0.421875, 0.5390625, 0.625), (0.25, 0.3359375, 0.3984375), (0.34375, 0.41015625, 0.4375)]
+INFO rho15of16: rule share 20k->39k->200k [(0.48, 0.524, 0.539), (0.401, 0.448, 0.463), (0.428, 0.465, 0.478)]
+INFO rho15of16: displacement/update at steps 20177, 38858, 200000: [('0.00027', '2.9e-05', '1.9e-06'), ('0.00031', '3.1e-05', '1.9e-06'), ('0.0003', '3.1e-05', '1.9e-06')]
+INFO rho15of16: median sqrt(vhat) at 20177 and 200000; saturated fraction at 200000; min/median margin at 200000 [('2e-08', '1e-13', 0.14453125, 22.9, 29.1), ('3e-08', '1e-13', 0.20703125, 23.0, 29.5), ('3e-08', '1e-13', 0.23046875, 22.9, 29.0)]
+INFO rho15of16: first step with reversed > 0.5 [28001, None, None]
+INFO last Adam step from the saved state (lr 1e-3, eps 1e-8): |step|; share of |step|^2 on coords with sqrt(vhat) >= eps; |step| / |(lr/eps) mhat|; |step with eps = 0| / |step|; saturated rows share of sum(1 - p) (exact)
+  r1-route-long-rho1-s54200-a1 20k  t=20000: |step| 0.0001; share sqrt(vhat)>=eps 0.708; step/GD-like 0.102; eps=0/step 2.39; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 19.2
+  r1-route-long-rho1-s54200-a1 200k t=200000: |step| 7e-07; share sqrt(vhat)>=eps 0; step/GD-like 1.000; eps=0/step 5.78e+04; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 26.3
+  r1-route-long-rho1-s54201-a1 20k  t=20000: |step| 0.00012; share sqrt(vhat)>=eps 0.736; step/GD-like 0.062; eps=0/step 1.83; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 18.5
+  r1-route-long-rho1-s54201-a1 200k t=200000: |step| 6.8e-07; share sqrt(vhat)>=eps 0; step/GD-like 1.000; eps=0/step 5.99e+04; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 26.3
+  r1-route-long-rho1-s54202-a2 20k  t=20000: |step| 0.00012; share sqrt(vhat)>=eps 0.714; step/GD-like 0.076; eps=0/step 2.51; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 18.5
+  r1-route-long-rho1-s54202-a2 200k t=200000: |step| 7.3e-07; share sqrt(vhat)>=eps 0; step/GD-like 1.000; eps=0/step 5.57e+04; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 26.2
+  r1-route-long-rho31of32-s54200-a1 20k  t=20000: |step| 0.00027; share sqrt(vhat)>=eps 0.801; step/GD-like 0.084; eps=0/step 1.71; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 15.3
+  r1-route-long-rho31of32-s54200-a1 200k t=200000: |step| 1.7e-06; share sqrt(vhat)>=eps 0; step/GD-like 1.000; eps=0/step 1.51e+04; saturated 0.172 of rows carrying 5.3e-07 of sum(1-p); min margin 22.8
+  r1-route-long-rho31of32-s54201-a1 20k  t=20000: |step| 0.00029; share sqrt(vhat)>=eps 0.958; step/GD-like 0.073; eps=0/step 1.53; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 15.3
+  r1-route-long-rho31of32-s54201-a1 200k t=200000: |step| 1.7e-06; share sqrt(vhat)>=eps 0; step/GD-like 1.000; eps=0/step 1.49e+04; saturated 0.180 of rows carrying 8.7e-07 of sum(1-p); min margin 23.1
+  r1-route-long-rho31of32-s54202-a2 20k  t=20000: |step| 0.00026; share sqrt(vhat)>=eps 0.935; step/GD-like 0.090; eps=0/step 1.5; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 15.4
+  r1-route-long-rho31of32-s54202-a2 200k t=200000: |step| 1.7e-06; share sqrt(vhat)>=eps 0; step/GD-like 1.000; eps=0/step 1.49e+04; saturated 0.203 of rows carrying 4.9e-07 of sum(1-p); min margin 22.9
+  r1-route-long-rho15of16-s54200-a1 20k  t=20000: |step| 0.00026; share sqrt(vhat)>=eps 0.95; step/GD-like 0.081; eps=0/step 1.42; saturated 0.000 of rows carrying 0.0e+00 of sum(1-p); min margin 15.3
+  r1-route-long-rho15of16-s54200-a1 200k t=200000: |step| 1.8e-06; share sqrt(vhat)>=eps 0; step/GD-like 1.000; eps=0/step 1.55e+04; saturated 0.145 of rows carrying 6.2e-07 of sum(1-p); min margin 22.9
+  r1-route-long-rho15of16-s54201-a1 20k  t=20000: |step| 0.0003; share sqrt(vhat)>=eps 0.955; step/GD-like 0.070; eps=0/step 1.43; saturated 0.004 of rows carrying 4.1e-14 of sum(1-p); min margin 15.2
+  r1-route-long-rho15of16-s54201-a1 200k t=200000: |step| 1.8e-06; share sqrt(vhat)>=eps 0; step/GD-like 1.000; eps=0/step 1.54e+04; saturated 0.207 of rows carrying 4.8e-07 of sum(1-p); min margin 23.0
+  r1-route-long-rho15of16-s54202-a1 20k  t=20000: |step| 0.00029; share sqrt(vhat)>=eps 0.971; step/GD-like 0.075; eps=0/step 1.41; saturated 0.008 of rows carrying 4.8e-12 of sum(1-p); min margin 15.3
+  r1-route-long-rho15of16-s54202-a1 200k t=200000: |step| 1.8e-06; share sqrt(vhat)>=eps 0; step/GD-like 1.000; eps=0/step 1.5e+04; saturated 0.230 of rows carrying 5.6e-07 of sum(1-p); min margin 22.9
+ALL PASS

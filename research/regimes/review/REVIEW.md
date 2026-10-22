@@ -8,7 +8,7 @@ Reviewer's plan and pre-stated counterexamples: [QUESTION.md](QUESTION.md). Stat
 | §1 R1 composition | **M4: no BLOCK; mergeable, one wording CONCERN (C1.1).** Every NOTE number re-derived. Counterexample 1 failed in the lane's favour: `rnn-inter` composes on rows no neighbour copy answers, and the MLP's above-chance accuracy is all on rows a neighbour copy answers. Counterexample 2: untying the RNN readout drops held-out accuracy to 0.52–0.63 from 0.96–1.00 (paired), so the shared readout carries much of the effect | 2026-10-22, lane `de0ef92` |
 | §2 R2 shared subcomputation | **M4: no BLOCK; mergeable.** Counterexamples: z not privileged in y1 features (C2.4); the gate-bit explanation of fine-tuned transfer is refuted by a gate-only arm (C2.5). Two NOTE edits suggested (C2.5, C2.6) | 2026-10-22, lane `f493c1a` |
 | §3 R3 history and recovery | **M4: no BLOCK; mergeable.** 12 B-phase replays match the lane's snapshots exactly; specificity counterexample failed (retention is A-specific); every NOTE number re-derived | 2026-10-22, lane `a23bdd8` |
-| §4 R4 competing routes | M1 PASS; M2 numbers recomputed PASS; counterexample: route choice at ρ = 15/16 is mostly base-specific, not context-level (C4.1, wording) | 2026-10-22, lane `f0f68f7` |
+| §4 R4 competing routes | **M4: no BLOCK; mergeable.** The interrupted a1 runs are recorded honestly and equal their a2 reruns; every branch point is bitwise; every follow-up number re-derived. Counterexample failed: at 200k Adam is exactly fixed-step gradient descent (no coordinate has √v̂ ≥ eps), so the stall is the optimizer's. Float64 saturation is immaterial (C4.3), and C4.1 (context wording) is still open | 2026-10-22, lane `d2f154f` |
 
 ## §0 Shared code (`research/regimes/common/`)
 
@@ -342,3 +342,42 @@ Evidence: [recompute_routes.py](recompute_routes.py), output in [out/recompute_r
 **Observations to pass on (not findings).**
 - **ρ = 1/2 rule-only.** s is exactly independent of y in training, yet the shortcut flip rate rises transiently to about 0.6–0.7 around 100–300 updates before collapsing to 0 (figure, row 6, column 3). s is used transiently, plausibly as a memorization feature, before the rule wins. The README does not mention it.
 - **Late-phase dynamics are optimizer-specific.** The rule's growth after the fit (500 → 20,000 updates, at train loss 1e-2 down to 1e-9) happens in the regime where Adam's normalized steps keep moving the weights while gradients shrink. The lane's own follow-up diagnostics (√v̂ near eps, float64 saturation near) show this. Statements about which route "training selects" late should name the recipe (full-batch Adam, lr 1e-3, wd 0), as QUESTION.md's confounder list already does.
+
+### M4 (`d2f154f`: NOTE.md, 10× longer follow-up)
+
+The evidence is [check_routes_m4.py](check_routes_m4.py), with output in [out/check_routes_m4.txt](out/check_routes_m4.txt). It uses analysis only, from published files. The prediction was pushed at `aecb9b7` before computing.
+
+| checklist item | status | evidence and what it affects |
+|---|---|---|
+| Oracle, split, loss and metrics | PASS | §4 M1–M2. All 9 follow-up `final.npz` (200k) were rescored with independent code, and they equal the last metrics row exactly. |
+| Interrupted runs and registry honesty | PASS | The registry holds 11 follow-up IDs, each with exactly one `running` and one terminal event. No ID is reused: the reruns are `-a2`. The two killed a1 runs have hand-written `failed` events, marked `logged_by: manual`, with returncode null and a plain reason. Their 92 s wall time equals launch to last metrics write. The a1 partials publish config, metrics and `step20000.npz`, but no `final.npz` or `runtime.json`, and say so. Each a1 `metrics.jsonl` (128 lines, to step 144,119) equals the first 128 lines of its a2 rerun, line for line. *Note:* `run_jobs.py` never writes `failed` with a null returncode itself, so these two events are recognizable only by `logged_by`. That is honest, but a reader filtering on status alone would miss it. |
+| Branch points and checkpoints | PASS | In all 11 follow-up runs, `step20000.npz` equals the initial run's `final.npz` in every weight and moment array, with t = 20,000. The lane's `followup_bitwise_check.json` claims the same. Every one of the 147 manifest entries matches its bytes, and every published run file is listed. |
+| Pre-registration | PASS | Predictions and plan `5710c35` (02:51:41) precede the first follow-up launch (02:52:08). The a2 plan `f79f170` (03:01:04) precedes the a2 launches (03:01:18). These are commit times. |
+| Diagnostics are read-only | PASS | `diagnostics()` reads p and the Adam state and writes nothing. Training arithmetic is unchanged, which the bitwise branch points and the a1 = a2 identity confirm. `mean_update_norm` is the net displacement over a logging interval divided by its length, and the NOTE correctly calls it "displacement per update". |
+| Follow-up table and text | PASS, two slips | Re-derived: reversed accuracy, rule share, displacement and saturated fraction at 20k and 200k. The ≈10× and ≈150× falls. The 15/16 gains before and after 39k (rule share +0.04–0.05, then +0.01–0.02; reversed +0.07–0.12, then +0.03–0.09). Seed 54200 crossing 0.5 at 28,001. *Slips:* the median √v̂ at 200k is about 1e-14 only at ρ = 1, and 1–2e-13 at ρ = 31/32 and 15/16. The 15/16 saturated fraction is 0.14–0.23, not 0.15–0.23. |
+| Flip-rate redundancy | PASS | `followup_long.png` uses no flip rates; it plots accuracies, signed Δs, rule share and numerics. Column 3 of `routes_over_training.png` does plot flip_s and flip_rule. Once reliable accuracy is 1 (after about 30 updates), they duplicate column 2's reversed curve. The text does not use them as independent evidence. Obs. 1 states the shortcut signature as one fact. Obs. 4 cites the irrelevant-bit flip rate, which is not redundant. The Limitations bullet says so. A one-line note on that column would help readers. |
+| Figures support claims | PASS, C4.1 open | Inspected `followup_long.png`. All seeds are shown, a2 is marked as shown in place of the failed a1, and the eps line and the T marker are drawn. **C4.1 is still open.** Obs. 4 still says "which route wins depends on the held-out context". At ρ = 15/16 the variance is mostly base-specific: interaction 0.68–0.72, context 0.21–0.25 (§4 M2). The M2 minor notes (purple legend, the 7/8 crossing at exactly 0.5) are also unchanged; neither is material. |
+
+**Counterexample (failed, which supports the lane): is the late stall the optimizer's, or the loss's?** The prediction is in QUESTION.md (Revisions).
+- *Method.* Each run's last Adam step was decomposed from the saved state (m, v, t) at 20k and at 200k. The share of saturated rows in Σ(1 − p_target) was computed in arithmetic that does not round 1 − p to 0.
+- *Result:*
+
+  | | at 20k | at 200k |
+  |---|---|---|
+  | share of the step's squared norm on coordinates with √v̂ ≥ eps | 0.71–0.97 | 0 in all 9 runs |
+  | step / (lr/eps)·m̂ | 0.06–0.10 | 1.000 |
+  | step with eps = 0, relative to the actual step | 1.4–2.5× | 1.5–6.0 × 10⁴ |
+  | saturated rows' share of Σ(1 − p) | ≤ 5e-12 | 5e-7 to 9e-7 |
+
+- *Reading.*
+  - At 20k Adam is still mostly in its normalized regime. By 200k every coordinate is eps-dominated, and the step is exactly (lr/eps)·m̂: heavy-ball gradient descent with a fixed step of 10⁵. It shrinks with the gradient, which falls with the smallest training margin (22.8–26.3 at 200k).
+  - An eps-free Adam step would be 10⁴ times larger. So the NOTE's "optimizer-limited" holds against a scale-invariant optimizer, and its proposed next test (normalized GD, or tiny eps) is the right one.
+  - Plain gradient descent would slow in the same way, because this is the usual vanishing-gradient tail of cross-entropy on a fitted set. Suggested wording: "Adam has become fixed-step gradient descent, so its steps shrink with the loss gradient". That is more exact than "the optimizer stalling".
+  - The answer to the coordinator's question is "together with the shrinking gradient": √v̂ ≪ eps alone does not explain the collapse.
+
+**C4.3 (CONCERN, wording): float64 saturation is immaterial.**
+- Saturated rows (margin > 36.7) carry under 1e-6 of the gradient weight Σ(1 − p) at 200k. That share is computed without rounding: their 1 − p ≤ 1e-16 is already 10⁶ below the smallest-margin rows' 1e-10, so rounding it to zero changes nothing material.
+- Also, only the target-logit component rounds to zero. The other logit still gets e^(−m).
+- *Affects* follow-up item 4's third bullet and the Limitations sentence on saturation, which list it beside eps as a cause of the stall. The stall is fully accounted for by the eps regime and the gradient's decay, so the saturation clause should be dropped or marked as immaterial. No number changes.
+
+**Verdict.** No BLOCK on R4's M4. The interruption is recorded honestly and the reruns are exact. Every follow-up number checks, apart from two slips. The optimizer-stall reading survives a direct test, and the counterexample failed. Two wording CONCERNs are open: C4.1 (from M2, unchanged) and C4.3 (saturation). Neither changes a number or the follow-up's conclusion. Mergeable; I recommend the two wording fixes first.
