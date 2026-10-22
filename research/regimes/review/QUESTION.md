@@ -140,7 +140,7 @@ Each status names what it affects.
 - *Also checked without prediction:* every NOTE number, the 73% and ~35% base rates, the interchange pair selection, and the follow-up's pre-registration order.
 - *Budget.* 4 runs of about 40 s with 2 workers, about 1.5 min.
 
-**2026-10-22 03:24, R4 M4 (`d2f154f`), before computing.**
+**2026-10-22 03:22 (commit aecb9b7), R4 M4 (`d2f154f`), before computing.**
 - *Target.* NOTE follow-up item 4 and Limitations: "the slowing tracks the optimizer stalling". The evidence cited is the median √v̂ falling to about 1e-14, below Adam's eps = 1e-8, and 15–23% of training rows reaching float64 saturation.
 - *Counterexample.* The displacement collapse may not need the optimizer at all. With √v̂ ≪ eps, Adam's step is about (lr/eps)·m̂, which is gradient descent with a fixed step. The collapse would then be the gradient's own decay as the smallest training margins grow, a property of the loss and data. The median coordinate may also not be the one that moves the weights. Separately, saturated rows (margin > 36.7) may carry a negligible share of the gradient however they round.
 - *Test (analysis only).* Use the published Adam states (`step20000.npz`, `final.npz` at 200k) of every follow-up run. For each, compute:
